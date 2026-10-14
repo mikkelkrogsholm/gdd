@@ -6,6 +6,12 @@ candidate under the maintainer-selected [MIT license](../LICENSE). GDD remains
 draft 0.3 with explicit 0.2 compatibility; renderer 0.2.0 is unchanged.
 No registry publication or successful remote CI run is claimed.
 
+Maintainer update, October 14, 2026: GitHub CI was rejected as too heavy and
+the workflow was removed. Verification now runs locally. References to the
+initial CI configuration below describe the delivery at commit `8b65d14`;
+its configuration and pin-check receipts remain historical facts, not pending
+remote work. The recorded execution results are unchanged.
+
 ## Delivered entry points
 
 - [README](../README.md) explains the method, separate assessments and tested
@@ -20,8 +26,10 @@ No registry publication or successful remote CI run is claimed.
   checked-binding evidence and immutable record append. The caller establishes
   authorization, adequate coverage, performed controls and receipt authenticity.
 - [Contribution guidance](../CONTRIBUTING.md), [changelog](../CHANGELOG.md),
-  packaging metadata and [CI](../.github/workflows/ci.yml) complete maintenance
-  entry points. Code, standard and viewer versions remain separate.
+  packaging metadata and the initial CI configuration completed maintenance
+  entry points at `8b65d14`. The subsequent maintainer decision replaces that
+  configuration with local verification. Code, standard and viewer versions
+  remain separate.
 
 Four bounded implementation workers used isolated source copies with disjoint
 ownership. The main agent integrated and verified their artifacts. Three fresh
@@ -108,10 +116,11 @@ changed no assertions, model, records, code or completed workflow effects.
 counts. Conformance, installation, browser, replay and wheel outputs are indexed
 in [the evidence byte index](readiness/index.json). Local checks ran on macOS
 arm64 with Python 3.11/3.12; the fresh browser trial used Node 25.9.0,
-Playwright 1.64.1 and managed Chromium 156.0.8078.4. CI targets Ubuntu 24.04,
+Playwright 1.64.1 and managed Chromium 156.0.8078.4. The initial CI configuration targeted Ubuntu 24.04,
 Python 3.11/3.12 and Node 24, with explicit browser installation and uploaded
-reports. Its action commit pins were checked against the upstream tags. A first
-remote run remains to be observed after delivery to GitHub.
+reports. Its action commit pins were checked against the upstream tags. That
+configuration was removed following the maintainer's decision; no remote run
+is required or planned.
 
 The full core runs preceded the final prose/reference refinements. The affected
 skill/host tests, synchronization, fresh installation and exact final wheel

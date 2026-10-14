@@ -9,8 +9,8 @@
     {
       "path": "references/gdd/AGENTS.md",
       "source": "AGENTS.md",
-      "sha256": "fe0d1352827b13ad314af7bae748cb5bd38b4b1ae568701c4c6a85ee61cf20dd",
-      "bytes": 785
+      "sha256": "beebe0458c4ba57b0e037f03a1bd4438ab1b3a6be472fa8cff232965aaf0aa84",
+      "bytes": 1193
     },
     {
       "path": "references/gdd/GDD.md",
@@ -216,6 +216,12 @@
       "from": "AGENTS.md",
       "href": "evidence/README.md",
       "source_target": "evidence/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "AGENTS.md",
+      "href": "CONTRIBUTING.md",
+      "source_target": "CONTRIBUTING.md",
       "role": "optional-repository-reference"
     },
     {

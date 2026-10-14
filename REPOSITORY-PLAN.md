@@ -1,9 +1,12 @@
 # GDD repository readiness goal
 
 Status: local delivery completed. See [readiness evidence](evidence/repository-readiness.md)
-for the actual tested journeys, installation checks and limits. Remote CI and
-registry publication are separate subsequent actions.
+for the actual tested journeys, installation checks and limits. Verification is
+local; registry publication remains a separate subsequent action.
 Defined October 14, 2026, from the maintainer's direction.
+
+Updated October 14, 2026: the maintainer rejected GitHub CI as too heavy.
+Repeatable local checks replace the earlier CI requirement.
 
 ## Outcome
 
@@ -40,7 +43,7 @@ number of commands or files.
 6. **Handle a change:** the independent agent revises a requirement, gets red results
    from fixed meaningful assertions, integrates the change and verifies current
    evidence. A controlled architecture violation fails; missing evidence stays UNKNOWN.
-7. **Maintain:** core tests and relevant conformance suites pass in repeatable CI;
+7. **Maintain:** core tests and relevant conformance suites pass through repeatable local checks;
    documented commands, installation and skill assets are checked. License and
    contribution policy are explicit before treating the repo as ready for public adoption.
 
@@ -65,7 +68,7 @@ entry points are `gdd init`, [the installable skill](skills/gdd/SKILL.md),
 | Skill | GDD.md and role guides | Installable skills/gdd/SKILL.md with a tested entry flow |
 | Evidence | Real concert/native experiments and conformance | Generalize the host workflow where fresh use demonstrates friction; establish independent journeys |
 | Examples | Extensive models, tests, views and original executions | A small curated entry example and indexed exhaustive evidence |
-| Repository | Local Python packaging and tests | CI, contribution guide, changelog and maintainer-approved license metadata |
+| Repository | Local Python packaging and tests | Repeatable local checks, contribution guide, changelog and maintainer-approved license metadata |
 | README | Rewritten in this goal-definition pass | Keep commands and capability statements tested as implementation progresses |
 
 There was no packaged skill, scaffold command or CI workflow in the inspected baseline.
@@ -88,7 +91,6 @@ reader's path before moving byte-sensitive material.
 | examples/ | Curated format examples and one reproducible end-to-end reference journey |
 | tests/ and conformance/ | Behavioral regressions, explicit supported/unsupported cases and compatibility |
 | evidence/ and archive/ | Indexed provenance, preserved executions and historical normative contracts |
-| .github/ | Repeatable installation, tests, conformance and installed-wheel checks |
 
 These are responsibilities, not a mandate to reorganize every existing file or add
 empty directories. Add only assets consumed by the accepted journeys.
@@ -157,7 +159,7 @@ conformance checks still pass after curation.
 
 ### 4. Verify adoption and finish repository readiness
 
-Add repeatable CI covering the supported Python installation, unit tests and relevant
+Document repeatable local checks covering the supported Python installation, unit tests and relevant
 standard, Graphify, viewer, workflow and design conformance. Verify the installed wheel
 outside the source checkout. Document optional browser-check dependencies explicitly.
 Add contribution/release guidance and a changelog that separates standard, package and

@@ -191,7 +191,9 @@ bounded trials, not a guarantee for every project, language or agent runtime.
 | Follow repository readiness work | [REPOSITORY-PLAN.md](REPOSITORY-PLAN.md) |
 | Contribute or prepare a release | [CONTRIBUTING.md](CONTRIBUTING.md), [CHANGELOG.md](CHANGELOG.md), [LICENSE](LICENSE) |
 
-For development and conformance checks:
+Verification runs locally. The repository has no GitHub Actions CI workflow.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for change and release checks.
+For local development and conformance checks:
 
 ```sh
 uv sync --locked --group dev

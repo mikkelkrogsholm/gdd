@@ -56,6 +56,7 @@ them in the original repository at the recorded base or by their
 actual per-file revision; do not treat missing history as current evidence.
 The complete source/target list is in [source-index.json](source-index.json).
 
+- `CONTRIBUTING.md`
 - `INSTALL.md`
 - `archive/gdd-0.1/SPEC.md`
 - `archive/gdd-0.1/concert.gdd.yaml`

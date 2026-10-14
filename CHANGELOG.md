@@ -15,8 +15,9 @@ imply a registry publication or a certified standard.
   with a synchronization check for copied reference guidance.
 - Document source and local-wheel installation, agent-skill installation,
   fresh-project and existing-code entry paths, and optional browser dependencies.
-- Add CI for Python 3.11/3.12, the core tests, all five relevant conformance
-  suites, complete installed-wheel assets and separate Chromium interactions.
+- Document local Python 3.11/3.12, core, conformance, installed-wheel and optional
+  Chromium checks. Remove the initial GitHub Actions workflow following the
+  maintainer's decision to keep verification local.
 - Extend installed-wheel verification with source/module/console parity,
   current and legacy CLI checks, actual legacy replay and no-overwrite controls.
 - Add opt-in host helpers for actual code snapshots, command receipts and

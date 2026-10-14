@@ -12,3 +12,11 @@ snapshot and record references, regenerate derived artifacts, and run relevant
 checks. Historical execution claims and digests remain tied to their original
 Git state; identify translated presentations and reconstructed captures rather
 than treating them as new executions. See [evidence](evidence/README.md).
+
+# Local verification
+
+Verification for the GDD repository runs locally. The maintainer has chosen
+not to run CI on GitHub because it is too heavy. Do not add GitHub Actions
+workflows unless the maintainer explicitly changes that direction. Run checks
+appropriate to the change; full conformance, wheel and browser checks remain
+available for local release verification. See [contributing](CONTRIBUTING.md).

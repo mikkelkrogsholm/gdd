@@ -13,8 +13,10 @@ meaning. Prefer Markdown, JSON, YAML, JSONL, CSV or HTML for new deliverables.
 
 ## Check a change
 
-From the repository root, use a fresh output directory so that new verification
-does not overwrite historical evidence:
+Verification runs locally; GitHub Actions CI is intentionally absent. For an
+ordinary change, run the checks relevant to the affected behavior. For release
+verification, use the full set below from the repository root with a fresh
+output directory so new verification does not overwrite historical evidence:
 
 ```sh
 uv sync --locked --dev --python 3.12
@@ -32,9 +34,9 @@ uv run --no-sync python conformance/verify_readiness_wheel.py "$GDD_CHECK_DIR"/d
 
 For viewer interactions or browser behavior, also run the optional browser
 recipe in [INSTALL.md](INSTALL.md). Artifact-byte verification and browser
-interaction verification establish different facts. CI runs both on Linux;
-Python 3.11 and 3.12 form the core matrix. Local test results and remote CI
-results must be identified separately.
+interaction verification establish different facts. The recorded local core
+checks cover Python 3.11 and 3.12 on macOS. Identify the runtime and environment
+of new executions explicitly.
 
 Keep tests focused on observable behavior and meaningful failure controls.
 Use FAIL for a demonstrated violation and UNKNOWN for missing or unsupported
@@ -67,7 +69,7 @@ the lockfile and runtime version references together for a package release.
 Change a standard or renderer version only when that contract changes; preserve
 explicit legacy compatibility. Record the resulting scope in
 [CHANGELOG.md](CHANGELOG.md). Build and check the exact wheel before proposing
-publication. This repository's CI verifies artifacts and does not publish them.
+publication. Run artifact verification locally; publication is a separate action.
 
 The maintainer selected the [MIT License](LICENSE) for GDD's code and associated
 documentation. Contributions are accepted under that license; preserve existing

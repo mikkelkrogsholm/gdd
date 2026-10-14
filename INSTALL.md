@@ -3,7 +3,8 @@
 The Python distribution is named **gdd-validator** and installs the **gdd**
 command. The commands below install from this checkout or a locally built wheel;
 they do not assume a package has been published to a registry. Package 0.7.0
-supports Python 3.11 and later. CI checks Python 3.11 and 3.12 on Linux.
+supports Python 3.11 and later. Local verification covers Python 3.11 and 3.12
+on macOS; no GitHub Actions CI is configured.
 The current standard is draft GDD 0.3, with explicit GDD 0.2 compatibility;
 the viewer renderer is 0.2.0.
 
@@ -148,7 +149,6 @@ an existing compatible Chromium executable. `GDD_PYTHON`,
 make the test environment explicit and keep reports outside tracked evidence.
 [VIEWER.md](VIEWER.md) explains what the browser checks assess.
 
-The [CI workflow](.github/workflows/ci.yml) runs the core installation, tests,
-five conformance suites and installed-wheel check separately from Chromium
-interactions. An added workflow is not evidence of a successful remote run;
-use its actual job reports when a run is available.
+Run the checks locally using [CONTRIBUTING.md](CONTRIBUTING.md). Core tests,
+conformance suites, installed-wheel verification and optional Chromium checks
+are available separately so you can select the checks relevant to your change.
