@@ -5,7 +5,11 @@ identify the GDD document contracts. Viewer versions identify the HTML renderer;
 its current profile remains `gdd-viewer-html/0.1`. These version lines do not
 imply a registry publication or a certified standard.
 
-## 0.7.0 — repository readiness work (unreleased)
+## Unreleased
+
+Record user-visible changes here for the next package release.
+
+## 0.7.0 — October 14, 2026
 
 - Package: `gdd-validator` 0.7.0. Standard: draft GDD 0.3, with explicit 0.2
   compatibility. Viewer renderer: 0.2.0.
@@ -25,10 +29,13 @@ imply a registry publication or a certified standard.
 - Curate the concert reference and preserve its complete original subtree in a
   byte-indexed, verified recovery archive.
 - Record the maintainer-selected MIT license in LICENSE and package metadata.
+- Establish the first annotated package tag, contribution/fork/PR guidance,
+  GitHub issue and pull-request templates, and manual release instructions.
 
 Local repository preparation is complete; actual independent journeys and
 verification are recorded in [the readiness review](evidence/repository-readiness.md).
-The package remains unreleased to a registry.
+This is the first tagged GitHub development release. The package has not been
+published to a registry.
 
 ## 0.6.0 — inspected baseline
 

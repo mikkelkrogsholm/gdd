@@ -1,0 +1,23 @@
+name: Feature or standard proposal
+description: Propose an improvement to the method, standard, CLI or skill.
+title: "[Proposal]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User workflow and problem
+      description: What are you trying to do, and where does current GDD fall short?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired result
+      description: Describe the observable improvement; a concrete example helps.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Suggested scope and compatibility
+      description: Which parts would change? Note affected formats, existing users or alternatives.

@@ -1,0 +1,35 @@
+name: Bug report
+description: Report unexpected GDD behavior with a reproducible input.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please search existing issues first. Include a small public fixture;
+        omit credentials and private source material.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include the command or steps and a minimal model, mapping or fixture.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version and environment
+      description: Package version or Git tag/commit, Python version, OS and relevant agent/browser.
+      placeholder: "v0.7.0, Python 3.12, macOS; GDD 0.3 model"
+  - type: textarea
+    id: output
+    attributes:
+      label: Actual output
+      description: Include the report, diagnostic codes or relevant stderr when available.
+      render: text

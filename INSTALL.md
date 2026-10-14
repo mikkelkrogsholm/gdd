@@ -1,8 +1,9 @@
 # Install and start
 
 The Python distribution is named **gdd-validator** and installs the **gdd**
-command. The commands below install from this checkout or a locally built wheel;
-they do not assume a package has been published to a registry. Package 0.7.0
+command. Install tagged source or the verified wheel from the
+[v0.7.0 GitHub development release](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.7.0).
+You can also build a wheel locally; no package is published to PyPI. Package 0.7.0
 supports Python 3.11 and later. Local verification covers Python 3.11 and 3.12
 on macOS; no GitHub Actions CI is configured.
 The current standard is draft GDD 0.3, with explicit GDD 0.2 compatibility;
@@ -12,6 +13,9 @@ the viewer renderer is 0.2.0.
 
 From the repository root, with [uv](https://docs.astral.sh/uv/getting-started/installation/)
 and Python 3.11 or 3.12 available:
+
+For the released snapshot, check out `v0.7.0` before installation. Contributors
+should work on a branch from `main`, as described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```sh
 uv sync --locked --dev --python 3.12
@@ -42,7 +46,9 @@ checks safe initialization, and compares the complete installed asset inventory
 against exact source bytes. The resulting JSON is evidence for that local run.
 
 For your own installation, create an environment outside the checkout. Set
-`GDD_WHEEL` to the absolute path of the wheel printed by the build command:
+`GDD_WHEEL` to the absolute path of the built wheel or the wheel downloaded from
+the GitHub release. Check a downloaded wheel against its accompanying SHA256SUMS
+before installation:
 
 ```sh
 GDD_WHEEL="/absolute/path/to/gdd_validator-0.7.0-py3-none-any.whl"

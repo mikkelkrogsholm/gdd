@@ -16,7 +16,8 @@ remain project choices.
 **Current status:** GDD 0.3 draft · CLI/package 0.7.0 · viewer 0.2.0 · Python 3.11+ ·
 [MIT licensed](LICENSE). The repo includes the method, deterministic CLI, offline
 viewer, Graphify adapter, safe project starter and a portable agent skill.
-Install from source or a local wheel; no package-registry release is claimed.
+The first development release is [v0.7.0](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.7.0).
+Install from tagged source or its verified wheel; the package is not on PyPI.
 
 ## How the method works
 
@@ -55,6 +56,7 @@ or frontend build. The generated graph works offline. These commands use a POSIX
 ```sh
 git clone https://github.com/mikkelkrogsholm/gdd.git
 cd gdd
+git checkout v0.7.0
 uv sync --locked
 uv run gdd --help
 
@@ -178,6 +180,13 @@ bounded trials, not a guarantee for every project, language or agent runtime.
 
 ## Read, contribute and extend
 
+Contributions are welcome, including small documentation fixes, bug reports,
+conformance cases, adapters and standard proposals. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md), open an
+[issue](https://github.com/mikkelkrogsholm/gdd/issues/new/choose), or submit a
+focused pull request from your fork. Version tags identify reproducible package
+snapshots; [RELEASING.md](RELEASING.md) explains how they are checked and published.
+
 | You want to… | Start here |
 | --- | --- |
 | Apply the method as an agent | [GDD.md](GDD.md) |
@@ -189,7 +198,7 @@ bounded trials, not a guarantee for every project, language or agent runtime.
 | Explore examples | [examples](examples/README.md) |
 | Understand integrations and decisions | [INTEGRATIONS.md](standard/INTEGRATIONS.md), [DECISIONS.md](standard/DECISIONS.md) |
 | Follow repository readiness work | [REPOSITORY-PLAN.md](REPOSITORY-PLAN.md) |
-| Contribute or prepare a release | [CONTRIBUTING.md](CONTRIBUTING.md), [CHANGELOG.md](CHANGELOG.md), [LICENSE](LICENSE) |
+| Contribute or prepare a release | [CONTRIBUTING.md](CONTRIBUTING.md), [RELEASING.md](RELEASING.md), [CHANGELOG.md](CHANGELOG.md), [LICENSE](LICENSE) |
 
 Verification runs locally. The repository has no GitHub Actions CI workflow.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for change and release checks.
