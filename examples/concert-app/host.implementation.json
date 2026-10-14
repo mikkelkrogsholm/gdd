@@ -1,0 +1,19 @@
+{
+  "implementation": "implementation.concert.sqlite",
+  "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+  "trusted_decisions": [
+    "decision.app.b.readiness"
+  ],
+  "policy": {
+    "revision": "concert-local-v1",
+    "actor": "actor.concert.lead",
+    "activity": "implementation",
+    "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+    "scope": [],
+    "requirement": "none",
+    "authorities": [
+      "actor.concert.lead"
+    ],
+    "basis": "The human explicitly requested this bounded local app, requirement change and controlled architecture-error experiment in this conversation. Root independently supplies this trusted host context."
+  }
+}

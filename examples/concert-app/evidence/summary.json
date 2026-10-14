@@ -1,0 +1,35 @@
+{
+  "format": "concert-gdd-experiment/0.1",
+  "implementation": "implementation.concert.sqlite",
+  "phase_a": {
+    "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+    "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+    "tests": 98,
+    "subtests": 11,
+    "browser_cases": 5,
+    "acceptance_current_at_execution": true,
+    "known_late_review_defects": [
+      "shared-cookie identity presentation",
+      "unknown500 retry key"
+    ]
+  },
+  "phase_b": {
+    "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+    "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+    "tests": 112,
+    "subtests": 11,
+    "browser_cases": 8,
+    "requirement_cases": 10,
+    "red_failures_against_a": 8,
+    "acceptance_current": true
+  },
+  "architecture_control": [
+    "PASS",
+    "FAIL",
+    "PASS",
+    "UNKNOWN"
+  ],
+  "phase_a_original_records_preserved": true,
+  "advisory_review_status": "COMPLETE",
+  "same_database_activation": "evidence/phase-b/database.activation.json"
+}

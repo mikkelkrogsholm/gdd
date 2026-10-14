@@ -1,0 +1,19 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:93c1d256141a52a024beb0748476c3d7ee360b943c4c4e72105eeafbb6d51449",
+  "event": {
+    "type": "submit",
+    "expected_revision": "sha256:93c1d256141a52a024beb0748476c3d7ee360b943c4c4e72105eeafbb6d51449",
+    "idempotency_key": "a.submit.package.backend",
+    "package": "package.backend",
+    "attempt": "replay.a.package.backend",
+    "summary": "Actual native delivery reviewed by the lead; worker results are not acceptance evidence.",
+    "artifact_uri": "/private/tmp/gdd-concert-replay-verified-20261014/workspaces/a.package.backend",
+    "changed_resources": [
+      "concert_app/storage.py",
+      "concert_app/reservations.py",
+      "tests/test_domain.py"
+    ]
+  },
+  "revision": "sha256:52cb907b8078ec298812a5254e421f7cb6ebecac3a2c13bea72f68de452dca18"
+}

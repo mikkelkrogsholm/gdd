@@ -1,0 +1,24 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:3ea1ed10cdbf43e1e765f8d96dce670a92a6077291cc7653c568e1345801cea2",
+  "event": {
+    "type": "integrate",
+    "expected_revision": "sha256:3ea1ed10cdbf43e1e765f8d96dce670a92a6077291cc7653c568e1345801cea2",
+    "idempotency_key": "b.integrate.package.presentation",
+    "package": "package.presentation",
+    "attempt": "replay.b.package.presentation",
+    "base_code_revision": "sha256:da808054a7d7f8250796f64e3e195ef3cba0527ff3f4d0b8f5e597ae3ad4081b",
+    "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+    "verified_resources": [
+      "concert_app/api.py",
+      "concert_app/static/app.js",
+      "tests/test_http.py"
+    ],
+    "review": {
+      "reviewer": "actor.concert.lead",
+      "verdict": "PASS",
+      "evidence_uri": "evidence/phase-b/package.presentation.review.json"
+    }
+  },
+  "revision": "sha256:e952bf186882b068d4bfb5750961dca293b3ce4614f6eb4a91d93daa15c1c440"
+}

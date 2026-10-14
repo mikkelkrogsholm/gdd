@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Local Sessions — Concert reservations</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#program-heading">Skip to concerts</a>
+  <div class="page">
+    <header class="masthead">
+      <a class="brand" href="/" aria-label="Local Sessions home">
+        <span class="brand-mark" aria-hidden="true">LS</span>
+        <span>Local Sessions<span class="brand-caption">A small concert club</span></span>
+      </a>
+      <div class="session-control">
+        <span id="session-status">Checking your session…</span>
+        <button id="sign-out" class="button-secondary" type="button" hidden>Sign out</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="introduction" aria-labelledby="page-title">
+        <p class="eyebrow">The local program</p>
+        <h1 id="page-title">Make room for<br> a good evening.</h1>
+        <p class="intro-copy">A few concerts, a seat of your own. Choose an evening below and keep your reservations in one place.</p>
+        <p class="program-note">Fictional concerts · One seat per reservation</p>
+      </section>
+
+      <div class="feedback" aria-label="Reservation updates">
+        <p id="status-message" class="status-message" role="status" aria-live="polite" aria-atomic="true">Loading the program…</p>
+        <p id="error-message" class="error-message" role="alert" hidden></p>
+      </div>
+
+      <section id="sign-in-panel" class="sign-in-panel" aria-labelledby="sign-in-heading">
+        <div class="sign-in-intro">
+          <p class="eyebrow">Your reservation desk</p>
+          <h2 id="sign-in-heading">Start with a sign-in.</h2>
+          <p>Sign in to reserve a seat, see your history and cancel a reservation.</p>
+        </div>
+        <div class="sign-in-fields">
+          <form id="sign-in-form">
+            <div class="field">
+              <label for="username">Username</label>
+              <input id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+            <button id="sign-in" type="submit">Sign in</button>
+          </form>
+          <p class="demo-hint">Fictional demo accounts: <strong>alice</strong> / <code>alice-demo</code> or <strong>bob</strong> / <code>bob-demo</code>.</p>
+        </div>
+      </section>
+
+      <section class="program" aria-labelledby="program-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Choose your evening</p>
+            <h2 id="program-heading" tabindex="-1">Upcoming concerts</h2>
+            <p id="catalog-summary" class="section-description">Checking seat availability.</p>
+          </div>
+          <button id="refresh-concerts" class="button-secondary" type="button">Refresh concerts</button>
+        </div>
+        <div id="concerts" class="concert-grid" aria-busy="true">
+          <p class="empty-state">Loading concerts…</p>
+        </div>
+      </section>
+
+      <section id="reservations-section" class="reservations-section" aria-labelledby="reservations-heading" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Your reservation desk</p>
+            <h2 id="reservations-heading" tabindex="-1">Your reservations</h2>
+            <p id="reservation-summary" class="section-description"></p>
+          </div>
+          <button id="refresh-reservations" class="button-secondary" type="button">Refresh reservations</button>
+        </div>
+        <p id="allowance-message" class="allowance-message" hidden></p>
+        <div id="reservation-history" aria-busy="false"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Local Sessions</p>
+      <p>A fictional program. No payments or ticket delivery.</p>
+    </footer>
+  </div>
+</body>
+</html>

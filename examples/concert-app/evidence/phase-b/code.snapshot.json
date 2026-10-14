@@ -1,0 +1,18 @@
+{
+  "files": {
+    "concert_app/__init__.py": "1c1a9c3c9c4e5f62d857377254edf252b2dce3d7b07a9972621201e380574ebb",
+    "concert_app/__main__.py": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+    "concert_app/api.py": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+    "concert_app/identity.py": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+    "concert_app/reservations.py": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+    "concert_app/static/app.js": "d26147db8171dee45bcbee3990fb72e72d4a2e0321e3db94553fa61dd9e74cbb",
+    "concert_app/static/index.html": "57e8730f0b0d4b06fb3eb609e72f8ddf563040d17a1c7c9a3378c031a7d40739",
+    "concert_app/static/style.css": "8875cb9d2757d28d9bbf2946ac58f214efbc5ab0025ee3a66de6492fed400c89",
+    "concert_app/storage.py": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+    "tests/test_domain.py": "3db3949c43571b94335494e406927735f383ff8877d68f80dfe910d82ac518ae",
+    "tests/test_http.py": "766de4a59170e24ada379a4b2454cacbce3ebd2fc86c879dc0eea1e9d4eea1d3",
+    "tests/test_requirement_change.py": "8087987357f8a62ce83d5c340c9b60c4ec176191fe08b4ee9a4190369cac57f4",
+    "run.py": "05e986f7ea1278d9ed5703e5befd83c8da79b1a1c849c29ea4927c7bef3048b0"
+  },
+  "revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+}

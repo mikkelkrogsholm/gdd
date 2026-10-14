@@ -1,0 +1,96 @@
+{
+  "format": "concert-browser-receipt/0.1",
+  "executed": true,
+  "result": "PASS",
+  "phase": "b",
+  "browser": "155.0.8059.41",
+  "url": "http://127.0.0.1:8873",
+  "cases": [
+    {
+      "name": "public program and invalid credentials",
+      "result": "PASS"
+    },
+    {
+      "name": "phase B preserves A history, uses server limit and permits cancellation at limit",
+      "result": "PASS"
+    },
+    {
+      "name": "postcommit-unknown500-retains-key-at-limit",
+      "result": "PASS",
+      "transport": "Real upstream commit; browser control substitutes unknown500 response. Separate real HTTP test induces serialization failure."
+    },
+    {
+      "name": "lost-response-retry-does-not-duplicate",
+      "result": "PASS"
+    },
+    {
+      "name": "identity switch hides old history and suppresses a late private response",
+      "result": "PASS"
+    },
+    {
+      "name": "uncertain-logout-retry-preserves-original-identity-expectation",
+      "result": "PASS"
+    },
+    {
+      "name": "shared-cookie session changes reject stale reserve, history and logout",
+      "result": "PASS"
+    },
+    {
+      "name": "keyboard, labelled forms, 320px and 200 percent layout",
+      "result": "PASS"
+    }
+  ],
+  "errors": [],
+  "reserve_requests": [
+    {
+      "concert_id": "midnight",
+      "request_key": "browser-b-unbound"
+    },
+    {
+      "concert_id": "northern",
+      "request_key": "1a40e8a2-210f-4d69-ad03-14520be4559d"
+    },
+    {
+      "concert_id": "midnight",
+      "request_key": "bbb3cb4a-3681-48d7-a730-a0a22cb6c5d3"
+    },
+    {
+      "concert_id": "midnight",
+      "request_key": "c6116c07-c0f5-489a-a257-231942a272fd"
+    }
+  ],
+  "negative_controls": [
+    "lost-response-retry-does-not-duplicate"
+  ],
+  "final_history": {
+    "reservations": [
+      {
+        "id": "d94391d22d3d426ab2efced583773fb0",
+        "concert_id": "midnight",
+        "state": "reserved"
+      },
+      {
+        "id": "800c993865e34b1babb1eda9ccbf0610",
+        "concert_id": "northern",
+        "state": "cancelled"
+      },
+      {
+        "id": "6122fbd2484a4c55a5c84026a1df2f24",
+        "concert_id": "matinee",
+        "state": "reserved"
+      },
+      {
+        "id": "2d3f2bc9fed44168b9a47eb2e163061e",
+        "concert_id": "northern",
+        "state": "cancelled"
+      },
+      {
+        "id": "22295aa924aa4f62bcf528cfc046cad7",
+        "concert_id": "midnight",
+        "state": "cancelled"
+      }
+    ],
+    "active_count": 2,
+    "active_limit": 2
+  }
+}

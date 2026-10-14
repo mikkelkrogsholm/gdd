@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python3",
+    "-B",
+    "-m",
+    "pytest",
+    "tests/test_domain.py",
+    "-k",
+    "zero_capacity or sold_out or concurrent_last_seat",
+    "-q"
+  ],
+  "cwd": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/concert-capacity-negative-gacqfc66",
+  "exit_code": 1,
+  "stdout": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n_ ReservationTests.test_concurrent_last_seat_uses_multiple_connections_without_overbooking _\n\nself = <test_domain.ReservationTests testMethod=test_concurrent_last_seat_uses_multiple_connections_without_overbooking>\n\n    def test_concurrent_last_seat_uses_multiple_connections_without_overbooking(self):\n        self.capacity(\"midnight\", 1)\n        barrier = Barrier(8)\n        def attempt(index):\n            barrier.wait(timeout=5)\n            try:\n                return self.reserve(f\"request-{index}\", principal=f\"person-{index}\")\n            except reservations.DomainError as error:\n                return error.code\n        with ThreadPoolExecutor(max_workers=8) as executor:\n            results = list(executor.map(attempt, range(8)))\n>       self.assertEqual(sum(isinstance(result, dict) for result in results), 1)\nE       AssertionError: 8 != 1\n\ntests/test_domain.py:180: AssertionError\n_ ReservationTests.test_sold_out_binds_no_key_and_can_succeed_after_cancellation _\n\nself = <test_domain.ReservationTests testMethod=test_sold_out_binds_no_key_and_can_succeed_after_cancellation>\n\n    def test_sold_out_binds_no_key_and_can_succeed_after_cancellation(self):\n        self.capacity(\"midnight\", 1)\n        original = self.reserve(\"occupant\")\n>       self.assert_error(\"SoldOut\", reservations.reserve, self.database, \"bob\", \"midnight\", \"retry\")\n\ntests/test_domain.py:106: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_domain.py:22: in assert_error\n    with self.assertRaises(reservations.DomainError) as raised:\nE   AssertionError: DomainError not raised\n_________ ReservationTests.test_zero_capacity_rejects_new_reservation __________\n\nself = <test_domain.ReservationTests testMethod=test_zero_capacity_rejects_new_reservation>\n\n    def test_zero_capacity_rejects_new_reservation(self):\n        self.capacity(\"midnight\", 0)\n>       self.assert_error(\"SoldOut\", reservations.reserve, self.database, \"alice\", \"midnight\", \"empty\")\n\ntests/test_domain.py:115: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_domain.py:22: in assert_error\n    with self.assertRaises(reservations.DomainError) as raised:\nE   AssertionError: DomainError not raised\n=========================== short test summary info ============================\nFAILED tests/test_domain.py::ReservationTests::test_concurrent_last_seat_uses_multiple_connections_without_overbooking\nFAILED tests/test_domain.py::ReservationTests::test_sold_out_binds_no_key_and_can_succeed_after_cancellation\nFAILED tests/test_domain.py::ReservationTests::test_zero_capacity_rejects_new_reservation\n3 failed, 27 deselected in 0.15s\n",
+  "stderr": "",
+  "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+  "code_revision": "sha256:f34b26f87f65270c9ba4e3d975d39c06ca2f6409de1ae986061d946b7f3808c8"
+}

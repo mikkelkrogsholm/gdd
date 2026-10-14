@@ -1,0 +1,48 @@
+{
+  "format": "gdd-design-review/0.3",
+  "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+  "implementation": "implementation.concert.sqlite",
+  "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+  "scope": [
+    "action.reserve",
+    "action.cancel",
+    "action.catalog",
+    "action.list_own_reservations",
+    "screen.reserve",
+    "component.api",
+    "action.login",
+    "action.logout",
+    "action.current_session"
+  ],
+  "reviewer": {
+    "name": "actor.concert.lead",
+    "version": "1"
+  },
+  "executed": true,
+  "assessments": [
+    {
+      "principle": "kiss",
+      "status": "reviewed",
+      "rationale": "Five explicit components serve present transport, identity, reservation, persistence and presentation duties. Standard-library HTTP and SQLite avoid plugin abstractions and runtime dependencies for this bounded app.",
+      "findings": []
+    },
+    {
+      "principle": "dry",
+      "status": "reviewed",
+      "rationale": "Reservations owns the policy and ordered business decisions. Storage counts rows rather than maintaining duplicate seat counters. Frontend reads active_limit and active_count from the public contract. B policy is changed once in Reservations; UI still consumes the nullable public limit.",
+      "findings": []
+    },
+    {
+      "principle": "separation_of_concerns",
+      "status": "reviewed",
+      "rationale": "SQL is restricted to Storage; credential/session registry is in Identity; transport derives the principal and calls Reservations. Actual AST scan and foreign-cancellation HTTP tests support these boundaries. Expected principal is only a transport presentation consistency guard; the cookie still supplies identity authority. Shared-tab and uncertain logout controls passed.",
+      "findings": []
+    },
+    {
+      "principle": "modularity",
+      "status": "reviewed",
+      "rationale": "Independent agents implemented frontend and backend against frozen public HTTP/Python contracts. Actual combined tests demonstrate integration; component boundaries include short responsibility/rationale/exclusions.",
+      "findings": []
+    }
+  ]
+}

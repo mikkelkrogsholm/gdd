@@ -1,0 +1,6 @@
+{
+  "reviewer": "actor.concert.lead",
+  "result": "PASS",
+  "basis": "Read actual two-file diff. Single domain policy and global active count precede capacity under existing transaction. Changed domain assertions now explicitly assert activeB and create historicalA fixtures through Storage; root fixed ten requirement assertions remain byte-identical. Actual40 tests plus11 subtests passed.",
+  "receipt": "backend.host.run.json"
+}

@@ -1,0 +1,330 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "concert-reservations",
+  "records": {
+    "check.app.a.pytest_concert": {
+      "kind": "check",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "scope": [
+        "rule.capacity",
+        "rule.idempotency",
+        "rule.authorization",
+        "rule.atomicity",
+        "rule.state_machine",
+        "rule.auth_context"
+      ],
+      "method": "pytest_concert",
+      "required_environment": [
+        "python",
+        "sqlite",
+        "database",
+        "http"
+      ],
+      "negative_controls": [
+        "real-sqlite-fault-rollback",
+        "capacity-bypass-detected"
+      ]
+    },
+    "check.app.a.python_import_graph": {
+      "kind": "check",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "scope": [
+        "rule.api_boundary"
+      ],
+      "method": "python_import_graph",
+      "required_environment": [
+        "python"
+      ],
+      "negative_controls": [
+        "forbidden-api-storage-import-detected",
+        "missing-input-remains-unknown"
+      ]
+    },
+    "check.app.a.browser_concert": {
+      "kind": "check",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "scope": [
+        "rule.ui_complete"
+      ],
+      "method": "browser_concert",
+      "required_environment": [
+        "browser",
+        "http"
+      ],
+      "negative_controls": [
+        "lost-response-retry-does-not-duplicate"
+      ]
+    },
+    "decision.app.a.readiness": {
+      "kind": "decision",
+      "topic": "readiness_review",
+      "scope": [
+        "screen.reserve"
+      ],
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "policy_revision": "concert-local-v1",
+      "actor": {
+        "id": "actor.concert.lead",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "The integrating agent reviewed the specified complete screen flow, error/recovery states, labelled controls, responsive behavior and actual pinned DESIGN.md. This is a readiness review, not execution evidence."
+    },
+    "binding.app.a.pytest_concert": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "rule.capacity",
+        "rule.idempotency",
+        "rule.authorization",
+        "rule.atomicity",
+        "rule.state_machine",
+        "rule.auth_context"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "test",
+      "resource": "tests/",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:b64408506cfb5bdf9217da693d1643204df0b7090622d26b9ceb776265b67783",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "evidence.app.a.pytest_concert": {
+      "kind": "evidence",
+      "check": "check.app.a.pytest_concert",
+      "check_revision": "sha256:f1663bee3b96edf6c327fb3714263da04da7d1cf8a103edaf58da5536514bf3b",
+      "implementation": "implementation.concert.sqlite",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+      "checker": {
+        "name": "pytest+SQLite+HTTP",
+        "version": "pytest 8.3.5 / Python3.12"
+      },
+      "scope": [
+        "rule.capacity",
+        "rule.idempotency",
+        "rule.authorization",
+        "rule.atomicity",
+        "rule.state_machine",
+        "rule.auth_context"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual integrated98 tests and11 subtests passed, including real file SQLite insert/cancel/commit fault rollback. Unchanged capacity assertions rejected an isolated guard bypass.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+        "sqlite": "3.46.0",
+        "database": "fresh real SQLite files with protected writes and preserved A-to-B history",
+        "http": "actual loopback ThreadingHTTPServer with ephemeral ports"
+      },
+      "evidence_uri": "evidence/phase-a/pytest.run.json"
+    },
+    "binding.app.a.python_import_graph": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "rule.api_boundary"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "test",
+      "resource": "tools/import_check.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "evidence.app.a.python_import_graph": {
+      "kind": "evidence",
+      "check": "check.app.a.python_import_graph",
+      "check_revision": "sha256:8a61d7f0e6378eb59edb274ff8b78ea644504935efe215e67054aadd5bb86ef9",
+      "implementation": "implementation.concert.sqlite",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+      "checker": {
+        "name": "concert-python-import-graph",
+        "version": "0.1.0"
+      },
+      "scope": [
+        "rule.api_boundary"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual AST bindings and source hashes passed; controlled API-to-Storage injection failed, repair passed, missing file remained UNKNOWN.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "evidence/phase-a/import.controls.json"
+    },
+    "binding.app.a.browser_concert": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "rule.ui_complete"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "test",
+      "resource": "tools/browser.cjs",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:8616aa93027794755cc48602cf4a9aab3418d37b671a93a51faf88b50d0a0dff",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "evidence.app.a.browser_concert": {
+      "kind": "evidence",
+      "check": "check.app.a.browser_concert",
+      "check_revision": "sha256:85fb10751d57d014de5651e2e9eae1b617391555fb3560e0caceefa9960f4d2f",
+      "implementation": "implementation.concert.sqlite",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+      "checker": {
+        "name": "Playwright/Chrome",
+        "version": "155.0.8059.41"
+      },
+      "scope": [
+        "rule.ui_complete"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Five real browser cases passed, including committed reservation with lost response, same-key retry, unlimited phase-A3-seat flow, cancellation, identity change with late private response,320px/200percent layout and keyboard.",
+      "environment": {
+        "browser": "155.0.8059.41",
+        "http": "actual loopback ThreadingHTTPServer with ephemeral ports"
+      },
+      "evidence_uri": "evidence/phase-a/browser.run.json"
+    },
+    "binding.app.a.code.api.0": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "component.api"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "code",
+      "resource": "concert_app/api.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:4914843c53f383873a2b4327150cb53404efa958833c7e53f79ab263f5789345",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "binding.app.a.code.api.1": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "component.api"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "code",
+      "resource": "concert_app/__main__.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "binding.app.a.code.identity.0": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "component.identity"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "code",
+      "resource": "concert_app/identity.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "binding.app.a.code.reservations.0": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "component.reservations"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "code",
+      "resource": "concert_app/reservations.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:9fb8a3d8a738b85d748cb50bdf72060fc24fb74476447df0f511fb867705cc48",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "binding.app.a.code.storage.0": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "component.storage"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "code",
+      "resource": "concert_app/storage.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "binding.app.a.code.frontend.0": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "component.frontend"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "code",
+      "resource": "concert_app/static/index.html",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:57e8730f0b0d4b06fb3eb609e72f8ddf563040d17a1c7c9a3378c031a7d40739",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "binding.app.a.code.frontend.1": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "component.frontend"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "code",
+      "resource": "concert_app/static/app.js",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:3e304871669d24aa64cf82168ee671513fd891780923be7a02f08a73b8a551c4",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    },
+    "binding.app.a.code.frontend.2": {
+      "kind": "binding",
+      "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+      "targets": [
+        "component.frontend"
+      ],
+      "implementation": "implementation.concert.sqlite",
+      "role": "code",
+      "resource": "concert_app/static/style.css",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:8875cb9d2757d28d9bbf2946ac58f214efbc5ab0025ee3a66de6492fed400c89",
+      "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+    }
+  }
+}

@@ -98,3 +98,30 @@ Phase 8: GDD 0.3 component boundaries, public contracts and design principles.
   actual legacy replay and 44 matching runtime files. Two final refinement instances
   supplement the earlier full pytest count. No reservation application execution or
   automatic KISS/DRY proof is claimed. See evidence/gdd-0.3-review.md.
+
+Phase 9: an executed concert reservation application through GDD 0.3.
+
+- Authored and froze a bounded five-component app graph, HTTP/Python contracts and
+  design-md system. Actual native backend/frontend dispatches ran in isolated
+  workspaces; a host-checker worker implemented real-source AST checks. The lead
+  authored transport/session code, integrated all checkout changes and attested execution.
+- Phase A passed 98 tests and 11 subtests, five real browser cases and GDD acceptance.
+  Preserved its complete model/normative assets/records/code and original execution claims.
+- Revised intent to at most two active reservations per person across concerts. Ten
+  fixed requirement assertions first produced eight failures against A; the same bytes
+  passed B. Started B against the actual A database and verified full logical history
+  preservation before further browser changes.
+- Independent review reproduced cross-tab identity confusion and unknown500 retry-key
+  loss, then caught an uncertain logout retry losing its original expectation. B repairs
+  all three with real HTTP/browser controls. Original A acceptance remains explicitly
+  historical and its known limitations are documented.
+- B passed 112 tests and 11 subtests, eight real browser controls and current GDD
+  acceptance. Actual forbidden API-to-Storage injection yielded PASS/FAIL/PASS/UNKNOWN
+  for clean/injected/repaired/missing source. Capacity bypass failed unchanged assertions;
+  real file-SQLite insertion/cancellation/commit faults verified rollback.
+- Current and historical snapshots, exact dispatches, journals, raw receipts, advisory
+  review, actual screenshots and graph are under examples/concert-app. The replay uses
+  archived delivered patches and new actual checks/journals; it claims no new agent generation.
+- Fresh replay reproduced both exact code snapshots and accepted both new GDD runs.
+  All 1,380 pre-existing framework pytest cases also passed. No standard/library
+  version change or publication is part of this application experiment.

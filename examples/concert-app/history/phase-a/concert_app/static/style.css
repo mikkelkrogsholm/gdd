@@ -1,0 +1,124 @@
+:root {
+  --primary: #164c43;
+  --primary-hover: #103d35;
+  --canvas: #f4f1e8;
+  --surface: #fff;
+  --ink: #172d29;
+  --muted: #52645d;
+  --border: #c8d0c6;
+  --error: #8b2d22;
+  --error-surface: #fff0ec;
+  --focus: #8b2d22;
+  color: var(--ink);
+  background: var(--canvas);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+button, input { font: inherit; }
+button, input, a { -webkit-tap-highlight-color: transparent; }
+button, input { min-height: 44px; }
+button {
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #fff;
+  background: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+button:hover:not(:disabled) { background: var(--primary-hover); }
+button:disabled { color: var(--muted); background: #e6eae3; border-color: var(--border); cursor: default; }
+.button-secondary { background: transparent; color: var(--primary); }
+.button-secondary:hover:not(:disabled) { background: #e4eae1; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+h1, h2, h3, p { margin: 0; }
+h2 { font-size: 24px; font-weight: 650; line-height: 1.25; }
+h3 { font-size: 24px; font-weight: 650; line-height: 1.25; overflow-wrap: anywhere; }
+.page { max-width: 1168px; margin: 0 auto; padding: 0 24px; }
+.skip-link { position: absolute; top: 8px; left: 16px; transform: translateY(-160%); z-index: 1; background: var(--surface); padding: 12px; color: var(--primary); border-radius: 8px; }
+.skip-link:focus { transform: none; }
+.masthead { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: 24px 0; border-bottom: 1px solid var(--border); }
+.brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-weight: 650; font-size: 18px; min-width: 0; }
+.brand-mark { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; color: #fff; background: var(--primary); border-radius: 50%; font-family: Georgia, serif; font-size: 19px; font-weight: 400; letter-spacing: -1px; }
+.brand-caption { display: block; font-size: 12px; font-weight: 400; color: var(--muted); }
+.session-control { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; min-width: 0; font-size: 14px; color: var(--muted); }
+#session-status { overflow-wrap: anywhere; }
+.introduction { padding: 48px 0 32px; max-width: 720px; }
+.eyebrow { margin-bottom: 12px; color: var(--primary); font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .12em; }
+h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 48px; line-height: 1.1; letter-spacing: -.035em; }
+.intro-copy { max-width: 520px; margin-top: 24px; color: var(--muted); }
+.program-note { margin-top: 16px; color: var(--muted); font-size: 13px; }
+.feedback { margin: 0 0 24px; }
+.status-message { min-height: 24px; color: var(--primary); }
+.error-message { margin-top: 8px; padding: 16px; border: 1px solid #d7a298; border-radius: 8px; background: var(--error-surface); color: var(--error); overflow-wrap: anywhere; }
+.sign-in-panel { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.3fr); gap: 32px; align-items: center; padding: 24px; border: 1px solid var(--border); border-radius: 16px; background: #eceee5; margin-bottom: 40px; }
+.sign-in-intro p:not(.eyebrow) { color: var(--muted); margin-top: 12px; max-width: 340px; }
+#sign-in-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; gap: 12px; }
+.field { min-width: 0; }
+label { display: block; font-size: 14px; line-height: 1.4; font-weight: 600; margin-bottom: 8px; }
+input { display: block; width: 100%; border: 1px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 10px 12px; }
+input:disabled { background: #f2f3ee; }
+.demo-hint { color: var(--muted); margin-top: 12px; font-size: 12px; overflow-wrap: anywhere; }
+code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.section-heading { display: flex; justify-content: space-between; gap: 24px; align-items: end; flex-wrap: wrap; margin-bottom: 24px; }
+.section-heading .eyebrow { margin-bottom: 8px; }
+.section-description { color: var(--muted); margin-top: 8px; }
+.concert-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.concert-card { display: flex; flex-direction: column; min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(23,45,41,.06); }
+.card-program-line { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; color: var(--primary); font-size: 13px; font-weight: 600; }
+.card-number { font-family: Georgia, serif; font-size: 32px; font-weight: 400; line-height: 1; color: #6e7e6d; }
+.concert-card h3 { margin-bottom: 8px; }
+.concert-venue { color: var(--muted); margin-bottom: 24px; overflow-wrap: anywhere; }
+.availability { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600; }
+.availability.sold-out { color: var(--error); }
+.concert-card button { width: 100%; margin-top: 16px; }
+.retry-note { font-size: 13px; color: var(--muted); margin-top: 12px; }
+.reservations-section { margin-top: 48px; }
+.allowance-message { margin: -8px 0 24px; border-left: 3px solid var(--primary); padding: 12px 16px; background: #e4eae1; }
+.reservation-list { margin: 0; padding: 0; list-style: none; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--surface); }
+.reservation-item { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px; min-width: 0; }
+.reservation-item + .reservation-item { border-top: 1px solid var(--border); }
+.reservation-detail { min-width: 0; flex: 1; }
+.reservation-item h3 { font-size: 18px; margin-bottom: 4px; }
+.reservation-reference { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.reservation-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.reservation-state { display: inline-flex; padding: 4px 10px; border-radius: 20px; background: #e4eae1; color: var(--primary); font-size: 12px; font-weight: 600; }
+.state-cancelled { background: #f0f1ed; color: var(--muted); }
+.empty-state { grid-column: 1 / -1; padding: 32px 24px; color: var(--muted); background: var(--surface); border: 1px dashed var(--border); border-radius: 16px; }
+footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 24px 0; margin-top: 48px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+footer p:first-child { font-weight: 600; color: var(--primary); }
+
+@media (max-width: 900px) {
+  .concert-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sign-in-panel { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .sign-in-intro p:not(.eyebrow) { max-width: 100%; }
+}
+
+@media (max-width: 599px) {
+  .page { padding: 0 16px; }
+  .masthead { gap: 16px; }
+  .session-control { width: 100%; justify-content: space-between; }
+  .introduction { padding-top: 32px; }
+  h1 { font-size: 36px; }
+  .sign-in-panel { padding: 24px 16px; }
+  #sign-in-form { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .concert-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .section-heading { gap: 16px; }
+  .section-heading > button { width: 100%; }
+  .reservation-item { align-items: stretch; flex-direction: column; padding: 24px 16px; gap: 16px; }
+  .reservation-actions { justify-content: space-between; }
+  .reservation-actions button { flex: 1; }
+  footer { flex-direction: column; gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}

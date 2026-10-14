@@ -1,0 +1,6 @@
+{
+  "reviewer": "actor.concert.lead",
+  "result": "PASS",
+  "basis": "Lead reviewed optional expected principal before private access/logout, duplicate rejection and idempotent absent logout. Frontend clears stale views and preserves logout expectation through uncertain retry; confirmed rejection whitelist preserves keys on unknown500. Actual integrated65 tests and11 subtests passed; syntax passed. Real browser controls remain required before acceptance.",
+  "receipt": "presentation.integrated.host.run.json"
+}

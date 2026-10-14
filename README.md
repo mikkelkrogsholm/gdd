@@ -24,6 +24,11 @@ The validation CLI writes JSON in `gdd-report/0.2`; workflow commands have separ
 
 ## Reading guide
 
+The [executed concert app](examples/concert-app/README.md) demonstrates GDD 0.3 from
+native agent dispatch through a working browser/SQLite app, a revised requirement,
+actual negative controls and revision-bound acceptance. It includes an interactive
+graph and a reproducible replay; see its [execution summary](examples/concert-app/evidence/summary.json).
+
 - [SPEC.md](SPEC.md): normative model, identity, relations, subgraphs, and extensions.
 - [FORMAT.md](standard/FORMAT.md): files, fields, serialization, and revisions.
 - [AGENT-PROTOCOL.md](standard/AGENT-PROTOCOL.md): input, iteration, mandate, context, parallelism, and delivery.

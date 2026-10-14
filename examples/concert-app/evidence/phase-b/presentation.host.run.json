@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python3",
+    "-B",
+    "-m",
+    "pytest",
+    "tests/test_http.py",
+    "-q"
+  ],
+  "cwd": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-concert-workers-i24i4q2z/presentation-b",
+  "exit_code": 0,
+  "stdout": ".........................                                                [100%]\n25 passed in 12.44s\n",
+  "stderr": "",
+  "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+  "code_revision": "sha256:5e2777ce23d9cc27ed9cb2aff13fc958e1bec89fb4f07e80711e78b4d457de3d"
+}

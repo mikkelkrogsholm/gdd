@@ -1,0 +1,54 @@
+{
+  "format": "gdd-design-review-status/0.3",
+  "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+  "status": "COMPLETE",
+  "reasons": [
+    "All four advisory assessments are present and match the supplied revisions; findings require judgment."
+  ],
+  "findings": [],
+  "scope": [
+    "action.reserve",
+    "action.cancel",
+    "action.catalog",
+    "action.list_own_reservations",
+    "screen.reserve",
+    "component.api",
+    "action.login",
+    "action.logout",
+    "action.current_session"
+  ],
+  "requested_scope": [
+    "action.reserve",
+    "action.cancel",
+    "action.catalog",
+    "action.list_own_reservations",
+    "screen.reserve",
+    "component.api",
+    "action.login",
+    "action.logout",
+    "action.current_session"
+  ],
+  "implementation": "implementation.concert.sqlite",
+  "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+  "notice": "Advisory review applicability only. This tool does not prove review execution or KISS/DRY compliance and does not grant acceptance.",
+  "review_identity": {
+    "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+    "implementation": "implementation.concert.sqlite",
+    "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+    "scope": [
+      "action.reserve",
+      "action.cancel",
+      "action.catalog",
+      "action.list_own_reservations",
+      "screen.reserve",
+      "component.api",
+      "action.login",
+      "action.logout",
+      "action.current_session"
+    ],
+    "reviewer": {
+      "name": "actor.concert.lead",
+      "version": "1"
+    }
+  }
+}

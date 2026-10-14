@@ -1,0 +1,12 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:73ba1c675c05f21f522c437866a54ccbefdbb8b3e47100fd192fc5dd53b468af",
+  "event": {
+    "type": "dispatch",
+    "expected_revision": "sha256:73ba1c675c05f21f522c437866a54ccbefdbb8b3e47100fd192fc5dd53b468af",
+    "idempotency_key": "a.dispatch.package.backend",
+    "package": "package.backend",
+    "attempt": "replay.a.package.backend"
+  },
+  "revision": "sha256:8b58eb56e4f73c4dd68035e4b6296fc21155210d0ba5a852f44cd605cbf835f3"
+}

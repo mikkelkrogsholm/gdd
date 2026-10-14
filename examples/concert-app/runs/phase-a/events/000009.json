@@ -1,0 +1,26 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:32a5c541c98043e852fbadb05c290d5c522757e4d2fa12d199300690b61c0dab",
+  "event": {
+    "type": "integrate",
+    "expected_revision": "sha256:32a5c541c98043e852fbadb05c290d5c522757e4d2fa12d199300690b61c0dab",
+    "idempotency_key": "a.integrate.package.transport",
+    "package": "package.transport",
+    "attempt": "native.a.transport",
+    "base_code_revision": "sha256:85595e16896dc269355d80494938c587d9256d2c3e093432e2c287f1361935c1",
+    "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+    "verified_resources": [
+      "concert_app/api.py",
+      "concert_app/identity.py",
+      "concert_app/__main__.py",
+      "run.py",
+      "tests/test_http.py"
+    ],
+    "review": {
+      "reviewer": "actor.concert.lead",
+      "verdict": "PASS",
+      "evidence_uri": "evidence/phase-a/transport.review.json"
+    }
+  },
+  "revision": "sha256:bce01c69936a0b6b4935ae541f950bbfed348e386f99a48cb8261b194f87527f"
+}

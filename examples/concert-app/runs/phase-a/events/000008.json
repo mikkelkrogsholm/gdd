@@ -1,0 +1,21 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:09f3f6194b65abeff10b56b808aa153fa03c9c96799856dd0ebaa04477ae2747",
+  "event": {
+    "type": "submit",
+    "expected_revision": "sha256:09f3f6194b65abeff10b56b808aa153fa03c9c96799856dd0ebaa04477ae2747",
+    "idempotency_key": "a.submit.package.transport",
+    "package": "package.transport",
+    "attempt": "native.a.transport",
+    "summary": "Actual native delivery reviewed by the lead; worker results are not acceptance evidence.",
+    "artifact_uri": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-concert-workers-i24i4q2z/transport",
+    "changed_resources": [
+      "concert_app/api.py",
+      "concert_app/identity.py",
+      "concert_app/__main__.py",
+      "run.py",
+      "tests/test_http.py"
+    ]
+  },
+  "revision": "sha256:32a5c541c98043e852fbadb05c290d5c522757e4d2fa12d199300690b61c0dab"
+}

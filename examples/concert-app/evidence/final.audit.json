@@ -1,0 +1,33 @@
+{
+  "format": "concert-final-audit/0.1",
+  "result": "PASS",
+  "executed": true,
+  "base_git_commit": "d9f930b34e93351c85180273c1ef4c1aacf60ac1",
+  "working_tree_execution": true,
+  "current_b_spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+  "current_b_code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+  "preserved_a_acceptance_current_for_its_own_snapshot": true,
+  "fixed_requirement_tests_unchanged": true,
+  "old_a_implementation_evidence_unknown_for_b": true,
+  "fresh_replay_matches_both_original_code_snapshots": true,
+  "framework_regression": {
+    "argv": [
+      "uv",
+      "run",
+      "python",
+      "-m",
+      "pytest",
+      "tests",
+      "-q"
+    ],
+    "exit_code": 0,
+    "stdout_tail": "1380 passed in241.99s (0:04:01)",
+    "receipt_type": "Retrieved original exec output; no re-execution claimed."
+  },
+  "current_records_integrity": "PASS",
+  "current_implementation_applicability": "PASS",
+  "separate_authorization_applicability": "GRANTED",
+  "validator_core_unchanged": true,
+  "active_gate_independent_mutations_rejected": 15,
+  "git_diff_check": "PASS"
+}

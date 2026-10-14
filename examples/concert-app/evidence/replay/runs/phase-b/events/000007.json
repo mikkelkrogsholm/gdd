@@ -1,0 +1,10 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:e952bf186882b068d4bfb5750961dca293b3ce4614f6eb4a91d93daa15c1c440",
+  "event": {
+    "type": "accept",
+    "expected_revision": "sha256:e952bf186882b068d4bfb5750961dca293b3ce4614f6eb4a91d93daa15c1c440",
+    "idempotency_key": "b.accept.run"
+  },
+  "revision": "sha256:885607e38f1d28bfec97395dcbbd6f61f39936c76d4db4596e8a494b81cbe099"
+}

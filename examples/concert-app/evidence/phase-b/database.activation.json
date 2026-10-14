@@ -1,0 +1,8 @@
+{
+  "executed": true,
+  "result": "PASS",
+  "same_actual_database": "/tmp/gdd-concert-verified.sqlite",
+  "basis": "Started actual B server against the same SQLite file used in accepted A browser run. Before B browser mutations, full SQL dump is byte-identical to archived A dump; two active and one cancelled Alice reservations persist.",
+  "dump_sha256": "953d0127838ad73c45349037ca8d6c2e79c6a949d014f44df58ad2605bbf936b",
+  "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+}

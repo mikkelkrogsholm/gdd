@@ -1,0 +1,22 @@
+{
+  "format": "gdd-snapshot/0.2",
+  "revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+  "assets": [
+    {
+      "path": "DESIGN.md",
+      "sha256": "5feab6d4f7552d04ba9d9153f0415d0f7b50302f150038d20e0a7910e0497ddc"
+    },
+    {
+      "path": "HTTP.md",
+      "sha256": "2369e726b9ba81f6dabf8c08bea53970b449d346afa4ac0a03fc67c252400259"
+    },
+    {
+      "path": "REQUIREMENTS.md",
+      "sha256": "a92cabc4c1e7d6580edc7218d32637de3675fb3606d02d93b4354858d3c5a901"
+    },
+    {
+      "path": "gdd.json",
+      "sha256": "da7ba9f122df76cc99282c56053c1dfb465d19a5eba9da2cabcd42e99e0c31d4"
+    }
+  ]
+}

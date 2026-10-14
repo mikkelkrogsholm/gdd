@@ -1,0 +1,23 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:2038b4d9ae813c744b0068cb66a227acc337e28d5134a37ba132dcf75299ea40",
+  "event": {
+    "type": "integrate",
+    "expected_revision": "sha256:2038b4d9ae813c744b0068cb66a227acc337e28d5134a37ba132dcf75299ea40",
+    "idempotency_key": "b.integrate.package.backend",
+    "package": "package.backend",
+    "attempt": "replay.b.package.backend",
+    "base_code_revision": "sha256:d34b8841f6f27a8365d3b77d9acbcdeff5a38f72ba73338338afdd894841b586",
+    "code_revision": "sha256:da808054a7d7f8250796f64e3e195ef3cba0527ff3f4d0b8f5e597ae3ad4081b",
+    "verified_resources": [
+      "concert_app/reservations.py",
+      "tests/test_domain.py"
+    ],
+    "review": {
+      "reviewer": "actor.concert.lead",
+      "verdict": "PASS",
+      "evidence_uri": "evidence/phase-b/package.backend.review.json"
+    }
+  },
+  "revision": "sha256:4cd9b0d26d12ef3e80e3ae9a0aad2bd22b599de287e2985f02ff62b3b55dd70b"
+}

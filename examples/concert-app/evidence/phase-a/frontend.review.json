@@ -1,0 +1,6 @@
+{
+  "reviewer": "actor.concert.lead",
+  "result": "PASS",
+  "basis": "Read all HTML and JS. Persistent labels and local assets match DESIGN.md; server-owned policy, principal epochs and uncertain keys match HTTP.md. Actual lead syntax check passed. Browser integration remains pending.",
+  "receipt": "frontend.host.run.json"
+}

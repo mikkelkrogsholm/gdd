@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "npx",
+    "--yes",
+    "--package",
+    "@google/design.md@0.4.0",
+    "designmd",
+    "lint",
+    "DESIGN.md"
+  ],
+  "cwd": "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/concert-app",
+  "exit_code": 0,
+  "stdout": "{\n  \"findings\": [\n    {\n      \"severity\": \"warning\",\n      \"path\": \"colors.canvas\",\n      \"message\": \"'canvas' is defined but never referenced by any component.\",\n      \"rule\": \"orphaned-tokens\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"path\": \"colors.muted\",\n      \"message\": \"'muted' is defined but never referenced by any component.\",\n      \"rule\": \"orphaned-tokens\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"path\": \"colors.border\",\n      \"message\": \"'border' is defined but never referenced by any component.\",\n      \"rule\": \"orphaned-tokens\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"path\": \"colors.focus\",\n      \"message\": \"'focus' is defined but never referenced by any component.\",\n      \"rule\": \"orphaned-tokens\"\n    },\n    {\n      \"severity\": \"info\",\n      \"message\": \"Design system defines 11 colors, 4 typography scales, 2 rounding levels, 5 spacing tokens, 4 components.\",\n      \"rule\": \"token-summary\"\n    }\n  ],\n  \"summary\": {\n    \"errors\": 0,\n    \"warnings\": 4,\n    \"infos\": 1\n  }\n}\n",
+  "stderr": "",
+  "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+  "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+}

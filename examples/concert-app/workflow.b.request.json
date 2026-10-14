@@ -1,0 +1,73 @@
+{
+  "format": "gdd-work-request/0.1",
+  "id": "workflow.concert.b",
+  "objective": "Implement the revised global two-active-reservation policy atomically and repair shared-cookie stale identity presentation; preserve A history, successful keys and architectural boundaries.",
+  "implementation": "implementation.concert.sqlite",
+  "base_code_revision": "sha256:d34b8841f6f27a8365d3b77d9acbcdeff5a38f72ba73338338afdd894841b586",
+  "packages": [
+    {
+      "id": "package.backend",
+      "scope": [
+        "action.reserve",
+        "action.cancel",
+        "action.catalog",
+        "action.list_own_reservations"
+      ],
+      "write_resources": [
+        "concert_app/reservations.py",
+        "tests/test_domain.py"
+      ],
+      "deliverables": [
+        "concert_app/reservations.py",
+        "tests/test_domain.py"
+      ],
+      "read_resources": [
+        "gdd.json",
+        "gdd.records.json",
+        "DESIGN.md",
+        "HTTP.md",
+        "REQUIREMENTS.md",
+        "tests/test_requirement_change.py"
+      ],
+      "workspace": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-concert-workers-i24i4q2z/backend-b",
+      "integration_plan": "Lead executes unchanged B requirement tests, all existing regression tests, real browser and actual AST negative controls before acceptance."
+    },
+    {
+      "id": "package.presentation",
+      "scope": [
+        "component.api",
+        "screen.reserve",
+        "action.logout"
+      ],
+      "write_resources": [
+        "concert_app/api.py",
+        "concert_app/static/app.js",
+        "tests/test_http.py"
+      ],
+      "deliverables": [
+        "concert_app/api.py",
+        "concert_app/static/app.js",
+        "tests/test_http.py"
+      ],
+      "read_resources": [
+        "gdd.json",
+        "gdd.records.json",
+        "DESIGN.md",
+        "HTTP.md",
+        "REQUIREMENTS.md",
+        "tests/test_requirement_change.py"
+      ],
+      "workspace": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-concert-workers-i24i4q2z/presentation-b",
+      "integration_plan": "Lead executes unchanged B requirement tests, all existing regression tests, real browser and actual AST negative controls before acceptance."
+    }
+  ],
+  "serialized": [],
+  "integration": {
+    "owner": "actor.concert.lead",
+    "checks": [
+      "check.app.b.pytest_concert",
+      "check.app.b.python_import_graph",
+      "check.app.b.browser_concert"
+    ]
+  }
+}
