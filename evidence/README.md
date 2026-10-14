@@ -1,5 +1,11 @@
 # Verification evidence and English presentation
 
+The package 0.7.0 repository-readiness work is recorded in
+[the readiness review](repository-readiness.md): safe project start, installed
+skill/CLI journeys, host helpers, current installation and conformance checks,
+MIT licensing and concert archive recovery. Its raw receipts identify the actual
+working-tree bytes and tested runtime; they do not replace earlier executions.
+
 The English 0.5.1 verification is collected in [the localization review](english-review.md).
 The repository's current prose, models, interface, generated graph and screenshot
 presentations are English. Package 0.5.1 and renderer 0.1.4 identify that English GDD 0.2 release.

@@ -1,0 +1,74 @@
+test_cancel_sets_cancelled_and_preserves_identity (test_reservation.ReservationAcceptance.test_cancel_sets_cancelled_and_preserves_identity) ... ERROR
+test_cancelled_cannot_be_reserved (test_reservation.ReservationAcceptance.test_cancelled_cannot_be_reserved) ... ERROR
+test_default_is_draft (test_reservation.ReservationAcceptance.test_default_is_draft) ... ERROR
+test_draft_cancel_is_rejected_without_mutation (test_reservation.ReservationAcceptance.test_draft_cancel_is_rejected_without_mutation) ... ERROR
+test_repeated_cancel_is_harmless (test_reservation.ReservationAcceptance.test_repeated_cancel_is_harmless) ... ERROR
+test_repeated_reserve_is_harmless (test_reservation.ReservationAcceptance.test_repeated_reserve_is_harmless) ... FAIL
+test_reserve_preserves_identity_and_sets_reserved (test_reservation.ReservationAcceptance.test_reserve_preserves_identity_and_sets_reserved) ... FAIL
+test_reserve_signature_is_preserved (test_reservation.ReservationAcceptance.test_reserve_signature_is_preserved) ... ok
+
+======================================================================
+ERROR: test_cancel_sets_cancelled_and_preserves_identity (test_reservation.ReservationAcceptance.test_cancel_sets_cancelled_and_preserves_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/test_reservation.py", line 35, in test_cancel_sets_cancelled_and_preserves_identity
+    self.assertIs(reservation.cancel(value), value)
+                  ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'reservation' has no attribute 'cancel'
+
+======================================================================
+ERROR: test_cancelled_cannot_be_reserved (test_reservation.ReservationAcceptance.test_cancelled_cannot_be_reserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/test_reservation.py", line 52, in test_cancelled_cannot_be_reserved
+    reservation.cancel(value)
+    ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'reservation' has no attribute 'cancel'
+
+======================================================================
+ERROR: test_default_is_draft (test_reservation.ReservationAcceptance.test_default_is_draft)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/test_reservation.py", line 9, in test_default_is_draft
+    self.assertEqual(reservation.Reservation().state, "draft")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Reservation' object has no attribute 'state'
+
+======================================================================
+ERROR: test_draft_cancel_is_rejected_without_mutation (test_reservation.ReservationAcceptance.test_draft_cancel_is_rejected_without_mutation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/test_reservation.py", line 62, in test_draft_cancel_is_rejected_without_mutation
+    with self.assertRaises(reservation.InvalidTransition):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'reservation' has no attribute 'InvalidTransition'
+
+======================================================================
+ERROR: test_repeated_cancel_is_harmless (test_reservation.ReservationAcceptance.test_repeated_cancel_is_harmless)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/test_reservation.py", line 41, in test_repeated_cancel_is_harmless
+    reservation.cancel(value)
+    ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'reservation' has no attribute 'cancel'
+
+======================================================================
+FAIL: test_repeated_reserve_is_harmless (test_reservation.ReservationAcceptance.test_repeated_reserve_is_harmless)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/test_reservation.py", line 27, in test_repeated_reserve_is_harmless
+    self.assertIs(reservation.reserve(value), first)
+AssertionError: <reservation.Reservation object at 0x102b23ef0> is not <reservation.Reservation object at 0x102b23f20>
+
+======================================================================
+FAIL: test_reserve_preserves_identity_and_sets_reserved (test_reservation.ReservationAcceptance.test_reserve_preserves_identity_and_sets_reserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/test_reservation.py", line 19, in test_reserve_preserves_identity_and_sets_reserved
+    self.assertIs(reservation.reserve(value), value)
+AssertionError: <reservation.Reservation object at 0x102b237a0> is not <reservation.Reservation object at 0x102b236e0>
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.001s
+
+FAILED (failures=2, errors=5)

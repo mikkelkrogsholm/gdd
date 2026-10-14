@@ -1,0 +1,90 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.7.0"
+  },
+  "spec_revision": "sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9",
+  "profiles": [
+    "readiness"
+  ],
+  "scope": [
+    "component.reservations"
+  ],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "records.integrity",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "check.scenario_category_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Risk boundaries needs exercising scenarios of category {'boundary', 'negative'}.",
+      "diagnostics": [
+        {
+          "code": "SCENARIO_CATEGORY_MISSING",
+          "severity": "error",
+          "message": "Risk boundaries needs exercising scenarios of category {'boundary', 'negative'}.",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/action.cancel"
+          },
+          "related_ids": [
+            "action.cancel"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.question_blocks_scope",
+      "dimension": "readiness",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Resolved question has no applicable trusted current decision.",
+      "diagnostics": [
+        {
+          "code": "QUESTION_BLOCKS_SCOPE",
+          "severity": "warning",
+          "message": "Resolved question has no applicable trusted current decision.",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/questions/question.graphify_contracts"
+          },
+          "related_ids": [
+            "question.graphify_contracts"
+          ]
+        }
+      ]
+    }
+  ]
+}

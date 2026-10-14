@@ -1,0 +1,12 @@
+{
+  "label": "cli-help",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "--help"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:19:40.982950+00:00",
+  "exit_code": 0,
+  "stdout": "usage: gdd [-h]\n           {init,validate,view,workflow,graphify,design-review,snapshot,context,boundaries}\n           ...\n\nGDD 0.2 and 0.3 model tools\n\npositional arguments:\n  {init,validate,view,workflow,graphify,design-review,snapshot,context,boundaries}\n    init                Create a valid, unready GDD 0.3 project draft\n    view                Generate an offline interactive GDD graph\n    workflow            Prepare packets and coordinate existing development\n                        agents\n    graphify            Import, verify, recover or propose from Graphify\n                        observations\n    design-review       Check an advisory review's structure and current\n                        applicability\n\noptions:\n  -h, --help            show this help message and exit\n",
+  "stderr": ""
+}

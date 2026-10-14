@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/gdd",
+    "workflow",
+    "event",
+    "gdd.json",
+    "--run",
+    "run",
+    "--event",
+    "dispatch.json",
+    "--host-context",
+    "host-implementation-authorized.json",
+    "--output",
+    "dispatch-authorized-result.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:34:34.215163+00:00",
+  "exit_code": 0,
+  "stdout": "evidence/dispatch-authorized.stdout.txt",
+  "stderr": "evidence/dispatch-authorized.stderr.txt"
+}

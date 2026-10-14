@@ -1,0 +1,28 @@
+{
+  "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+  "python_executable": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/python",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "package": "gdd-validator",
+  "version": "0.7.0",
+  "installed_skill": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/installed-skill/gdd/SKILL.md",
+  "installed_skill_sha256": "dde4c73d9d7b4c8d8710b1a66f93c15513b26165bfd95255969de4089dc79081",
+  "references_used": [
+    "GDD.md",
+    "existing-code.md",
+    "change.md",
+    "new-project.md",
+    "GRAPHIFY.md",
+    "FORMAT.md",
+    "VALIDATION.md",
+    "DESIGN-PRINCIPLES.md",
+    "WORKFLOW.md",
+    "VALIDATOR.md",
+    "HOST.md",
+    "gdd-lead.md",
+    "graphify-mapping.schema.json",
+    "gdd.schema.json",
+    "records.schema.json",
+    "workflow.schema.json",
+    "design-review.schema.json"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "implementation": "implementation.reservation",
+  "code_revision": "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9",
+  "policy": {
+    "revision": "policy.human-assignment.v1",
+    "actor": "actor.independent_agent",
+    "activity": "implementation",
+    "spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+    "scope": [
+      "action.reserve",
+      "action.cancel"
+    ],
+    "requirement": "standing",
+    "authorities": [
+      "actor.independent_agent"
+    ],
+    "basis": "Trusted human assignment supplied to this agent: lifecycle modeling, implementation, verification and acceptance in the isolated project. The same mandate permits direct bounded implementation without delegation."
+  },
+  "trusted_decisions": [
+    "decision.refinement"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "label": "b-create",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "workflow",
+    "create",
+    "gdd-b/gdd.json",
+    "--plan",
+    "evidence/b-plan.json",
+    "--host-context",
+    "evidence/b-host-implementation.json",
+    "--run",
+    "run-b",
+    "--output",
+    "evidence/b-create.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:29:04.148637+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

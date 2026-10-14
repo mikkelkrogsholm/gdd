@@ -1,0 +1,55 @@
+{
+  "format": "gdd-context/0.2",
+  "spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+  "scope": [
+    "action.cancel",
+    "action.reserve"
+  ],
+  "nodes": [
+    "action.cancel",
+    "action.reserve",
+    "component.reservation",
+    "entity.reservation",
+    "machine.reservation",
+    "rule.lifecycle",
+    "scenario.cancel_normal",
+    "scenario.cancel_reject",
+    "scenario.cancel_repeat",
+    "scenario.reserve_normal",
+    "scenario.reserve_reject",
+    "scenario.reserve_repeat"
+  ],
+  "edges": [
+    "edge.action_cancel_owner",
+    "edge.action_reserve_owner",
+    "edge.cancel_changes",
+    "edge.cancel_normal_exercises",
+    "edge.cancel_normal_verifies",
+    "edge.cancel_reads",
+    "edge.cancel_reject_exercises",
+    "edge.cancel_reject_verifies",
+    "edge.cancel_repeat_exercises",
+    "edge.cancel_repeat_verifies",
+    "edge.entity_reservation_owner",
+    "edge.machine_reservation_owner",
+    "edge.reserve_changes",
+    "edge.reserve_normal_exercises",
+    "edge.reserve_normal_verifies",
+    "edge.reserve_reads",
+    "edge.reserve_reject_exercises",
+    "edge.reserve_reject_verifies",
+    "edge.reserve_repeat_exercises",
+    "edge.reserve_repeat_verifies",
+    "edge.rule_cancel",
+    "edge.rule_reserve",
+    "edge.state_of"
+  ],
+  "sources": [
+    "source.graphify",
+    "source.requirements"
+  ],
+  "questions": [
+    "question.graphify_contracts"
+  ],
+  "extensions": []
+}

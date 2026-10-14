@@ -1,0 +1,13 @@
+{
+  "label": "change-to-b",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "change_to_b.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:29:04.866107+00:00",
+  "exit_code": 0,
+  "stdout": "prepare-work-b: exit 0\nb-records-missing-evidence: exit 2\n\nb-plan: exit 0\n{\n  \"format\": \"gdd-workflow-result/0.1\",\n  \"report\": {\n    \"format\": \"gdd-report/0.2\",\n    \"tool\": {\n      \"name\": \"gdd-validator\",\n      \"version\": \"0.6.0\"\n    },\n    \"spec_revision\": \"sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16\",\n    \"profiles\": [\n      \"model\",\n      \"readiness\"\n    ],\n    \"scope\": [\n      \"action.cli\",\n      \"action.quote\",\n      \"action.rate\"\n    ],\n    \"checks\": [\n      {\n        \"check_id\": \"representation.schema\",\n        \"dimension\": \"model\",\n        \"result\": \"PASS\",\n        \"scope\": [],\n        \"reason\": \"Local JSON Schema validation.\",\n        \"diagnostics\": []\n      },\n      {\n        \"check_id\": \"representation.schema\",\n        \"dimension\": \"model\",\n        \"result\": \"PASS\",\n        \"scope\": [],\n        \"reason\": \"Local JSON Schema validation.\",\n        \"diagnostics\": []\n      },\n      {\n        \"check_id\": \"model.semantics\",\n        \"dimension\": \"model\",\n        \"result\": \"PASS\",\n        \"scope\": [],\n        \"reason\": \"Core re\n[Full stdout preserved in command receipt.]\n\nb-plan-verify: exit 0\n\nb-create: exit 0\n\nb-status-initial: exit 0\n\n\ndispatch-b: exit 0\nb-status-before-dispatch: exit 0\n\nb-event-dispatch: exit 0\n\n\n",
+  "stderr": ""
+}

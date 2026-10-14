@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/gdd",
+    "view",
+    "model.json",
+    "--output",
+    "graph.html"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:24:12.414339+00:00",
+  "finished_at": "2026-10-14T13:24:12.560208+00:00",
+  "exit_code": 0,
+  "stdout": "{\n  \"format\": \"gdd-report/0.2\",\n  \"tool\": {\n    \"name\": \"gdd-viewer\",\n    \"version\": \"0.2.0\"\n  },\n  \"spec_revision\": \"sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429\",\n  \"profiles\": [\n    \"visualization\"\n  ],\n  \"scope\": [],\n  \"checks\": [\n    {\n      \"check_id\": \"integration.visualization\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Generated a read-only gdd-viewer-html/0.1 projection.\",\n      \"diagnostics\": []\n    }\n  ]\n}\n",
+  "stderr": ""
+}

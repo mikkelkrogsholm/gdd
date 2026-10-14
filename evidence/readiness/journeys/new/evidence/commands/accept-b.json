@@ -1,0 +1,17 @@
+{
+  "label": "accept-b",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "workflow_event.py",
+    "b",
+    "accept",
+    "accept",
+    "evidence/b-host-acceptance.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:31:41.796461+00:00",
+  "exit_code": 0,
+  "stdout": "b-status-before-accept: exit 0\n\nb-event-accept: exit 0\n\n",
+  "stderr": ""
+}

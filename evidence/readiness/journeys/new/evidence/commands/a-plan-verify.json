@@ -1,0 +1,20 @@
+{
+  "label": "a-plan-verify",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "workflow",
+    "verify",
+    "gdd-a/gdd.json",
+    "--plan",
+    "evidence/a-plan.json",
+    "--host-context",
+    "evidence/a-host-implementation.json",
+    "--output",
+    "evidence/a-plan-verify.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:23:24.920040+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

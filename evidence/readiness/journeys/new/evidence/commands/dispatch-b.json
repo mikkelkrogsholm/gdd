@@ -1,0 +1,16 @@
+{
+  "label": "dispatch-b",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "workflow_event.py",
+    "b",
+    "dispatch",
+    "dispatch"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:29:04.851716+00:00",
+  "exit_code": 0,
+  "stdout": "b-status-before-dispatch: exit 0\n\nb-event-dispatch: exit 0\n\n",
+  "stderr": ""
+}

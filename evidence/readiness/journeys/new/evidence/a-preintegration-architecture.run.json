@@ -1,0 +1,37 @@
+{
+  "format": "gdd-host-check/0.1",
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "tests/check_architecture.py",
+    "src"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "started_at": "2026-10-14T13:25:56.220187+00:00",
+  "executed": true,
+  "exit_code": 0,
+  "result": "PASS",
+  "stdout": "{\"result\": \"PASS\", \"actual_imports\": [[\"cli\", \"pricing\"], [\"pricing\", \"tariffs\"]], \"forbidden_cli_tariffs\": false, \"missing_required_imports\": []}\n",
+  "stderr": "",
+  "snapshot": {
+    "format": "gdd-code-snapshot/0.1",
+    "files": {
+      "src/parcel/__init__.py": "2d1c33747835ec2767203ad327ed77c63e6585bccd2f9b505ccee32d87640cfd",
+      "src/parcel/cli.py": "dad1bd6315c72719b354d00f1400aa5aa4e91e44b39ab4a8bac9a96cb5752306",
+      "src/parcel/pricing.py": "a291c0d0b91c30758e9b1e2d598739da9bbae119a800a77004ba0a88be46ac77",
+      "src/parcel/tariffs.py": "f1e84d9e687b3eb3a0a2c44af2d3e68f8674ccb99448198da86c202db659d14a",
+      "tests/check_architecture.py": "f2833f3851c10dbc4b72ce90b2a9fa767fcf1be5e0b351786e52405bc945f45a",
+      "tests/shared_contract.py": "65f0be50efbebffeaced5915f534d7ab9d3868ff3885aa74865f9497006f6b7f",
+      "tests/test_a.py": "5eb19eb71f9edfa4e7458d8bc697da0cbe973705f4a0dfd0c371c526ce78b00f"
+    },
+    "revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7"
+  },
+  "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+  "runner": {
+    "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "reason": "Actual caller-selected checker process completed.",
+  "code_revision_after": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+  "finished_at": "2026-10-14T13:25:56.250407+00:00"
+}

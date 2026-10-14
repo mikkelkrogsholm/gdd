@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/gdd",
+    "view",
+    "gdd.json",
+    "--output",
+    "graph.html"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:31:19.986088+00:00",
+  "exit_code": 0,
+  "stdout": "evidence/view.stdout.txt",
+  "stderr": "evidence/view.stderr.txt"
+}

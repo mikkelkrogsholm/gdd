@@ -1,0 +1,42 @@
+--- base/reservation.py
++++ combined/reservation.py
+@@ -1,5 +1,20 @@
++class InvalidTransition(ValueError):
++    """The requested operation cannot occur in the current lifecycle state."""
++
++
+ class Reservation:
+-    pass
++    def __init__(self):
++        self.state = "draft"
+ 
+ def reserve(value: Reservation) -> Reservation:
+-    return Reservation()
++    if value.state not in ("draft", "reserved"):
++        raise InvalidTransition("Only draft or reserved reservations can be reserved.")
++    value.state = "reserved"
++    return value
++
++
++def cancel(value: Reservation) -> Reservation:
++    if value.state not in ("reserved", "cancelled"):
++        raise InvalidTransition("Only reserved or cancelled reservations can be cancelled.")
++    value.state = "cancelled"
++    return value
+--- base/test_reservation.py
++++ combined/test_reservation.py
+@@ -13,6 +13,14 @@
+         self.assertEqual(list(signature.parameters), ["value"])
+         self.assertIs(signature.parameters["value"].annotation, reservation.Reservation)
+         self.assertIs(signature.return_annotation, reservation.Reservation)
++
++    def test_each_reservation_keeps_its_own_state(self):
++        first = reservation.Reservation()
++        second = reservation.Reservation()
++        reservation.reserve(first)
++        reservation.cancel(first)
++        self.assertEqual(first.state, "cancelled")
++        self.assertEqual(second.state, "draft")
+ 
+     def test_reserve_preserves_identity_and_sets_reserved(self):
+         value = reservation.Reservation()

@@ -2,7 +2,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const { chromium } = require(process.env.GDD_PLAYWRIGHT || '/Users/mikkelfreltoftkrogsholm/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const { chromium } = require(process.env.GDD_PLAYWRIGHT || 'playwright');
 const args = Object.fromEntries(process.argv.slice(2).reduce((pairs, value, index, all) => index % 2 ? pairs : [...pairs, [value.slice(2), all[index + 1]]], []));
 const output = path.resolve(args.output);
 fs.mkdirSync(output, {recursive: true});
@@ -34,7 +34,7 @@ async function reserve(page, concert) {
 async function state(page) { return page.evaluate(async () => (await fetch('/api/reservations')).json()); }
 
 (async () => {
-  browser = await chromium.launch({executablePath: process.env.GDD_CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true});
+  browser = await chromium.launch({headless: true, ...(process.env.GDD_CHROME ? {executablePath: process.env.GDD_CHROME} : {})});
   const context = await browser.newContext({viewport: {width: 1280, height: 900}, reducedMotion: 'reduce'});
   const page = await context.newPage();
   page.on('pageerror', error => errors.push(error.message));

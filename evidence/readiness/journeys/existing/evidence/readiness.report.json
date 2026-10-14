@@ -1,0 +1,62 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.6.0"
+  },
+  "spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+  "profiles": [
+    "readiness"
+  ],
+  "scope": [
+    "action.reserve",
+    "action.cancel"
+  ],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "check.question_blocks_scope",
+      "dimension": "readiness",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Resolved question has no applicable trusted current decision.",
+      "diagnostics": [
+        {
+          "code": "QUESTION_BLOCKS_SCOPE",
+          "severity": "warning",
+          "message": "Resolved question has no applicable trusted current decision.",
+          "location": {
+            "file": "model.json",
+            "pointer": "/questions/question.graphify_contracts"
+          },
+          "related_ids": [
+            "question.graphify_contracts"
+          ]
+        }
+      ]
+    }
+  ]
+}

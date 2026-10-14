@@ -1,0 +1,41 @@
+{
+  "format": "gdd-graphify-mapping/0.2",
+  "project": {
+    "id": "project.reservations",
+    "title": "Reservation lifecycle",
+    "goal": "Preserve object identity while reserving and cancelling through a bounded lifecycle."
+  },
+  "nodes": [
+    {
+      "observation": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+      "target": "component.reservations",
+      "kind": "component",
+      "description": "Reservation lifecycle module",
+      "rationale": "The observed module is the intended single provider."
+    },
+    {
+      "observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "target": "entity.reservation",
+      "kind": "entity",
+      "description": "A mutable Reservation with lifecycle state",
+      "rationale": "The observed class is intended domain state, not an automatically inferred contract."
+    },
+    {
+      "observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "target": "action.reserve",
+      "kind": "action",
+      "description": "Reserve a draft Reservation and return that same instance",
+      "rationale": "The existing signature is preserved; its old implementation is not accepted behavior."
+    }
+  ],
+  "edges": [
+    {
+      "observation": "observation.edge.hcc550328740c7c0ff35a7f0e75e41f807da9dad725444fb19243d3765dfe8e1d",
+      "id": "edge.reserve-input",
+      "from": "action.reserve",
+      "to": "entity.reservation",
+      "relation": "depends_on",
+      "rationale": "Interpret the observed parameter type as the intended data dependency, preserving its endpoints and direction."
+    }
+  ]
+}

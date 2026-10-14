@@ -1,0 +1,104 @@
+{
+  "format": "gdd-boundaries/0.3",
+  "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+  "scope": [
+    "action.cli",
+    "action.quote",
+    "action.rate",
+    "component.cli",
+    "component.pricing",
+    "component.tariffs",
+    "rule.no_cli_tariffs",
+    "rule.price",
+    "scenario.architecture",
+    "scenario.cli_invalid",
+    "scenario.domestic",
+    "scenario.invalid_weight",
+    "scenario.invalid_zone",
+    "scenario.remote",
+    "scenario.weights"
+  ],
+  "components": {
+    "component.cli": {
+      "boundary": {
+        "responsibility": "Parse process arguments, call pricing, and print a quote or error.",
+        "rationale": "Process input/output changes independently of the price formula.",
+        "excludes": [
+          "Rounding weights",
+          "Looking up tariffs",
+          "Calculating handling fees"
+        ]
+      },
+      "interfaces_known": true,
+      "public_contracts": [
+        {
+          "project_id": "project.parcel",
+          "provider": "component.cli",
+          "action": "action.cli",
+          "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16"
+        }
+      ]
+    },
+    "component.pricing": {
+      "boundary": {
+        "responsibility": "Validate inputs and calculate the complete quote in integer cents.",
+        "rationale": "The domain formula is reusable outside process argument parsing.",
+        "excludes": [
+          "Parsing process arguments",
+          "Printing output",
+          "Owning tariff values"
+        ]
+      },
+      "interfaces_known": true,
+      "public_contracts": [
+        {
+          "project_id": "project.parcel",
+          "provider": "component.pricing",
+          "action": "action.quote",
+          "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16"
+        }
+      ]
+    },
+    "component.tariffs": {
+      "boundary": {
+        "responsibility": "Provide the domestic and remote per-kilogram rates.",
+        "rationale": "The table of rates has one owner and a public lookup contract.",
+        "excludes": [
+          "Parsing user input",
+          "Weight rounding",
+          "Handling-fee policy"
+        ]
+      },
+      "interfaces_known": true,
+      "public_contracts": [
+        {
+          "project_id": "project.parcel",
+          "provider": "component.tariffs",
+          "action": "action.rate",
+          "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16"
+        }
+      ]
+    }
+  },
+  "communities": {},
+  "calls": [
+    {
+      "edge": "edge.e4",
+      "source": "action.cli",
+      "consumer": "component.cli",
+      "provider": "component.pricing",
+      "action": "action.quote",
+      "status": "public"
+    },
+    {
+      "edge": "edge.e5",
+      "source": "action.quote",
+      "consumer": "component.pricing",
+      "provider": "component.tariffs",
+      "action": "action.rate",
+      "status": "public"
+    }
+  ],
+  "omitted_calls": [],
+  "unresolved": []
+}

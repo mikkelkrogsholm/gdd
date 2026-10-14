@@ -1,0 +1,14 @@
+{
+  "label": "build-model-b",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "build_model.py",
+    "b"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:27:57.442980+00:00",
+  "exit_code": 0,
+  "stdout": "b-model: exit 0\n\nb-readiness: exit 0\n\nb-snapshot: exit 0\n\nb-context: exit 0\n\nb-view: exit 0\n{\n  \"format\": \"gdd-report/0.2\",\n  \"tool\": {\n    \"name\": \"gdd-viewer\",\n    \"version\": \"0.2.0\"\n  },\n  \"spec_revision\": \"sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16\",\n  \"profiles\": [\n    \"visualization\"\n  ],\n  \"scope\": [],\n  \"checks\": [\n    {\n      \"check_id\": \"integration.visualization\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Generated a read-only gdd-viewer-html/0.1 projection.\",\n      \"diagnostics\": []\n    }\n  ]\n}\n\nb-view-check: exit 0\n\nb-boundaries: exit 0\n\n",
+  "stderr": ""
+}

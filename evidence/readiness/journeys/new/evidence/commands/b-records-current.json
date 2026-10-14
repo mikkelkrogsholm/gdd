@@ -1,0 +1,19 @@
+{
+  "label": "b-records-current",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "validate",
+    "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/gdd-b/gdd.json",
+    "--profile",
+    "records",
+    "--host-context",
+    "evidence/b-host-acceptance.json",
+    "--output",
+    "evidence/b-records-current.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:30:40.536651+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

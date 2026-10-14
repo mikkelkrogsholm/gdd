@@ -1,0 +1,5 @@
+replacement-return FAIL
+resurrection FAIL
+repeat-cancel-error FAIL
+Combined revision evidence: PASS
+Attested controls: ['replacement-return', 'resurrection', 'repeat-cancel-error']

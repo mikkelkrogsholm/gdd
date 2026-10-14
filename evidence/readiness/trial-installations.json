@@ -1,0 +1,48 @@
+{
+  "format": "gdd-independent-trial-installations/0.1",
+  "trials": [
+    {
+      "trial": "new",
+      "wheel_sha256": "41f07ccdf916eb3ae2245ee91e39b1c0ae25e592454babd0d24c2b61f4c61410",
+      "installed_identity": {
+        "package_version": "0.7.0",
+        "module_version": "0.7.0",
+        "module_path": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/lib/python3.12/site-packages/gdd_validator/__init__.py",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "standalone_skill_sha256": "dde4c73d9d7b4c8d8710b1a66f93c15513b26165bfd95255969de4089dc79081",
+      "existing_code_route_sha256": "122085a5c50131f4b5df00d877ed113216a5a830a16f0713d5b69161c6889720",
+      "runtime": "Codex native subagent with fresh fork context; inherited parent model, exact API model identifier not exposed by spawning contract",
+      "protocol_interventions_from_parent": []
+    },
+    {
+      "trial": "existing",
+      "wheel_sha256": "41f07ccdf916eb3ae2245ee91e39b1c0ae25e592454babd0d24c2b61f4c61410",
+      "installed_identity": {
+        "package_version": "0.7.0",
+        "module_version": "0.7.0",
+        "module_path": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/lib/python3.12/site-packages/gdd_validator/__init__.py",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "standalone_skill_sha256": "dde4c73d9d7b4c8d8710b1a66f93c15513b26165bfd95255969de4089dc79081",
+      "existing_code_route_sha256": "122085a5c50131f4b5df00d877ed113216a5a830a16f0713d5b69161c6889720",
+      "runtime": "Codex native subagent with fresh fork context; inherited parent model, exact API model identifier not exposed by spawning contract",
+      "protocol_interventions_from_parent": []
+    },
+    {
+      "trial": "existing-final",
+      "wheel_sha256": "1a5949fa94d2897267362314be3864562f2cc129e5794e54c3ba981747ec3dc4",
+      "installed_identity": {
+        "package_version": "0.7.0",
+        "module_version": "0.7.0",
+        "module_path": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/lib/python3.12/site-packages/gdd_validator/__init__.py",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "standalone_skill_sha256": "dde4c73d9d7b4c8d8710b1a66f93c15513b26165bfd95255969de4089dc79081",
+      "existing_code_route_sha256": "81b835b7d1ac29a371d39f93e38fdfbd3e274509e00c069218feb5e8e7dd0c2d",
+      "runtime": "Codex native subagent with fresh fork context; inherited parent model, exact API model identifier not exposed by spawning contract",
+      "protocol_interventions_from_parent": []
+    }
+  ],
+  "notice": "The initial wheel metadata/module is 0.7.0; some initial validator reports still label tool 0.6.0. That report-version defect was repaired before the final existing-code trial. Raw initial outputs remain unchanged."
+}

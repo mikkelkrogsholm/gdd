@@ -1,0 +1,570 @@
+{
+  "format": "gdd/0.3",
+  "project": {
+    "id": "project.reservations",
+    "title": "Reservation lifecycle",
+    "goal": "Preserve object identity while reserving and cancelling through a bounded lifecycle.",
+    "scope": "Single-module, single-threaded in-memory Reservation lifecycle."
+  },
+  "nodes": {
+    "component.reservations": {
+      "kind": "component",
+      "description": "Reservation lifecycle module",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.graphify",
+          "purpose": "provenance",
+          "selector": {
+            "kind": "json-pointer",
+            "value": "/nodes/0"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "contract"
+        }
+      ],
+      "label": "reservation.py",
+      "interfaces": [
+        "action.reserve",
+        "action.cancel"
+      ],
+      "boundary": {
+        "responsibility": "Own Reservation state transitions and stable Python operations.",
+        "rationale": "Both transitions govern the same small local object; one module keeps their invariant coherent.",
+        "excludes": [
+          "Persistence",
+          "Network operations",
+          "Concurrency orchestration",
+          "Authorization policy"
+        ]
+      }
+    },
+    "entity.reservation": {
+      "kind": "entity",
+      "description": "A mutable Reservation with lifecycle state",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.graphify",
+          "purpose": "provenance",
+          "selector": {
+            "kind": "json-pointer",
+            "value": "/nodes/1"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "contract"
+        }
+      ],
+      "label": "Reservation",
+      "fields": {
+        "state": {
+          "type": "enum",
+          "values": [
+            "draft",
+            "reserved",
+            "cancelled"
+          ],
+          "description": "Initialized to draft; only the lifecycle operations change it."
+        }
+      }
+    },
+    "action.reserve": {
+      "kind": "action",
+      "description": "Draft becomes reserved; reserved remains reserved.",
+      "label": "reserve()",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.graphify",
+          "purpose": "provenance",
+          "selector": {
+            "kind": "json-pointer",
+            "value": "/nodes/2"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "contract"
+        }
+      ],
+      "contract": {
+        "input": {
+          "value": {
+            "type": "reference",
+            "target": "entity.reservation",
+            "origin": "input"
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "reference",
+          "target": "entity.reservation"
+        },
+        "errors": {
+          "InvalidTransition": "Cancelled cannot be reserved; state and identity are unchanged."
+        },
+        "preconditions": [
+          "value is a Reservation instance in the declared lifecycle."
+        ],
+        "postconditions": [
+          "Draft becomes reserved; reserved remains reserved.",
+          "The returned object is value by identity."
+        ],
+        "external_effects": [],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": false,
+            "rationale": "Local object API has no identity or permission system.",
+            "scenarios": []
+          },
+          "idempotency": {
+            "relevant": true,
+            "rationale": "Repeated successful operations must be harmless.",
+            "scenarios": [
+              "scenario.repeat-reserve"
+            ]
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "A cancelled reservation cannot be reserved again.",
+            "scenarios": [
+              "scenario.cancelled"
+            ]
+          },
+          "concurrency": {
+            "relevant": false,
+            "rationale": "The bounded API is single-threaded and in memory.",
+            "scenarios": []
+          },
+          "atomicity": {
+            "relevant": true,
+            "rationale": "InvalidTransition must leave state unchanged.",
+            "scenarios": [
+              "scenario.cancelled"
+            ]
+          }
+        },
+        "error_cases": {
+          "InvalidTransition": [
+            "scenario.cancelled"
+          ]
+        }
+      },
+      "behavior": "Read value.state. If cancelled, raise InvalidTransition before mutation. If draft, set reserved. If reserved, leave unchanged. Return value itself."
+    },
+    "action.cancel": {
+      "kind": "action",
+      "description": "Reserved becomes cancelled; cancelled remains cancelled.",
+      "label": "cancel()",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.brief",
+          "purpose": "contract"
+        }
+      ],
+      "contract": {
+        "input": {
+          "value": {
+            "type": "reference",
+            "target": "entity.reservation",
+            "origin": "input"
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "reference",
+          "target": "entity.reservation"
+        },
+        "errors": {
+          "InvalidTransition": "Draft cannot be cancelled; state and identity are unchanged."
+        },
+        "preconditions": [
+          "value is a Reservation instance in the declared lifecycle."
+        ],
+        "postconditions": [
+          "Reserved becomes cancelled; cancelled remains cancelled.",
+          "The returned object is value by identity."
+        ],
+        "external_effects": [],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": false,
+            "rationale": "Local object API has no identity or permission system.",
+            "scenarios": []
+          },
+          "idempotency": {
+            "relevant": true,
+            "rationale": "Repeated successful operations must be harmless.",
+            "scenarios": [
+              "scenario.repeat-cancel"
+            ]
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "A cancelled reservation cannot be reserved again.",
+            "scenarios": [
+              "scenario.cancelled"
+            ]
+          },
+          "concurrency": {
+            "relevant": false,
+            "rationale": "The bounded API is single-threaded and in memory.",
+            "scenarios": []
+          },
+          "atomicity": {
+            "relevant": true,
+            "rationale": "InvalidTransition must leave state unchanged.",
+            "scenarios": [
+              "scenario.draft-cancel"
+            ]
+          }
+        },
+        "error_cases": {
+          "InvalidTransition": [
+            "scenario.draft-cancel"
+          ]
+        }
+      },
+      "behavior": "Read value.state. If draft, raise InvalidTransition before mutation. If reserved, set cancelled. If cancelled, leave unchanged. Return value itself."
+    },
+    "machine.reservation": {
+      "kind": "machine",
+      "description": "Draft starts the lifecycle; cancellation is terminal for state-changing transitions.",
+      "maturity": "specified",
+      "machine": {
+        "states": [
+          "draft",
+          "reserved",
+          "cancelled"
+        ],
+        "initial": "draft",
+        "terminal": [
+          "cancelled"
+        ],
+        "transitions": [
+          {
+            "id": "transition.reserve",
+            "from": "draft",
+            "to": "reserved",
+            "trigger": "action.reserve",
+            "guard": "state equals draft",
+            "effects": "Set state to reserved; preserve object identity."
+          },
+          {
+            "id": "transition.cancel",
+            "from": "reserved",
+            "to": "cancelled",
+            "trigger": "action.cancel",
+            "guard": "state equals reserved",
+            "effects": "Set state to cancelled; preserve object identity."
+          }
+        ]
+      }
+    },
+    "rule.lifecycle": {
+      "kind": "rule",
+      "description": "The agreed lifecycle, stable signature, identity and idempotency are fixed acceptance assertions.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.brief",
+          "purpose": "contract"
+        }
+      ],
+      "rule": {
+        "category": "behavior",
+        "statement": "Reservation defaults to draft. reserve(value: Reservation) -> Reservation preserves identity, reserves draft, leaves repeat reserve harmless, and raises InvalidTransition without mutation on cancelled. cancel cancels reserved, leaves repeat cancel harmless, and preserves identity. Cancel on draft raises InvalidTransition without mutation.",
+        "scope": "global",
+        "blocking": true,
+        "verification": [
+          "unittest"
+        ]
+      }
+    },
+    "scenario.default": {
+      "kind": "scenario",
+      "description": "State is draft",
+      "maturity": "specified",
+      "scenario": {
+        "category": "boundary",
+        "given": "A new Reservation",
+        "when": "Inspect state",
+        "then": "State is draft"
+      }
+    },
+    "scenario.reserve": {
+      "kind": "scenario",
+      "description": "State becomes reserved and result is value",
+      "maturity": "specified",
+      "scenario": {
+        "category": "normal",
+        "given": "A draft Reservation",
+        "when": "Call reserve(value)",
+        "then": "State becomes reserved and result is value"
+      }
+    },
+    "scenario.repeat-reserve": {
+      "kind": "scenario",
+      "description": "Both results are value and state remains reserved",
+      "maturity": "specified",
+      "scenario": {
+        "category": "boundary",
+        "given": "A reserved Reservation",
+        "when": "Call reserve(value) twice",
+        "then": "Both results are value and state remains reserved"
+      }
+    },
+    "scenario.cancel": {
+      "kind": "scenario",
+      "description": "State becomes cancelled and result is value",
+      "maturity": "specified",
+      "scenario": {
+        "category": "normal",
+        "given": "A reserved Reservation",
+        "when": "Call cancel(value)",
+        "then": "State becomes cancelled and result is value"
+      }
+    },
+    "scenario.repeat-cancel": {
+      "kind": "scenario",
+      "description": "Both results are value and state remains cancelled",
+      "maturity": "specified",
+      "scenario": {
+        "category": "boundary",
+        "given": "A cancelled Reservation",
+        "when": "Call cancel(value) twice",
+        "then": "Both results are value and state remains cancelled"
+      }
+    },
+    "scenario.cancelled": {
+      "kind": "scenario",
+      "description": "InvalidTransition is raised and state remains cancelled",
+      "maturity": "specified",
+      "scenario": {
+        "category": "negative",
+        "given": "A cancelled Reservation",
+        "when": "Call reserve(value)",
+        "then": "InvalidTransition is raised and state remains cancelled"
+      }
+    },
+    "scenario.draft-cancel": {
+      "kind": "scenario",
+      "description": "InvalidTransition is raised and state remains draft",
+      "maturity": "specified",
+      "scenario": {
+        "category": "negative",
+        "given": "A draft Reservation",
+        "when": "Call cancel(value)",
+        "then": "InvalidTransition is raised and state remains draft"
+      }
+    }
+  },
+  "edges": [
+    {
+      "id": "edge.reserve-input",
+      "from": "action.reserve",
+      "to": "entity.reservation",
+      "relation": "depends_on",
+      "source_refs": [
+        {
+          "source": "source.graphify",
+          "purpose": "provenance",
+          "selector": {
+            "kind": "json-pointer",
+            "value": "/edges/2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "edge.entity-reservation-owner",
+      "from": "entity.reservation",
+      "to": "component.reservations",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.action-reserve-owner",
+      "from": "action.reserve",
+      "to": "component.reservations",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.action-cancel-owner",
+      "from": "action.cancel",
+      "to": "component.reservations",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.machine-reservation-owner",
+      "from": "machine.reservation",
+      "to": "component.reservations",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.machine-state",
+      "from": "machine.reservation",
+      "to": "entity.reservation",
+      "relation": "state_of"
+    },
+    {
+      "id": "edge.action-reserve-changes",
+      "from": "action.reserve",
+      "to": "entity.reservation",
+      "relation": "changes"
+    },
+    {
+      "id": "edge.action-reserve-constrained",
+      "from": "rule.lifecycle",
+      "to": "action.reserve",
+      "relation": "constrains"
+    },
+    {
+      "id": "edge.action-cancel-changes",
+      "from": "action.cancel",
+      "to": "entity.reservation",
+      "relation": "changes"
+    },
+    {
+      "id": "edge.action-cancel-constrained",
+      "from": "rule.lifecycle",
+      "to": "action.cancel",
+      "relation": "constrains"
+    },
+    {
+      "id": "edge.default-exercises",
+      "from": "scenario.default",
+      "to": "action.reserve",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.default-verifies",
+      "from": "scenario.default",
+      "to": "rule.lifecycle",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.reserve-exercises",
+      "from": "scenario.reserve",
+      "to": "action.reserve",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.reserve-verifies",
+      "from": "scenario.reserve",
+      "to": "rule.lifecycle",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.repeat-reserve-exercises",
+      "from": "scenario.repeat-reserve",
+      "to": "action.reserve",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.repeat-reserve-verifies",
+      "from": "scenario.repeat-reserve",
+      "to": "rule.lifecycle",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.cancel-exercises",
+      "from": "scenario.cancel",
+      "to": "action.cancel",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.cancel-verifies",
+      "from": "scenario.cancel",
+      "to": "rule.lifecycle",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.repeat-cancel-exercises",
+      "from": "scenario.repeat-cancel",
+      "to": "action.cancel",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.repeat-cancel-verifies",
+      "from": "scenario.repeat-cancel",
+      "to": "rule.lifecycle",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.cancelled-exercises",
+      "from": "scenario.cancelled",
+      "to": "action.reserve",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.cancelled-verifies",
+      "from": "scenario.cancelled",
+      "to": "rule.lifecycle",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.draft-cancel-exercises",
+      "from": "scenario.draft-cancel",
+      "to": "action.cancel",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.draft-cancel-verifies",
+      "from": "scenario.draft-cancel",
+      "to": "rule.lifecycle",
+      "relation": "verifies"
+    }
+  ],
+  "sources": {
+    "source.graphify": {
+      "role": "observation",
+      "title": "Original Graphify observation snapshot; producer claims",
+      "uri": "observations/graphify.raw.json",
+      "format": "graphify-0.9.75-ast",
+      "normative": false,
+      "revision": {
+        "sha256": "f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb"
+      }
+    },
+    "source.brief": {
+      "role": "input",
+      "title": "Trusted task input and bounded implementation choices",
+      "uri": "INPUT.md",
+      "format": "markdown",
+      "normative": true,
+      "revision": {
+        "sha256": "a9820ac9206033720068a79800692c2da6b2af3caab2d944a4ec63dd96a09b5b"
+      }
+    }
+  },
+  "questions": {
+    "question.graphify_contracts": {
+      "statement": "Clarify the intended behavior, contracts, rules and scenarios; code observations describe the existing implementation and do not automatically define intent.",
+      "targets": [
+        "component.reservations",
+        "entity.reservation",
+        "action.reserve"
+      ],
+      "blocks": [
+        "implementation",
+        "acceptance"
+      ],
+      "status": "resolved",
+      "resolution": {
+        "decision": "decision.adopt-lifecycle"
+      }
+    }
+  },
+  "record_files": [
+    "records.json"
+  ]
+}

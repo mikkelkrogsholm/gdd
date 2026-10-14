@@ -1,0 +1,34 @@
+{
+  "format": "gdd-host-check/0.1",
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_reservation"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/evidence/negative-controls/resurrection",
+  "started_at": "2026-10-14T13:36:57.601031+00:00",
+  "executed": true,
+  "exit_code": 1,
+  "result": "FAIL",
+  "stdout": "",
+  "stderr": "test_cancel_sets_cancelled_and_preserves_identity (test_reservation.ReservationAcceptance.test_cancel_sets_cancelled_and_preserves_identity) ... ok\ntest_cancelled_cannot_be_reserved (test_reservation.ReservationAcceptance.test_cancelled_cannot_be_reserved) ... FAIL\ntest_default_is_draft (test_reservation.ReservationAcceptance.test_default_is_draft) ... ok\ntest_draft_cancel_is_rejected_without_mutation (test_reservation.ReservationAcceptance.test_draft_cancel_is_rejected_without_mutation) ... ok\ntest_each_reservation_keeps_its_own_state (test_reservation.ReservationAcceptance.test_each_reservation_keeps_its_own_state) ... ok\ntest_repeated_cancel_is_harmless (test_reservation.ReservationAcceptance.test_repeated_cancel_is_harmless) ... ok\ntest_repeated_reserve_is_harmless (test_reservation.ReservationAcceptance.test_repeated_reserve_is_harmless) ... ok\ntest_reserve_preserves_identity_and_sets_reserved (test_reservation.ReservationAcceptance.test_reserve_preserves_identity_and_sets_reserved) ... ok\ntest_reserve_signature_is_preserved (test_reservation.ReservationAcceptance.test_reserve_signature_is_preserved) ... ok\n\n======================================================================\nFAIL: test_cancelled_cannot_be_reserved (test_reservation.ReservationAcceptance.test_cancelled_cannot_be_reserved)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/evidence/negative-controls/resurrection/test_reservation.py\", line 62, in test_cancelled_cannot_be_reserved\n    with self.assertRaises(reservation.InvalidTransition):\nAssertionError: InvalidTransition not raised\n\n----------------------------------------------------------------------\nRan 9 tests in 0.000s\n\nFAILED (failures=1)\n",
+  "snapshot": {
+    "format": "gdd-code-snapshot/0.1",
+    "files": {
+      "reservation.py": "a4853c9c7edc34d771cd10a71fcf81faa1f3906bf01d66302da81a668ce5f80d",
+      "test_reservation.py": "198279e5538d7ee1c0ed625c7b2bff9c17d929ffbce310ee58adda42b4dcbc73"
+    },
+    "revision": "sha256:a6739e451ed463f42eeedc6a5a03e8d47e817c2453cced0805b597c846778286"
+  },
+  "code_revision": "sha256:a6739e451ed463f42eeedc6a5a03e8d47e817c2453cced0805b597c846778286",
+  "runner": {
+    "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "reason": "Actual caller-selected checker process completed.",
+  "code_revision_after": "sha256:a6739e451ed463f42eeedc6a5a03e8d47e817c2453cced0805b597c846778286",
+  "finished_at": "2026-10-14T13:36:57.640582+00:00"
+}

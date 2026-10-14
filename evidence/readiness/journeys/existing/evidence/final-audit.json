@@ -1,0 +1,33 @@
+{
+  "result": "PASS",
+  "acceptance_current": true,
+  "event_count": 4,
+  "raw_bytes_unchanged": true,
+  "observation_identities_unchanged": true,
+  "supported_import": "PASS",
+  "unsupported_profile": "UNKNOWN",
+  "supported_and_unsupported_exports_byte_identical": true,
+  "tests": 10,
+  "negative_controls_detected": [
+    "constructor-return",
+    "cancelled-reopen"
+  ],
+  "revisions": {
+    "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+    "candidate_spec_revision": "sha256:5d9ccb6dc70244a7ef1042c0909f915dee7668981f029c74f6ed8bd43d8df4ef",
+    "accepted_spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+    "initial_code_revision": "sha256:f9f7e6003e9e46d3dd865759ffc2522688467e5e115f98e91f0b6b2c56f7d282",
+    "result_code_revision": "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9",
+    "implementation": "implementation.reservation",
+    "scope": [
+      "action.reserve",
+      "action.cancel"
+    ]
+  },
+  "limitations": [
+    "No Graphify extraction was performed here; the genuine supplied AST artifact was preserved.",
+    "The HTML projection was generated and revision-validated; browser interaction was not tested.",
+    "Review completeness is advisory, separate from implementation acceptance.",
+    "Sequential in-memory behavior only; persistence and concurrency are out of scope."
+  ]
+}

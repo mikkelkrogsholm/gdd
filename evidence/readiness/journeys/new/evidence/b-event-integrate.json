@@ -1,0 +1,18 @@
+{
+  "type": "integrate",
+  "expected_revision": "sha256:887496e793590baf7c1377e2dee790a4868349f38dd7f5375a9d4437a4e6e65a",
+  "idempotency_key": "b.integrate",
+  "package": "package.parcel.b",
+  "attempt": "attempt.parcel.b.1",
+  "base_code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+  "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970",
+  "verified_resources": [
+    "src/parcel/pricing.py",
+    "tests/test_b.py"
+  ],
+  "review": {
+    "reviewer": "actor.independent",
+    "verdict": "PASS",
+    "evidence_uri": "evidence/b-integration-review.md"
+  }
+}

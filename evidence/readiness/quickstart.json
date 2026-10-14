@@ -1,0 +1,86 @@
+{
+  "format": "gdd-readme-quickstart/0.1",
+  "path": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial",
+  "passed": true,
+  "results": [
+    {
+      "argv": [
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/.venv/bin/python",
+        "-m",
+        "gdd_validator",
+        "init",
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial/project",
+        "--project-id",
+        "project.my-app",
+        "--title",
+        "My app"
+      ],
+      "expected_exit": 0,
+      "exit_code": 0,
+      "stdout": "{\n  \"format\": \"gdd-init/0.1\",\n  \"path\": \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial/project\",\n  \"manifest\": \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial/project/gdd.json\",\n  \"project_id\": \"project.my-app\",\n  \"files\": [\n    \"SOURCES.md\",\n    \"gdd.json\",\n    \"records.json\"\n  ],\n  \"spec_revision\": \"sha256:84398bc9f4d7d47b1d0451c04c1cf5a3cc70d248bc2cc9a3cb587021775e7bba\",\n  \"model\": \"PASS\",\n  \"readiness\": \"FAIL\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/.venv/bin/python",
+        "-m",
+        "gdd_validator",
+        "validate",
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial/project/gdd.json"
+      ],
+      "expected_exit": 0,
+      "exit_code": 0,
+      "stdout": "{\n  \"format\": \"gdd-report/0.2\",\n  \"tool\": {\n    \"name\": \"gdd-validator\",\n    \"version\": \"0.6.0\"\n  },\n  \"spec_revision\": \"sha256:84398bc9f4d7d47b1d0451c04c1cf5a3cc70d248bc2cc9a3cb587021775e7bba\",\n  \"profiles\": [\n    \"model\"\n  ],\n  \"scope\": [],\n  \"checks\": [\n    {\n      \"check_id\": \"representation.schema\",\n      \"dimension\": \"model\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Local JSON Schema validation.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"representation.schema\",\n      \"dimension\": \"model\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Local JSON Schema validation.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"model.semantics\",\n      \"dimension\": \"model\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Core references, endpoints, identity, refinement, machines, types and declared extension data checked.\",\n      \"diagnostics\": []\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/.venv/bin/python",
+        "-m",
+        "gdd_validator",
+        "view",
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial/project/gdd.json",
+        "--output",
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial/graph.html"
+      ],
+      "expected_exit": 0,
+      "exit_code": 0,
+      "stdout": "{\n  \"format\": \"gdd-report/0.2\",\n  \"tool\": {\n    \"name\": \"gdd-viewer\",\n    \"version\": \"0.2.0\"\n  },\n  \"spec_revision\": \"sha256:84398bc9f4d7d47b1d0451c04c1cf5a3cc70d248bc2cc9a3cb587021775e7bba\",\n  \"profiles\": [\n    \"visualization\"\n  ],\n  \"scope\": [],\n  \"checks\": [\n    {\n      \"check_id\": \"integration.visualization\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Generated a read-only gdd-viewer-html/0.1 projection.\",\n      \"diagnostics\": []\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/.venv/bin/python",
+        "-m",
+        "gdd_validator",
+        "validate",
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial/project/gdd.json",
+        "--profile",
+        "visualization",
+        "--view",
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial/graph.html"
+      ],
+      "expected_exit": 0,
+      "exit_code": 0,
+      "stdout": "{\n  \"format\": \"gdd-report/0.2\",\n  \"tool\": {\n    \"name\": \"gdd-validator\",\n    \"version\": \"0.6.0\"\n  },\n  \"spec_revision\": \"sha256:84398bc9f4d7d47b1d0451c04c1cf5a3cc70d248bc2cc9a3cb587021775e7bba\",\n  \"profiles\": [\n    \"visualization\"\n  ],\n  \"scope\": [],\n  \"checks\": [\n    {\n      \"check_id\": \"representation.schema\",\n      \"dimension\": \"model\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Local JSON Schema validation.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"representation.schema\",\n      \"dimension\": \"model\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Local JSON Schema validation.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"model.semantics\",\n      \"dimension\": \"model\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Core references, endpoints, identity, refinement, machines, types and declared extension data checked.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"integration.visualization\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.\",\n      \"diagnostics\": []\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/.venv/bin/python",
+        "-m",
+        "gdd_validator",
+        "validate",
+        "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-source-crkvwh1s/source/quickstart-trial/project/gdd.json",
+        "--profile",
+        "readiness",
+        "--scope",
+        "action.main"
+      ],
+      "expected_exit": 1,
+      "exit_code": 1,
+      "stdout": "{\n  \"format\": \"gdd-report/0.2\",\n  \"tool\": {\n    \"name\": \"gdd-validator\",\n    \"version\": \"0.6.0\"\n  },\n  \"spec_revision\": \"sha256:84398bc9f4d7d47b1d0451c04c1cf5a3cc70d248bc2cc9a3cb587021775e7bba\",\n  \"profiles\": [\n    \"readiness\"\n  ],\n  \"scope\": [\n    \"action.main\"\n  ],\n  \"checks\": [\n    {\n      \"check_id\": \"representation.schema\",\n      \"dimension\": \"model\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Local JSON Schema validation.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"representation.schema\",\n      \"dimension\": \"model\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Local JSON Schema validation.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"model.semantics\",\n      \"dimension\": \"model\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Core references, endpoints, identity, refinement, machines, types and declared extension data checked.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"check.readiness_contract_missing\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Action needs full contract and behavior.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"READINESS_CONTRACT_MISSING\",\n          \"severity\": \"error\",\n          \"message\": \"Action needs full contract and behavior.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/action.main\"\n          },\n          \"related_ids\": [\n            \"action.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.effects_incomplete\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Effects/dependencies are not declared complete.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"EFFECTS_INCOMPLETE\",\n          \"severity\": \"error\",\n          \"message\": \"Effects/dependencies are not declared complete.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/action.main\"\n          },\n          \"related_ids\": [\n            \"action.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.scenario_category_missing\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Action needs a normal scenario.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"SCENARIO_CATEGORY_MISSING\",\n          \"severity\": \"error\",\n          \"message\": \"Action needs a normal scenario.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/action.main\"\n          },\n          \"related_ids\": [\n            \"action.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.readiness_contract_missing\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Missing risk assessment: authorization.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"READINESS_CONTRACT_MISSING\",\n          \"severity\": \"error\",\n          \"message\": \"Missing risk assessment: authorization.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/action.main\"\n          },\n          \"related_ids\": [\n            \"action.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.readiness_contract_missing\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Missing risk assessment: idempotency.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"READINESS_CONTRACT_MISSING\",\n          \"severity\": \"error\",\n          \"message\": \"Missing risk assessment: idempotency.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/action.main\"\n          },\n          \"related_ids\": [\n            \"action.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.readiness_contract_missing\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Missing risk assessment: boundaries.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"READINESS_CONTRACT_MISSING\",\n          \"severity\": \"error\",\n          \"message\": \"Missing risk assessment: boundaries.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/action.main\"\n          },\n          \"related_ids\": [\n            \"action.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.readiness_contract_missing\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Missing risk assessment: concurrency.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"READINESS_CONTRACT_MISSING\",\n          \"severity\": \"error\",\n          \"message\": \"Missing risk assessment: concurrency.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/action.main\"\n          },\n          \"related_ids\": [\n            \"action.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.readiness_contract_missing\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Missing risk assessment: atomicity.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"READINESS_CONTRACT_MISSING\",\n          \"severity\": \"error\",\n          \"message\": \"Missing risk assessment: atomicity.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/action.main\"\n          },\n          \"related_ids\": [\n            \"action.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.readiness_contract_missing\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Required component interfaces are unspecified.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"READINESS_CONTRACT_MISSING\",\n          \"severity\": \"error\",\n          \"message\": \"Required component interfaces are unspecified.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/component.main\"\n          },\n          \"related_ids\": [\n            \"component.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.boundary_rationale_missing\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Component needs responsibility, boundary rationale and explicit excludes.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"BOUNDARY_RATIONALE_MISSING\",\n          \"severity\": \"error\",\n          \"message\": \"Component needs responsibility, boundary rationale and explicit excludes.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/nodes/component.main\"\n          },\n          \"related_ids\": [\n            \"component.main\"\n          ]\n        }\n      ]\n    },\n    {\n      \"check_id\": \"check.question_blocks_scope\",\n      \"dimension\": \"readiness\",\n      \"result\": \"FAIL\",\n      \"scope\": [],\n      \"reason\": \"Open question blocks implementation context.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"QUESTION_BLOCKS_SCOPE\",\n          \"severity\": \"error\",\n          \"message\": \"Open question blocks implementation context.\",\n          \"location\": {\n            \"file\": \"gdd.json\",\n            \"pointer\": \"/questions/question.scope\"\n          },\n          \"related_ids\": [\n            \"question.scope\"\n          ]\n        }\n      ]\n    }\n  ]\n}\n",
+      "stderr": ""
+    }
+  ]
+}

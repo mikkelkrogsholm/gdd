@@ -1,0 +1,22 @@
+{
+  "label": "b-event-accept",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "workflow",
+    "event",
+    "gdd-b/gdd.json",
+    "--run",
+    "run-b",
+    "--event",
+    "evidence/b-event-accept.json",
+    "--host-context",
+    "evidence/b-host-acceptance.json",
+    "--output",
+    "evidence/b-event-accept-result.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:31:41.791980+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

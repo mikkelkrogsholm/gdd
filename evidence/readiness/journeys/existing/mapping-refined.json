@@ -1,0 +1,41 @@
+{
+  "format": "gdd-graphify-mapping/0.2",
+  "project": {
+    "id": "project.reservation",
+    "title": "Reservation lifecycle",
+    "goal": "Preserve reserve(value: Reservation) -> Reservation while implementing an in-place draft, reserved, cancelled lifecycle."
+  },
+  "nodes": [
+    {
+      "observation": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+      "target": "component.reservation",
+      "kind": "component",
+      "description": "Own the local Reservation lifecycle and its public operations.",
+      "rationale": "The observed module is a coherent domain boundary; ownership is intended, not inferred authority."
+    },
+    {
+      "observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "target": "entity.reservation",
+      "kind": "entity",
+      "description": "A Reservation carries its lifecycle state.",
+      "rationale": "Interpret the observed class as domain data under the requested lifecycle."
+    },
+    {
+      "observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "target": "action.reserve",
+      "kind": "action",
+      "description": "Reserve the supplied Reservation in place and return its identity.",
+      "rationale": "Interpret the observed function as a public domain action; replace constructor behavior under human requirements."
+    }
+  ],
+  "edges": [
+    {
+      "observation": "observation.edge.hcc550328740c7c0ff35a7f0e75e41f807da9dad725444fb19243d3765dfe8e1d",
+      "id": "edge.reserve_reads",
+      "from": "action.reserve",
+      "to": "entity.reservation",
+      "relation": "reads",
+      "rationale": "The intended action must inspect the supplied entity; a type reference alone does not prove the current read."
+    }
+  ]
+}

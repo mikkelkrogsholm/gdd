@@ -1,6 +1,8 @@
 # GDD repository readiness goal
 
-Status: proposed delivery target; implementation is not yet complete.
+Status: local delivery completed. See [readiness evidence](evidence/repository-readiness.md)
+for the actual tested journeys, installation checks and limits. Remote CI and
+registry publication are separate subsequent actions.
 Defined October 14, 2026, from the maintainer's direction.
 
 ## Outcome
@@ -48,7 +50,12 @@ needed to repair the instructions must be incorporated and the affected journey 
 The release-readiness bar is successful completion without undocumented intervention.
 It does not claim that all architectures, languages or agent runtimes have been tested.
 
-## Current baseline and gaps
+## Baseline when this plan was defined
+
+The table records the starting point, not the delivered package. The current
+entry points are `gdd init`, [the installable skill](skills/gdd/SKILL.md),
+[installation](INSTALL.md), [host helpers](HOST.md) and
+[contribution guidance](CONTRIBUTING.md). The maintainer selected MIT.
 
 | Area | Present | Work needed |
 | --- | --- | --- |
@@ -61,7 +68,7 @@ It does not claim that all architectures, languages or agent runtimes have been 
 | Repository | Local Python packaging and tests | CI, contribution guide, changelog and maintainer-approved license metadata |
 | README | Rewritten in this goal-definition pass | Keep commands and capability statements tested as implementation progresses |
 
-There is no packaged skill, scaffold command or CI workflow in the inspected baseline.
+There was no packaged skill, scaffold command or CI workflow in the inspected baseline.
 The current distribution is named gdd-validator and exposes gdd. Prefer preserving that
 installation contract in this readiness pass; a rename is a separate compatibility decision.
 
@@ -76,12 +83,12 @@ reader's path before moving byte-sensitive material.
 | GDD.md and agents/ | Existing agent and coordination guidance; one authoritative workflow |
 | SPEC.md, standard/, schemas/ | Normative contracts, versioned formats and validation semantics |
 | gdd_validator/ | Deterministic CLI/Python tools; no mandatory LLM service |
-| skills/gdd/ | Planned portable skill, concise entry instructions and links to authoritative guidance |
-| templates/ | Planned minimal current-standard scaffold used by the CLI and skill |
+| skills/gdd/ | Portable skill, concise entry instructions and exact synchronized authoritative references |
+| templates/ | Minimal current-standard scaffold used by the CLI and skill |
 | examples/ | Curated format examples and one reproducible end-to-end reference journey |
 | tests/ and conformance/ | Behavioral regressions, explicit supported/unsupported cases and compatibility |
 | evidence/ and archive/ | Indexed provenance, preserved executions and historical normative contracts |
-| .github/ | Planned repeatable installation, tests and conformance checks |
+| .github/ | Repeatable installation, tests, conformance and installed-wheel checks |
 
 These are responsibilities, not a mandate to reorganize every existing file or add
 empty directories. Add only assets consumed by the accepted journeys.
@@ -90,8 +97,8 @@ empty directories. Add only assets consumed by the accepted journeys.
 
 ### 1. Make the purpose and entry clear
 
-Entry documentation is completed in this definition pass; see the
-[performed checks](evidence/repository-entry-review.md). Later stages remain planned.
+The [entry-definition review](evidence/repository-entry-review.md) records the
+earlier documentation pass. The readiness review records the completed delivery.
 
 Rewrite README around planning and development through graphs. Keep its first route
 short, executable and honest. Explain the agent's role, supported CLI commands,
@@ -104,8 +111,8 @@ This pass changes entry documentation only, preserving normative and execution b
 
 ### 2. Build the smallest usable starter and skill
 
-Introduce a minimal GDD 0.3 draft template and a safe scaffold operation; gdd init
-is the proposed command name, not an existing capability. Reuse current loaders,
+Introduce a minimal GDD 0.3 draft template and a safe scaffold operation, delivered
+as `gdd init`. Reuse current loaders,
 validators, schemas and output conventions. Never infer a trusted mandate or seed PASS
 receipts. Preserve existing files and give a clear result for repeated initialization.
 
@@ -172,6 +179,7 @@ runtime, new graph database, general-purpose code generator or further concert-a
 features. Interactive editing and new generic commands need their own demonstrated
 use case. Graph authoring remains agent-driven; tools preserve and check its contracts.
 
-The current foreground deliverable is this readiness definition and the README rewrite.
-Subsequent implementation must finish the accepted journeys rather than expanding into
-unrelated platform work. Required license/publication decisions remain with the maintainer.
+The accepted journeys and repository preparation define this delivery boundary.
+They are recorded with actual outcomes in the readiness review. Further platform
+work needs its own user outcome. Publication decisions remain with the maintainer;
+the MIT license choice is now recorded in LICENSE and package metadata.

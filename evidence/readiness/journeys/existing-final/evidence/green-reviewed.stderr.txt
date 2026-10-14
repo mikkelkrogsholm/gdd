@@ -1,0 +1,14 @@
+test_cancel_sets_cancelled_and_preserves_identity (test_reservation.ReservationAcceptance.test_cancel_sets_cancelled_and_preserves_identity) ... ok
+test_cancelled_cannot_be_reserved (test_reservation.ReservationAcceptance.test_cancelled_cannot_be_reserved) ... ok
+test_default_is_draft (test_reservation.ReservationAcceptance.test_default_is_draft) ... ok
+test_draft_cancel_is_rejected_without_mutation (test_reservation.ReservationAcceptance.test_draft_cancel_is_rejected_without_mutation) ... ok
+test_each_reservation_keeps_its_own_state (test_reservation.ReservationAcceptance.test_each_reservation_keeps_its_own_state) ... ok
+test_repeated_cancel_is_harmless (test_reservation.ReservationAcceptance.test_repeated_cancel_is_harmless) ... ok
+test_repeated_reserve_is_harmless (test_reservation.ReservationAcceptance.test_repeated_reserve_is_harmless) ... ok
+test_reserve_preserves_identity_and_sets_reserved (test_reservation.ReservationAcceptance.test_reserve_preserves_identity_and_sets_reserved) ... ok
+test_reserve_signature_is_preserved (test_reservation.ReservationAcceptance.test_reserve_signature_is_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.000s
+
+OK

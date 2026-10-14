@@ -1,0 +1,150 @@
+{
+  "format": "gdd-run-status/0.1",
+  "revision": "sha256:9fe65eb6e96082accfe2edcfc617f04c1e4f63727223eb04dc37b91ef7d83b77",
+  "state": {
+    "status": "active",
+    "code_revision": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "packages": {
+      "package.parcel.a": {
+        "status": "submitted",
+        "attempt": "attempt.parcel.a.1",
+        "base_code_revision": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "result": {
+          "type": "submit",
+          "expected_revision": "sha256:9b9ddc4a765e0e8496fba1154a2b4cb374dd2a9162031a89f57d9341cb132e97",
+          "idempotency_key": "a.submit",
+          "package": "package.parcel.a",
+          "attempt": "attempt.parcel.a.1",
+          "summary": "Implemented and reviewed parcel contract A and concrete checks within the single authorized package.",
+          "artifact_uri": "evidence/a-integration-review.md",
+          "changed_resources": [
+            "src/parcel/__init__.py",
+            "src/parcel/cli.py",
+            "src/parcel/pricing.py",
+            "src/parcel/tariffs.py",
+            "tests/shared_contract.py",
+            "tests/test_a.py",
+            "tests/check_architecture.py"
+          ]
+        }
+      }
+    },
+    "attempts": [
+      "attempt.parcel.a.1"
+    ]
+  },
+  "available_packages": [],
+  "event_count": 2,
+  "acceptance_current": false,
+  "report": {
+    "format": "gdd-report/0.2",
+    "tool": {
+      "name": "gdd-validator",
+      "version": "0.6.0"
+    },
+    "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+    "profiles": [
+      "model",
+      "readiness"
+    ],
+    "scope": [
+      "action.cli",
+      "action.quote",
+      "action.rate"
+    ],
+    "checks": [
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "model.semantics",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "records.integrity",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.parcel.a.context.package",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cli",
+          "action.quote",
+          "action.rate"
+        ],
+        "reason": "Candidate work package compared with fixed-point closure.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.parcel.a.readiness.structural",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cli",
+          "action.quote",
+          "action.rate"
+        ],
+        "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.parcel.a.ownership",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cli",
+          "action.quote",
+          "action.rate"
+        ],
+        "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.check_plans",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cli",
+          "action.quote",
+          "action.rate"
+        ],
+        "reason": "Selected active checks must cover every blocking rule and method.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.packet_integrity",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cli",
+          "action.quote",
+          "action.rate"
+        ],
+        "reason": "Complete packet must match the current model, assets, selected check declarations and original request.",
+        "diagnostics": []
+      }
+    ]
+  }
+}

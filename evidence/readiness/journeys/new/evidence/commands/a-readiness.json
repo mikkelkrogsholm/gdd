@@ -1,0 +1,23 @@
+{
+  "label": "a-readiness",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "validate",
+    "gdd-a/gdd.json",
+    "--profile",
+    "readiness",
+    "--scope",
+    "action.cli",
+    "--scope",
+    "action.quote",
+    "--scope",
+    "action.rate",
+    "--output",
+    "evidence/a-readiness.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:22:20.671288+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

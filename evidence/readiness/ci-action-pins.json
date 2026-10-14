@@ -1,0 +1,71 @@
+{
+  "format": "gdd-ci-upstream-pin-check/0.1",
+  "results": [
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "https://github.com/actions/checkout.git",
+        "refs/tags/v7.0.1"
+      ],
+      "exit_code": 0,
+      "stdout": "3d3c42e5aac5ba805825da76410c181273ba90b1\trefs/tags/v7.0.1\n",
+      "stderr": "",
+      "expected_commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "passed": true
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "https://github.com/actions/setup-python.git",
+        "refs/tags/v7.0.0"
+      ],
+      "exit_code": 0,
+      "stdout": "5fda3b95a4ea91299a34e894583c3862153e4b97\trefs/tags/v7.0.0\n",
+      "stderr": "",
+      "expected_commit": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+      "passed": true
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "https://github.com/astral-sh/setup-uv.git",
+        "refs/tags/v9.0.0"
+      ],
+      "exit_code": 0,
+      "stdout": "c771a70e6277c0a99b617c7a806ffedaca235ff9\trefs/tags/v9.0.0\n",
+      "stderr": "",
+      "expected_commit": "c771a70e6277c0a99b617c7a806ffedaca235ff9",
+      "passed": true
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "https://github.com/actions/setup-node.git",
+        "refs/tags/v7.0.0"
+      ],
+      "exit_code": 0,
+      "stdout": "820762786026740c76f36085b0efc47a31fe5020\trefs/tags/v7.0.0\n",
+      "stderr": "",
+      "expected_commit": "820762786026740c76f36085b0efc47a31fe5020",
+      "passed": true
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "https://github.com/actions/upload-artifact.git",
+        "refs/tags/v7.0.1"
+      ],
+      "exit_code": 0,
+      "stdout": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a\trefs/tags/v7.0.1\n",
+      "stderr": "",
+      "expected_commit": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+      "passed": true
+    }
+  ],
+  "passed": true
+}

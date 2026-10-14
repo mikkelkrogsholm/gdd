@@ -1,0 +1,5 @@
+{
+  "type": "accept",
+  "expected_revision": "sha256:668b709f4aa155cda4620ae02153a7905bcea3ef510f0ce0ee1a7ab3230cfcaa",
+  "idempotency_key": "accept.lifecycle.1"
+}

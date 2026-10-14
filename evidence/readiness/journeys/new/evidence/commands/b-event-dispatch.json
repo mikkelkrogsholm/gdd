@@ -1,0 +1,22 @@
+{
+  "label": "b-event-dispatch",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "workflow",
+    "event",
+    "gdd-b/gdd.json",
+    "--run",
+    "run-b",
+    "--event",
+    "evidence/b-event-dispatch.json",
+    "--host-context",
+    "evidence/b-host-implementation.json",
+    "--output",
+    "evidence/b-event-dispatch-result.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:29:04.846986+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

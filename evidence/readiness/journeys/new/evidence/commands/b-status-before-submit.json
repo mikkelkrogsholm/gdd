@@ -1,0 +1,20 @@
+{
+  "label": "b-status-before-submit",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "workflow",
+    "status",
+    "gdd-b/gdd.json",
+    "--run",
+    "run-b",
+    "--host-context",
+    "evidence/b-host-integrated.json",
+    "--output",
+    "evidence/b-status-before-submit.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:30:38.459817+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Graph-Driven Development"
+  short_description: "Plan and verify software changes through GDD graphs"
+  default_prompt: "Use $gdd to turn this brief or existing code into a graph and a verified development scope."

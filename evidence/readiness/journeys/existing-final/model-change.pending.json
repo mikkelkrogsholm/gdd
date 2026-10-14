@@ -1,0 +1,28 @@
+{
+  "status": "authorized refinement",
+  "base": "gdd-proposal.json",
+  "result": "gdd.json",
+  "preserved_ids": [
+    "component.reservations",
+    "entity.reservation",
+    "action.reserve"
+  ],
+  "changed_ids": [
+    "component.reservations",
+    "entity.reservation",
+    "action.reserve",
+    "action.cancel",
+    "machine.reservation",
+    "rule.lifecycle",
+    "scenario.default",
+    "scenario.reserve",
+    "scenario.repeat-reserve",
+    "scenario.cancel",
+    "scenario.repeat-cancel",
+    "scenario.cancelled",
+    "scenario.draft-cancel"
+  ],
+  "rationale": "Adopt the explicit human lifecycle requirements and migrate to 0.3 with owned public operations, boundary rationale and authoritative postconditions.",
+  "observation_artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+  "observations_accepted_as_requirements": false
+}

@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/gdd",
+    "validate",
+    "candidate.json",
+    "--profile",
+    "model",
+    "--output",
+    "evidence/candidate-model.report.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:20:53.716375+00:00",
+  "finished_at": "2026-10-14T13:20:53.842733+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

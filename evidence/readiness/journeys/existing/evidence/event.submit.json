@@ -1,0 +1,13 @@
+{
+  "type": "submit",
+  "expected_revision": "sha256:ff4159ca1434fc9390fb1bad65d2e2d1ca5cf9b5ed9390e793b6d1714077aaf5",
+  "idempotency_key": "submit.lifecycle.1",
+  "package": "package.lifecycle",
+  "attempt": "attempt.lifecycle.1",
+  "summary": "Implemented Reservation state, in-place reserve/cancel and fixed lifecycle assertions directly in the isolated project.",
+  "artifact_uri": "evidence/implementation.patch",
+  "changed_resources": [
+    "reservation.py",
+    "test_reservation.py"
+  ]
+}

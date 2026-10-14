@@ -1,0 +1,38 @@
+{
+  "format": "gdd-work-request/0.1",
+  "id": "work.reservation",
+  "objective": "Implement the fixed Reservation lifecycle without changing the reserve signature.",
+  "implementation": "implementation.reservation",
+  "base_code_revision": "sha256:f9f7e6003e9e46d3dd865759ffc2522688467e5e115f98e91f0b6b2c56f7d282",
+  "packages": [
+    {
+      "id": "package.lifecycle",
+      "scope": [
+        "action.reserve",
+        "action.cancel"
+      ],
+      "write_resources": [
+        "reservation.py",
+        "test_reservation.py"
+      ],
+      "read_resources": [
+        "requirements.md",
+        "model.json",
+        "observations/observations.json"
+      ],
+      "workspace": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+      "deliverables": [
+        "Reservation state, reserve and cancel operations",
+        "Behavior and signature regression assertions"
+      ],
+      "integration_plan": "Inspect the direct patch, confirm file ownership and public signature, review all four principles, then execute the fixed assertions and isolated negative controls on the combined result."
+    }
+  ],
+  "serialized": [],
+  "integration": {
+    "owner": "actor.independent_agent",
+    "checks": [
+      "check.lifecycle"
+    ]
+  }
+}

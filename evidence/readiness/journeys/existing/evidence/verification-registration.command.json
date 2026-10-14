@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/python",
+    "evidence/register-verification.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:27:40.385844+00:00",
+  "finished_at": "2026-10-14T13:27:40.525303+00:00",
+  "exit_code": 0,
+  "stdout": "{\n  \"implementation\": \"implementation.reservation\",\n  \"code_revision\": \"sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9\",\n  \"verified_bindings\": [\n    \"binding.lifecycle.tests.v1\",\n    \"binding.lifecycle.code.v1\"\n  ],\n  \"trusted_evidence\": [\n    \"evidence.lifecycle.integrated.v1\"\n  ],\n  \"supported_methods\": [\n    \"unittest\"\n  ],\n  \"environment\": {\n    \"python\": \"3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]\"\n  },\n  \"negative_controls\": [\n    \"constructor-return\",\n    \"cancelled-reopen\"\n  ],\n  \"evidence_selection\": {\n    \"check.lifecycle\": \"evidence.lifecycle.integrated.v1\"\n  }\n}\n",
+  "stderr": ""
+}

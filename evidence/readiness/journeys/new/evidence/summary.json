@@ -1,0 +1,27 @@
+{
+  "format": "independent-journey-summary/1",
+  "root": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "result": "completed",
+  "current_contract": "B",
+  "model_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+  "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970",
+  "acceptance_current": true,
+  "blocking_checks": {
+    "behavior.unittest": "PASS",
+    "architecture.python_ast": "PASS"
+  },
+  "red_fixed_b": "FAIL",
+  "architecture_negative_control": "FAIL",
+  "missing_code_or_evidence": "UNKNOWN",
+  "guide_or_api_blocker": null,
+  "artifacts": [
+    "JOURNEY.md",
+    "README.md",
+    "gdd-a/gdd.json",
+    "gdd-b/gdd.json",
+    "evidence/b-graph.html",
+    "evidence/b-status-final.json",
+    "evidence/fixed-b-red-green.json",
+    "evidence/commands.jsonl"
+  ]
+}

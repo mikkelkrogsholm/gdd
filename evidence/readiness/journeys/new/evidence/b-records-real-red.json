@@ -1,0 +1,84 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.6.0"
+  },
+  "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+  "profiles": [
+    "records"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "records.integrity",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "implementation.required.0",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.no_cli_tariffs"
+      ],
+      "reason": "Applicability of recorded rule.no_cli_tariffs/architecture.python_ast; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "No unambiguous evidence for check.architecture.b.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.no_cli_tariffs"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.1",
+      "dimension": "implementation",
+      "result": "FAIL",
+      "scope": [
+        "rule.price"
+      ],
+      "reason": "Applicability of recorded rule.price/behavior.unittest; application check not executed by validator.",
+      "diagnostics": [],
+      "implementation": "implementation.parcel",
+      "code_revision": "sha256:55a41aeea12f79fffe9fe67d3d113ba999b0f2ddc4fedc73ff86d5a97cf7e3c0",
+      "evidence_refs": [
+        "evidence.behavior.b_red"
+      ]
+    }
+  ]
+}

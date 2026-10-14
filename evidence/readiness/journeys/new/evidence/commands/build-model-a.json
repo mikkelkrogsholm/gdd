@@ -1,0 +1,13 @@
+{
+  "label": "build-model-a",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "build_model.py",
+    "a"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:22:21.465036+00:00",
+  "exit_code": 0,
+  "stdout": "a-model: exit 0\n\na-readiness: exit 0\n\na-snapshot: exit 0\n\na-context: exit 0\n\na-view: exit 0\n{\n  \"format\": \"gdd-report/0.2\",\n  \"tool\": {\n    \"name\": \"gdd-viewer\",\n    \"version\": \"0.2.0\"\n  },\n  \"spec_revision\": \"sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4\",\n  \"profiles\": [\n    \"visualization\"\n  ],\n  \"scope\": [],\n  \"checks\": [\n    {\n      \"check_id\": \"integration.visualization\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Generated a read-only gdd-viewer-html/0.1 projection.\",\n      \"diagnostics\": []\n    }\n  ]\n}\n\na-view-check: exit 0\n\na-boundaries: exit 0\n\n",
+  "stderr": ""
+}

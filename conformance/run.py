@@ -12,7 +12,7 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from gdd_validator import validate
+from gdd_validator import __version__, validate
 from gdd_validator.loading import digest, load_bundle, parse
 from gdd_validator.readiness import context_closure
 from gdd_validator.report import aggregate
@@ -324,7 +324,7 @@ def run() -> dict:
                 )
     return {
         "format": "gdd-conformance-run/0.2",
-        "tool": "gdd-validator/0.6.0",
+        "tool": "gdd-validator/" + __version__,
         "executed_at": datetime.now(timezone.utc).isoformat(),
         "synthetic_inputs": True,
         "total": len(results),

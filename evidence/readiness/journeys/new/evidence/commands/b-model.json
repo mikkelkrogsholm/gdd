@@ -1,0 +1,17 @@
+{
+  "label": "b-model",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "validate",
+    "gdd-b/gdd.json",
+    "--profile",
+    "model",
+    "--output",
+    "evidence/b-model.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:27:56.549438+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

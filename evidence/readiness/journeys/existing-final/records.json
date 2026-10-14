@@ -1,0 +1,163 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "project.reservations",
+  "records": {
+    "decision.adopt-lifecycle": {
+      "kind": "decision",
+      "topic": "model_change",
+      "scope": [
+        "component.reservations"
+      ],
+      "spec_revision": "sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9",
+      "policy_revision": "policy.trial.1",
+      "actor": {
+        "id": "actor.independent-agent",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "Human task authorizes isolated modeling and implementation. Base sha256:5d7030502d3df8fdcb4a3fc6bfd2042b45fea4c409da162418fa3124bf1b27d8; adopted model sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9. Preserved observation IDs and mapped component/entity/action IDs; added cancel, machine, fixed rule and scenarios. The imported constructor call is not accepted intent. Draft cancel is explicitly rejected as a bounded choice."
+    },
+    "check.lifecycle": {
+      "kind": "check",
+      "description": "Execute eight fixed identity, signature and state assertions on the combined code.",
+      "spec_revision": "sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9",
+      "scope": [
+        "rule.lifecycle"
+      ],
+      "method": "unittest",
+      "required_environment": [
+        "python"
+      ],
+      "negative_controls": [
+        "replacement-return",
+        "resurrection",
+        "repeat-cancel-error"
+      ]
+    },
+    "decision.adopt-lifecycle.v2": {
+      "kind": "decision",
+      "topic": "model_change",
+      "scope": [
+        "component.reservations"
+      ],
+      "spec_revision": "sha256:49b823814e9275834c374bc8331c1fc6ebe5273806aa960b414094f80d83f1cb",
+      "policy_revision": "policy.trial.1",
+      "actor": {
+        "id": "actor.independent-agent",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "Human task authorizes isolated modeling and implementation. Base sha256:5d7030502d3df8fdcb4a3fc6bfd2042b45fea4c409da162418fa3124bf1b27d8; adopted model sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9. Preserved observation IDs and mapped component/entity/action IDs; added cancel, machine, fixed rule and scenarios. The imported constructor call is not accepted intent. Draft cancel is explicitly rejected as a bounded choice. A readiness check caught incorrect cancellation boundary coverage; linked scenario.draft-cancel to cancel, with no change to acceptance assertions. Result sha256:49b823814e9275834c374bc8331c1fc6ebe5273806aa960b414094f80d83f1cb"
+    },
+    "check.lifecycle.v2": {
+      "kind": "check",
+      "description": "Execute eight fixed identity, signature and state assertions on the combined code.",
+      "spec_revision": "sha256:49b823814e9275834c374bc8331c1fc6ebe5273806aa960b414094f80d83f1cb",
+      "scope": [
+        "rule.lifecycle"
+      ],
+      "method": "unittest",
+      "required_environment": [
+        "python"
+      ],
+      "negative_controls": [
+        "replacement-return",
+        "resurrection",
+        "repeat-cancel-error"
+      ]
+    },
+    "decision.adopt-lifecycle.v3": {
+      "kind": "decision",
+      "topic": "model_change",
+      "scope": [
+        "component.reservations",
+        "entity.reservation",
+        "action.reserve"
+      ],
+      "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+      "policy_revision": "policy.trial.1",
+      "actor": {
+        "id": "actor.independent-agent",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "Human task authorizes isolated modeling and implementation. Base sha256:5d7030502d3df8fdcb4a3fc6bfd2042b45fea4c409da162418fa3124bf1b27d8; adopted model sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9. Preserved observation IDs and mapped component/entity/action IDs; added cancel, machine, fixed rule and scenarios. The imported constructor call is not accepted intent. Draft cancel is explicitly rejected as a bounded choice. A readiness check caught incorrect cancellation boundary coverage; linked scenario.draft-cancel to cancel, with no change to acceptance assertions. Result sha256:49b823814e9275834c374bc8331c1fc6ebe5273806aa960b414094f80d83f1cb Decision scope now explicitly covers every question target as required by the installed readiness checker."
+    },
+    "check.lifecycle.v3": {
+      "kind": "check",
+      "description": "Execute eight fixed identity, signature and state assertions on the combined code.",
+      "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+      "scope": [
+        "rule.lifecycle"
+      ],
+      "method": "unittest",
+      "required_environment": [
+        "python"
+      ],
+      "negative_controls": [
+        "replacement-return",
+        "resurrection",
+        "repeat-cancel-error"
+      ]
+    },
+    "binding.lifecycle.v1": {
+      "kind": "binding",
+      "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+      "targets": [
+        "rule.lifecycle"
+      ],
+      "implementation": "implementation.reservations",
+      "role": "test",
+      "resource": "test_reservation.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:198279e5538d7ee1c0ed625c7b2bff9c17d929ffbce310ee58adda42b4dcbc73",
+      "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f"
+    },
+    "evidence.lifecycle.v1": {
+      "kind": "evidence",
+      "check": "check.lifecycle.v3",
+      "check_revision": "sha256:9b3f7a90c17ec70b4529fe380e070aac3bd39fd5d410480a562145edf098fdd2",
+      "implementation": "implementation.reservations",
+      "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+      "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+      "checker": {
+        "name": "stdlib.unittest",
+        "version": "3.12.2"
+      },
+      "scope": [
+        "rule.lifecycle"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/evidence/integrated-test.run.json"
+    },
+    "binding.code.v1": {
+      "kind": "binding",
+      "description": "Actual reviewed Reservation module bytes implementing the public lifecycle operations.",
+      "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+      "targets": [
+        "component.reservations",
+        "entity.reservation",
+        "action.reserve",
+        "action.cancel",
+        "machine.reservation"
+      ],
+      "implementation": "implementation.reservations",
+      "role": "code",
+      "resource": "reservation.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:6c8c481c8c233968e78c24cb7d69c457cadc4d1153841a0fb1b1d943422888bf",
+      "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f"
+    }
+  }
+}

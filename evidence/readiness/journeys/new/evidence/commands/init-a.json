@@ -1,0 +1,17 @@
+{
+  "label": "init-a",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "init",
+    "gdd-a",
+    "--project-id",
+    "project.parcel",
+    "--title",
+    "Parcel price CLI"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:19:41.143991+00:00",
+  "exit_code": 0,
+  "stdout": "{\n  \"format\": \"gdd-init/0.1\",\n  \"path\": \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/gdd-a\",\n  \"manifest\": \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/gdd-a/gdd.json\",\n  \"project_id\": \"project.parcel\",\n  \"files\": [\n    \"SOURCES.md\",\n    \"gdd.json\",\n    \"records.json\"\n  ],\n  \"spec_revision\": \"sha256:7ef77a8bebae9992002e455cc838e370b2b7e2d1659ea45cb8e1458094330b67\",\n  \"model\": \"PASS\",\n  \"readiness\": \"FAIL\"\n}\n",
+  "stderr": ""
+}

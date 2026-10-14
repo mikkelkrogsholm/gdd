@@ -1,0 +1,10 @@
+{
+  "format": "gdd-snapshot/0.2",
+  "revision": "sha256:5d7030502d3df8fdcb4a3fc6bfd2042b45fea4c409da162418fa3124bf1b27d8",
+  "assets": [
+    {
+      "path": "gdd-proposal.json",
+      "sha256": "096abdaf330280cd0d723167f8f6d91d1470b3c5cb37e6b0a80ba3bc16df8340"
+    }
+  ]
+}

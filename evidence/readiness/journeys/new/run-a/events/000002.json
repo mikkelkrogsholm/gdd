@@ -1,0 +1,23 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:9b9ddc4a765e0e8496fba1154a2b4cb374dd2a9162031a89f57d9341cb132e97",
+  "event": {
+    "type": "submit",
+    "expected_revision": "sha256:9b9ddc4a765e0e8496fba1154a2b4cb374dd2a9162031a89f57d9341cb132e97",
+    "idempotency_key": "a.submit",
+    "package": "package.parcel.a",
+    "attempt": "attempt.parcel.a.1",
+    "summary": "Implemented and reviewed parcel contract A and concrete checks within the single authorized package.",
+    "artifact_uri": "evidence/a-integration-review.md",
+    "changed_resources": [
+      "src/parcel/__init__.py",
+      "src/parcel/cli.py",
+      "src/parcel/pricing.py",
+      "src/parcel/tariffs.py",
+      "tests/shared_contract.py",
+      "tests/test_a.py",
+      "tests/check_architecture.py"
+    ]
+  },
+  "revision": "sha256:9fe65eb6e96082accfe2edcfc617f04c1e4f63727223eb04dc37b91ef7d83b77"
+}

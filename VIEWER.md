@@ -1,6 +1,6 @@
 # Interactive GDD graph
 
-`gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. Package 0.6.0 uses renderer 0.2.0 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
+`gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. Package 0.7.0 uses renderer 0.2.0 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
 
 ```sh
 uv run gdd view examples/concert.gdd.yaml --output concert.html

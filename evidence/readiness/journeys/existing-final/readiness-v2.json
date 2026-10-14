@@ -1,0 +1,103 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.7.0"
+  },
+  "spec_revision": "sha256:49b823814e9275834c374bc8331c1fc6ebe5273806aa960b414094f80d83f1cb",
+  "profiles": [
+    "readiness"
+  ],
+  "scope": [
+    "component.reservations"
+  ],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "check.revision_unresolved",
+      "dimension": "model",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Historical snapshot unavailable for decision.adopt-lifecycle; targets not rebound to current model.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "Historical snapshot unavailable for decision.adopt-lifecycle; targets not rebound to current model.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "decision.adopt-lifecycle"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.revision_unresolved",
+      "dimension": "model",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Historical snapshot unavailable for check.lifecycle; targets not rebound to current model.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "Historical snapshot unavailable for check.lifecycle; targets not rebound to current model.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "check.lifecycle"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.question_blocks_scope",
+      "dimension": "readiness",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Resolved question has no applicable trusted current decision.",
+      "diagnostics": [
+        {
+          "code": "QUESTION_BLOCKS_SCOPE",
+          "severity": "warning",
+          "message": "Resolved question has no applicable trusted current decision.",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/questions/question.graphify_contracts"
+          },
+          "related_ids": [
+            "question.graphify_contracts"
+          ]
+        }
+      ]
+    }
+  ]
+}

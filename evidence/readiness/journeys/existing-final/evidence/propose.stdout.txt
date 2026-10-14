@@ -1,0 +1,195 @@
+{
+  "format": "gdd-graphify-proposal/0.2",
+  "status": "proposed",
+  "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+  "mapping": {
+    "format": "gdd-graphify-mapping/0.2",
+    "project": {
+      "id": "project.reservations",
+      "title": "Reservation lifecycle",
+      "goal": "Preserve object identity while reserving and cancelling through a bounded lifecycle."
+    },
+    "nodes": [
+      {
+        "observation": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+        "target": "component.reservations",
+        "kind": "component",
+        "description": "Reservation lifecycle module",
+        "rationale": "The observed module is the intended single provider."
+      },
+      {
+        "observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+        "target": "entity.reservation",
+        "kind": "entity",
+        "description": "A mutable Reservation with lifecycle state",
+        "rationale": "The observed class is intended domain state, not an automatically inferred contract."
+      },
+      {
+        "observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+        "target": "action.reserve",
+        "kind": "action",
+        "description": "Reserve a draft Reservation and return that same instance",
+        "rationale": "The existing signature is preserved; its old implementation is not accepted behavior."
+      }
+    ],
+    "edges": [
+      {
+        "observation": "observation.edge.hcc550328740c7c0ff35a7f0e75e41f807da9dad725444fb19243d3765dfe8e1d",
+        "id": "edge.reserve-input",
+        "from": "action.reserve",
+        "to": "entity.reservation",
+        "relation": "depends_on",
+        "rationale": "Interpret the observed parameter type as the intended data dependency, preserving its endpoints and direction."
+      }
+    ]
+  },
+  "model_candidate": {
+    "format": "gdd/0.2",
+    "project": {
+      "id": "project.reservations",
+      "title": "Reservation lifecycle",
+      "goal": "Preserve object identity while reserving and cancelling through a bounded lifecycle."
+    },
+    "nodes": {
+      "component.reservations": {
+        "kind": "component",
+        "description": "Reservation lifecycle module",
+        "maturity": "sketch",
+        "source_refs": [
+          {
+            "source": "source.graphify",
+            "purpose": "provenance",
+            "selector": {
+              "kind": "json-pointer",
+              "value": "/nodes/0"
+            }
+          }
+        ],
+        "label": "reservation.py"
+      },
+      "entity.reservation": {
+        "kind": "entity",
+        "description": "A mutable Reservation with lifecycle state",
+        "maturity": "sketch",
+        "source_refs": [
+          {
+            "source": "source.graphify",
+            "purpose": "provenance",
+            "selector": {
+              "kind": "json-pointer",
+              "value": "/nodes/1"
+            }
+          }
+        ],
+        "label": "Reservation"
+      },
+      "action.reserve": {
+        "kind": "action",
+        "description": "Reserve a draft Reservation and return that same instance",
+        "maturity": "sketch",
+        "source_refs": [
+          {
+            "source": "source.graphify",
+            "purpose": "provenance",
+            "selector": {
+              "kind": "json-pointer",
+              "value": "/nodes/2"
+            }
+          }
+        ],
+        "label": "reserve()"
+      }
+    },
+    "edges": [
+      {
+        "id": "edge.reserve-input",
+        "from": "action.reserve",
+        "to": "entity.reservation",
+        "relation": "depends_on",
+        "source_refs": [
+          {
+            "source": "source.graphify",
+            "purpose": "provenance",
+            "selector": {
+              "kind": "json-pointer",
+              "value": "/edges/2"
+            }
+          }
+        ]
+      }
+    ],
+    "sources": {
+      "source.graphify": {
+        "role": "observation",
+        "title": "Original Graphify observation snapshot; producer claims",
+        "uri": "observations/graphify.raw.json",
+        "format": "graphify-0.9.75-ast",
+        "normative": false,
+        "revision": {
+          "sha256": "f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb"
+        }
+      }
+    },
+    "questions": {
+      "question.graphify_contracts": {
+        "statement": "Clarify the intended behavior, contracts, rules and scenarios; code observations describe the existing implementation and do not automatically define intent.",
+        "targets": [
+          "component.reservations",
+          "entity.reservation",
+          "action.reserve"
+        ],
+        "blocks": [
+          "implementation",
+          "acceptance"
+        ],
+        "status": "open"
+      }
+    }
+  },
+  "binding_candidates": [
+    {
+      "observation": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+      "resource_claim": "reservation.py",
+      "selector_claim": "L1",
+      "status": "unverified",
+      "classification": "code_candidate",
+      "code_revision_claims": {
+        "caller": null,
+        "producer": {}
+      }
+    },
+    {
+      "observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "resource_claim": "reservation.py",
+      "selector_claim": "L1",
+      "status": "unverified",
+      "classification": "code_candidate",
+      "code_revision_claims": {
+        "caller": null,
+        "producer": {}
+      }
+    },
+    {
+      "observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "resource_claim": "reservation.py",
+      "selector_claim": "L5",
+      "status": "unverified",
+      "classification": "code_candidate",
+      "code_revision_claims": {
+        "caller": null,
+        "producer": {}
+      }
+    }
+  ],
+  "omitted_observations": [
+    "observation.edge.hb21d0fe251f651b6c6f81e48fd355a571fa699db7a259a541c8a57493883fbc7",
+    "observation.edge.ha38c1549a23a4d48280ebc82033147dfca64563d0d3f5b110f465e25c6ed5ddc",
+    "observation.edge.he667f51e7028987250c869ea74f7e197cf6f456bb5dff3962cc8d3d7ebd0f7a8",
+    "observation.edge.h2179a3f1337083c5c1dac19d2fea68c77f99d4603f5888d15aabc30ddefc8224"
+  ],
+  "required_actions": [
+    "Review the explicit mapping and intended behavior under the project's trusted mandate.",
+    "Apply through the ordinary authorized source_promotion/model_change process; no approval receipt is fabricated.",
+    "Keep original observations and verify source/code revisions before registering observed or checked bindings."
+  ]
+}

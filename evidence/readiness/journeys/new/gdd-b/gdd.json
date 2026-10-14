@@ -1,0 +1,881 @@
+{
+  "format": "gdd/0.3",
+  "project": {
+    "id": "project.parcel",
+    "title": "Parcel price CLI B",
+    "goal": "Calculate a correct parcel quote from positive integer grams and zone.",
+    "scope": "Three stdlib Python modules and fixed behavioral/architecture checks.",
+    "assumptions": [
+      "The exact CLI spelling and English errors are agent-resolved implementation choices within the brief."
+    ],
+    "workflow": {
+      "mode": "autonomous",
+      "mandate": "The delegated independent test authorizes modeling, implementation and verification of this isolated parcel CLI, and explicitly requests its technical acceptance through the installed workflow; no deployment or external side effects are included.",
+      "gates": {
+        "model_changes": {
+          "requirement": "standing",
+          "authorities": [
+            "actor.independent"
+          ],
+          "scope": [
+            "action.cli",
+            "action.quote",
+            "action.rate"
+          ]
+        },
+        "implementation": {
+          "requirement": "standing",
+          "authorities": [
+            "actor.independent"
+          ],
+          "scope": [
+            "action.cli",
+            "action.quote",
+            "action.rate"
+          ]
+        },
+        "acceptance": {
+          "requirement": "standing",
+          "authorities": [
+            "actor.independent"
+          ],
+          "scope": [
+            "action.cli",
+            "action.quote",
+            "action.rate"
+          ]
+        }
+      }
+    }
+  },
+  "nodes": {
+    "component.cli": {
+      "kind": "component",
+      "description": "Parse process arguments, call pricing, and print a quote or error.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "boundary": {
+        "responsibility": "Parse process arguments, call pricing, and print a quote or error.",
+        "rationale": "Process input/output changes independently of the price formula.",
+        "excludes": [
+          "Rounding weights",
+          "Looking up tariffs",
+          "Calculating handling fees"
+        ]
+      },
+      "interfaces": [
+        "action.cli"
+      ]
+    },
+    "component.pricing": {
+      "kind": "component",
+      "description": "Validate inputs and calculate the complete quote in integer cents.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "boundary": {
+        "responsibility": "Validate inputs and calculate the complete quote in integer cents.",
+        "rationale": "The domain formula is reusable outside process argument parsing.",
+        "excludes": [
+          "Parsing process arguments",
+          "Printing output",
+          "Owning tariff values"
+        ]
+      },
+      "interfaces": [
+        "action.quote"
+      ]
+    },
+    "component.tariffs": {
+      "kind": "component",
+      "description": "Provide the domestic and remote per-kilogram rates.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "boundary": {
+        "responsibility": "Provide the domestic and remote per-kilogram rates.",
+        "rationale": "The table of rates has one owner and a public lookup contract.",
+        "excludes": [
+          "Parsing user input",
+          "Weight rounding",
+          "Handling-fee policy"
+        ]
+      },
+      "interfaces": [
+        "action.rate"
+      ]
+    },
+    "action.cli": {
+      "kind": "action",
+      "description": "Run a command-line parcel quote.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "contract": {
+        "input": {
+          "argv": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "integer"
+        },
+        "errors": {},
+        "preconditions": [],
+        "postconditions": [
+          "On valid arguments print the quote and a newline and return exit code 0.",
+          "Invalid/missing arguments print no quote and return 2 with an English stderr message."
+        ],
+        "external_effects": [
+          "Write the quote to stdout or argument errors to stderr."
+        ],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": false,
+            "rationale": "Public local price calculation needs no identity or privileged effects.",
+            "scenarios": []
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Calculation has no domain mutation; repeated quotes are independent.",
+            "scenarios": []
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.",
+            "scenarios": [
+              "scenario.cli_invalid",
+              "scenario.weights"
+            ]
+          },
+          "concurrency": {
+            "relevant": false,
+            "rationale": "No shared mutable state, I/O transaction, or persisted quote exists.",
+            "scenarios": []
+          },
+          "atomicity": {
+            "relevant": false,
+            "rationale": "No multi-resource mutation or transaction is performed.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {}
+      },
+      "behavior": "Parse WEIGHT as int and ZONE as domestic or remote. Reject a nonpositive weight. Call action.quote once, print the integer cents, and return 0. For invalid arguments return 2 after an English stderr error."
+    },
+    "action.quote": {
+      "kind": "action",
+      "description": "Calculate the complete parcel quote.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "contract": {
+        "input": {
+          "weight_grams": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "zone": {
+            "type": "enum",
+            "values": [
+              "domestic",
+              "remote"
+            ]
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "integer",
+          "minimum": 100
+        },
+        "errors": {
+          "invalid_weight": "Raise ValueError for bool, noninteger, or nonpositive weight without a quote or effects.",
+          "invalid_zone": "Raise ValueError for an unknown zone without a quote or effects."
+        },
+        "preconditions": [],
+        "postconditions": [
+          "Return begun_kg * rate + (50 if zone == remote else 0) in integer cents.",
+          "No state is mutated."
+        ],
+        "external_effects": [],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": false,
+            "rationale": "Public local price calculation needs no identity or privileged effects.",
+            "scenarios": []
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Calculation has no domain mutation; repeated quotes are independent.",
+            "scenarios": []
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.",
+            "scenarios": [
+              "scenario.invalid_weight",
+              "scenario.invalid_zone",
+              "scenario.weights"
+            ]
+          },
+          "concurrency": {
+            "relevant": false,
+            "rationale": "No shared mutable state, I/O transaction, or persisted quote exists.",
+            "scenarios": []
+          },
+          "atomicity": {
+            "relevant": false,
+            "rationale": "No multi-resource mutation or transaction is performed.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {
+          "invalid_weight": [
+            "scenario.invalid_weight"
+          ],
+          "invalid_zone": [
+            "scenario.invalid_zone"
+          ]
+        }
+      },
+      "behavior": "Reject bool/non-integer/nonpositive weight with ValueError. Get action.rate for the zone. Compute begun_kg=(weight_grams+999)//1000. Return begun_kg * rate + (50 if zone == remote else 0)."
+    },
+    "action.rate": {
+      "kind": "action",
+      "description": "Look up the per-begun-kilogram rate.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "contract": {
+        "input": {
+          "zone": {
+            "type": "enum",
+            "values": [
+              "domestic",
+              "remote"
+            ]
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "integer"
+        },
+        "errors": {
+          "invalid_zone": "Raise ValueError for an unknown zone without effects."
+        },
+        "preconditions": [],
+        "postconditions": [
+          "Return 100 for domestic and 150 for remote."
+        ],
+        "external_effects": [],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": false,
+            "rationale": "Public local price calculation needs no identity or privileged effects.",
+            "scenarios": []
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Calculation has no domain mutation; repeated quotes are independent.",
+            "scenarios": []
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.",
+            "scenarios": [
+              "scenario.invalid_zone"
+            ]
+          },
+          "concurrency": {
+            "relevant": false,
+            "rationale": "No shared mutable state, I/O transaction, or persisted quote exists.",
+            "scenarios": []
+          },
+          "atomicity": {
+            "relevant": false,
+            "rationale": "No multi-resource mutation or transaction is performed.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {
+          "invalid_zone": [
+            "scenario.invalid_zone"
+          ]
+        }
+      },
+      "behavior": "Return 100 for domestic, 150 for remote, otherwise raise ValueError."
+    },
+    "rule.price": {
+      "kind": "rule",
+      "description": "Preserve exact quoted amounts and rejection behavior.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "rule": {
+        "category": "behavior",
+        "statement": "Quotes follow the accepted contract, begun-kilogram rounding, input rejection, and CLI exit/output guarantees.",
+        "scope": "global",
+        "blocking": true,
+        "verification": [
+          "behavior.unittest"
+        ]
+      }
+    },
+    "rule.no_cli_tariffs": {
+      "kind": "rule",
+      "description": "Require pricing to mediate access to tariffs.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "rule": {
+        "category": "architecture",
+        "statement": "CLI may import pricing; pricing imports tariffs. Direct CLI imports of tariffs are forbidden.",
+        "scope": "targeted",
+        "blocking": true,
+        "verification": [
+          "architecture.python_ast"
+        ],
+        "constraint": {
+          "relation": "imports",
+          "from": "component.cli",
+          "to": "component.tariffs",
+          "reach": "direct",
+          "policy": "forbid"
+        }
+      }
+    },
+    "scenario.domestic": {
+      "kind": "scenario",
+      "description": "Return/print 100 cents and exit 0.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "scenario": {
+        "category": "normal",
+        "given": "Positive domestic parcel weighing 1 gram.",
+        "when": "Quote from API and CLI.",
+        "then": "Return/print 100 cents and exit 0."
+      }
+    },
+    "scenario.remote": {
+      "kind": "scenario",
+      "description": "Return/print 200 cents and exit 0.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "scenario": {
+        "category": "normal",
+        "given": "Positive remote parcel weighing 1 gram.",
+        "when": "Quote from API and CLI.",
+        "then": "Return/print 200 cents and exit 0."
+      }
+    },
+    "scenario.weights": {
+      "kind": "scenario",
+      "description": "Only a begun kilogram changes the base price; remote handling is exactly 50 cents once.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "scenario": {
+        "category": "boundary",
+        "given": "Weights are 1, 999, 1000, 1001, 2000, 2001 and a large positive integer.",
+        "when": "Quote each zone at kilogram boundaries.",
+        "then": "Only a begun kilogram changes the base price; remote handling is exactly 50 cents once."
+      }
+    },
+    "scenario.invalid_weight": {
+      "kind": "scenario",
+      "description": "Raise ValueError without effects.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "Weight is 0, -1, 1.5, a string, None or bool.",
+        "when": "Call quote.",
+        "then": "Raise ValueError without effects."
+      }
+    },
+    "scenario.invalid_zone": {
+      "kind": "scenario",
+      "description": "Raise ValueError without effects.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "Zone is unknown or blank.",
+        "when": "Call quote or rate.",
+        "then": "Raise ValueError without effects."
+      }
+    },
+    "scenario.cli_invalid": {
+      "kind": "scenario",
+      "description": "Exit 2 with English stderr and no stdout quote.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "Weight is malformed, nonpositive, absent, or the zone is unknown.",
+        "when": "Run CLI.",
+        "then": "Exit 2 with English stderr and no stdout quote."
+      }
+    },
+    "scenario.architecture": {
+      "kind": "scenario",
+      "description": "Report FAIL and the forbidden relationship; after repair report PASS.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.contract",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        },
+        {
+          "source": "source.brief",
+          "purpose": "provenance"
+        },
+        {
+          "source": "source.change",
+          "purpose": "provenance"
+        }
+      ],
+      "scenario": {
+        "category": "architecture",
+        "given": "Actual CLI source contains a direct tariffs import.",
+        "when": "Run the concrete Python AST checker.",
+        "then": "Report FAIL and the forbidden relationship; after repair report PASS."
+      }
+    }
+  },
+  "edges": [
+    {
+      "id": "edge.e1",
+      "from": "action.cli",
+      "to": "component.cli",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.e2",
+      "from": "action.quote",
+      "to": "component.pricing",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.e3",
+      "from": "action.rate",
+      "to": "component.tariffs",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.e4",
+      "from": "action.cli",
+      "to": "action.quote",
+      "relation": "calls"
+    },
+    {
+      "id": "edge.e5",
+      "from": "action.quote",
+      "to": "action.rate",
+      "relation": "calls"
+    },
+    {
+      "id": "edge.e6",
+      "from": "component.cli",
+      "to": "component.pricing",
+      "relation": "imports"
+    },
+    {
+      "id": "edge.e7",
+      "from": "component.pricing",
+      "to": "component.tariffs",
+      "relation": "imports"
+    },
+    {
+      "id": "edge.e8",
+      "from": "rule.no_cli_tariffs",
+      "to": "component.cli",
+      "relation": "constrains"
+    },
+    {
+      "id": "edge.e9",
+      "from": "scenario.domestic",
+      "to": "action.quote",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e10",
+      "from": "scenario.domestic",
+      "to": "action.cli",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e11",
+      "from": "scenario.domestic",
+      "to": "action.rate",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e12",
+      "from": "scenario.domestic",
+      "to": "rule.price",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.e13",
+      "from": "scenario.remote",
+      "to": "action.quote",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e14",
+      "from": "scenario.remote",
+      "to": "action.cli",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e15",
+      "from": "scenario.remote",
+      "to": "action.rate",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e16",
+      "from": "scenario.remote",
+      "to": "rule.price",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.e17",
+      "from": "scenario.weights",
+      "to": "action.quote",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e18",
+      "from": "scenario.weights",
+      "to": "action.cli",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e19",
+      "from": "scenario.weights",
+      "to": "rule.price",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.e20",
+      "from": "scenario.invalid_weight",
+      "to": "action.quote",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e21",
+      "from": "scenario.invalid_weight",
+      "to": "rule.price",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.e22",
+      "from": "scenario.invalid_zone",
+      "to": "action.quote",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e23",
+      "from": "scenario.invalid_zone",
+      "to": "action.rate",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e24",
+      "from": "scenario.invalid_zone",
+      "to": "rule.price",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.e25",
+      "from": "scenario.cli_invalid",
+      "to": "action.cli",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e26",
+      "from": "scenario.cli_invalid",
+      "to": "rule.price",
+      "relation": "verifies"
+    },
+    {
+      "id": "edge.e27",
+      "from": "scenario.architecture",
+      "to": "action.cli",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.e28",
+      "from": "scenario.architecture",
+      "to": "rule.no_cli_tariffs",
+      "relation": "verifies"
+    }
+  ],
+  "sources": {
+    "source.brief": {
+      "role": "input",
+      "title": "Original independent task",
+      "uri": "sources/brief.md",
+      "format": "text/markdown",
+      "normative": false,
+      "revision": {
+        "sha256": "b9be45c57a62c54ac9391555f6d2547aa4aaf1c021abfce3d0dccc563f35d478"
+      }
+    },
+    "source.contract": {
+      "role": "input",
+      "title": "Accepted contract B",
+      "uri": "sources/contract.md",
+      "format": "text/markdown",
+      "normative": true,
+      "revision": {
+        "sha256": "2e50c930f56636cf70a9d5909eea5aa9dd89e02a88db5a9c3807478a36f4aa7b"
+      }
+    },
+    "source.change": {
+      "role": "input",
+      "title": "Remote handling fee",
+      "uri": "sources/change.md",
+      "format": "text/markdown",
+      "normative": false,
+      "revision": {
+        "sha256": "a84d7f497be044a1ae44944c9ff51acbef6fee378f67d4e9a4eea2f44353575a"
+      }
+    }
+  },
+  "questions": {},
+  "record_files": [
+    "records.json"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "format": "gdd-design-review-status/0.3",
+  "spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+  "status": "COMPLETE",
+  "reasons": [
+    "All four advisory assessments are present and match the supplied revisions; findings require judgment."
+  ],
+  "findings": [],
+  "scope": [
+    "action.reserve",
+    "action.cancel"
+  ],
+  "requested_scope": [
+    "action.reserve",
+    "action.cancel"
+  ],
+  "implementation": "implementation.reservation",
+  "code_revision": "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9",
+  "notice": "Advisory review applicability only. This tool does not prove review execution or KISS/DRY compliance and does not grant acceptance.",
+  "review_identity": {
+    "spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+    "implementation": "implementation.reservation",
+    "code_revision": "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9",
+    "scope": [
+      "action.reserve",
+      "action.cancel"
+    ],
+    "reviewer": {
+      "name": "Codex independent existing-code journey",
+      "version": "2026-10-14.session.1"
+    }
+  }
+}

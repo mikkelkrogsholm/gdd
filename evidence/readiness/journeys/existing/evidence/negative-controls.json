@@ -1,0 +1,16 @@
+[
+  {
+    "id": "constructor-return",
+    "result": "FAIL",
+    "exit_code": 1,
+    "receipt": "evidence/controls/constructor-return/check.run.json",
+    "detected": true
+  },
+  {
+    "id": "cancelled-reopen",
+    "result": "FAIL",
+    "exit_code": 1,
+    "receipt": "evidence/controls/cancelled-reopen/check.run.json",
+    "detected": true
+  }
+]

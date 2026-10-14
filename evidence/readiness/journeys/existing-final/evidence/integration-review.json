@@ -1,0 +1,14 @@
+{
+  "verdict": "PASS",
+  "reviewer": "actor.independent-agent",
+  "scope": [
+    "component.reservations"
+  ],
+  "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+  "code_revision": "sha256:08efe473cc0c1ffe6c4c6aad0fd77990e71ff203376bbbc9734844facf09c994",
+  "verified_resources": [
+    "reservation.py",
+    "test_reservation.py"
+  ],
+  "rationale": "Reviewed the real diff and all eight assertions. The existing reserve annotation is preserved. Both successful operations return value; guards reject before mutation; repeated operations preserve identity and state. The two actual files are inside the declared write scope. Tests passed on this combined result before integration."
+}

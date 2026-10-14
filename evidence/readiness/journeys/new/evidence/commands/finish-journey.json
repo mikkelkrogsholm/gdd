@@ -1,0 +1,13 @@
+{
+  "label": "finish-journey",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "finish_journey.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:35:11.319135+00:00",
+  "exit_code": 0,
+  "stdout": "final-cli-domestic: exit 0\n200\n\nfinal-cli-remote: exit 0\n350\n\n{\n  \"format\": \"independent-journey-summary/1\",\n  \"root\": \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project\",\n  \"result\": \"completed\",\n  \"current_contract\": \"B\",\n  \"model_revision\": \"sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16\",\n  \"code_revision\": \"sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970\",\n  \"acceptance_current\": true,\n  \"blocking_checks\": {\n    \"behavior.unittest\": \"PASS\",\n    \"architecture.python_ast\": \"PASS\"\n  },\n  \"red_fixed_b\": \"FAIL\",\n  \"architecture_negative_control\": \"FAIL\",\n  \"missing_code_or_evidence\": \"UNKNOWN\",\n  \"guide_or_api_blocker\": null,\n  \"artifacts\": [\n    \"JOURNEY.md\",\n    \"README.md\",\n    \"gdd-a/gdd.json\",\n    \"gdd-b/gdd.json\",\n    \"evidence/b-graph.html\",\n    \"evidence/b-status-final.json\",\n    \"evidence/fixed-b-red-green.json\",\n    \"evidence/commands.jsonl\"\n  ]\n}\n",
+  "stderr": ""
+}

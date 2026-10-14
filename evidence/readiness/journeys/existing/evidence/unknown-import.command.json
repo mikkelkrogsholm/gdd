@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/gdd",
+    "graphify",
+    "import",
+    "graphify-input.json",
+    "--profile",
+    "graphify-unexamined-1.0",
+    "--output",
+    "observations-unsupported"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:19:22.624887+00:00",
+  "finished_at": "2026-10-14T13:19:22.759945+00:00",
+  "exit_code": 2,
+  "stdout": "{\n  \"format\": \"gdd-report/0.2\",\n  \"tool\": {\n    \"name\": \"gdd-graphify\",\n    \"version\": \"0.1.2\"\n  },\n  \"spec_revision\": null,\n  \"profiles\": [\n    \"import.graphify\"\n  ],\n  \"scope\": [],\n  \"checks\": [\n    {\n      \"check_id\": \"graphify.raw\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Supplied artifact sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb: original bytes hashed; producer completeness and code correctness are not inferred.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"graphify.layout\",\n      \"dimension\": \"integration\",\n      \"result\": \"UNKNOWN\",\n      \"scope\": [],\n      \"reason\": \"Select an explicitly supported Graphify layout profile.\",\n      \"diagnostics\": [\n        {\n          \"code\": \"FORMAT_UNSUPPORTED\",\n          \"severity\": \"warning\",\n          \"message\": \"Select an explicitly supported Graphify layout profile.\",\n          \"location\": {\n            \"file\": \"graphify.raw.json\",\n            \"pointer\": \"\"\n          },\n          \"related_ids\": []\n        }\n      ]\n    },\n    {\n      \"check_id\": \"graphify.integrity\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Original bytes match the recorded SHA-256 and length.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"graphify.projection\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.\",\n      \"diagnostics\": []\n    }\n  ]\n}\n",
+  "stderr": ""
+}

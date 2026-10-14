@@ -1,0 +1,63 @@
+{
+  "format": "gdd-context/0.2",
+  "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+  "scope": [
+    "action.cli",
+    "action.quote",
+    "action.rate"
+  ],
+  "nodes": [
+    "action.cli",
+    "action.quote",
+    "action.rate",
+    "component.cli",
+    "component.pricing",
+    "component.tariffs",
+    "rule.no_cli_tariffs",
+    "rule.price",
+    "scenario.architecture",
+    "scenario.cli_invalid",
+    "scenario.domestic",
+    "scenario.invalid_weight",
+    "scenario.invalid_zone",
+    "scenario.remote",
+    "scenario.weights"
+  ],
+  "edges": [
+    "edge.e1",
+    "edge.e10",
+    "edge.e11",
+    "edge.e12",
+    "edge.e13",
+    "edge.e14",
+    "edge.e15",
+    "edge.e16",
+    "edge.e17",
+    "edge.e18",
+    "edge.e19",
+    "edge.e2",
+    "edge.e20",
+    "edge.e21",
+    "edge.e22",
+    "edge.e23",
+    "edge.e24",
+    "edge.e25",
+    "edge.e26",
+    "edge.e27",
+    "edge.e28",
+    "edge.e3",
+    "edge.e4",
+    "edge.e5",
+    "edge.e6",
+    "edge.e7",
+    "edge.e8",
+    "edge.e9"
+  ],
+  "sources": [
+    "source.brief",
+    "source.change",
+    "source.contract"
+  ],
+  "questions": [],
+  "extensions": []
+}

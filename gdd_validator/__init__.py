@@ -1,5 +1,7 @@
 """GDD 0.2 and 0.3 validation. No application code or pseudocode is executed."""
 
+__version__ = "0.7.0"
+
 from .validator import validate
 from .report import exit_code
 from .graphify_io import import_graphify, verify_graphify, export_graphify
@@ -23,4 +25,3 @@ __all__ = [
     "run_status",
     "advance_run",
 ]
-__version__ = "0.6.0"

@@ -1,0 +1,14 @@
+{
+  "status": "proposed",
+  "omissions": [
+    {
+      "observation": "observation.edge.he667f51e7028987250c869ea74f7e197cf6f456bb5dff3962cc8d3d7ebd0f7a8",
+      "reason": "The return-type reference is preserved as observation; the authoritative return identity belongs in the action contract."
+    },
+    {
+      "observation": "observation.edge.h2179a3f1337083c5c1dac19d2fea68c77f99d4603f5888d15aabc30ddefc8224",
+      "reason": "The constructor call is observed current behavior that conflicts with the requested same-object return. It must not become intended creates."
+    }
+  ],
+  "source_claims": "Producer paths were checked against the actual local reservation.py baseline. Artifact hashes are not source-code hashes or authority."
+}

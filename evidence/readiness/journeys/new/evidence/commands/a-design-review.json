@@ -1,0 +1,27 @@
+{
+  "label": "a-design-review",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "design-review",
+    "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/gdd-a/gdd.json",
+    "--review",
+    "evidence/a-design-review.json",
+    "--implementation",
+    "implementation.parcel",
+    "--code-revision",
+    "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+    "--scope",
+    "action.cli",
+    "--scope",
+    "action.quote",
+    "--scope",
+    "action.rate",
+    "--output",
+    "evidence/a-design-review-check.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:27:28.203513+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/gdd",
+    "workflow",
+    "--help"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:19:22.624773+00:00",
+  "finished_at": "2026-10-14T13:19:22.756041+00:00",
+  "exit_code": 0,
+  "stdout": "usage: gdd workflow [-h] {plan,verify,create,status,event} ...\n\npositional arguments:\n  {plan,verify,create,status,event}\n\noptions:\n  -h, --help            show this help message and exit\n",
+  "stderr": ""
+}

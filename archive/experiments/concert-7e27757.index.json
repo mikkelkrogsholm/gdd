@@ -1,0 +1,1591 @@
+{
+  "format": "concert-archive/1",
+  "source": {
+    "git_commit": "7e27757c34b6fa57ecc69660e263c99e1420649b",
+    "git_tree": "431c203cbb27120e188df7212ff4da78d0c0a14d",
+    "git_path": "examples/concert-app"
+  },
+  "archive": {
+    "path": "concert-7e27757.tar.gz",
+    "sha256": "4888e79870a157e9521e2a5ef226bcbd076fda73c45e2c3c7ee9291d34b50d2d",
+    "size": 1732377
+  },
+  "files": [
+    {
+      "original_path": "examples/concert-app/.gitignore",
+      "retrieval_path": "examples/concert-app/.gitignore",
+      "sha256": "1565ae393b643bf43163ea736a6b2a9b2c5ed6a2f109bd54558d34362278b6e9",
+      "size": 55,
+      "git_mode": "100644",
+      "git_blob": "65f416339ae16b97e503acb88f87bb46a53f7f80"
+    },
+    {
+      "original_path": "examples/concert-app/DESIGN.md",
+      "retrieval_path": "examples/concert-app/DESIGN.md",
+      "sha256": "5feab6d4f7552d04ba9d9153f0415d0f7b50302f150038d20e0a7910e0497ddc",
+      "size": 5833,
+      "git_mode": "100644",
+      "git_blob": "847f72a3489627c522c23acd4f39a42a4ad7ff08"
+    },
+    {
+      "original_path": "examples/concert-app/HTTP.md",
+      "retrieval_path": "examples/concert-app/HTTP.md",
+      "sha256": "2369e726b9ba81f6dabf8c08bea53970b449d346afa4ac0a03fc67c252400259",
+      "size": 5704,
+      "git_mode": "100644",
+      "git_blob": "b02a000b48ea3fcce29cc494a0b2594472333d68"
+    },
+    {
+      "original_path": "examples/concert-app/README.md",
+      "retrieval_path": "examples/concert-app/README.md",
+      "sha256": "3fecdb6cfa1b78f39d25972eac82b16c528d643cc80448658af5690c5a08c7ee",
+      "size": 7194,
+      "git_mode": "100644",
+      "git_blob": "e347c72fed41641881ffb94953ddef664799c8d8"
+    },
+    {
+      "original_path": "examples/concert-app/REQUIREMENTS.md",
+      "retrieval_path": "examples/concert-app/REQUIREMENTS.md",
+      "sha256": "a92cabc4c1e7d6580edc7218d32637de3675fb3606d02d93b4354858d3c5a901",
+      "size": 4254,
+      "git_mode": "100644",
+      "git_blob": "19d1df615e8f748d62e0eb8e9b27ab01783602a8"
+    },
+    {
+      "original_path": "examples/concert-app/concert_app/__init__.py",
+      "retrieval_path": "examples/concert-app/concert_app/__init__.py",
+      "sha256": "1c1a9c3c9c4e5f62d857377254edf252b2dce3d7b07a9972621201e380574ebb",
+      "size": 60,
+      "git_mode": "100644",
+      "git_blob": "3344a9ad83cf4c9b010ddb85c1e3f3795ad56dbc"
+    },
+    {
+      "original_path": "examples/concert-app/concert_app/__main__.py",
+      "retrieval_path": "examples/concert-app/concert_app/__main__.py",
+      "sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+      "size": 749,
+      "git_mode": "100644",
+      "git_blob": "f71041011d5efb74eaf65ad5787364f564b461bc"
+    },
+    {
+      "original_path": "examples/concert-app/concert_app/api.py",
+      "retrieval_path": "examples/concert-app/concert_app/api.py",
+      "sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+      "size": 8250,
+      "git_mode": "100644",
+      "git_blob": "a0d910d2ab834fd412c7a7e68ff047e1ea1df2eb"
+    },
+    {
+      "original_path": "examples/concert-app/concert_app/identity.py",
+      "retrieval_path": "examples/concert-app/concert_app/identity.py",
+      "sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+      "size": 1616,
+      "git_mode": "100644",
+      "git_blob": "7101410241f0d35acf36f40d0b2ae5d71e01c18b"
+    },
+    {
+      "original_path": "examples/concert-app/concert_app/reservations.py",
+      "retrieval_path": "examples/concert-app/concert_app/reservations.py",
+      "sha256": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+      "size": 4556,
+      "git_mode": "100644",
+      "git_blob": "5a9a74c4256d046922236ff6111460fc1efbc9ef"
+    },
+    {
+      "original_path": "examples/concert-app/concert_app/static/app.js",
+      "retrieval_path": "examples/concert-app/concert_app/static/app.js",
+      "sha256": "d26147db8171dee45bcbee3990fb72e72d4a2e0321e3db94553fa61dd9e74cbb",
+      "size": 20984,
+      "git_mode": "100644",
+      "git_blob": "af39ffb4fed2c853ca87927046d1ec1d301e563f"
+    },
+    {
+      "original_path": "examples/concert-app/concert_app/static/index.html",
+      "retrieval_path": "examples/concert-app/concert_app/static/index.html",
+      "sha256": "57e8730f0b0d4b06fb3eb609e72f8ddf563040d17a1c7c9a3378c031a7d40739",
+      "size": 4233,
+      "git_mode": "100644",
+      "git_blob": "d169646d4b59c9acdce029231b71bbed5db93913"
+    },
+    {
+      "original_path": "examples/concert-app/concert_app/static/style.css",
+      "retrieval_path": "examples/concert-app/concert_app/static/style.css",
+      "sha256": "8875cb9d2757d28d9bbf2946ac58f214efbc5ab0025ee3a66de6492fed400c89",
+      "size": 8089,
+      "git_mode": "100644",
+      "git_blob": "9483712b431f2dc94d3520f72e3166dd3bd5e1dc"
+    },
+    {
+      "original_path": "examples/concert-app/concert_app/storage.py",
+      "retrieval_path": "examples/concert-app/concert_app/storage.py",
+      "sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+      "size": 5915,
+      "git_mode": "100644",
+      "git_blob": "db6662fa0985493aaec4a4263da42e2fa542e763"
+    },
+    {
+      "original_path": "examples/concert-app/dispatches/phase-a.package.backend.json",
+      "retrieval_path": "examples/concert-app/dispatches/phase-a.package.backend.json",
+      "sha256": "87e4b50782767b6af254b7b3d6ffa30204b7f712427fc3aa64aebf63b1c81b52",
+      "size": 136315,
+      "git_mode": "100644",
+      "git_blob": "255271631c0d38cf4b9bf017d165396efe8e73e8"
+    },
+    {
+      "original_path": "examples/concert-app/dispatches/phase-a.package.frontend.json",
+      "retrieval_path": "examples/concert-app/dispatches/phase-a.package.frontend.json",
+      "sha256": "ffe6414be39bb8af8caf552ca19fb82c69f845179abf259f2e36b895a01bbf97",
+      "size": 150287,
+      "git_mode": "100644",
+      "git_blob": "d761f158931d17845e3c0b87507e37b205613a46"
+    },
+    {
+      "original_path": "examples/concert-app/dispatches/phase-a.package.transport.json",
+      "retrieval_path": "examples/concert-app/dispatches/phase-a.package.transport.json",
+      "sha256": "d6909a157efa1acd95ad72ead9ee1018d7ab0b5ee0ebfe344e4c449692ea054f",
+      "size": 136372,
+      "git_mode": "100644",
+      "git_blob": "24f6f5c4f48f00902ae1ed537645262cf44ee574"
+    },
+    {
+      "original_path": "examples/concert-app/dispatches/phase-b.package.backend.json",
+      "retrieval_path": "examples/concert-app/dispatches/phase-b.package.backend.json",
+      "sha256": "9894566a6a744f65dee5c2f70e35650e69b2a9e964a19a4897abf79cb18195a2",
+      "size": 166570,
+      "git_mode": "100644",
+      "git_blob": "f484d3e67109d5572f93d63bc3990a4528462108"
+    },
+    {
+      "original_path": "examples/concert-app/dispatches/phase-b.package.presentation.json",
+      "retrieval_path": "examples/concert-app/dispatches/phase-b.package.presentation.json",
+      "sha256": "be48d3486082fb8327185f3fe7374ad0596191fae978b5b8762bd57a9553c195",
+      "size": 166514,
+      "git_mode": "100644",
+      "git_blob": "e9f7d766a7ce286825df11c858294ba8fcb48d20"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/README.md",
+      "retrieval_path": "examples/concert-app/evidence/README.md",
+      "sha256": "fc5200464952a6fa8c76a973d7192b7132a7911219b6ccb2fa37ecf085262f49",
+      "size": 4247,
+      "git_mode": "100644",
+      "git_blob": "c2525f0556a0529d8ef064b250590d20cb13e055"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/checker.host.run.json",
+      "retrieval_path": "examples/concert-app/evidence/checker.host.run.json",
+      "sha256": "62c87245954dff2371763e62a70d93bce52dd656fee945777f305f81f46b14c6",
+      "size": 586,
+      "git_mode": "100644",
+      "git_blob": "fd1636fee85008de5f0a3789cb555286c69e682f"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/checker.worker.run.json",
+      "retrieval_path": "examples/concert-app/evidence/checker.worker.run.json",
+      "sha256": "829869446fa2255efcd31632327b3d48ce4eec4a720cd5efee85ff6fcaf48279",
+      "size": 554,
+      "git_mode": "100644",
+      "git_blob": "bacb0010ab6b9b4d0e514583c3cd6640963bc492"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/design.lint.run.json",
+      "retrieval_path": "examples/concert-app/evidence/design.lint.run.json",
+      "sha256": "873a8c6e4eec6a197a2c879b0e97ac4ecf3e1897e7c4f4f8c1bf08462f531d52",
+      "size": 1598,
+      "git_mode": "100644",
+      "git_blob": "5b95904330476e832f7829af2e5bf37906a91684"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/final.audit.json",
+      "retrieval_path": "examples/concert-app/evidence/final.audit.json",
+      "sha256": "de6468abbf28bb1e717d3802e2b3fb1935c07a7c86401da348ab1a5407fbd576",
+      "size": 1173,
+      "git_mode": "100644",
+      "git_blob": "e01336a8436e3a7cf95c9e55e450656f461eae1c"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/acceptance.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/acceptance.json",
+      "sha256": "bd700f16aec5906a181db3c730a610d91c4e60f729368d093df7c50e1f7a5512",
+      "size": 19535,
+      "git_mode": "100644",
+      "git_blob": "dfc3a39f7013347f3d3faaec823e50202719c617"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/backend.host.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/backend.host.run.json",
+      "sha256": "2b1103e2e3f8f443097c05994a606c884702301bc77d3eb26f83986979093f34",
+      "size": 609,
+      "git_mode": "100644",
+      "git_blob": "eeb7813a0a01cb49d90045edee862e7f8e14a064"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/backend.review.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/backend.review.json",
+      "sha256": "329e4483e26d3f6817549ee81373f03830150a358e3bca414bdee021bba6be6c",
+      "size": 329,
+      "git_mode": "100644",
+      "git_blob": "5548d6651873820fdc58661f85ebdcddfce4c119"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/backend.worker.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/backend.worker.json",
+      "sha256": "7ba720eb89ea512624f438720c7986558cfc8ab9cd1f2906decf5162f5a48989",
+      "size": 1915,
+      "git_mode": "100644",
+      "git_blob": "a0be705cb127af05642376c88a7665037e9ce980"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/browser.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/browser.run.json",
+      "sha256": "0b4982bf7c4abc6fb46ec477d3114c134528022244ff3650b70d20ec6c8978b3",
+      "size": 1754,
+      "git_mode": "100644",
+      "git_blob": "2da54e08a6f1f8853593d4bc6edc138a651f247a"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/capacity.bypass.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/capacity.bypass.run.json",
+      "sha256": "8c5f4b09c5c355fd9da63cc6b030431d332c6d5b2204ee032ff5dd2c4abadf3f",
+      "size": 3474,
+      "git_mode": "100644",
+      "git_blob": "edadfd67dc1959857a9aca1589becb31ce2bf1ad"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/code.initial.snapshot.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/code.initial.snapshot.json",
+      "sha256": "c2da654ec439e38c29311fa27cad4be9f9b51fdf4b5373e293c0408858738ca5",
+      "size": 208,
+      "git_mode": "100644",
+      "git_blob": "9f2f99689fc229ab5b4082c0a14c1f7435e75553"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/code.snapshot.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/code.snapshot.json",
+      "sha256": "9664d60a904eae72aec6976e7456b17e18bf1b17385c1e0dff03575dfd3dc640",
+      "size": 1283,
+      "git_mode": "100644",
+      "git_blob": "3d20dff8c2d841f399a001637ea9e5a34feefa06"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/database.sql",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/database.sql",
+      "sha256": "953d0127838ad73c45349037ca8d6c2e79c6a949d014f44df58ad2605bbf936b",
+      "size": 1329,
+      "git_mode": "100644",
+      "git_blob": "a2736af3d5c4c87ba372a6c15b790fdf45f32a94"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/design.review.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/design.review.json",
+      "sha256": "11516b9091bbdae22bbe59c1be8cc039c75c84a712309b9d085c2be9d6240ec7",
+      "size": 1938,
+      "git_mode": "100644",
+      "git_blob": "466444b0af9c6bfe9a05e1beb9463f00b002aa92"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/design.review.status.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/design.review.status.json",
+      "sha256": "4453b5188146a7748e5eedc589a774b198e64797920ff30938093664e0221e82",
+      "size": 1690,
+      "git_mode": "100644",
+      "git_blob": "b0f0a36ec273c981488273aa4faa0ac1a6d46add"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/desktop.png",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/desktop.png",
+      "sha256": "353eea389d24aea6b6ff01395757fc08332a7287e538810230376ae913738ca1",
+      "size": 155797,
+      "git_mode": "100644",
+      "git_blob": "b15d97e45a9467051188136ec45a20211fda33a9"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/frontend.host.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/frontend.host.run.json",
+      "sha256": "2d3d67ffafb87361871ad1dfaef3d57d07efd2bad75e50f01a1fadbad98a44ba",
+      "size": 515,
+      "git_mode": "100644",
+      "git_blob": "34ec84dcceaf36882099723e5c29018760cd20c0"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/frontend.review.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/frontend.review.json",
+      "sha256": "67f268f88f74790e4102fb6fe353ef0da0f0a1a3e14bdc333144d7fb12307a27",
+      "size": 328,
+      "git_mode": "100644",
+      "git_blob": "708e27fd5fe656070c0423661f0c3a3ef4c141b4"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/import.clean.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/import.clean.json",
+      "sha256": "2b38064ecd3c6ab812949c090dd4f7c21734acd47fc861d1e3021a13502dcce0",
+      "size": 9072,
+      "git_mode": "100644",
+      "git_blob": "624629575ec4975279969d6302ebf30f79ce41ce"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/import.controls.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/import.controls.json",
+      "sha256": "12134e523356632562759be8ffd1407566d81c05b066285b22b5f9ba27a67981",
+      "size": 41284,
+      "git_mode": "100644",
+      "git_blob": "b18a11e6871da8b2f4d830fadd142f5eee61fac8"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/late-review-retrieved-output.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/late-review-retrieved-output.json",
+      "sha256": "5df50b7a13ff567a8e8b6159954edbf2a40b952462534000e409c5b9e24dba51",
+      "size": 660,
+      "git_mode": "100644",
+      "git_blob": "5ee396b5b2a0b88bfd9cde94ae4ca8c53c9c5a23"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/metadata.correction.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/metadata.correction.json",
+      "sha256": "614d11a35042226fdceb0406d9d33d975fc548f193c8af10f9c017dbee6235cf",
+      "size": 352,
+      "git_mode": "100644",
+      "git_blob": "1cc21826f7b107da98d6cd591925531c1d7403c9"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/mobile.png",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/mobile.png",
+      "sha256": "5bb92cb3e2ab2d60765a132c3fb4c59ff2f0fb75cf0317aa805d9c604d4e1a66",
+      "size": 186762,
+      "git_mode": "100644",
+      "git_blob": "627038dc52997323eedc6028f0deb096004f8601"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/plan.report.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/plan.report.json",
+      "sha256": "6ac1952bf7a95c9c618d1660cd6d0da8c084ae7445dd4bef11348518d0013d00",
+      "size": 5725,
+      "git_mode": "100644",
+      "git_blob": "93e75a2edc2fd493815dee5326026929832a7b64"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/pytest.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/pytest.run.json",
+      "sha256": "7e8de116fa3d60243a3a96552e6ddf47c34d2072f35740898eda09e187117761",
+      "size": 690,
+      "git_mode": "100644",
+      "git_blob": "97b4fe328c4c70af171d1366693b938cfed813da"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/status.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/status.json",
+      "sha256": "aff5d8d8f22e6dae09225a115f321e6322f7ba9c6da20d60d3e75c1dd3b52491",
+      "size": 19225,
+      "git_mode": "100644",
+      "git_blob": "501570fd97130e1e88a4bd441afa7f25ad8c8fd0"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/transport.fixed.host.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/transport.fixed.host.run.json",
+      "sha256": "96b9aff85d9dd55332518aaafb273a8b9973242d6ceeff67251696218ce7b14f",
+      "size": 597,
+      "git_mode": "100644",
+      "git_blob": "2233733430bddd1a75157e36141b9a3df5bf541b"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/transport.host.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/transport.host.run.json",
+      "sha256": "8ff479d928d672c2d44ad87ecd22d902453b7694aa93b268da0d12b0ee1056eb",
+      "size": 37892,
+      "git_mode": "100644",
+      "git_blob": "2425c3f13a1c518bd708260a38bdfbf8a38b8341"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-a/transport.review.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-a/transport.review.json",
+      "sha256": "4afbfd599bf873e54e33b43da44d17364e9bdfe77112ba40e7136af215bb221b",
+      "size": 429,
+      "git_mode": "100644",
+      "git_blob": "34bb000c234f7b5288dc4e53916379083119c264"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/acceptance.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/acceptance.json",
+      "sha256": "0fff2c16377320d2a3ab3081aff7809eedb210f7ff84730f139f316b07a25e3b",
+      "size": 30727,
+      "git_mode": "100644",
+      "git_blob": "283f73e2deabda7631940f681a6ddc30f2f1833e"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/backend.host.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/backend.host.run.json",
+      "sha256": "e3672d0bb8a05d1b685ba7b22af374704bb9c1eab313f2715b4d3cacbbe26c7c",
+      "size": 651,
+      "git_mode": "100644",
+      "git_blob": "45813ecdd06dc95448c73739df5fd9f6107467d1"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/backend.review.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/backend.review.json",
+      "sha256": "90d5f81713ba0dda6f896213f2460e3e1a7cda9431e29e85758ad0ff477b8246",
+      "size": 433,
+      "git_mode": "100644",
+      "git_blob": "13b84914ed598a335b8f3336544e4b973e3ffd4f"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/browser.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/browser.run.json",
+      "sha256": "3a210b7ced2a2572ba23651dffbe6a9b976be58af3891837659e3e6be6794502",
+      "size": 2485,
+      "git_mode": "100644",
+      "git_blob": "2df6f3a1e9828335f93d3ed4cf1a93472d12a7e2"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/capacity.bypass.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/capacity.bypass.run.json",
+      "sha256": "a1817a98ed5e0ae95fd344ca602fa3299b9e85629196d3ded1106b994c913262",
+      "size": 3468,
+      "git_mode": "100644",
+      "git_blob": "8cb7075ee020c142222d0623aee1bbdffa218302"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/change.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/change.json",
+      "sha256": "0892c48d2d069fdf63b5983f1d23b6b235a7de567a01b0679d9b20fa59faedc3",
+      "size": 832,
+      "git_mode": "100644",
+      "git_blob": "71888847bd5becd7411f4948aa407ef6ca2a26cd"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/clean-captures.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/clean-captures.json",
+      "sha256": "a7642cab7a5bf9ad067e294c1e34fac2a6d02134e2d8a6c2ecafa9fbe0e40382",
+      "size": 825,
+      "git_mode": "100644",
+      "git_blob": "96370becc67457d995f0bdff62c4b2e33e448c41"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/code.snapshot.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/code.snapshot.json",
+      "sha256": "1994511ecb5481e2541efe72de07a8deca967057429f099a5915c685f3e881c3",
+      "size": 1391,
+      "git_mode": "100644",
+      "git_blob": "ee3d43a8259e754a4ece061a96b1bab36fd97d25"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/database.activation.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/database.activation.json",
+      "sha256": "334d2c0caf014f0a801183767388ac4f7e7e1294768f62eb4f184db054098eb2",
+      "size": 520,
+      "git_mode": "100644",
+      "git_blob": "ec02279b76ae7b467f4d83ba607a8a09c7130588"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/database.sql",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/database.sql",
+      "sha256": "7bf185eaa236c9941ccca2fe094101f31bc95e6ee7ce91322a587308bf3741b3",
+      "size": 1887,
+      "git_mode": "100644",
+      "git_blob": "0fa68896ca5cc06f772186f3d7f1d3a85456b880"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/design.review.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/design.review.json",
+      "sha256": "14bbaa895bbd3961e6c80c8850956176f0f217d4cc0fb33151a602361c3c7372",
+      "size": 2191,
+      "git_mode": "100644",
+      "git_blob": "2e38a0a10347b478d05165aaf69adccbba293d13"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/design.review.status.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/design.review.status.json",
+      "sha256": "e137041aeed24970826a229fb0c21242a7bfdcc6ca9c01d3155aaf3955100cfd",
+      "size": 1690,
+      "git_mode": "100644",
+      "git_blob": "ef6aa7cf17eb184b370c40e8d9257befcc4eb3aa"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/desktop.clean.png",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/desktop.clean.png",
+      "sha256": "34382c0c22d1a19f686dcee4f9fb352d1663d839227d9c79ea173963e288e0b8",
+      "size": 180307,
+      "git_mode": "100644",
+      "git_blob": "6c2533c81f1f04de89a4d5d5306d121dca135685"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/desktop.png",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/desktop.png",
+      "sha256": "db245bb3583df38f1d036bd7e22f9d41319cb9daf2b0b38b9806894a37d2118f",
+      "size": 180355,
+      "git_mode": "100644",
+      "git_blob": "f35d8c3092d211cf055b462df0ad6ca309989d66"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/import.clean.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/import.clean.json",
+      "sha256": "f174dab9ce67b463d175c0a1b91d9fc47d58fea03bd3c4bd3b7b184f517e4df6",
+      "size": 9072,
+      "git_mode": "100644",
+      "git_blob": "848cdf7a5b9185b63f6e5ea88d1854bc778b2461"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/import.controls.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/import.controls.json",
+      "sha256": "413995cbd9de72431fe6c70ffbc5fc43f04965d62b51bf673b6275fe9afc512d",
+      "size": 41284,
+      "git_mode": "100644",
+      "git_blob": "83cd31302d0f97e9ffbbcbd4dcacaa0f1331da2a"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/mobile.clean.png",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/mobile.clean.png",
+      "sha256": "1cf24056f5929492087ed44bc80cf0bae4e27c01b4d348e120761421da8b197a",
+      "size": 175239,
+      "git_mode": "100644",
+      "git_blob": "bcae3c6d2de72d8f6bcd2c823792911294f40ecf"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/mobile.png",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/mobile.png",
+      "sha256": "e6d484f26bfa5eef692d37f67f4a290aedd923677b63ee9af540c0f2e84f79e7",
+      "size": 219634,
+      "git_mode": "100644",
+      "git_blob": "b0c6e94e74cad1fda213cf63beb6e0de30a15c6b"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/old-a-evidence.report.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/old-a-evidence.report.json",
+      "sha256": "1ec73f3bb8559bca6cb6d1c5436ff067d7a09d4c085bfa577772f4ef81443b8a",
+      "size": 13516,
+      "git_mode": "100644",
+      "git_blob": "d60ada9cbf282144d395e0858b2855a3810246d9"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/plan.report.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/plan.report.json",
+      "sha256": "be094c52828a069ba5cce9fc049c042210947802476092b4dcee30617ccc3f2b",
+      "size": 391884,
+      "git_mode": "100644",
+      "git_blob": "3f7f55f17baec8d539dd157c03717f9ee20ed0f5"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/presentation.host.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/presentation.host.run.json",
+      "sha256": "2c5a0b2e1a61de66a3d0c4b10944a853ec86cb759e9c7944a465f8d3ddce161e",
+      "size": 606,
+      "git_mode": "100644",
+      "git_blob": "8be9478658051bb64c31a46bc47bc52b454c6ec1"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/presentation.integrated.host.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/presentation.integrated.host.run.json",
+      "sha256": "4197fcab26125631f43ecef336bc73ec5cd27c52aa9ea709d30910198b0d7e46",
+      "size": 683,
+      "git_mode": "100644",
+      "git_blob": "ca65cdead82708e21105f373c74ae943aab64f76"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/presentation.review.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/presentation.review.json",
+      "sha256": "42467ec4a3b7eb5a21f889deb171df8c32b58b9ab8fb72725a0125641671f978",
+      "size": 516,
+      "git_mode": "100644",
+      "git_blob": "1a1e9f81ba2af6a5640902448f74ddb0026a82c0"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/presentation.syntax.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/presentation.syntax.run.json",
+      "sha256": "6a1f46362f067d3bf32e0e805b39336497a67e0553ed9e2f565d63aa5a8014ac",
+      "size": 424,
+      "git_mode": "100644",
+      "git_blob": "88361ad119f010991099766e60bb5553ee058f45"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/pytest.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/pytest.run.json",
+      "sha256": "4c6434ff59e6138b8c5f15fe3f5218cd3ec9ab9d354e2f540bb922386984142c",
+      "size": 691,
+      "git_mode": "100644",
+      "git_blob": "0d9c56aaddb1fb673b40bcfbdab32d4745857651"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/records.before-reconciliation.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/records.before-reconciliation.json",
+      "sha256": "85486bb3dcd4a40afcfedb573bd358f43fc1f13a0145035618e75fa97813e6de",
+      "size": 25757,
+      "git_mode": "100644",
+      "git_blob": "ca6773ec4698138b2ce984a7b3d4498275d2df62"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/records.reconciliation.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/records.reconciliation.json",
+      "sha256": "1e0056ff6daf273770664314a1fe13fca9b601f0051ef5b7e7645fa24fbc55ab",
+      "size": 760,
+      "git_mode": "100644",
+      "git_blob": "0e7df11eb24d77a90c226750d88315476209bc9e"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/requirements.red.run.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/requirements.red.run.json",
+      "sha256": "21b46e7c0a85899e6e5635fc8ff8f0c48027c98f2a96e5087e70fc8f469f8e1c",
+      "size": 11372,
+      "git_mode": "100644",
+      "git_blob": "43fe1e011a141f451a0f18a3be95817dc18c1560"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/status.current.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/status.current.json",
+      "sha256": "ec062a87e0ab1fa94bb390a40730940aa921e66964208ca69b64d26a47ccee84",
+      "size": 16319,
+      "git_mode": "100644",
+      "git_blob": "de6f8d6811c90753c1975602f8a7be1cf88fec91"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/status.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/status.json",
+      "sha256": "00b73c0a8b386c4d5eceaf668f622a92cd86b0bd369d343e4adbe16ea732abca",
+      "size": 30416,
+      "git_mode": "100644",
+      "git_blob": "fa0372946dbd100f35b84f1a8d454ac5aeaf18a7"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/validation.report.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/validation.report.json",
+      "sha256": "997b89c23cfab2608e54e52f181d8adda4a715cd6a3eef6477901be3287ec7d7",
+      "size": 7709,
+      "git_mode": "100644",
+      "git_blob": "2e63374dae642c65bbfbf9fecb3ac974a6bee106"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/view.render.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/view.render.json",
+      "sha256": "e33376b4515b87e453562831800122d60780eb0110d6565973818b14cff24055",
+      "size": 501,
+      "git_mode": "100644",
+      "git_blob": "5d20485c36cd56b44135c349fd7f4afd3ddb7fe5"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/phase-b/view.verify.json",
+      "retrieval_path": "examples/concert-app/evidence/phase-b/view.verify.json",
+      "sha256": "62bc52a91b169cc9ff29d8d8d39078165dae5588fe2b56b91e168b5ea202914b",
+      "size": 554,
+      "git_mode": "100644",
+      "git_blob": "cfa269473dabb9a9bde0e02dc3bae3f0e917d2c6"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/dispatches/phase-a.package.backend.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/dispatches/phase-a.package.backend.json",
+      "sha256": "a27f6caa3ce0782979a0833e52268be5145b1eb624f5fb96664780c92b2fa9b1",
+      "size": 136316,
+      "git_mode": "100644",
+      "git_blob": "cf6e93bc1e7cb28f4b8899c4e2fd94a269378d71"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/dispatches/phase-a.package.frontend.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/dispatches/phase-a.package.frontend.json",
+      "sha256": "705379a90ebef169934bf16b5da8eeae7574bffe79a5106b8f4cac2c3ce22898",
+      "size": 150288,
+      "git_mode": "100644",
+      "git_blob": "419132046f6fd3c3e740dc42d272632113668fa6"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/dispatches/phase-a.package.transport.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/dispatches/phase-a.package.transport.json",
+      "sha256": "46a3e2721cecdfff8cab8a760fa60f74851a91b77a4cb866f307021df37d7c4f",
+      "size": 136373,
+      "git_mode": "100644",
+      "git_blob": "373c24de49bc8becf095ad1d3a3e92be65754068"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/dispatches/phase-b.package.backend.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/dispatches/phase-b.package.backend.json",
+      "sha256": "2d1f5b1e8e69dd8c5c29cb5af97cd22de62fdf13847856f08b9502b28b4fd625",
+      "size": 166569,
+      "git_mode": "100644",
+      "git_blob": "0018ff4aaae682b9ed0cfff26231d66f16822cdc"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/dispatches/phase-b.package.presentation.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/dispatches/phase-b.package.presentation.json",
+      "sha256": "3fe4cbb946ff876fb6e371e84d891ea20cd3385226deb05923d5baa4906f2e04",
+      "size": 166513,
+      "git_mode": "100644",
+      "git_blob": "0a832d3cf0ca0084044b5961533e3971fe7474c0"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/host.acceptance.a.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/host.acceptance.a.json",
+      "sha256": "2d3ffc1394c59db08587f43ee3d4ada1888d9bb6f405370523bd7e27e239fcd1",
+      "size": 2224,
+      "git_mode": "100644",
+      "git_blob": "0e737f9b773841703e165d883ff81983b946dadc"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/host.acceptance.b.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/host.acceptance.b.json",
+      "sha256": "ffcca59aa618eb3d2e28d56f73f899b38aca81cd90d4e3595b8015c84efa7502",
+      "size": 2224,
+      "git_mode": "100644",
+      "git_blob": "acff27a61c1e3c8c813c49e19c8c2e3b350e2149"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-a/acceptance.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-a/acceptance.json",
+      "sha256": "888a1fbdde9bedec6f414f6410affe117d700830289d56cce9271195c8e049e4",
+      "size": 19634,
+      "git_mode": "100644",
+      "git_blob": "6d4a46b44288d5ae70b7d024a00850b51675c376"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-a/browser.command.run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-a/browser.command.run.json",
+      "sha256": "77b366d459ec960ae6acdec1e5745e9abd40e80f28e838e0393859493f35d025",
+      "size": 580,
+      "git_mode": "100644",
+      "git_blob": "af6e35ccdbe9bd73afe45237376c492e2926de27"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-a/browser.run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-a/browser.run.json",
+      "sha256": "a1f1e26b45bff924a3cd994aa31d7a7113dd0c52213d0f572f3cbbcddf904011",
+      "size": 1755,
+      "git_mode": "100644",
+      "git_blob": "28cffd1675c1d728cb5ca9a277826967a40ec692"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-a/capacity.bypass.run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-a/capacity.bypass.run.json",
+      "sha256": "f56a96935cadc2f753a56efc61da95e53fb40e999bccc78f5616e5b532faec81",
+      "size": 3479,
+      "git_mode": "100644",
+      "git_blob": "eb7c7e91c3f5dc8bd482ae1ca5cd30878235a410"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-a/code.snapshot.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-a/code.snapshot.json",
+      "sha256": "9664d60a904eae72aec6976e7456b17e18bf1b17385c1e0dff03575dfd3dc640",
+      "size": 1283,
+      "git_mode": "100644",
+      "git_blob": "3d20dff8c2d841f399a001637ea9e5a34feefa06"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-a/import.controls.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-a/import.controls.json",
+      "sha256": "12134e523356632562759be8ffd1407566d81c05b066285b22b5f9ba27a67981",
+      "size": 41284,
+      "git_mode": "100644",
+      "git_blob": "b18a11e6871da8b2f4d830fadd142f5eee61fac8"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-a/pytest.run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-a/pytest.run.json",
+      "sha256": "e400bd886700e31aa6c911c475a69b134866a2a4e7acd707e26c32f5e4bfac06",
+      "size": 674,
+      "git_mode": "100644",
+      "git_blob": "f2f2389bc2f16df6a01c023783da0071eaab33d8"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-a/status.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-a/status.json",
+      "sha256": "8e5debd3f1e11055d3b7a9708dc8a871cb9abd9a1398977773dcbf8fb3d525b6",
+      "size": 19324,
+      "git_mode": "100644",
+      "git_blob": "66333a68db27ab4a1a30c14b203c016105955cf0"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-b/acceptance.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-b/acceptance.json",
+      "sha256": "3c9170b2361c875f2f2f90164b34f1e2b519c6b86e24bbaa5da165d0012333e1",
+      "size": 16692,
+      "git_mode": "100644",
+      "git_blob": "1d672a7840420205fecff3742f3c41d39bb5ee8c"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-b/browser.command.run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-b/browser.command.run.json",
+      "sha256": "765307f8eb7bf3c0d1cd1302c2853272f3c40c1a1be8d6a274ed08214a8344fa",
+      "size": 580,
+      "git_mode": "100644",
+      "git_blob": "4c0ea74038019bed7e8ad160cbe676723da1a053"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-b/browser.run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-b/browser.run.json",
+      "sha256": "d1700bb91d4f92b0faafec1c00670af04b8f852bb4602649638a3750e638f68b",
+      "size": 2486,
+      "git_mode": "100644",
+      "git_blob": "edb20fe2054bea80bf730ea5fc2e39982f327606"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-b/capacity.bypass.run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-b/capacity.bypass.run.json",
+      "sha256": "3ef5922d8471ff9c0fe9fa8796200aa016236dfe24d64f635ea597ce0d42c826",
+      "size": 3479,
+      "git_mode": "100644",
+      "git_blob": "13bb2f3a3864a4caf1ae14934f4d40d91640bf5e"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-b/code.snapshot.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-b/code.snapshot.json",
+      "sha256": "1994511ecb5481e2541efe72de07a8deca967057429f099a5915c685f3e881c3",
+      "size": 1391,
+      "git_mode": "100644",
+      "git_blob": "ee3d43a8259e754a4ece061a96b1bab36fd97d25"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-b/import.controls.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-b/import.controls.json",
+      "sha256": "413995cbd9de72431fe6c70ffbc5fc43f04965d62b51bf673b6275fe9afc512d",
+      "size": 41284,
+      "git_mode": "100644",
+      "git_blob": "83cd31302d0f97e9ffbbcbd4dcacaa0f1331da2a"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-b/pytest.run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-b/pytest.run.json",
+      "sha256": "37a7db19911cf499313d658c13d9fdb535d40ad4bc73e44cf3443b6f9ab73736",
+      "size": 675,
+      "git_mode": "100644",
+      "git_blob": "6afaa599f3e4da0455015d083458d7ffe2fe28b1"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-b/requirements.red.run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-b/requirements.red.run.json",
+      "sha256": "b5e7c73c2b5d8e379ad4d4373da851359add4ad80ec2fb213fa0062043d25038",
+      "size": 11356,
+      "git_mode": "100644",
+      "git_blob": "54a5c3c20c10c72bea71b19926684f7f8e09d8ff"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/phase-b/status.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/phase-b/status.json",
+      "sha256": "1ef9fb451d83d6b87f250f8e19d2c4ed2ec227c1979d90973fd343213baa89f6",
+      "size": 16381,
+      "git_mode": "100644",
+      "git_blob": "b13f7bfa6fb6186279fac065e93b0c6a31b9083f"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/provenance.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/provenance.json",
+      "sha256": "291a73d61b1a52249feb85f50e339b51ddfeca44df8aa45577f137a04c525125",
+      "size": 729,
+      "git_mode": "100644",
+      "git_blob": "56614a2c8681f8f1958cb0a1971909318c3e619b"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000001.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000001.json",
+      "sha256": "8af95763aa0960e348051fc5502b4723e1620509c93e7179de73d42b8b678b1e",
+      "size": 494,
+      "git_mode": "100644",
+      "git_blob": "4152def0deb6786babdc68e64063e35857f75fb3"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000002.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000002.json",
+      "sha256": "f832a6b3a6057795b21bef83cf1be3a1943dd59f03039f1b60a4158b66c17f80",
+      "size": 497,
+      "git_mode": "100644",
+      "git_blob": "5ca13939ca70ea7c63f78db165d0e696987e9390"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000003.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000003.json",
+      "sha256": "6e18a2b68e191e50f949ae8bf619594880fdd89382297fd849854291a297741b",
+      "size": 500,
+      "git_mode": "100644",
+      "git_blob": "e1485034600622833b54aecb39e52f4e2b979906"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000004.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000004.json",
+      "sha256": "3fdc80454366bfa75cc18553bd2bcaacc1ff78bb910e5913824b54713de744a7",
+      "size": 831,
+      "git_mode": "100644",
+      "git_blob": "d5b35489a6fb011771c0c9e8d5282a0d9c4f02a1"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000005.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000005.json",
+      "sha256": "4130e0062554743cf487e33d47597d6fc06765282f2fb0db60bb7578440758f6",
+      "size": 983,
+      "git_mode": "100644",
+      "git_blob": "0ace8f89c156a84fd92159dff91e5a140fe81c39"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000006.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000006.json",
+      "sha256": "1b38b50f8d39ea113ede0192641398c32046f04aacf2594a0dd2e8edb09eef83",
+      "size": 848,
+      "git_mode": "100644",
+      "git_blob": "1c2517c8e0835eec12f364741900ae2f519bdcca"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000007.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000007.json",
+      "sha256": "e2c8447017834baba9fb952828d84fc54cedc7c037a1cc01e914680fc262c317",
+      "size": 1000,
+      "git_mode": "100644",
+      "git_blob": "793566bbfb3a340b9de4c23261e638dc20bf4568"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000008.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000008.json",
+      "sha256": "839d480a2629da2a70b3196f03f1df22f2fc614b4891e34e7979f64439a6718e",
+      "size": 878,
+      "git_mode": "100644",
+      "git_blob": "811493987f9bdf1b99cf46d754ae4c2741a74fa4"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000009.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000009.json",
+      "sha256": "8479b97e61ab3fb634cb907a13003d70d8ff2886d0bf31c78e84ec17778acac3",
+      "size": 1030,
+      "git_mode": "100644",
+      "git_blob": "10ba690caa9d8c14253f1e4291868082641919c9"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000010.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/events/000010.json",
+      "sha256": "216d7582ea9818371e65522ec4d49ca0b04ec55ed654d27330a558935583b42f",
+      "size": 401,
+      "git_mode": "100644",
+      "git_blob": "1496e70b53e4a351e1c93d336843c67c1185556c"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-a/run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-a/run.json",
+      "sha256": "dc82047c6475ab2458ae961e2286baf38b45eaf7daf625ff302b40a4270492b3",
+      "size": 474090,
+      "git_mode": "100644",
+      "git_blob": "e871074183b865ed1bf9f9af385c9dbbb36f487b"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000001.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000001.json",
+      "sha256": "460f99fa498cb5ebe4b842c6756642c0f83431d965eda3c5aaaaf03f05b7f332",
+      "size": 494,
+      "git_mode": "100644",
+      "git_blob": "ff38b708af2a54d90fc413e42a2b41c1f153d27c"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000002.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000002.json",
+      "sha256": "016147ec7d59bf822677a1c4346bcfb297ffa6c0e7f1ae2061cbb7a80558b0e7",
+      "size": 509,
+      "git_mode": "100644",
+      "git_blob": "fb267e5aa54fc0a242eccc02bf9f0776c1a04a4c"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000003.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000003.json",
+      "sha256": "20823c1a3e4c7e84318b2303d81f9114d9ddfd8233fe630fefbf7862f73e1450",
+      "size": 799,
+      "git_mode": "100644",
+      "git_blob": "f622599f421f915163f78ffb6f8c2c7aa8ceb11c"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000004.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000004.json",
+      "sha256": "91767c4ec66ae543720c397608b32dcf0bcb93a1a15e43ea837d22515e12f976",
+      "size": 951,
+      "git_mode": "100644",
+      "git_blob": "01f292614b70d95e558c6fb5c59059905debe025"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000005.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000005.json",
+      "sha256": "e90b5c704e9385a9253c498453451d6d953b67b3ecf4b14688faaa6ee8ca8df7",
+      "size": 843,
+      "git_mode": "100644",
+      "git_blob": "13af41ecf9be87b27646d8e4d26f893dfec7e28f"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000006.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000006.json",
+      "sha256": "c5250117eeec69c2a25d180d0058e6bef24984f8131fbdda35622f31d3cd7670",
+      "size": 995,
+      "git_mode": "100644",
+      "git_blob": "1d85957f954a53b5df659e7d6db6e768ff64ce7d"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000007.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-b/events/000007.json",
+      "sha256": "a7093435f786fc18cd6231b240b3bfa653e9fe27ef8e2a94252f83c82a188d3f",
+      "size": 401,
+      "git_mode": "100644",
+      "git_blob": "36d1a00eebf89b94e1d252b9025fb4fccccc8031"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/runs/phase-b/run.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/runs/phase-b/run.json",
+      "sha256": "ee5736cfee0d1d45b6deb536e359921085d3309d3b87e9cb6d45c25e7a061faa",
+      "size": 372843,
+      "git_mode": "100644",
+      "git_blob": "3e62658ff9065132878d89c82c8a57bd637763cc"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/replay/summary.json",
+      "retrieval_path": "examples/concert-app/evidence/replay/summary.json",
+      "sha256": "37ec258b0b01ae6359d390401d5fe9ca4a884e6cf97481239940f2a1322205b4",
+      "size": 634,
+      "git_mode": "100644",
+      "git_blob": "8e018b5e8a84b743e0ebe96566919e46ed3a1190"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/summary.json",
+      "retrieval_path": "examples/concert-app/evidence/summary.json",
+      "sha256": "338b537ba0d3e58e4a4d62fbab11f5325e777c003073bb8ecc4c303e2117f24c",
+      "size": 1142,
+      "git_mode": "100644",
+      "git_blob": "5a924396fdb8035c664065a152ce9b17ec926d3e"
+    },
+    {
+      "original_path": "examples/concert-app/evidence/workflow-active-gates.retrieved.json",
+      "retrieval_path": "examples/concert-app/evidence/workflow-active-gates.retrieved.json",
+      "sha256": "a457d36450941c40002d726afe68676e755366faf551462cd49a97de40b8fa50",
+      "size": 933,
+      "git_mode": "100644",
+      "git_blob": "293b8282f75cc87edbd00c967755e2cf154c90b1"
+    },
+    {
+      "original_path": "examples/concert-app/gdd.json",
+      "retrieval_path": "examples/concert-app/gdd.json",
+      "sha256": "da7ba9f122df76cc99282c56053c1dfb465d19a5eba9da2cabcd42e99e0c31d4",
+      "size": 96729,
+      "git_mode": "100644",
+      "git_blob": "e11b17c524795b30997b3fb5fa1d92c85e1edc1b"
+    },
+    {
+      "original_path": "examples/concert-app/gdd.records.json",
+      "retrieval_path": "examples/concert-app/gdd.records.json",
+      "sha256": "4c76fc32251372aa13c0dca045a728579a64722e138b3ab3e85592c06c13fb86",
+      "size": 13022,
+      "git_mode": "100644",
+      "git_blob": "43fe7bef72fbae567b9af6346cd3e5e44014cc3b"
+    },
+    {
+      "original_path": "examples/concert-app/graph.html",
+      "retrieval_path": "examples/concert-app/graph.html",
+      "sha256": "31eb1165dac5a358d068f01f329b2f966e00a22a0eefedd80c77e939148da228",
+      "size": 346384,
+      "git_mode": "100644",
+      "git_blob": "70838ea516f360344175bee378a120867f19a4a7"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/DESIGN.md",
+      "retrieval_path": "examples/concert-app/history/phase-a/DESIGN.md",
+      "sha256": "5feab6d4f7552d04ba9d9153f0415d0f7b50302f150038d20e0a7910e0497ddc",
+      "size": 5833,
+      "git_mode": "100644",
+      "git_blob": "847f72a3489627c522c23acd4f39a42a4ad7ff08"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/HTTP.md",
+      "retrieval_path": "examples/concert-app/history/phase-a/HTTP.md",
+      "sha256": "cc51152f472a725941ed2067fffbfc326c917c7facf14154dd29a0fc3dca31ad",
+      "size": 4852,
+      "git_mode": "100644",
+      "git_blob": "ea4e1478a590aedf5b61b59d70fb26160db424e6"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/REQUIREMENTS.md",
+      "retrieval_path": "examples/concert-app/history/phase-a/REQUIREMENTS.md",
+      "sha256": "a92cabc4c1e7d6580edc7218d32637de3675fb3606d02d93b4354858d3c5a901",
+      "size": 4254,
+      "git_mode": "100644",
+      "git_blob": "19d1df615e8f748d62e0eb8e9b27ab01783602a8"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/code.snapshot.json",
+      "retrieval_path": "examples/concert-app/history/phase-a/code.snapshot.json",
+      "sha256": "9664d60a904eae72aec6976e7456b17e18bf1b17385c1e0dff03575dfd3dc640",
+      "size": 1283,
+      "git_mode": "100644",
+      "git_blob": "3d20dff8c2d841f399a001637ea9e5a34feefa06"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/concert_app/__init__.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/concert_app/__init__.py",
+      "sha256": "1c1a9c3c9c4e5f62d857377254edf252b2dce3d7b07a9972621201e380574ebb",
+      "size": 60,
+      "git_mode": "100644",
+      "git_blob": "3344a9ad83cf4c9b010ddb85c1e3f3795ad56dbc"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/concert_app/__main__.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/concert_app/__main__.py",
+      "sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+      "size": 749,
+      "git_mode": "100644",
+      "git_blob": "f71041011d5efb74eaf65ad5787364f564b461bc"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/concert_app/api.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/concert_app/api.py",
+      "sha256": "4914843c53f383873a2b4327150cb53404efa958833c7e53f79ab263f5789345",
+      "size": 7673,
+      "git_mode": "100644",
+      "git_blob": "784ff6bc6681aa198f2fad5ecdc7a91fc5fe2cdc"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/concert_app/identity.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/concert_app/identity.py",
+      "sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+      "size": 1616,
+      "git_mode": "100644",
+      "git_blob": "7101410241f0d35acf36f40d0b2ae5d71e01c18b"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/concert_app/reservations.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/concert_app/reservations.py",
+      "sha256": "9fb8a3d8a738b85d748cb50bdf72060fc24fb74476447df0f511fb867705cc48",
+      "size": 4320,
+      "git_mode": "100644",
+      "git_blob": "2ce64d1a133add8d27c85f76e3b9a605d58fb615"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/concert_app/static/app.js",
+      "retrieval_path": "examples/concert-app/history/phase-a/concert_app/static/app.js",
+      "sha256": "3e304871669d24aa64cf82168ee671513fd891780923be7a02f08a73b8a551c4",
+      "size": 20117,
+      "git_mode": "100644",
+      "git_blob": "e716d1b883bae486f0bc84713fa6beb8c9cb66ce"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/concert_app/static/index.html",
+      "retrieval_path": "examples/concert-app/history/phase-a/concert_app/static/index.html",
+      "sha256": "57e8730f0b0d4b06fb3eb609e72f8ddf563040d17a1c7c9a3378c031a7d40739",
+      "size": 4233,
+      "git_mode": "100644",
+      "git_blob": "d169646d4b59c9acdce029231b71bbed5db93913"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/concert_app/static/style.css",
+      "retrieval_path": "examples/concert-app/history/phase-a/concert_app/static/style.css",
+      "sha256": "8875cb9d2757d28d9bbf2946ac58f214efbc5ab0025ee3a66de6492fed400c89",
+      "size": 8089,
+      "git_mode": "100644",
+      "git_blob": "9483712b431f2dc94d3520f72e3166dd3bd5e1dc"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/concert_app/storage.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/concert_app/storage.py",
+      "sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+      "size": 5915,
+      "git_mode": "100644",
+      "git_blob": "db6662fa0985493aaec4a4263da42e2fa542e763"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/gdd.json",
+      "retrieval_path": "examples/concert-app/history/phase-a/gdd.json",
+      "sha256": "0c1fb11e061140de0f23eac010bb90856bb15ce06250c2bbfb03fcc4bcb34f8a",
+      "size": 86890,
+      "git_mode": "100644",
+      "git_blob": "a303ac1617085e71b27064e9de913b2fb100c1fa"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/gdd.records.json",
+      "retrieval_path": "examples/concert-app/history/phase-a/gdd.records.json",
+      "sha256": "d045ae6b6a4fb18fa398908552fc2be3ea0a6d3b9d531490039525ffbb591b58",
+      "size": 12799,
+      "git_mode": "100644",
+      "git_blob": "97c93e677ceb726bd12bc5ad64e56d5412b4a4e8"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/host.acceptance.a.json",
+      "retrieval_path": "examples/concert-app/history/phase-a/host.acceptance.a.json",
+      "sha256": "2d3ffc1394c59db08587f43ee3d4ada1888d9bb6f405370523bd7e27e239fcd1",
+      "size": 2224,
+      "git_mode": "100644",
+      "git_blob": "0e737f9b773841703e165d883ff81983b946dadc"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/host.implementation.json",
+      "retrieval_path": "examples/concert-app/history/phase-a/host.implementation.json",
+      "sha256": "b173bd630bcbb2c0c2fab6bba74ea0fbd3a6699c20614d97c24b34c8a6a82360",
+      "size": 741,
+      "git_mode": "100644",
+      "git_blob": "67b545520ac011043f7b41227c6fd63a32f37929"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/model.snapshot.json",
+      "retrieval_path": "examples/concert-app/history/phase-a/model.snapshot.json",
+      "sha256": "f0b11aae063c60a437d2c2e5eaafec2d760cc3decaee2d0f791ebee9803b01f5",
+      "size": 637,
+      "git_mode": "100644",
+      "git_blob": "3ea0cbc447a14505f38600ab60195f0f87563ea0"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/run.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/run.py",
+      "sha256": "05e986f7ea1278d9ed5703e5befd83c8da79b1a1c849c29ea4927c7bef3048b0",
+      "size": 141,
+      "git_mode": "100644",
+      "git_blob": "1ec85731792855055a5c6d5ffb424bb81d6fc051"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/tests/test_domain.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/tests/test_domain.py",
+      "sha256": "4f2ae32d63758ee6c0808ae6f67aecf4cebf785fc0b331e4e674c0dc954c4604",
+      "size": 18912,
+      "git_mode": "100644",
+      "git_blob": "681f8cfb2d56dff81d586900307f1fabb2b020d7"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/tests/test_http.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/tests/test_http.py",
+      "sha256": "098ad4f9a72a2b87ac48ae8f1ea15163e69d6cc9888e1ee11e17c7e68e40223a",
+      "size": 9706,
+      "git_mode": "100644",
+      "git_blob": "9e8699a1c9cc90aab9623b03eea0efd3481d57e6"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/tools/browser.cjs",
+      "retrieval_path": "examples/concert-app/history/phase-a/tools/browser.cjs",
+      "sha256": "8616aa93027794755cc48602cf4a9aab3418d37b671a93a51faf88b50d0a0dff",
+      "size": 12380,
+      "git_mode": "100644",
+      "git_blob": "0363d224aa69eff031ce36a0edde8ac0f63813ea"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/tools/import_check.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/tools/import_check.py",
+      "sha256": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+      "size": 18361,
+      "git_mode": "100644",
+      "git_blob": "1e99b93b608fa34f2feec63790b29176a0670ede"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/tools/test_import_check.py",
+      "retrieval_path": "examples/concert-app/history/phase-a/tools/test_import_check.py",
+      "sha256": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90",
+      "size": 9987,
+      "git_mode": "100644",
+      "git_blob": "3595c7c1010de44c12ad990d2cd9a101fa562ebc"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/workflow.a.plan.json",
+      "retrieval_path": "examples/concert-app/history/phase-a/workflow.a.plan.json",
+      "sha256": "f33878ae8919efb0c8755e1fec751bfb57ee4313cadb72eae7c5677a5e34ffe9",
+      "size": 450201,
+      "git_mode": "100644",
+      "git_blob": "7e53d9e52b15b4b740604690cdeaa288eef31443"
+    },
+    {
+      "original_path": "examples/concert-app/history/phase-a/workflow.a.request.json",
+      "retrieval_path": "examples/concert-app/history/phase-a/workflow.a.request.json",
+      "sha256": "b1986ca10798c28c9cae841c75130a0adb87a5514f5665ba957f656e637029be",
+      "size": 3366,
+      "git_mode": "100644",
+      "git_blob": "25029a0680a2ed521d0ea36c5f9e3ec3c17e8d40"
+    },
+    {
+      "original_path": "examples/concert-app/host.acceptance.a.json",
+      "retrieval_path": "examples/concert-app/host.acceptance.a.json",
+      "sha256": "2d3ffc1394c59db08587f43ee3d4ada1888d9bb6f405370523bd7e27e239fcd1",
+      "size": 2224,
+      "git_mode": "100644",
+      "git_blob": "0e737f9b773841703e165d883ff81983b946dadc"
+    },
+    {
+      "original_path": "examples/concert-app/host.acceptance.b.json",
+      "retrieval_path": "examples/concert-app/host.acceptance.b.json",
+      "sha256": "ffcca59aa618eb3d2e28d56f73f899b38aca81cd90d4e3595b8015c84efa7502",
+      "size": 2224,
+      "git_mode": "100644",
+      "git_blob": "acff27a61c1e3c8c813c49e19c8c2e3b350e2149"
+    },
+    {
+      "original_path": "examples/concert-app/host.implementation.json",
+      "retrieval_path": "examples/concert-app/host.implementation.json",
+      "sha256": "000609102bbe5f0d65076f77c99dec062c938ef0d7d15d85f2529c27d84dc17e",
+      "size": 741,
+      "git_mode": "100644",
+      "git_blob": "f2103fda484e2ba98949985b9282f6fa69c80e7b"
+    },
+    {
+      "original_path": "examples/concert-app/model.snapshot.json",
+      "retrieval_path": "examples/concert-app/model.snapshot.json",
+      "sha256": "4e4ed02c2a8e9e03fd6f652fa26882a2d1e748fe2da61450747cdf3df405f792",
+      "size": 637,
+      "git_mode": "100644",
+      "git_blob": "7dfadac6019ae376772f8552936a196e675f5410"
+    },
+    {
+      "original_path": "examples/concert-app/model_builder.py",
+      "retrieval_path": "examples/concert-app/model_builder.py",
+      "sha256": "4e4fcd6f228522db51bcb018da9e73af7c6f62c46fb25c99bd37289a74d5eb02",
+      "size": 17479,
+      "git_mode": "100644",
+      "git_blob": "8ecd34f40264239611c1b84d0d7fb073aee32a70"
+    },
+    {
+      "original_path": "examples/concert-app/run.py",
+      "retrieval_path": "examples/concert-app/run.py",
+      "sha256": "05e986f7ea1278d9ed5703e5befd83c8da79b1a1c849c29ea4927c7bef3048b0",
+      "size": 141,
+      "git_mode": "100644",
+      "git_blob": "1ec85731792855055a5c6d5ffb424bb81d6fc051"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000001.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000001.json",
+      "sha256": "b78321ae666773072a812d92a6dd4a85ade6134eadc199905da8a4fd6c33be48",
+      "size": 484,
+      "git_mode": "100644",
+      "git_blob": "32ab45daa0d583a7ad4f39f6255287a81c5c3a13"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000002.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000002.json",
+      "sha256": "f40ce43f9b168dcceced3deedcdc0bc676ead0e95a7fee777b1260a380e505b2",
+      "size": 487,
+      "git_mode": "100644",
+      "git_blob": "d4e72520953e91357a94c28ca0d1a3f519f618fc"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000003.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000003.json",
+      "sha256": "78006cc5e08d6886c10901b3b6046f134d1a57a24ae79e537802657e03909cc1",
+      "size": 490,
+      "git_mode": "100644",
+      "git_blob": "e3d24052634c95d2319e17631227ca02b2263438"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000004.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000004.json",
+      "sha256": "0d452510dcfa8bf9dfb53f0d47fdb64cf38c9e7379904cac605e0bfa7bbdc730",
+      "size": 830,
+      "git_mode": "100644",
+      "git_blob": "f527de6ec5519b26765867842d9eea6abf7b674d"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000005.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000005.json",
+      "sha256": "590b53a326e84f932d108098188a71c6a253c12b361b35ebd95360ad6cf0e312",
+      "size": 967,
+      "git_mode": "100644",
+      "git_blob": "a0f9a9f8c3c970c14f7be2f4777329a44df2194e"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000006.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000006.json",
+      "sha256": "1201b86c22a936c6d0ae6096436e31dcbadc0064fcc4ae293a4e776d7f65967c",
+      "size": 847,
+      "git_mode": "100644",
+      "git_blob": "13ce51c7e4756597b822e9ec778b0a9e2770891d"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000007.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000007.json",
+      "sha256": "cc234466e5fbce2ed5b5157d5c0c8563c98a813ed57ce20b72a9151148121d29",
+      "size": 984,
+      "git_mode": "100644",
+      "git_blob": "6b8f9aa0e091df2204b3998cdb92603d03152ed8"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000008.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000008.json",
+      "sha256": "7b00b2b8e51bf0d2cd44e0a8eb8040d17e73911f927dc43159a37fc766da9eab",
+      "size": 877,
+      "git_mode": "100644",
+      "git_blob": "3be801c37d60206ce915728a8dc090e8474ccc47"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000009.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000009.json",
+      "sha256": "ba56920045aab5279afc5736534c5dae13f2b384fdc3d00eb988d408d36fb8de",
+      "size": 1014,
+      "git_mode": "100644",
+      "git_blob": "e8face870340ed0a04d0eefd1907e75bdf79da73"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/events/000010.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/events/000010.json",
+      "sha256": "683a9136ce7e1608dd98515b6ada231cc4c7c692ffea052b2c90ba52bf6f0e6b",
+      "size": 401,
+      "git_mode": "100644",
+      "git_blob": "92ac8cb4cc4cc8b5470479160c7753afc3d0053e"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-a/run.json",
+      "retrieval_path": "examples/concert-app/runs/phase-a/run.json",
+      "sha256": "aa26dbd7b622946b21ed1b052380f39fde9707cedbb59c21fe543de6f51c749f",
+      "size": 474209,
+      "git_mode": "100644",
+      "git_blob": "f615531066fc6d0fa432cb96f931374c18e51e1a"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-b/events/000001.json",
+      "retrieval_path": "examples/concert-app/runs/phase-b/events/000001.json",
+      "sha256": "b787e948a64ae91f62da5588d12d83baa6485d3c562ddb2bd07e55433852a04b",
+      "size": 486,
+      "git_mode": "100644",
+      "git_blob": "a4c04de09abc2e907ed4f559224d223f58ad80a1"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-b/events/000002.json",
+      "retrieval_path": "examples/concert-app/runs/phase-b/events/000002.json",
+      "sha256": "8b3d465b524046adb8f409b7213ca9ab53b30ef2c5106e194af0f639ae688f65",
+      "size": 501,
+      "git_mode": "100644",
+      "git_blob": "60c50eb428aab54342e086c61157792b75714276"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-b/events/000003.json",
+      "retrieval_path": "examples/concert-app/runs/phase-b/events/000003.json",
+      "sha256": "5313e33578ae5028c6c206fc8e41a41bb86d57cbedf0e7ddb87f02807163135e",
+      "size": 800,
+      "git_mode": "100644",
+      "git_blob": "2ee8bd803430e324ddc955ee142b1c11669e7ccd"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-b/events/000004.json",
+      "retrieval_path": "examples/concert-app/runs/phase-b/events/000004.json",
+      "sha256": "8ef8f1a5f80a4a25973df27a1a0490463c2c1bf6b70474e5f73aacdd8776e3bf",
+      "size": 935,
+      "git_mode": "100644",
+      "git_blob": "6dcaa7613386a267bda52c42e10adb3eeb159857"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-b/events/000005.json",
+      "retrieval_path": "examples/concert-app/runs/phase-b/events/000005.json",
+      "sha256": "dbf440e91574220420f48371791e645d9e4cc89eff19cfba5cf2b0feeaadb2e3",
+      "size": 844,
+      "git_mode": "100644",
+      "git_blob": "7eb58d2c2e2517cfc28bcb436733fa0695bdfe46"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-b/events/000006.json",
+      "retrieval_path": "examples/concert-app/runs/phase-b/events/000006.json",
+      "sha256": "e43445ce0f097b9307770ce8272e5bf536d0000b1ba928069aab37a664d18cb2",
+      "size": 979,
+      "git_mode": "100644",
+      "git_blob": "3bc6c1bf7ce1051f80b52b10908783def9894c1b"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-b/events/000007.json",
+      "retrieval_path": "examples/concert-app/runs/phase-b/events/000007.json",
+      "sha256": "2832cf258e75818f0a8e300aa87cd52d6e15f2c60e6e41fc6af8bfb16da82fe1",
+      "size": 401,
+      "git_mode": "100644",
+      "git_blob": "18d609ef153d14707f5532a6a1f120979b3d8ef1"
+    },
+    {
+      "original_path": "examples/concert-app/runs/phase-b/run.json",
+      "retrieval_path": "examples/concert-app/runs/phase-b/run.json",
+      "sha256": "6ac3fc5d9fac30304b55375ae5d7459487655dcb2133ae9b1f5e2d0d4fc3d590",
+      "size": 372974,
+      "git_mode": "100644",
+      "git_blob": "7f240352b6dd2763ddda1d03667a84ffeb01fea8"
+    },
+    {
+      "original_path": "examples/concert-app/tests/test_domain.py",
+      "retrieval_path": "examples/concert-app/tests/test_domain.py",
+      "sha256": "3db3949c43571b94335494e406927735f383ff8877d68f80dfe910d82ac518ae",
+      "size": 19240,
+      "git_mode": "100644",
+      "git_blob": "78b68bf08d65ac42ece73f6b081ff5cd1ae53b6e"
+    },
+    {
+      "original_path": "examples/concert-app/tests/test_http.py",
+      "retrieval_path": "examples/concert-app/tests/test_http.py",
+      "sha256": "766de4a59170e24ada379a4b2454cacbce3ebd2fc86c879dc0eea1e9d4eea1d3",
+      "size": 12708,
+      "git_mode": "100644",
+      "git_blob": "88526d11b7a62dfdec62b3368fb90bac343843a1"
+    },
+    {
+      "original_path": "examples/concert-app/tests/test_requirement_change.py",
+      "retrieval_path": "examples/concert-app/tests/test_requirement_change.py",
+      "sha256": "8087987357f8a62ce83d5c340c9b60c4ec176191fe08b4ee9a4190369cac57f4",
+      "size": 6502,
+      "git_mode": "100644",
+      "git_blob": "e861acf165e25906da823631eb9669d73c6282e6"
+    },
+    {
+      "original_path": "examples/concert-app/tools/browser.cjs",
+      "retrieval_path": "examples/concert-app/tools/browser.cjs",
+      "sha256": "0bb3e968d158d3b12b9df4727cc13294b5254def2443f50d0f049f24d766811d",
+      "size": 17466,
+      "git_mode": "100644",
+      "git_blob": "8406503ff305fa3d7491acb29b08104afa0b4ec4"
+    },
+    {
+      "original_path": "examples/concert-app/tools/capture.cjs",
+      "retrieval_path": "examples/concert-app/tools/capture.cjs",
+      "sha256": "d7d277c5a46d86e8b8ad1e6b467952ee320f9e41908a56013d326898a55e682c",
+      "size": 2621,
+      "git_mode": "100644",
+      "git_blob": "03f9a612fde7972ddb4a52108ae2aaf82fcad99e"
+    },
+    {
+      "original_path": "examples/concert-app/tools/experiment.py",
+      "retrieval_path": "examples/concert-app/tools/experiment.py",
+      "sha256": "04c0527cf8b248f483714f4cc0147a603cd299dad069f5e00e15b758fbd27fe3",
+      "size": 7220,
+      "git_mode": "100644",
+      "git_blob": "c30de60b1039733d08d039966906b0d8c76c2e08"
+    },
+    {
+      "original_path": "examples/concert-app/tools/import_check.py",
+      "retrieval_path": "examples/concert-app/tools/import_check.py",
+      "sha256": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+      "size": 18361,
+      "git_mode": "100644",
+      "git_blob": "1e99b93b608fa34f2feec63790b29176a0670ede"
+    },
+    {
+      "original_path": "examples/concert-app/tools/replay.py",
+      "retrieval_path": "examples/concert-app/tools/replay.py",
+      "sha256": "001835f27be233eba17623c53d8bbb6aa08159f57ad077645fd4032b42b843c8",
+      "size": 8971,
+      "git_mode": "100644",
+      "git_blob": "ac85468290d8b503b2e7060d1cd5560f12142823"
+    },
+    {
+      "original_path": "examples/concert-app/tools/test_import_check.py",
+      "retrieval_path": "examples/concert-app/tools/test_import_check.py",
+      "sha256": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90",
+      "size": 9987,
+      "git_mode": "100644",
+      "git_blob": "3595c7c1010de44c12ad990d2cd9a101fa562ebc"
+    },
+    {
+      "original_path": "examples/concert-app/worker-workspaces.json",
+      "retrieval_path": "examples/concert-app/worker-workspaces.json",
+      "sha256": "db0aaaa7e2983889da5a162899709524a804217d1c179223b99e979a0581513b",
+      "size": 104,
+      "git_mode": "100644",
+      "git_blob": "c1552bba7a0464142a3c7440621674426cf79f87"
+    },
+    {
+      "original_path": "examples/concert-app/workflow.a.plan.json",
+      "retrieval_path": "examples/concert-app/workflow.a.plan.json",
+      "sha256": "f33878ae8919efb0c8755e1fec751bfb57ee4313cadb72eae7c5677a5e34ffe9",
+      "size": 450201,
+      "git_mode": "100644",
+      "git_blob": "7e53d9e52b15b4b740604690cdeaa288eef31443"
+    },
+    {
+      "original_path": "examples/concert-app/workflow.a.request.json",
+      "retrieval_path": "examples/concert-app/workflow.a.request.json",
+      "sha256": "b1986ca10798c28c9cae841c75130a0adb87a5514f5665ba957f656e637029be",
+      "size": 3366,
+      "git_mode": "100644",
+      "git_blob": "25029a0680a2ed521d0ea36c5f9e3ec3c17e8d40"
+    },
+    {
+      "original_path": "examples/concert-app/workflow.b.plan.json",
+      "retrieval_path": "examples/concert-app/workflow.b.plan.json",
+      "sha256": "125e83b6aa429aa80e08ccf442deb6b416d8f4a1a31c6206787c58e02ca790ac",
+      "size": 354350,
+      "git_mode": "100644",
+      "git_blob": "5873b895fedabb71baf380ac02229883706e124c"
+    },
+    {
+      "original_path": "examples/concert-app/workflow.b.request.json",
+      "retrieval_path": "examples/concert-app/workflow.b.request.json",
+      "sha256": "9f0943ff7de71061ba7cc28d158ba5ba70195d486f7f5868ff0f5497f94a87fb",
+      "size": 2418,
+      "git_mode": "100644",
+      "git_blob": "eeb617d938121a13fcd120743fb2a68c6da3c14b"
+    }
+  ]
+}

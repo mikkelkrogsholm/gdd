@@ -4,10 +4,17 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gdd-validator"
-version = "0.6.0"
+version = "0.7.0"
 description = "Structural validator for Graph-Driven Development 0.3"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 dependencies = ["PyYAML==6.0.3", "jsonschema==4.24.0"]
+
+[project.urls]
+Repository = "https://github.com/mikkelkrogsholm/gdd"
+Issues = "https://github.com/mikkelkrogsholm/gdd/issues"
 
 [project.scripts]
 gdd = "gdd_validator.cli:main"
@@ -20,6 +27,8 @@ packages = ["gdd_validator"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "schemas" = "gdd_validator/schemas"
+"templates/project" = "gdd_validator/templates/project"
+"skills/gdd" = "gdd_validator/skill"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

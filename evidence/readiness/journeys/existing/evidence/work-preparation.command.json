@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/python",
+    "evidence/prepare-work.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:23:25.372902+00:00",
+  "finished_at": "2026-10-14T13:23:25.499973+00:00",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project/evidence/prepare-work.py\", line 13, in <module>\n    append_records(root/'records.json', records)\n  File \"/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/lib/python3.12/site-packages/gdd_validator/host.py\", line 179, in append_records\n    raise ValueError(\"Supply a nonempty records fragment.\")\nValueError: Supply a nonempty records fragment.\n"
+}

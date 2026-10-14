@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/gdd",
+    "workflow",
+    "verify",
+    "model.json",
+    "--plan",
+    "plan.json",
+    "--host-context",
+    "evidence/host.implementation.base.json",
+    "--output",
+    "evidence/workflow-verify.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:24:35.481772+00:00",
+  "finished_at": "2026-10-14T13:24:35.680325+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

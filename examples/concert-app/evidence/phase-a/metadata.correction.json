@@ -1,5 +1,0 @@
-{
-  "notice": "The phase-A evidence record checker label mistakenly named pytest8.3.5; the actual installed runner was pytest9.1.1. Preserve the original execution records; this presentation correction changes no executed assertions, source bytes, result or acceptance claim.",
-  "actual_pytest": "9.1.1",
-  "record": "evidence.app.a.pytest_concert"
-}

@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/schemas/0.3/boundaries.schema.json",
+  "title": "Derived GDD 0.3 boundaries",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-boundaries/0.3"
+    },
+    "spec_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "uniqueItems": true
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "boundary": {
+            "type": "object",
+            "properties": {
+              "responsibility": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "rationale": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "excludes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "uniqueItems": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "interfaces_known": {
+            "type": "boolean"
+          },
+          "public_contracts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/boundary_contract"
+            }
+          }
+        },
+        "required": [
+          "boundary",
+          "interfaces_known",
+          "public_contracts"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "communities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "membership_basis": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "uniqueItems": true
+            }
+          },
+          "omitted_components": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "uniqueItems": true
+          },
+          "unresolved_members": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "uniqueItems": true
+          },
+          "public_contracts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/boundary_contract"
+            }
+          },
+          "calls": {
+            "type": "object",
+            "properties": {
+              "inbound": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "uniqueItems": true
+              },
+              "outbound": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "uniqueItems": true
+              },
+              "internal": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "uniqueItems": true
+              },
+              "unresolved": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "inbound",
+              "outbound",
+              "internal",
+              "unresolved"
+            ],
+            "additionalProperties": false
+          },
+          "omitted_calls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "membership_basis",
+          "omitted_components",
+          "unresolved_members",
+          "public_contracts",
+          "calls",
+          "omitted_calls"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "calls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "edge": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "source": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "consumer": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "provider": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "status": {
+            "enum": [
+              "public",
+              "internal",
+              "private",
+              "unresolved"
+            ]
+          }
+        },
+        "required": [
+          "edge",
+          "source",
+          "consumer",
+          "provider",
+          "action",
+          "status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "unresolved": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "uniqueItems": true
+    },
+    "omitted_calls": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "format",
+    "spec_revision",
+    "scope",
+    "components",
+    "communities",
+    "calls",
+    "unresolved",
+    "omitted_calls"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "boundary_contract": {
+      "type": "object",
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "provider": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "action": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "spec_revision": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+        }
+      },
+      "required": [
+        "project_id",
+        "provider",
+        "action",
+        "spec_revision"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

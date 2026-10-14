@@ -37,7 +37,9 @@ def execute(argv, output, root=None):
                             env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
     receipt = {"argv": argv, "cwd": str(root), "exit_code": result.returncode,
                "stdout": result.stdout, "stderr": result.stderr, "python": sys.version,
-               "code_revision": snapshot(root)["revision"]}
+               "code_revision": snapshot(root)["revision"],
+               "host_tool_sources": {path.relative_to(root).as_posix(): sha256(path.read_bytes()).hexdigest()
+                                     for path in sorted((root / "tools").glob("*")) if path.is_file()}}
     write(output, receipt)
     return receipt
 
@@ -58,7 +60,7 @@ def integrate(phase, package, workspace, review):
     host_path = ROOT / "host.implementation.json"
     host = json.loads(host_path.read_text())
     event(phase, host, "submit", package=package, attempt=attempt,
-          summary="Actual native delivery reviewed by the lead; worker results are not acceptance evidence.",
+          summary="Archived lead-reviewed delivery copied for replay; actual current host checks are required for acceptance.",
           artifact_uri=str(workspace), changed_resources=files)
     base = run_status(ROOT / "gdd.json", ROOT / "runs" / ("phase-" + phase))["state"]["code_revision"]
     for file in files:

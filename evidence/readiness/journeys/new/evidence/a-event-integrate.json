@@ -1,0 +1,23 @@
+{
+  "type": "integrate",
+  "expected_revision": "sha256:9fe65eb6e96082accfe2edcfc617f04c1e4f63727223eb04dc37b91ef7d83b77",
+  "idempotency_key": "a.integrate",
+  "package": "package.parcel.a",
+  "attempt": "attempt.parcel.a.1",
+  "base_code_revision": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+  "verified_resources": [
+    "src/parcel/__init__.py",
+    "src/parcel/cli.py",
+    "src/parcel/pricing.py",
+    "src/parcel/tariffs.py",
+    "tests/shared_contract.py",
+    "tests/test_a.py",
+    "tests/check_architecture.py"
+  ],
+  "review": {
+    "reviewer": "actor.independent",
+    "verdict": "PASS",
+    "evidence_uri": "evidence/a-integration-review.md"
+  }
+}

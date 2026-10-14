@@ -1,0 +1,38 @@
+{
+  "format": "gdd-host-check/0.1",
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "tests/test_b.py",
+    "src"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "started_at": "2026-10-14T13:30:37.279331+00:00",
+  "executed": true,
+  "exit_code": 0,
+  "result": "PASS",
+  "stdout": "",
+  "stderr": "test_handling_fee_once_per_quote (__main__.ContractB.test_handling_fee_once_per_quote) ... ok\ntest_remote_amounts_with_one_flat_fee (__main__.ContractB.test_remote_amounts_with_one_flat_fee) ... ok\ntest_remote_cli_has_fee (__main__.ContractB.test_remote_cli_has_fee) ... ok\ntest_api_rejects_invalid_weights (shared_contract.ContractTests.test_api_rejects_invalid_weights) ... ok\ntest_api_rejects_invalid_zones (shared_contract.ContractTests.test_api_rejects_invalid_zones) ... ok\ntest_cli_rejects_invalid_arguments (shared_contract.ContractTests.test_cli_rejects_invalid_arguments) ... ok\ntest_domestic_boundaries (shared_contract.ContractTests.test_domestic_boundaries) ... ok\ntest_tariff_values_and_repeatability (shared_contract.ContractTests.test_tariff_values_and_repeatability) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.808s\n\nOK\n",
+  "snapshot": {
+    "format": "gdd-code-snapshot/0.1",
+    "files": {
+      "src/parcel/__init__.py": "2d1c33747835ec2767203ad327ed77c63e6585bccd2f9b505ccee32d87640cfd",
+      "src/parcel/cli.py": "dad1bd6315c72719b354d00f1400aa5aa4e91e44b39ab4a8bac9a96cb5752306",
+      "src/parcel/pricing.py": "9b701ac542233f6c8e48a5e8e9e641213d1ff7727fdc6e15e4838dda9f162b56",
+      "src/parcel/tariffs.py": "f1e84d9e687b3eb3a0a2c44af2d3e68f8674ccb99448198da86c202db659d14a",
+      "tests/check_architecture.py": "f2833f3851c10dbc4b72ce90b2a9fa767fcf1be5e0b351786e52405bc945f45a",
+      "tests/shared_contract.py": "65f0be50efbebffeaced5915f534d7ab9d3868ff3885aa74865f9497006f6b7f",
+      "tests/test_a.py": "5eb19eb71f9edfa4e7458d8bc697da0cbe973705f4a0dfd0c371c526ce78b00f",
+      "tests/test_b.py": "24f2c5dbf220cb1c4efae9aca9b84ff25c129c6b382b03e5929065496bb6766c"
+    },
+    "revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970"
+  },
+  "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970",
+  "runner": {
+    "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "reason": "Actual caller-selected checker process completed.",
+  "code_revision_after": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970",
+  "finished_at": "2026-10-14T13:30:38.173188+00:00"
+}

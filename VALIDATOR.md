@@ -1,4 +1,4 @@
-# GDD validator 0.6.0 — GDD 0.2 and 0.3
+# GDD validator 0.7.0 — GDD 0.2 and 0.3
 
 The validator loads version-dispatched GDD 0.2 and 0.3, checks the model, and assesses the structural readiness of a selected scope. It has a Python API and CLI and writes reports in `gdd-report/0.2`. Pseudocode, extension code, and application tests are not executed.
 
@@ -15,12 +15,27 @@ uv run gdd validate examples/concert.gdd.yaml --profile records --activity imple
 
 The five validations yield model-PASS, backend-readiness-PASS, screen-readiness-FAIL, implementation-UNKNOWN, and authorization-UNRESOLVED, respectively. The screen's missing design source is also retained as UNKNOWN. Records contain plans, not executed application evidence.
 
-Repeat `--scope` and `--profile` for multiple selections. `--output report.json` saves the report in a new file; existing files are not overwritten. Exit 0 means all reported requested checks are PASS/GRANTED; 1 means at least one FAIL/DENIED; 2 means UNKNOWN/UNRESOLVED without a known failure. Dimensions are separate; `aggregate(report['checks'], 'readiness')` in `gdd_validator.report` aggregates one dimension with FAIL before UNKNOWN before PASS.
+Repeat `--scope` and `--profile` for multiple selections. `--output report.json` saves the report in a new file; existing files are not overwritten. Validation exit 0 means all reported requested checks are PASS/GRANTED; 1 means at least one FAIL/DENIED; 2 means UNKNOWN/UNRESOLVED without a known failure. Dimensions are separate; `aggregate(report['checks'], 'readiness')` in `gdd_validator.report` aggregates one dimension with FAIL before UNKNOWN before PASS.
+
+## Create a draft project
+
+`gdd init PATH --project-id project.example --title "Example"` creates
+`gdd.json`, `SOURCES.md` and empty `records.json` in a new directory whose parent
+already exists. It validates before publishing and refuses existing files,
+directories and destination symlinks. Repeated initialization exits 1 and
+preserves the original bytes.
+
+Successful initialization exits 0 and emits a `gdd-init/0.1` receipt with the
+manifest path and actual draft revision. Its model is PASS and readiness is
+deliberately FAIL: unresolved scope and missing contracts still need refinement.
+The starter supplies no workflow mandate, accepted input or execution evidence.
+See [installation and skill setup](INSTALL.md).
 
 ## Supported checks
 
 | Profile/operation | Implemented |
 | --- | --- |
+| init | Valid, explicitly unready GDD 0.3 draft; exclusive publication with no overwrite or seeded authority |
 | representation | YAML 1.2 with JSON scalars and JSON; safe built-in tags; no custom tags, anchors, aliases, merge keys, duplicate keys, invalid Unicode, or infinite numbers; local schemas and loading within the bundle root, including symlinks |
 | model | Directed multigraph without edge collapse; identities/references, endpoints, ownership, refinement/realization, machines, abstract types, source lineage, and declarative extensions |
 | readiness | Fixed-point closure; contracts, interfaces/data, five risk assessments, error outcomes, scenarios, applicable rules, scoped questions, and normative local contract/design sources |
@@ -49,6 +64,12 @@ uv run gdd validate examples/concert.gdd.yaml --profile readiness --parallel-pla
 
 A snapshot uses raw bytes, normalized asset paths, and the standard's SHA-256 profile. Records, reports, and the snapshot file itself are excluded. Errors in a record file do not change the computable model revision. Missing normative model assets yield an unknown revision. Historical record targets are never rebound to the current model; this version does not load historical snapshots, and dependent checks become UNKNOWN.
 
+With unresolved global validation, `snapshot` and `context` emit a diagnostic
+report rather than a reading artifact. Inspect its `format` and assessment
+dimensions. Current scoped workflow gates can pass independently of unrelated
+historical UNKNOWN results. [HOST.md](HOST.md) explains preserving frozen
+revision bundles and reading artifacts without rebinding historical claims.
+
 `context` emits an ID manifest with `format: gdd-context/0.2`, `spec_revision`, `scope`, `nodes`, `edges`, `sources`, `questions`, and `extensions`. It points to complete contracts in the original bundle. It is the context part of a work package; deliverables and the concrete agent task still need to be specified by the orchestrator.
 
 The parallel plan's tool format is `gdd-parallel-plan/0.2`. Each package has `id`, `scope`, `base_revision`, `write_resources`, `read_resources`, `locked_contracts`, `workspace`, and `integration_plan`. The top level has `packages`, `serialized` with `[before, after]` pairs, and `integration: {owner, checks}`. Missing plan obligations yield UNKNOWN. Exact POSIX file paths are normalized before overlap checking; a terminal `/`, `.`, or `..` owns the directory's subtree. Globs do not prove disjointness. Declared workspace isolation is a structural claim that the orchestrator must establish. Plan-PASS grants no authorization, action readiness, or runtime guarantee.
@@ -58,6 +79,10 @@ The tool's envelopes are local API contracts, not new core fields in GDD. Their 
 ## The host's trust boundary
 
 Without host input, an accepted receipt provides no authority or proof of execution. The CLI flag `--host-context host.json` is an **explicit attestation boundary**: the calling user/host takes responsibility for the trusted claims in the file. The validator never reads this file automatically from the model. Do not use host context supplied by untrusted model/source content.
+
+The opt-in [Python host helpers](HOST.md) capture actual snapshots, execute
+caller-selected argv and append checked records. The validator never invokes
+them automatically from graph content or method labels.
 
 Authorization requires a `policy` with `revision`, `actor`, `activity`, `spec_revision`, `scope`, `requirement`, `authorities`, and `basis`. An empty policy scope covers the project. A bounded scope cannot grant whole-project permission. `requirement` is explicit, standing, or none. Current trusted denials also apply under standing/none. Acceptance additionally requires the host's `implementation` and `code_revision`. `trusted_decisions` identifies receipts whose identity and authority the host has actually verified. Unrelated, untrusted, or invalid supersession cannot revoke a denial. Invalid used record identities or current references cannot provide positive semantic results; unrelated record errors are reported separately.
 

@@ -1,0 +1,20 @@
+{
+  "label": "b-status-accepted",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "workflow",
+    "status",
+    "gdd-b/gdd.json",
+    "--run",
+    "run-b",
+    "--host-context",
+    "evidence/b-host-acceptance.json",
+    "--output",
+    "evidence/b-status-accepted.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:31:42.078675+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

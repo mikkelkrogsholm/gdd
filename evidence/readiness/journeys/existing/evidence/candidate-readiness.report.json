@@ -1,0 +1,263 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.6.0"
+  },
+  "spec_revision": "sha256:5d9ccb6dc70244a7ef1042c0909f915dee7668981f029c74f6ed8bd43d8df4ef",
+  "profiles": [
+    "readiness"
+  ],
+  "scope": [
+    "action.reserve"
+  ],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Action needs full contract and behavior.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Action needs full contract and behavior.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/action.reserve"
+          },
+          "related_ids": [
+            "action.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.effects_incomplete",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Effects/dependencies are not declared complete.",
+      "diagnostics": [
+        {
+          "code": "EFFECTS_INCOMPLETE",
+          "severity": "error",
+          "message": "Effects/dependencies are not declared complete.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/action.reserve"
+          },
+          "related_ids": [
+            "action.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Action requires exactly one owner.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Action requires exactly one owner.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/action.reserve"
+          },
+          "related_ids": [
+            "action.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.scenario_category_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Action needs a normal scenario.",
+      "diagnostics": [
+        {
+          "code": "SCENARIO_CATEGORY_MISSING",
+          "severity": "error",
+          "message": "Action needs a normal scenario.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/action.reserve"
+          },
+          "related_ids": [
+            "action.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Missing risk assessment: authorization.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Missing risk assessment: authorization.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/action.reserve"
+          },
+          "related_ids": [
+            "action.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Missing risk assessment: idempotency.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Missing risk assessment: idempotency.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/action.reserve"
+          },
+          "related_ids": [
+            "action.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Missing risk assessment: boundaries.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Missing risk assessment: boundaries.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/action.reserve"
+          },
+          "related_ids": [
+            "action.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Missing risk assessment: concurrency.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Missing risk assessment: concurrency.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/action.reserve"
+          },
+          "related_ids": [
+            "action.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Missing risk assessment: atomicity.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Missing risk assessment: atomicity.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/action.reserve"
+          },
+          "related_ids": [
+            "action.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Required entity fields are unspecified.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Required entity fields are unspecified.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/nodes/entity.reservation"
+          },
+          "related_ids": [
+            "entity.reservation"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.question_blocks_scope",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Open question blocks implementation context.",
+      "diagnostics": [
+        {
+          "code": "QUESTION_BLOCKS_SCOPE",
+          "severity": "error",
+          "message": "Open question blocks implementation context.",
+          "location": {
+            "file": "candidate.json",
+            "pointer": "/questions/question.graphify_contracts"
+          },
+          "related_ids": [
+            "question.graphify_contracts"
+          ]
+        }
+      ]
+    }
+  ]
+}

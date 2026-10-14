@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/gdd",
+    "graphify",
+    "import",
+    "--help"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:19:07.304027+00:00",
+  "finished_at": "2026-10-14T13:19:07.433961+00:00",
+  "exit_code": 0,
+  "stdout": "usage: gdd graphify import [-h] --output OUTPUT --profile PROFILE\n                           [--producer-version PRODUCER_VERSION]\n                           [--code-revision CODE_REVISION]\n                           [--source-id SOURCE_ID]\n                           path\n\npositional arguments:\n  path\n\noptions:\n  -h, --help            show this help message and exit\n  --output OUTPUT\n  --profile PROFILE\n  --producer-version PRODUCER_VERSION\n  --code-revision CODE_REVISION\n  --source-id SOURCE_ID\n",
+  "stderr": ""
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "issue.proposal-direction",
+    "classification": "guidance-gap",
+    "blocking": false,
+    "evidence": "evidence/graphify-propose.command.json",
+    "summary": "Mapping schema and existing-code guidance do not explain that proposed edges must preserve observed endpoints and direction; contains -> owned_by reversal fails.",
+    "recovery": "Omit containment edges from the adapter mapping and author owned_by explicitly during authorized refinement."
+  },
+  {
+    "id": "issue.proposal-format",
+    "classification": "guidance-gap",
+    "blocking": false,
+    "evidence": "proposal.json",
+    "summary": "The adapter produces model_candidate format gdd/0.2 despite the installed entry guiding intent toward 0.3.",
+    "recovery": "Preserve legacy candidate, explicitly refine/upgrade to current gdd/0.3 model."
+  },
+  {
+    "id": "intervention.rule-category",
+    "classification": "agent-drafting-error",
+    "blocking": false,
+    "evidence": "evidence/model.snapshot.json",
+    "summary": "Unsupported rule category business rejected by schema.",
+    "recovery": "Read installed schema and set behavior."
+  },
+  {
+    "id": "intervention.records-fragment",
+    "classification": "agent-api-envelope-error",
+    "blocking": false,
+    "evidence": "evidence/work-preparation.command.json",
+    "summary": "A raw record map was passed to append_records instead of a records fragment.",
+    "recovery": "Supply the records field; the first call wrote no record."
+  }
+]

@@ -1,0 +1,240 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "project.parcel",
+  "records": {
+    "decision.remote-fee.b": {
+      "kind": "decision",
+      "topic": "model_change",
+      "scope": [
+        "action.quote",
+        "scenario.remote",
+        "scenario.weights"
+      ],
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "policy_revision": "policy.independent-task.v1",
+      "actor": {
+        "id": "actor.independent",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "Original task explicitly requests this remote handling-fee requirement. Base sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4; changed action.quote, scenario.remote, scenario.weights and source.contract; add source.change. Keep all fixed B expectations and both architecture boundaries. Full change description: evidence/b-model-change.json."
+    },
+    "check.behavior.b": {
+      "kind": "check",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "scope": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "method": "behavior.unittest",
+      "required_environment": [
+        "python"
+      ],
+      "negative_controls": [
+        "remote-fee-omitted"
+      ]
+    },
+    "check.architecture.b": {
+      "kind": "check",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "scope": [
+        "rule.no_cli_tariffs",
+        "component.cli",
+        "component.pricing",
+        "component.tariffs"
+      ],
+      "method": "architecture.python_ast",
+      "required_environment": [
+        "python"
+      ],
+      "negative_controls": [
+        "cli-direct-tariffs"
+      ]
+    },
+    "binding.behavior.b_red": {
+      "kind": "binding",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "targets": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "test",
+      "resource": "tests/test_b.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:24f2c5dbf220cb1c4efae9aca9b84ff25c129c6b382b03e5929065496bb6766c",
+      "code_revision": "sha256:55a41aeea12f79fffe9fe67d3d113ba999b0f2ddc4fedc73ff86d5a97cf7e3c0"
+    },
+    "evidence.behavior.b_red": {
+      "kind": "evidence",
+      "check": "check.behavior.b",
+      "check_revision": "sha256:c293fa92a1ba58a91ed01575801817fb2e9e0bb0b0408fee5496d7bb4bcc157c",
+      "implementation": "implementation.parcel",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "code_revision": "sha256:55a41aeea12f79fffe9fe67d3d113ba999b0f2ddc4fedc73ff86d5a97cf7e3c0",
+      "checker": {
+        "name": "stdlib.unittest",
+        "version": "3.12.2"
+      },
+      "scope": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "result": "FAIL",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/b-fixed-assertions-against-a.run.json"
+    },
+    "binding.behavior.b": {
+      "kind": "binding",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "targets": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "test",
+      "resource": "tests/test_b.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:24f2c5dbf220cb1c4efae9aca9b84ff25c129c6b382b03e5929065496bb6766c",
+      "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970"
+    },
+    "evidence.behavior.b": {
+      "kind": "evidence",
+      "check": "check.behavior.b",
+      "check_revision": "sha256:c293fa92a1ba58a91ed01575801817fb2e9e0bb0b0408fee5496d7bb4bcc157c",
+      "implementation": "implementation.parcel",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970",
+      "checker": {
+        "name": "stdlib.unittest",
+        "version": "3.12.2"
+      },
+      "scope": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/b-behavior-current.run.json"
+    },
+    "binding.architecture.b": {
+      "kind": "binding",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "targets": [
+        "rule.no_cli_tariffs",
+        "component.cli",
+        "component.pricing",
+        "component.tariffs"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "test",
+      "resource": "tests/check_architecture.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:f2833f3851c10dbc4b72ce90b2a9fa767fcf1be5e0b351786e52405bc945f45a",
+      "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970"
+    },
+    "evidence.architecture.b": {
+      "kind": "evidence",
+      "check": "check.architecture.b",
+      "check_revision": "sha256:680def55ad51a92c242c1d2e409efec09ace19d35204d89e49faddde2f18e445",
+      "implementation": "implementation.parcel",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970",
+      "checker": {
+        "name": "parcel.python_ast",
+        "version": "1"
+      },
+      "scope": [
+        "rule.no_cli_tariffs",
+        "component.cli",
+        "component.pricing",
+        "component.tariffs"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/b-architecture-repaired.run.json"
+    },
+    "binding.code.cli.b": {
+      "kind": "binding",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "targets": [
+        "component.cli",
+        "action.cli"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "code",
+      "resource": "src/parcel/cli.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:dad1bd6315c72719b354d00f1400aa5aa4e91e44b39ab4a8bac9a96cb5752306",
+      "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970"
+    },
+    "binding.code.pricing.b": {
+      "kind": "binding",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "targets": [
+        "component.pricing",
+        "action.quote"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "code",
+      "resource": "src/parcel/pricing.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:9b701ac542233f6c8e48a5e8e9e641213d1ff7727fdc6e15e4838dda9f162b56",
+      "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970"
+    },
+    "binding.code.tariffs.b": {
+      "kind": "binding",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "targets": [
+        "component.tariffs",
+        "action.rate"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "code",
+      "resource": "src/parcel/tariffs.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:f1e84d9e687b3eb3a0a2c44af2d3e68f8674ccb99448198da86c202db659d14a",
+      "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970"
+    }
+  }
+}

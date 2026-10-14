@@ -1,60 +1,39 @@
-# Concert app execution evidence
+# Concert reference evidence
 
-These artifacts describe actual local execution on October 14, 2026. The latest
-[summary](summary.json) identifies the accepted A and B model/code revisions. Code and
-model byte snapshots can be recomputed; GDD checks remain host-attested observations,
-not execution performed by the standard or by pseudocode.
+[summary.json](summary.json) describes the actual October 14, 2026 native-agent
+experiment. Its A and B model/code digests remain tied to that execution. The
+selected B test, browser and import-control receipts are retained beside the
+snapshot, requirement-change red result, database activation check and advisory
+review. A's later-discovered identity/retry limitations remain disclosed in the
+[reference README](../README.md).
 
-- `phase-a/`: actual worker/lead tests, browser controls and captures, positive import
-  scan, distinct negative controls, acceptance/status, advisory review and SQL history.
-- `phase-b/`: fixed requirement cases red against A, actual revised deliveries and
-  combined tests/browser controls, preserved database activation, current import controls,
-  acceptance/status, advisory review, graph rendering and final SQL history.
-- `checker.worker.run.json` and `checker.host.run.json`: independent worker and lead
-  execution of the bounded AST checker tests.
-- `design.lint.run.json`: actual pinned design-md 0.4.0 lint. Zero errors; four orphan-token
-  warnings concern canvas/muted/border/focus roles described in prose rather than assigned
-  to structured component fields. The lead reviewed their actual CSS use.
-- `phase-a/late-review-retrieved-output.json`: exact tool stdout retrieved from the
-  independent agent's actual Chrome/temp-SQLite probes. The original temporary scripts
-  and databases were not persisted; this is a retrieved presentation, not an original
-  saved execution receipt. B's new controls execute the repaired behavior directly.
-- `phase-a/metadata.correction.json`: the original A checker label mistakenly names
-  pytest8.3.5. Actual execution used installed pytest9.1.1. The original records remain
-  preserved; this explicit correction changes no source, assertion, result or digest.
+The [complete byte-indexed original](../../../archive/experiments/README.md)
+contains all 197 experiment files from commit `7e27757`, including the native
+journals, dispatches, plans, full review output, historical replay and screenshots.
+The original A pytest label correction and retrieved late review output remain
+there. The retrieved output is a presentation of an agent's actual probes; their
+original temporary scripts and databases were not persisted.
 
-The original A acceptance covered its declared executed tests. Later independent review
-identified shared-cookie identity confusion and loss of the retry key after an unknown
-postcommit500. During B repair, review also found that uncertain logout retry could
-discard its original identity expectation. All three are fixed and covered by actual B
-controls. Historical A acceptance is not presented as a claim that those defects were absent.
+Original browser screenshots are application captures. The post-zoom mobile
+capture has compositing artifacts; the archived `mobile.clean.png` and
+`desktop.clean.png` are later fresh-context presentation captures. Their saved
+capture description remains distinct from the original assertion receipt.
 
-`import.controls.json` contains four separate source revisions: clean, deliberately
-injected, repaired and missing. The FAIL belongs to the altered code and the UNKNOWN
-to missing input. Neither is rebound as current positive evidence. The single selected
-current checker receipt attests the clean code and these executed controls.
+[Current replay verification](current-replay.verification.json) records a fresh
+execution of the curated reference. It includes actual commands/results, new
+checker source hashes, runtime configuration, and validator/schema hashes. The
+replay creates new run identities and host evidence using delivered code; it
+makes no claim of new agent generation. Full output remains at the recorded
+execution path. Copied receipt content here presents that execution.
 
-Browser screenshots are actual integrated application captures, not generated mockups.
-The original post-zoom mobile screenshot has Chrome compositing artifacts. It remains
-preserved; `phase-b/mobile.clean.png` and `desktop.clean.png` are later actual
-fresh-context presentation captures, with their execution described in
-`phase-b/clean-captures.json`. The original browser assertions and receipts are unchanged.
-The B unknown500 browser control commits through the real server, then substitutes its
-ambiguous response; a separate real HTTP test induces the server's actual serialization
-failure after commit. The lost-response controls similarly drop a real committed reply.
+The [recovery verification](../../../archive/experiments/concert-7e27757.recovery-verification.json)
+records a separate successful replay from recovered original bytes, performed
+before duplicate removal, using the explicitly identified current validator and
+installed toolchain. It is a new observation, not a replacement for the historical
+execution. [The curation manifest](../../../archive/experiments/concert-7e27757.curation.json)
+records every removed path and the recovery gate.
 
-The original [native journals](../runs/) and [dispatches](../dispatches/) are preserved.
-Any later replay creates new run identities and evidence and explicitly reports that it
-reuses archived patches rather than executing new agents.
-
-`replay/` preserves byte-identical selected receipts, journals and snapshots from the
-actual verified fresh replay. Its original execution directory is recorded in
-`replay/provenance.json`; copied paths are presentations of that execution, not new runs.
-
-The current record store contains only B's records. Exact original A records are in
-the preserved A bundle. A diagnostic scratch copy and the correction are in
-`phase-b/records.before-reconciliation.json` and `records.reconciliation.json`.
-Implementation and authorization were validated separately before combining the final
-report. `workflow-active-gates.retrieved.json` records an independent agent's15 actual
-active-gate mutation probes; each revoked current acceptance while preserving history.
-No validator-core modification was needed.
+The retained `gdd.records.json` and selected B receipts are historical bytes. The
+old browser-source binding identifies the original checker retrievable from the
+archive. The current portable checker has its own hash; a fresh replay generates
+new records and bindings. No old execution digest has been rewritten or rebound.

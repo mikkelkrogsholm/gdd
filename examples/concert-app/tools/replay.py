@@ -71,10 +71,23 @@ def check_phase(root, phase, database, node):
     return {"spec_revision": host["policy"]["spec_revision"], "code_revision": host["code_revision"], "acceptance_current": True, "browser_cases": len(browser["cases"])}
 
 
-def replay(output, node="node"):
+def replay(output, node=None):
+    node = node or os.environ.get("GDD_NODE", "node")
     root = Path(output).resolve()
     root.mkdir()  # Never overwrite a past run or the repository delivery.
     experiment.ROOT = root
+    write(root / "replay.provenance.json", {
+        "format": "concert-replay-provenance/1",
+        "notice": "New execution of archived delivered app/test bytes through the listed current host tools. Historical records are not selected as new evidence.",
+        "archived_delivery_git_commit": "7e27757c34b6fa57ecc69660e263c99e1420649b",
+        "source": str(SOURCE),
+        "tools": {path.relative_to(SOURCE).as_posix(): sha256(path.read_bytes()).hexdigest()
+                  for path in sorted((SOURCE / "tools").iterdir()) if path.is_file()},
+        "python": sys.version, "python_executable": sys.executable,
+        "node": node, "node_executable": shutil.which(node),
+        "playwright_module": os.environ.get("GDD_PLAYWRIGHT", "playwright"),
+        "browser_executable": os.environ.get("GDD_CHROME", "Playwright-managed Chromium"),
+    })
     (root / "tools").mkdir()
     for name in ("browser.cjs", "import_check.py", "test_import_check.py"):
         shutil.copy2(SOURCE / "tools" / name, root / "tools" / name)
@@ -140,6 +153,6 @@ def replay(output, node="node"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--node", default="node")
+    parser.add_argument("--node", default=os.environ.get("GDD_NODE", "node"))
     args = parser.parse_args()
     print(json.dumps(replay(args.output, args.node), indent=2))

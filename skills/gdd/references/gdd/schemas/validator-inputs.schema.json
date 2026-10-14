@@ -1,0 +1,352 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "gdd-validator 0.2.0 tool inputs (informative, outside GDD core)",
+  "$defs": {
+    "host": {
+      "type": "object",
+      "properties": {
+        "implementation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy": {
+          "type": "object",
+          "properties": {
+            "revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "actor": {
+              "type": "string",
+              "minLength": 1
+            },
+            "activity": {
+              "enum": [
+                "model_changes",
+                "implementation",
+                "acceptance"
+              ]
+            },
+            "spec_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "scope": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "requirement": {
+              "enum": [
+                "explicit",
+                "standing",
+                "none"
+              ]
+            },
+            "authorities": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "basis": {
+              "type": "string",
+              "minLength": 1
+            },
+            "denied": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "revision",
+            "actor",
+            "activity",
+            "spec_revision",
+            "scope",
+            "requirement",
+            "authorities",
+            "basis"
+          ],
+          "additionalProperties": false
+        },
+        "trusted_decisions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "supported_methods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "trusted_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "verified_bindings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "negative_controls": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "check_selection": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "evidence_selection": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "package": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "gdd-context/0.2"
+        },
+        "spec_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "format",
+        "spec_revision",
+        "scope",
+        "nodes",
+        "edges",
+        "sources",
+        "questions",
+        "extensions"
+      ],
+      "additionalProperties": false
+    },
+    "parallel": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "gdd-parallel-plan/0.2"
+        },
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scope": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true,
+                "minItems": 1
+              },
+              "write_resources": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true,
+                "minItems": 1
+              },
+              "read_resources": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              },
+              "locked_contracts": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              },
+              "workspace": {
+                "type": "string",
+                "minLength": 1
+              },
+              "base_revision": {
+                "type": "string",
+                "minLength": 1
+              },
+              "integration_plan": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id",
+              "scope",
+              "write_resources",
+              "base_revision",
+              "integration_plan"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 2
+        },
+        "serialized": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "integration": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "minLength": 1
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "owner",
+            "checks"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "format",
+        "packages",
+        "serialized"
+      ],
+      "additionalProperties": false
+    },
+    "import": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "gdd-import-audit/0.2"
+        },
+        "original": {},
+        "reconstructed": {}
+      },
+      "required": [
+        "format",
+        "original",
+        "reconstructed"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

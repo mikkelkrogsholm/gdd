@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/python",
+    "evidence/refine-model.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:22:19.185659+00:00",
+  "finished_at": "2026-10-14T13:22:19.214938+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

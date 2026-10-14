@@ -1,0 +1,103 @@
+{
+  "format": "gdd/0.2",
+  "project": {
+    "id": "project.reservations",
+    "title": "Reservation lifecycle",
+    "goal": "Preserve object identity while reserving and cancelling through a bounded lifecycle."
+  },
+  "nodes": {
+    "component.reservations": {
+      "kind": "component",
+      "description": "Reservation lifecycle module",
+      "maturity": "sketch",
+      "source_refs": [
+        {
+          "source": "source.graphify",
+          "purpose": "provenance",
+          "selector": {
+            "kind": "json-pointer",
+            "value": "/nodes/0"
+          }
+        }
+      ],
+      "label": "reservation.py"
+    },
+    "entity.reservation": {
+      "kind": "entity",
+      "description": "A mutable Reservation with lifecycle state",
+      "maturity": "sketch",
+      "source_refs": [
+        {
+          "source": "source.graphify",
+          "purpose": "provenance",
+          "selector": {
+            "kind": "json-pointer",
+            "value": "/nodes/1"
+          }
+        }
+      ],
+      "label": "Reservation"
+    },
+    "action.reserve": {
+      "kind": "action",
+      "description": "Reserve a draft Reservation and return that same instance",
+      "maturity": "sketch",
+      "source_refs": [
+        {
+          "source": "source.graphify",
+          "purpose": "provenance",
+          "selector": {
+            "kind": "json-pointer",
+            "value": "/nodes/2"
+          }
+        }
+      ],
+      "label": "reserve()"
+    }
+  },
+  "edges": [
+    {
+      "id": "edge.reserve-input",
+      "from": "action.reserve",
+      "to": "entity.reservation",
+      "relation": "depends_on",
+      "source_refs": [
+        {
+          "source": "source.graphify",
+          "purpose": "provenance",
+          "selector": {
+            "kind": "json-pointer",
+            "value": "/edges/2"
+          }
+        }
+      ]
+    }
+  ],
+  "sources": {
+    "source.graphify": {
+      "role": "observation",
+      "title": "Original Graphify observation snapshot; producer claims",
+      "uri": "observations/graphify.raw.json",
+      "format": "graphify-0.9.75-ast",
+      "normative": false,
+      "revision": {
+        "sha256": "f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb"
+      }
+    }
+  },
+  "questions": {
+    "question.graphify_contracts": {
+      "statement": "Clarify the intended behavior, contracts, rules and scenarios; code observations describe the existing implementation and do not automatically define intent.",
+      "targets": [
+        "component.reservations",
+        "entity.reservation",
+        "action.reserve"
+      ],
+      "blocks": [
+        "implementation",
+        "acceptance"
+      ],
+      "status": "open"
+    }
+  }
+}

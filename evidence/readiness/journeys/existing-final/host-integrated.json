@@ -1,0 +1,22 @@
+{
+  "implementation": "implementation.reservations",
+  "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+  "policy": {
+    "revision": "policy.trial.1",
+    "actor": "actor.independent-agent",
+    "activity": "implementation",
+    "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+    "scope": [
+      "component.reservations"
+    ],
+    "requirement": "standing",
+    "authorities": [
+      "actor.human",
+      "actor.independent-agent"
+    ],
+    "basis": "The direct human task authorizes this isolated modeling, implementation and verification trial and requests integration and acceptance. The human authorized the active agent to perform these bounded actions; actor.independent-agent is the delegated execution authority."
+  },
+  "trusted_decisions": [
+    "decision.adopt-lifecycle.v3"
+  ]
+}

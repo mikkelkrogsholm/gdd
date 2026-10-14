@@ -1,0 +1,14 @@
+{
+  "label": "actual-checks-a",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "execute_current.py",
+    "a"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:26:45.474136+00:00",
+  "exit_code": 0,
+  "stdout": "injected architecture FAIL {\"result\": \"FAIL\", \"actual_imports\": [[\"cli\", \"pricing\"], [\"cli\", \"tariffs\"], [\"pricing\", \"tariffs\"]], \"forbidden_cli_tariffs\": true, \"missing_required_imports\": []}\n\nrepaired architecture PASS {\"result\": \"PASS\", \"actual_imports\": [[\"cli\", \"pricing\"], [\"pricing\", \"tariffs\"]], \"forbidden_cli_tariffs\": false, \"missing_required_imports\": []}\n\nbad domestic rate FAIL\ncurrent behavior PASS\nmissing actual code UNKNOWN {\"result\": \"UNKNOWN\", \"reason\": \"missing actual code\", \"resource\": \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/missing-code/parcel/cli.py\"}\n\n",
+  "stderr": ""
+}

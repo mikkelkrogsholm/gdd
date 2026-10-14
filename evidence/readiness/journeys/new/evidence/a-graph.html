@@ -1,0 +1,1896 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'sha256-+hD3QXZBkBcFEeegv12nR4sQxUJ1tN3PRuwbxJHer0Y='; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; object-src 'none'; form-action 'none'"
+    />
+    <title>GDD · Graph viewer</title>
+    <style>
+      :root {
+  color-scheme: light;
+  --bg: #f5f6f2;
+  --panel: #fff;
+  --ink: #202b2c;
+  --muted: #657171;
+  --line: #dfe4df;
+  --accent: #17695a;
+  --soft: #e8f2ec;
+  --canvas: #f1f4ef;
+  --node: #fff;
+  --edge: #a8b8b1;
+  --action: #1c7869;
+  --rule: #a57832;
+  --entity: #5277a4;
+  --screen: #8d699d;
+  --community: #56645e;
+  --scenario: #768b71;
+  --focus: #156bba;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(min-content, 1fr) auto;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    14px/1.5 ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 10px;
+}
+button:hover {
+  background: var(--soft);
+  border-color: var(--accent);
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+button[aria-pressed="true"] {
+  background: var(--soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+header {
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+.brand {
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -2px;
+}
+.brand-dot {
+  color: var(--accent);
+  font-size: 12px;
+  vertical-align: top;
+  letter-spacing: 0;
+  padding-left: 3px;
+}
+.heading {
+  min-width: 0;
+  flex: 1;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  color: var(--muted);
+  font-weight: 650;
+}
+h1 {
+  font-size: 19px;
+  line-height: 1.2;
+  margin: 3px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.mode {
+  color: var(--accent);
+  background: var(--soft);
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+h2 {
+  font-size: 15px;
+  font-weight: 650;
+  margin: 0;
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 20px;
+}
+.quiet,
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+.hint {
+  margin: 8px 0 18px;
+}
+.explorer {
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  min-height: min-content;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+}
+main {
+  min-height: 550px;
+  display: grid;
+  grid-template-columns: 265px minmax(280px, 1fr) 340px;
+}
+label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 550;
+  margin: 0 0 6px;
+}
+input[type="search"],
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 9px 8px;
+  min-width: 0;
+}
+input[type="search"] {
+  margin-bottom: 16px;
+}
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.switch-row label {
+  margin: 0;
+  color: var(--ink);
+}
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+.list-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  gap: 6px;
+  padding-bottom: 10px;
+}
+.list-tabs button {
+  flex: 1;
+  font-size: 12px;
+}
+.object-list {
+  overflow: auto;
+  min-height: 70px;
+  flex: 1 1 70px;
+  margin: 10px -8px;
+}
+.object-row {
+  display: block;
+  border: 0;
+  border-radius: 5px;
+  width: 100%;
+  text-align: left;
+  padding: 9px 8px;
+  background: transparent;
+  margin: 0 0 2px;
+  overflow-wrap: anywhere;
+}
+.object-row .row-title {
+  font-size: 12px;
+  display: block;
+  font-weight: 550;
+}
+.row-meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+.type-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--community);
+  margin-right: 6px;
+}
+.reset {
+  margin-top: 10px;
+  font-size: 12px;
+}
+.stage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0)
+    0 0/20px 20px;
+  background-color: var(--canvas);
+}
+.stage-toolbar {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 1;
+  pointer-events: none;
+  align-items: center;
+}
+.stage-toolbar > * {
+  pointer-events: auto;
+}
+.stage-toolbar > div {
+  background: var(--panel);
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.stage-toolbar button {
+  font-size: 11px;
+}
+.live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 7px;
+}
+svg#graph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  user-select: none;
+}
+#arrow path {
+  fill: var(--edge);
+}
+.edge-path {
+  fill: none;
+  stroke: var(--edge);
+  stroke-width: 1.5;
+  marker-end: url(#arrow);
+}
+.edge-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 16;
+  cursor: pointer;
+}
+.edge-label {
+  font-size: 10px;
+  fill: var(--muted);
+  paint-order: stroke;
+  stroke: var(--canvas);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  cursor: pointer;
+}
+.edge-group.selected .edge-path,
+.edge-group.connected .edge-path {
+  stroke: var(--accent);
+  stroke-width: 2.2;
+}
+.edge-group.selected .edge-label {
+  fill: var(--accent);
+}
+.node-glyph {
+  fill: var(--node);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+.node-group {
+  cursor: grab;
+}
+.node-group.selected .node-glyph {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.node-group.connected .node-glyph {
+  stroke: var(--accent);
+}
+.node-group.dim {
+  opacity: 0.22;
+}
+.edge-group.dim {
+  opacity: 0.12;
+}
+.node-label {
+  font-size: 11px;
+  fill: var(--ink);
+  font-weight: 550;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--canvas);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+.node-kind {
+  font-size: 9px;
+  fill: var(--muted);
+  text-anchor: middle;
+}
+.node-symbol {
+  font-size: 13px;
+  fill: var(--ink);
+  text-anchor: middle;
+  font-weight: 650;
+}
+.node-group.folded .node-glyph {
+  fill: var(--soft);
+  stroke-dasharray: 4 3;
+}
+.node-group.sketch .node-glyph {
+  stroke-dasharray: 3 3;
+}
+.canvas-note {
+  position: absolute;
+  bottom: 20px;
+  left: 18px;
+  color: var(--muted);
+  font-size: 11px;
+  max-width: 50%;
+}
+.zoom-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.zoom-controls button {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.zoom-controls span {
+  font:
+    11px ui-monospace,
+    monospace;
+  min-width: 40px;
+  text-align: center;
+}
+#empty {
+  position: absolute;
+  top: 45%;
+  left: 15%;
+  right: 15%;
+  text-align: center;
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 8px;
+}
+.inspector {
+  padding: 22px;
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+  /* Details scroll without setting the graph row's intrinsic minimum height. */
+  contain: size;
+  border-left: 1px solid var(--line);
+  background: var(--panel);
+}
+.detail-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  color: var(--accent);
+  font-weight: 650;
+}
+.detail-title {
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 10px 0 9px;
+  overflow-wrap: anywhere;
+  letter-spacing: -0.4px;
+}
+.canonical-id {
+  font:
+    11px/1.6 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  margin: 0 0 15px;
+}
+.detail-description {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.badge {
+  display: inline-block;
+  border: 1px solid var(--line);
+  font-size: 11px;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 0 5px 8px 0;
+}
+.detail-section {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.detail-section h3 {
+  font-size: 12px;
+  margin: 0 0 10px;
+  font-weight: 650;
+}
+.detail-section p {
+  font-size: 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.kv {
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 12px;
+}
+.kv dt {
+  color: var(--muted);
+}
+.kv dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+pre {
+  font:
+    11px/1.75 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 12px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 380px;
+  overflow: auto;
+}
+details {
+  margin: 12px 0;
+}
+summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 550;
+}
+.detail-link {
+  width: 100%;
+  text-align: left;
+  font-size: 11px;
+  padding: 8px;
+  margin-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+.notice {
+  border-left: 3px solid var(--rule);
+  padding: 8px 10px;
+  background: var(--bg);
+  font-size: 12px;
+  color: var(--muted);
+}
+footer {
+  height: 35px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  font:
+    10px ui-monospace,
+    monospace;
+  color: var(--muted);
+}
+footer span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#revision {
+  max-width: 40%;
+}
+.type-action {
+  --type: var(--action);
+}
+.type-entity {
+  --type: var(--entity);
+}
+.type-rule {
+  --type: var(--rule);
+}
+.type-screen {
+  --type: var(--screen);
+}
+.type-community {
+  --type: var(--community);
+}
+.type-scenario {
+  --type: var(--scenario);
+}
+.type-component,
+.type-machine {
+  --type: var(--community);
+}
+.type-dot,
+.node-accent {
+  fill: var(--type, var(--community));
+  background: var(--type, var(--community));
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #1d2524;
+    --panel: #222d2b;
+    --ink: #e4eae5;
+    --muted: #acb9b1;
+    --line: #3c4c46;
+    --accent: #8aceb3;
+    --soft: #2e433a;
+    --canvas: #1a2320;
+    --node: #2a3932;
+    --edge: #72867a;
+    --action: #71bda6;
+    --rule: #d0ab6e;
+    --entity: #96b6db;
+    --screen: #be9fd0;
+    --community: #a9b9b0;
+    --scenario: #b0c7a3;
+    --focus: #93c4ff;
+  }
+}
+@media (max-width: 1150px) {
+  main {
+    grid-template-columns: 235px minmax(280px, 1fr) 290px;
+  }
+  .inspector {
+    padding: 18px;
+  }
+  .stage-toolbar {
+    flex-wrap: wrap;
+  }
+  .mode {
+    display: none;
+  }
+}
+@media (max-width: 850px) {
+  body {
+    display: block;
+  }
+  header {
+    padding: 12px 16px;
+    gap: 14px;
+    min-height: 78px;
+  }
+  h1 {
+    font-size: 16px;
+  }
+  .eyebrow {
+    font-size: 9px;
+  }
+  header button {
+    font-size: 11px;
+  }
+  main {
+    height: auto;
+    min-height: 0;
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-rows: minmax(min-content, 65dvh) auto;
+  }
+  .stage {
+    min-height: 400px;
+  }
+  .explorer {
+    grid-row: 1;
+    padding: 18px 12px;
+  }
+  .inspector {
+    contain: none;
+    grid-column: 1/-1;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    max-height: none;
+  }
+  footer {
+    position: static;
+    height: auto;
+    min-height: 35px;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+  .canvas-note {
+    display: none;
+  }
+  .stage-toolbar {
+    left: 10px;
+    right: 10px;
+  }
+  .stage-toolbar button {
+    font-size: 10px;
+  }
+}
+@media (max-width: 520px) {
+  header {
+    height: auto;
+    min-height: 78px;
+  }
+  .brand {
+    font-size: 25px;
+  }
+  .heading {
+    flex: 1;
+  }
+  .eyebrow {
+    letter-spacing: 0.6px;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  .stage {
+    height: 60dvh;
+    min-height: 380px;
+    order: 0;
+  }
+  .explorer {
+    order: 1;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+  }
+  .inspector {
+    order: 2;
+  }
+  .object-list {
+    flex-basis: auto;
+    max-height: 230px;
+    min-height: 80px;
+  }
+  .panel-heading {
+    margin-bottom: 12px;
+  }
+  .filter-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hint {
+    margin-bottom: 10px;
+  }
+  header > button {
+    max-width: 80px;
+  }
+  #revision {
+    max-width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+.edge-label {
+  opacity: 0;
+}
+.edge-group:hover .edge-label,
+.edge-group.connected .edge-label,
+.edge-group.selected .edge-label {
+  opacity: 1;
+}
+.node-symbol,
+.node-accent {
+  pointer-events: none;
+}
+.node-group:hover .node-glyph {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+;
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand" aria-label="Graph Driven Development">
+        gdd<span class="brand-dot">●</span>
+      </div>
+      <div class="heading">
+        <span class="eyebrow">GRAPH DRIVEN DEVELOPMENT</span>
+        <h1 id="project-title"></h1>
+      </div>
+      <span class="mode">Read-only view · GDD 0.2</span>
+      <button id="overview">About the model</button>
+    </header>
+    <p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+    <main>
+      <aside class="explorer" aria-label="Explore the graph">
+        <div class="panel-heading">
+          <h2>Explore</h2>
+          <span id="total-count" class="quiet"></span>
+        </div>
+        <label for="search">Search nodes and relations</label>
+        <input
+          id="search"
+          type="search"
+          placeholder="ID, description or pseudocode…"
+          autocomplete="off"
+        />
+        <div class="filter-row">
+          <div>
+            <label for="kind">Node type</label
+            ><select id="kind">
+              <option value="">All types</option>
+            </select>
+          </div>
+          <div>
+            <label for="relation">Relation</label
+            ><select id="relation">
+              <option value="">All relations</option>
+            </select>
+          </div>
+        </div>
+        <label for="community">Community</label
+        ><select id="community">
+          <option value="">Entire graph</option>
+        </select>
+        <div class="switch-row">
+          <label for="scenarios"
+            >Show scenarios <span id="scenario-count"></span></label
+          ><input id="scenarios" type="checkbox" />
+        </div>
+        <div class="switch-row">
+          <label for="fold">Fold communities</label
+          ><input id="fold" type="checkbox" />
+        </div>
+        <p class="hint" id="fold-hint">
+          Membership is grouping, not ownership.
+        </p>
+        <div class="list-tabs" role="group" aria-label="Object list">
+          <button id="tab-nodes" aria-pressed="true">Nodes</button
+          ><button id="tab-edges" aria-pressed="false">Relations</button>
+        </div>
+        <div
+          id="object-list"
+          class="object-list"
+          aria-label="Visible objects"
+        ></div>
+        <button id="reset" class="reset">Reset filters and folding</button>
+      </aside>
+      <section class="stage" aria-label="Interactive graph">
+        <div class="stage-toolbar">
+          <div>
+            <span class="live-dot"></span
+            ><span id="view-count" role="status" aria-live="polite"></span>
+          </div>
+          <button id="manifest-download">Download view manifest</button>
+        </div>
+        <svg
+          id="graph"
+          role="img"
+          aria-label="GDD graph. Use the object list for keyboard inspection."
+        >
+          <defs>
+            <marker
+              id="arrow"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+          </defs>
+          <g id="viewport">
+            <g id="edge-layer"></g>
+            <g id="node-layer"></g>
+          </g>
+        </svg>
+        <div id="empty" hidden>
+          No nodes match the filters. Reset the filters to see the graph again.
+        </div>
+        <div class="canvas-note">
+          Drag to pan · Scroll to zoom · Select a node or connection
+        </div>
+        <div class="zoom-controls" role="group" aria-label="Graph navigation">
+          <button id="zoom-out" aria-label="Zoom out">−</button
+          ><span id="zoom-level">100%</span
+          ><button id="zoom-in" aria-label="Zoom in">+</button
+          ><button id="fit">Fit</button>
+        </div>
+      </section>
+      <aside id="inspector" class="inspector" aria-label="Details">
+        <div id="detail"></div>
+      </aside>
+    </main>
+    <footer>
+      <span id="revision"></span><span id="projection-status"></span
+      ><span id="renderer-meta"></span>
+    </footer>
+    <script id="gdd-data" type="application/json">{"boundaries": {"calls": [{"action": "action.quote", "consumer": "component.cli", "edge": "edge.e4", "provider": "component.pricing", "source": "action.cli", "status": "public"}, {"action": "action.rate", "consumer": "component.pricing", "edge": "edge.e5", "provider": "component.tariffs", "source": "action.quote", "status": "public"}], "communities": {}, "components": {"component.cli": {"boundary": {"excludes": ["Rounding weights", "Looking up tariffs", "Calculating handling fees"], "rationale": "Process input/output changes independently of the price formula.", "responsibility": "Parse process arguments, call pricing, and print a quote or error."}, "interfaces_known": true, "public_contracts": [{"action": "action.cli", "project_id": "project.parcel", "provider": "component.cli", "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4"}]}, "component.pricing": {"boundary": {"excludes": ["Parsing process arguments", "Printing output", "Owning tariff values"], "rationale": "The domain formula is reusable outside process argument parsing.", "responsibility": "Validate inputs and calculate the complete quote in integer cents."}, "interfaces_known": true, "public_contracts": [{"action": "action.quote", "project_id": "project.parcel", "provider": "component.pricing", "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4"}]}, "component.tariffs": {"boundary": {"excludes": ["Parsing user input", "Weight rounding", "Handling-fee policy"], "rationale": "The table of rates has one owner and a public lookup contract.", "responsibility": "Provide the domestic and remote per-kilogram rates."}, "interfaces_known": true, "public_contracts": [{"action": "action.rate", "project_id": "project.parcel", "provider": "component.tariffs", "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4"}]}}, "format": "gdd-boundaries/0.3", "omitted_calls": [], "scope": ["action.cli", "action.quote", "action.rate", "component.cli", "component.pricing", "component.tariffs", "rule.no_cli_tariffs", "rule.price", "scenario.architecture", "scenario.cli_invalid", "scenario.domestic", "scenario.invalid_weight", "scenario.invalid_zone", "scenario.remote", "scenario.weights"], "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4", "unresolved": []}, "format": "gdd-view/0.2", "generator": {"name": "gdd-viewer", "profile": "gdd-viewer-html/0.1", "version": "0.2.0"}, "locations": {"action.cli": ["gdd.json", "/nodes/action.cli"], "action.quote": ["gdd.json", "/nodes/action.quote"], "action.rate": ["gdd.json", "/nodes/action.rate"], "component.cli": ["gdd.json", "/nodes/component.cli"], "component.pricing": ["gdd.json", "/nodes/component.pricing"], "component.tariffs": ["gdd.json", "/nodes/component.tariffs"], "edge.e1": ["gdd.json", "/edges/0"], "edge.e10": ["gdd.json", "/edges/9"], "edge.e11": ["gdd.json", "/edges/10"], "edge.e12": ["gdd.json", "/edges/11"], "edge.e13": ["gdd.json", "/edges/12"], "edge.e14": ["gdd.json", "/edges/13"], "edge.e15": ["gdd.json", "/edges/14"], "edge.e16": ["gdd.json", "/edges/15"], "edge.e17": ["gdd.json", "/edges/16"], "edge.e18": ["gdd.json", "/edges/17"], "edge.e19": ["gdd.json", "/edges/18"], "edge.e2": ["gdd.json", "/edges/1"], "edge.e20": ["gdd.json", "/edges/19"], "edge.e21": ["gdd.json", "/edges/20"], "edge.e22": ["gdd.json", "/edges/21"], "edge.e23": ["gdd.json", "/edges/22"], "edge.e24": ["gdd.json", "/edges/23"], "edge.e25": ["gdd.json", "/edges/24"], "edge.e26": ["gdd.json", "/edges/25"], "edge.e27": ["gdd.json", "/edges/26"], "edge.e28": ["gdd.json", "/edges/27"], "edge.e3": ["gdd.json", "/edges/2"], "edge.e4": ["gdd.json", "/edges/3"], "edge.e5": ["gdd.json", "/edges/4"], "edge.e6": ["gdd.json", "/edges/5"], "edge.e7": ["gdd.json", "/edges/6"], "edge.e8": ["gdd.json", "/edges/7"], "edge.e9": ["gdd.json", "/edges/8"], "rule.no_cli_tariffs": ["gdd.json", "/nodes/rule.no_cli_tariffs"], "rule.price": ["gdd.json", "/nodes/rule.price"], "scenario.architecture": ["gdd.json", "/nodes/scenario.architecture"], "scenario.cli_invalid": ["gdd.json", "/nodes/scenario.cli_invalid"], "scenario.domestic": ["gdd.json", "/nodes/scenario.domestic"], "scenario.invalid_weight": ["gdd.json", "/nodes/scenario.invalid_weight"], "scenario.invalid_zone": ["gdd.json", "/nodes/scenario.invalid_zone"], "scenario.remote": ["gdd.json", "/nodes/scenario.remote"], "scenario.weights": ["gdd.json", "/nodes/scenario.weights"], "source.brief": ["gdd.json", "/sources/source.brief"], "source.contract": ["gdd.json", "/sources/source.contract"]}, "manifest": {"omitted_edges": [], "omitted_nodes": [], "shown_edges": ["edge.e1", "edge.e10", "edge.e11", "edge.e12", "edge.e13", "edge.e14", "edge.e15", "edge.e16", "edge.e17", "edge.e18", "edge.e19", "edge.e2", "edge.e20", "edge.e21", "edge.e22", "edge.e23", "edge.e24", "edge.e25", "edge.e26", "edge.e27", "edge.e28", "edge.e3", "edge.e4", "edge.e5", "edge.e6", "edge.e7", "edge.e8", "edge.e9"], "shown_nodes": ["action.cli", "action.quote", "action.rate", "component.cli", "component.pricing", "component.tariffs", "rule.no_cli_tariffs", "rule.price", "scenario.architecture", "scenario.cli_invalid", "scenario.domestic", "scenario.invalid_weight", "scenario.invalid_zone", "scenario.remote", "scenario.weights"]}, "model": {"edges": [{"from": "action.cli", "id": "edge.e1", "relation": "owned_by", "to": "component.cli"}, {"from": "action.quote", "id": "edge.e2", "relation": "owned_by", "to": "component.pricing"}, {"from": "action.rate", "id": "edge.e3", "relation": "owned_by", "to": "component.tariffs"}, {"from": "action.cli", "id": "edge.e4", "relation": "calls", "to": "action.quote"}, {"from": "action.quote", "id": "edge.e5", "relation": "calls", "to": "action.rate"}, {"from": "component.cli", "id": "edge.e6", "relation": "imports", "to": "component.pricing"}, {"from": "component.pricing", "id": "edge.e7", "relation": "imports", "to": "component.tariffs"}, {"from": "rule.no_cli_tariffs", "id": "edge.e8", "relation": "constrains", "to": "component.cli"}, {"from": "scenario.domestic", "id": "edge.e9", "relation": "exercises", "to": "action.quote"}, {"from": "scenario.domestic", "id": "edge.e10", "relation": "exercises", "to": "action.cli"}, {"from": "scenario.domestic", "id": "edge.e11", "relation": "exercises", "to": "action.rate"}, {"from": "scenario.domestic", "id": "edge.e12", "relation": "verifies", "to": "rule.price"}, {"from": "scenario.remote", "id": "edge.e13", "relation": "exercises", "to": "action.quote"}, {"from": "scenario.remote", "id": "edge.e14", "relation": "exercises", "to": "action.cli"}, {"from": "scenario.remote", "id": "edge.e15", "relation": "exercises", "to": "action.rate"}, {"from": "scenario.remote", "id": "edge.e16", "relation": "verifies", "to": "rule.price"}, {"from": "scenario.weights", "id": "edge.e17", "relation": "exercises", "to": "action.quote"}, {"from": "scenario.weights", "id": "edge.e18", "relation": "exercises", "to": "action.cli"}, {"from": "scenario.weights", "id": "edge.e19", "relation": "verifies", "to": "rule.price"}, {"from": "scenario.invalid_weight", "id": "edge.e20", "relation": "exercises", "to": "action.quote"}, {"from": "scenario.invalid_weight", "id": "edge.e21", "relation": "verifies", "to": "rule.price"}, {"from": "scenario.invalid_zone", "id": "edge.e22", "relation": "exercises", "to": "action.quote"}, {"from": "scenario.invalid_zone", "id": "edge.e23", "relation": "exercises", "to": "action.rate"}, {"from": "scenario.invalid_zone", "id": "edge.e24", "relation": "verifies", "to": "rule.price"}, {"from": "scenario.cli_invalid", "id": "edge.e25", "relation": "exercises", "to": "action.cli"}, {"from": "scenario.cli_invalid", "id": "edge.e26", "relation": "verifies", "to": "rule.price"}, {"from": "scenario.architecture", "id": "edge.e27", "relation": "exercises", "to": "action.cli"}, {"from": "scenario.architecture", "id": "edge.e28", "relation": "verifies", "to": "rule.no_cli_tariffs"}], "format": "gdd/0.3", "nodes": {"action.cli": {"behavior": "Parse WEIGHT as int and ZONE as domestic or remote. Reject a nonpositive weight. Call action.quote once, print the integer cents, and return 0. For invalid arguments return 2 after an English stderr error.", "contract": {"context": {}, "dependencies_complete": true, "effects_complete": true, "error_cases": {}, "errors": {}, "external_effects": ["Write the quote to stdout or argument errors to stderr."], "input": {"argv": {"items": {"type": "string"}, "type": "array"}}, "output": {"type": "integer"}, "postconditions": ["On valid arguments print the quote and a newline and return exit code 0.", "Invalid/missing arguments print no quote and return 2 with an English stderr message."], "preconditions": [], "risks": {"atomicity": {"rationale": "No multi-resource mutation or transaction is performed.", "relevant": false, "scenarios": []}, "authorization": {"rationale": "Public local price calculation needs no identity or privileged effects.", "relevant": false, "scenarios": []}, "boundaries": {"rationale": "Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.", "relevant": true, "scenarios": ["scenario.cli_invalid", "scenario.weights"]}, "concurrency": {"rationale": "No shared mutable state, I/O transaction, or persisted quote exists.", "relevant": false, "scenarios": []}, "idempotency": {"rationale": "Calculation has no domain mutation; repeated quotes are independent.", "relevant": false, "scenarios": []}}}, "description": "Run a command-line parcel quote.", "kind": "action", "maturity": "specified", "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "action.quote": {"behavior": "Reject bool/non-integer/nonpositive weight with ValueError. Get action.rate for the zone. Compute begun_kg=(weight_grams+999)//1000. Return begun_kg * rate.", "contract": {"context": {}, "dependencies_complete": true, "effects_complete": true, "error_cases": {"invalid_weight": ["scenario.invalid_weight"], "invalid_zone": ["scenario.invalid_zone"]}, "errors": {"invalid_weight": "Raise ValueError for bool, noninteger, or nonpositive weight without a quote or effects.", "invalid_zone": "Raise ValueError for an unknown zone without a quote or effects."}, "external_effects": [], "input": {"weight_grams": {"minimum": 1, "type": "integer"}, "zone": {"type": "enum", "values": ["domestic", "remote"]}}, "output": {"minimum": 100, "type": "integer"}, "postconditions": ["Return begun_kg * rate in integer cents.", "No state is mutated."], "preconditions": [], "risks": {"atomicity": {"rationale": "No multi-resource mutation or transaction is performed.", "relevant": false, "scenarios": []}, "authorization": {"rationale": "Public local price calculation needs no identity or privileged effects.", "relevant": false, "scenarios": []}, "boundaries": {"rationale": "Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.", "relevant": true, "scenarios": ["scenario.invalid_weight", "scenario.invalid_zone", "scenario.weights"]}, "concurrency": {"rationale": "No shared mutable state, I/O transaction, or persisted quote exists.", "relevant": false, "scenarios": []}, "idempotency": {"rationale": "Calculation has no domain mutation; repeated quotes are independent.", "relevant": false, "scenarios": []}}}, "description": "Calculate the complete parcel quote.", "kind": "action", "maturity": "specified", "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "action.rate": {"behavior": "Return 100 for domestic, 150 for remote, otherwise raise ValueError.", "contract": {"context": {}, "dependencies_complete": true, "effects_complete": true, "error_cases": {"invalid_zone": ["scenario.invalid_zone"]}, "errors": {"invalid_zone": "Raise ValueError for an unknown zone without effects."}, "external_effects": [], "input": {"zone": {"type": "enum", "values": ["domestic", "remote"]}}, "output": {"type": "integer"}, "postconditions": ["Return 100 for domestic and 150 for remote."], "preconditions": [], "risks": {"atomicity": {"rationale": "No multi-resource mutation or transaction is performed.", "relevant": false, "scenarios": []}, "authorization": {"rationale": "Public local price calculation needs no identity or privileged effects.", "relevant": false, "scenarios": []}, "boundaries": {"rationale": "Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.", "relevant": true, "scenarios": ["scenario.invalid_zone"]}, "concurrency": {"rationale": "No shared mutable state, I/O transaction, or persisted quote exists.", "relevant": false, "scenarios": []}, "idempotency": {"rationale": "Calculation has no domain mutation; repeated quotes are independent.", "relevant": false, "scenarios": []}}}, "description": "Look up the per-begun-kilogram rate.", "kind": "action", "maturity": "specified", "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "component.cli": {"boundary": {"excludes": ["Rounding weights", "Looking up tariffs", "Calculating handling fees"], "rationale": "Process input/output changes independently of the price formula.", "responsibility": "Parse process arguments, call pricing, and print a quote or error."}, "description": "Parse process arguments, call pricing, and print a quote or error.", "interfaces": ["action.cli"], "kind": "component", "maturity": "specified", "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "component.pricing": {"boundary": {"excludes": ["Parsing process arguments", "Printing output", "Owning tariff values"], "rationale": "The domain formula is reusable outside process argument parsing.", "responsibility": "Validate inputs and calculate the complete quote in integer cents."}, "description": "Validate inputs and calculate the complete quote in integer cents.", "interfaces": ["action.quote"], "kind": "component", "maturity": "specified", "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "component.tariffs": {"boundary": {"excludes": ["Parsing user input", "Weight rounding", "Handling-fee policy"], "rationale": "The table of rates has one owner and a public lookup contract.", "responsibility": "Provide the domestic and remote per-kilogram rates."}, "description": "Provide the domestic and remote per-kilogram rates.", "interfaces": ["action.rate"], "kind": "component", "maturity": "specified", "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "rule.no_cli_tariffs": {"description": "Require pricing to mediate access to tariffs.", "kind": "rule", "maturity": "specified", "rule": {"blocking": true, "category": "architecture", "constraint": {"from": "component.cli", "policy": "forbid", "reach": "direct", "relation": "imports", "to": "component.tariffs"}, "scope": "targeted", "statement": "CLI may import pricing; pricing imports tariffs. Direct CLI imports of tariffs are forbidden.", "verification": ["architecture.python_ast"]}, "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "rule.price": {"description": "Preserve exact quoted amounts and rejection behavior.", "kind": "rule", "maturity": "specified", "rule": {"blocking": true, "category": "behavior", "scope": "global", "statement": "Quotes follow the accepted contract, begun-kilogram rounding, input rejection, and CLI exit/output guarantees.", "verification": ["behavior.unittest"]}, "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "scenario.architecture": {"description": "Report FAIL and the forbidden relationship; after repair report PASS.", "kind": "scenario", "maturity": "specified", "scenario": {"category": "architecture", "given": "Actual CLI source contains a direct tariffs import.", "then": "Report FAIL and the forbidden relationship; after repair report PASS.", "when": "Run the concrete Python AST checker."}, "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "scenario.cli_invalid": {"description": "Exit 2 with English stderr and no stdout quote.", "kind": "scenario", "maturity": "specified", "scenario": {"category": "negative", "given": "Weight is malformed, nonpositive, absent, or the zone is unknown.", "then": "Exit 2 with English stderr and no stdout quote.", "when": "Run CLI."}, "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "scenario.domestic": {"description": "Return/print 100 cents and exit 0.", "kind": "scenario", "maturity": "specified", "scenario": {"category": "normal", "given": "Positive domestic parcel weighing 1 gram.", "then": "Return/print 100 cents and exit 0.", "when": "Quote from API and CLI."}, "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "scenario.invalid_weight": {"description": "Raise ValueError without effects.", "kind": "scenario", "maturity": "specified", "scenario": {"category": "negative", "given": "Weight is 0, -1, 1.5, a string, None or bool.", "then": "Raise ValueError without effects.", "when": "Call quote."}, "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "scenario.invalid_zone": {"description": "Raise ValueError without effects.", "kind": "scenario", "maturity": "specified", "scenario": {"category": "negative", "given": "Zone is unknown or blank.", "then": "Raise ValueError without effects.", "when": "Call quote or rate."}, "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "scenario.remote": {"description": "Return/print 150 cents and exit 0.", "kind": "scenario", "maturity": "specified", "scenario": {"category": "normal", "given": "Positive remote parcel weighing 1 gram.", "then": "Return/print 150 cents and exit 0.", "when": "Quote from API and CLI."}, "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}, "scenario.weights": {"description": "Only a begun kilogram changes the base price; no fee is added.", "kind": "scenario", "maturity": "specified", "scenario": {"category": "boundary", "given": "Weights are 1, 999, 1000, 1001, 2000, 2001 and a large positive integer.", "then": "Only a begun kilogram changes the base price; no fee is added.", "when": "Quote each zone at kilogram boundaries."}, "source_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.contract"}, {"purpose": "provenance", "source": "source.brief"}]}}, "project": {"assumptions": ["The exact CLI spelling and English errors are agent-resolved implementation choices within the brief."], "goal": "Calculate a correct parcel quote from positive integer grams and zone.", "id": "project.parcel", "scope": "Three stdlib Python modules and fixed behavioral/architecture checks.", "title": "Parcel price CLI A", "workflow": {"gates": {"acceptance": {"authorities": ["actor.independent"], "requirement": "standing", "scope": ["action.cli", "action.quote", "action.rate"]}, "implementation": {"authorities": ["actor.independent"], "requirement": "standing", "scope": ["action.cli", "action.quote", "action.rate"]}, "model_changes": {"authorities": ["actor.independent"], "requirement": "standing", "scope": ["action.cli", "action.quote", "action.rate"]}}, "mandate": "The delegated independent test authorizes modeling, implementation and verification of this isolated parcel CLI, and explicitly requests its technical acceptance through the installed workflow; no deployment or external side effects are included.", "mode": "autonomous"}}, "questions": {}, "record_files": ["records.json"], "sources": {"source.brief": {"format": "text/markdown", "normative": false, "revision": {"sha256": "b9be45c57a62c54ac9391555f6d2547aa4aaf1c021abfce3d0dccc563f35d478"}, "role": "input", "title": "Original independent task", "uri": "sources/brief.md"}, "source.contract": {"format": "text/markdown", "normative": true, "revision": {"sha256": "6e229c0aa787e9b693610816380cff84819fa84b80b0799a9f9554ee90bb37b7"}, "role": "input", "title": "Accepted contract A", "uri": "sources/contract.md"}}}, "observation_inputs": [], "scope": [], "snapshot": {"assets": [{"path": "gdd.json", "sha256": "1f1303a5f4acbaaa0b7de84dfcc3f744a85a25243f9e4abbe4a38a924272871a"}, {"path": "sources/contract.md", "sha256": "6e229c0aa787e9b693610816380cff84819fa84b80b0799a9f9554ee90bb37b7"}], "format": "gdd-snapshot/0.2", "revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4"}, "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4", "text": {"edges": {"edge.e1": "{\n  \"id\": \"edge.e1\",\n  \"from\": \"action.cli\",\n  \"to\": \"component.cli\",\n  \"relation\": \"owned_by\"\n}", "edge.e10": "{\n  \"id\": \"edge.e10\",\n  \"from\": \"scenario.domestic\",\n  \"to\": \"action.cli\",\n  \"relation\": \"exercises\"\n}", "edge.e11": "{\n  \"id\": \"edge.e11\",\n  \"from\": \"scenario.domestic\",\n  \"to\": \"action.rate\",\n  \"relation\": \"exercises\"\n}", "edge.e12": "{\n  \"id\": \"edge.e12\",\n  \"from\": \"scenario.domestic\",\n  \"to\": \"rule.price\",\n  \"relation\": \"verifies\"\n}", "edge.e13": "{\n  \"id\": \"edge.e13\",\n  \"from\": \"scenario.remote\",\n  \"to\": \"action.quote\",\n  \"relation\": \"exercises\"\n}", "edge.e14": "{\n  \"id\": \"edge.e14\",\n  \"from\": \"scenario.remote\",\n  \"to\": \"action.cli\",\n  \"relation\": \"exercises\"\n}", "edge.e15": "{\n  \"id\": \"edge.e15\",\n  \"from\": \"scenario.remote\",\n  \"to\": \"action.rate\",\n  \"relation\": \"exercises\"\n}", "edge.e16": "{\n  \"id\": \"edge.e16\",\n  \"from\": \"scenario.remote\",\n  \"to\": \"rule.price\",\n  \"relation\": \"verifies\"\n}", "edge.e17": "{\n  \"id\": \"edge.e17\",\n  \"from\": \"scenario.weights\",\n  \"to\": \"action.quote\",\n  \"relation\": \"exercises\"\n}", "edge.e18": "{\n  \"id\": \"edge.e18\",\n  \"from\": \"scenario.weights\",\n  \"to\": \"action.cli\",\n  \"relation\": \"exercises\"\n}", "edge.e19": "{\n  \"id\": \"edge.e19\",\n  \"from\": \"scenario.weights\",\n  \"to\": \"rule.price\",\n  \"relation\": \"verifies\"\n}", "edge.e2": "{\n  \"id\": \"edge.e2\",\n  \"from\": \"action.quote\",\n  \"to\": \"component.pricing\",\n  \"relation\": \"owned_by\"\n}", "edge.e20": "{\n  \"id\": \"edge.e20\",\n  \"from\": \"scenario.invalid_weight\",\n  \"to\": \"action.quote\",\n  \"relation\": \"exercises\"\n}", "edge.e21": "{\n  \"id\": \"edge.e21\",\n  \"from\": \"scenario.invalid_weight\",\n  \"to\": \"rule.price\",\n  \"relation\": \"verifies\"\n}", "edge.e22": "{\n  \"id\": \"edge.e22\",\n  \"from\": \"scenario.invalid_zone\",\n  \"to\": \"action.quote\",\n  \"relation\": \"exercises\"\n}", "edge.e23": "{\n  \"id\": \"edge.e23\",\n  \"from\": \"scenario.invalid_zone\",\n  \"to\": \"action.rate\",\n  \"relation\": \"exercises\"\n}", "edge.e24": "{\n  \"id\": \"edge.e24\",\n  \"from\": \"scenario.invalid_zone\",\n  \"to\": \"rule.price\",\n  \"relation\": \"verifies\"\n}", "edge.e25": "{\n  \"id\": \"edge.e25\",\n  \"from\": \"scenario.cli_invalid\",\n  \"to\": \"action.cli\",\n  \"relation\": \"exercises\"\n}", "edge.e26": "{\n  \"id\": \"edge.e26\",\n  \"from\": \"scenario.cli_invalid\",\n  \"to\": \"rule.price\",\n  \"relation\": \"verifies\"\n}", "edge.e27": "{\n  \"id\": \"edge.e27\",\n  \"from\": \"scenario.architecture\",\n  \"to\": \"action.cli\",\n  \"relation\": \"exercises\"\n}", "edge.e28": "{\n  \"id\": \"edge.e28\",\n  \"from\": \"scenario.architecture\",\n  \"to\": \"rule.no_cli_tariffs\",\n  \"relation\": \"verifies\"\n}", "edge.e3": "{\n  \"id\": \"edge.e3\",\n  \"from\": \"action.rate\",\n  \"to\": \"component.tariffs\",\n  \"relation\": \"owned_by\"\n}", "edge.e4": "{\n  \"id\": \"edge.e4\",\n  \"from\": \"action.cli\",\n  \"to\": \"action.quote\",\n  \"relation\": \"calls\"\n}", "edge.e5": "{\n  \"id\": \"edge.e5\",\n  \"from\": \"action.quote\",\n  \"to\": \"action.rate\",\n  \"relation\": \"calls\"\n}", "edge.e6": "{\n  \"id\": \"edge.e6\",\n  \"from\": \"component.cli\",\n  \"to\": \"component.pricing\",\n  \"relation\": \"imports\"\n}", "edge.e7": "{\n  \"id\": \"edge.e7\",\n  \"from\": \"component.pricing\",\n  \"to\": \"component.tariffs\",\n  \"relation\": \"imports\"\n}", "edge.e8": "{\n  \"id\": \"edge.e8\",\n  \"from\": \"rule.no_cli_tariffs\",\n  \"to\": \"component.cli\",\n  \"relation\": \"constrains\"\n}", "edge.e9": "{\n  \"id\": \"edge.e9\",\n  \"from\": \"scenario.domestic\",\n  \"to\": \"action.quote\",\n  \"relation\": \"exercises\"\n}"}, "nodes": {"action.cli": {"fields": {"behavior": "Parse WEIGHT as int and ZONE as domestic or remote. Reject a nonpositive weight. Call action.quote once, print the integer cents, and return 0. For invalid arguments return 2 after an English stderr error.", "contract": "{\n  \"input\": {\n    \"argv\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"context\": {},\n  \"output\": {\n    \"type\": \"integer\"\n  },\n  \"errors\": {},\n  \"preconditions\": [],\n  \"postconditions\": [\n    \"On valid arguments print the quote and a newline and return exit code 0.\",\n    \"Invalid/missing arguments print no quote and return 2 with an English stderr message.\"\n  ],\n  \"external_effects\": [\n    \"Write the quote to stdout or argument errors to stderr.\"\n  ],\n  \"effects_complete\": true,\n  \"dependencies_complete\": true,\n  \"risks\": {\n    \"authorization\": {\n      \"relevant\": false,\n      \"rationale\": \"Public local price calculation needs no identity or privileged effects.\",\n      \"scenarios\": []\n    },\n    \"idempotency\": {\n      \"relevant\": false,\n      \"rationale\": \"Calculation has no domain mutation; repeated quotes are independent.\",\n      \"scenarios\": []\n    },\n    \"boundaries\": {\n      \"relevant\": true,\n      \"rationale\": \"Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.\",\n      \"scenarios\": [\n        \"scenario.cli_invalid\",\n        \"scenario.weights\"\n      ]\n    },\n    \"concurrency\": {\n      \"relevant\": false,\n      \"rationale\": \"No shared mutable state, I/O transaction, or persisted quote exists.\",\n      \"scenarios\": []\n    },\n    \"atomicity\": {\n      \"relevant\": false,\n      \"rationale\": \"No multi-resource mutation or transaction is performed.\",\n      \"scenarios\": []\n    }\n  },\n  \"error_cases\": {}\n}", "description": "Run a command-line parcel quote.", "kind": "action", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"action\",\n  \"description\": \"Run a command-line parcel quote.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"contract\": {\n    \"input\": {\n      \"argv\": {\n        \"type\": \"array\",\n        \"items\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"context\": {},\n    \"output\": {\n      \"type\": \"integer\"\n    },\n    \"errors\": {},\n    \"preconditions\": [],\n    \"postconditions\": [\n      \"On valid arguments print the quote and a newline and return exit code 0.\",\n      \"Invalid/missing arguments print no quote and return 2 with an English stderr message.\"\n    ],\n    \"external_effects\": [\n      \"Write the quote to stdout or argument errors to stderr.\"\n    ],\n    \"effects_complete\": true,\n    \"dependencies_complete\": true,\n    \"risks\": {\n      \"authorization\": {\n        \"relevant\": false,\n        \"rationale\": \"Public local price calculation needs no identity or privileged effects.\",\n        \"scenarios\": []\n      },\n      \"idempotency\": {\n        \"relevant\": false,\n        \"rationale\": \"Calculation has no domain mutation; repeated quotes are independent.\",\n        \"scenarios\": []\n      },\n      \"boundaries\": {\n        \"relevant\": true,\n        \"rationale\": \"Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.\",\n        \"scenarios\": [\n          \"scenario.cli_invalid\",\n          \"scenario.weights\"\n        ]\n      },\n      \"concurrency\": {\n        \"relevant\": false,\n        \"rationale\": \"No shared mutable state, I/O transaction, or persisted quote exists.\",\n        \"scenarios\": []\n      },\n      \"atomicity\": {\n        \"relevant\": false,\n        \"rationale\": \"No multi-resource mutation or transaction is performed.\",\n        \"scenarios\": []\n      }\n    },\n    \"error_cases\": {}\n  },\n  \"behavior\": \"Parse WEIGHT as int and ZONE as domestic or remote. Reject a nonpositive weight. Call action.quote once, print the integer cents, and return 0. For invalid arguments return 2 after an English stderr error.\"\n}"}, "action.quote": {"fields": {"behavior": "Reject bool/non-integer/nonpositive weight with ValueError. Get action.rate for the zone. Compute begun_kg=(weight_grams+999)//1000. Return begun_kg * rate.", "contract": "{\n  \"input\": {\n    \"weight_grams\": {\n      \"type\": \"integer\",\n      \"minimum\": 1\n    },\n    \"zone\": {\n      \"type\": \"enum\",\n      \"values\": [\n        \"domestic\",\n        \"remote\"\n      ]\n    }\n  },\n  \"context\": {},\n  \"output\": {\n    \"type\": \"integer\",\n    \"minimum\": 100\n  },\n  \"errors\": {\n    \"invalid_weight\": \"Raise ValueError for bool, noninteger, or nonpositive weight without a quote or effects.\",\n    \"invalid_zone\": \"Raise ValueError for an unknown zone without a quote or effects.\"\n  },\n  \"preconditions\": [],\n  \"postconditions\": [\n    \"Return begun_kg * rate in integer cents.\",\n    \"No state is mutated.\"\n  ],\n  \"external_effects\": [],\n  \"effects_complete\": true,\n  \"dependencies_complete\": true,\n  \"risks\": {\n    \"authorization\": {\n      \"relevant\": false,\n      \"rationale\": \"Public local price calculation needs no identity or privileged effects.\",\n      \"scenarios\": []\n    },\n    \"idempotency\": {\n      \"relevant\": false,\n      \"rationale\": \"Calculation has no domain mutation; repeated quotes are independent.\",\n      \"scenarios\": []\n    },\n    \"boundaries\": {\n      \"relevant\": true,\n      \"rationale\": \"Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.\",\n      \"scenarios\": [\n        \"scenario.invalid_weight\",\n        \"scenario.invalid_zone\",\n        \"scenario.weights\"\n      ]\n    },\n    \"concurrency\": {\n      \"relevant\": false,\n      \"rationale\": \"No shared mutable state, I/O transaction, or persisted quote exists.\",\n      \"scenarios\": []\n    },\n    \"atomicity\": {\n      \"relevant\": false,\n      \"rationale\": \"No multi-resource mutation or transaction is performed.\",\n      \"scenarios\": []\n    }\n  },\n  \"error_cases\": {\n    \"invalid_weight\": [\n      \"scenario.invalid_weight\"\n    ],\n    \"invalid_zone\": [\n      \"scenario.invalid_zone\"\n    ]\n  }\n}", "description": "Calculate the complete parcel quote.", "kind": "action", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"action\",\n  \"description\": \"Calculate the complete parcel quote.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"contract\": {\n    \"input\": {\n      \"weight_grams\": {\n        \"type\": \"integer\",\n        \"minimum\": 1\n      },\n      \"zone\": {\n        \"type\": \"enum\",\n        \"values\": [\n          \"domestic\",\n          \"remote\"\n        ]\n      }\n    },\n    \"context\": {},\n    \"output\": {\n      \"type\": \"integer\",\n      \"minimum\": 100\n    },\n    \"errors\": {\n      \"invalid_weight\": \"Raise ValueError for bool, noninteger, or nonpositive weight without a quote or effects.\",\n      \"invalid_zone\": \"Raise ValueError for an unknown zone without a quote or effects.\"\n    },\n    \"preconditions\": [],\n    \"postconditions\": [\n      \"Return begun_kg * rate in integer cents.\",\n      \"No state is mutated.\"\n    ],\n    \"external_effects\": [],\n    \"effects_complete\": true,\n    \"dependencies_complete\": true,\n    \"risks\": {\n      \"authorization\": {\n        \"relevant\": false,\n        \"rationale\": \"Public local price calculation needs no identity or privileged effects.\",\n        \"scenarios\": []\n      },\n      \"idempotency\": {\n        \"relevant\": false,\n        \"rationale\": \"Calculation has no domain mutation; repeated quotes are independent.\",\n        \"scenarios\": []\n      },\n      \"boundaries\": {\n        \"relevant\": true,\n        \"rationale\": \"Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.\",\n        \"scenarios\": [\n          \"scenario.invalid_weight\",\n          \"scenario.invalid_zone\",\n          \"scenario.weights\"\n        ]\n      },\n      \"concurrency\": {\n        \"relevant\": false,\n        \"rationale\": \"No shared mutable state, I/O transaction, or persisted quote exists.\",\n        \"scenarios\": []\n      },\n      \"atomicity\": {\n        \"relevant\": false,\n        \"rationale\": \"No multi-resource mutation or transaction is performed.\",\n        \"scenarios\": []\n      }\n    },\n    \"error_cases\": {\n      \"invalid_weight\": [\n        \"scenario.invalid_weight\"\n      ],\n      \"invalid_zone\": [\n        \"scenario.invalid_zone\"\n      ]\n    }\n  },\n  \"behavior\": \"Reject bool/non-integer/nonpositive weight with ValueError. Get action.rate for the zone. Compute begun_kg=(weight_grams+999)//1000. Return begun_kg * rate.\"\n}"}, "action.rate": {"fields": {"behavior": "Return 100 for domestic, 150 for remote, otherwise raise ValueError.", "contract": "{\n  \"input\": {\n    \"zone\": {\n      \"type\": \"enum\",\n      \"values\": [\n        \"domestic\",\n        \"remote\"\n      ]\n    }\n  },\n  \"context\": {},\n  \"output\": {\n    \"type\": \"integer\"\n  },\n  \"errors\": {\n    \"invalid_zone\": \"Raise ValueError for an unknown zone without effects.\"\n  },\n  \"preconditions\": [],\n  \"postconditions\": [\n    \"Return 100 for domestic and 150 for remote.\"\n  ],\n  \"external_effects\": [],\n  \"effects_complete\": true,\n  \"dependencies_complete\": true,\n  \"risks\": {\n    \"authorization\": {\n      \"relevant\": false,\n      \"rationale\": \"Public local price calculation needs no identity or privileged effects.\",\n      \"scenarios\": []\n    },\n    \"idempotency\": {\n      \"relevant\": false,\n      \"rationale\": \"Calculation has no domain mutation; repeated quotes are independent.\",\n      \"scenarios\": []\n    },\n    \"boundaries\": {\n      \"relevant\": true,\n      \"rationale\": \"Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.\",\n      \"scenarios\": [\n        \"scenario.invalid_zone\"\n      ]\n    },\n    \"concurrency\": {\n      \"relevant\": false,\n      \"rationale\": \"No shared mutable state, I/O transaction, or persisted quote exists.\",\n      \"scenarios\": []\n    },\n    \"atomicity\": {\n      \"relevant\": false,\n      \"rationale\": \"No multi-resource mutation or transaction is performed.\",\n      \"scenarios\": []\n    }\n  },\n  \"error_cases\": {\n    \"invalid_zone\": [\n      \"scenario.invalid_zone\"\n    ]\n  }\n}", "description": "Look up the per-begun-kilogram rate.", "kind": "action", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"action\",\n  \"description\": \"Look up the per-begun-kilogram rate.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"contract\": {\n    \"input\": {\n      \"zone\": {\n        \"type\": \"enum\",\n        \"values\": [\n          \"domestic\",\n          \"remote\"\n        ]\n      }\n    },\n    \"context\": {},\n    \"output\": {\n      \"type\": \"integer\"\n    },\n    \"errors\": {\n      \"invalid_zone\": \"Raise ValueError for an unknown zone without effects.\"\n    },\n    \"preconditions\": [],\n    \"postconditions\": [\n      \"Return 100 for domestic and 150 for remote.\"\n    ],\n    \"external_effects\": [],\n    \"effects_complete\": true,\n    \"dependencies_complete\": true,\n    \"risks\": {\n      \"authorization\": {\n        \"relevant\": false,\n        \"rationale\": \"Public local price calculation needs no identity or privileged effects.\",\n        \"scenarios\": []\n      },\n      \"idempotency\": {\n        \"relevant\": false,\n        \"rationale\": \"Calculation has no domain mutation; repeated quotes are independent.\",\n        \"scenarios\": []\n      },\n      \"boundaries\": {\n        \"relevant\": true,\n        \"rationale\": \"Validate positive integer weight and allowed zone; enforce exact kilogram boundaries.\",\n        \"scenarios\": [\n          \"scenario.invalid_zone\"\n        ]\n      },\n      \"concurrency\": {\n        \"relevant\": false,\n        \"rationale\": \"No shared mutable state, I/O transaction, or persisted quote exists.\",\n        \"scenarios\": []\n      },\n      \"atomicity\": {\n        \"relevant\": false,\n        \"rationale\": \"No multi-resource mutation or transaction is performed.\",\n        \"scenarios\": []\n      }\n    },\n    \"error_cases\": {\n      \"invalid_zone\": [\n        \"scenario.invalid_zone\"\n      ]\n    }\n  },\n  \"behavior\": \"Return 100 for domestic, 150 for remote, otherwise raise ValueError.\"\n}"}, "component.cli": {"fields": {"boundary": "{\n  \"responsibility\": \"Parse process arguments, call pricing, and print a quote or error.\",\n  \"rationale\": \"Process input/output changes independently of the price formula.\",\n  \"excludes\": [\n    \"Rounding weights\",\n    \"Looking up tariffs\",\n    \"Calculating handling fees\"\n  ]\n}", "description": "Parse process arguments, call pricing, and print a quote or error.", "interfaces": "[\n  \"action.cli\"\n]", "kind": "component", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"component\",\n  \"description\": \"Parse process arguments, call pricing, and print a quote or error.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"boundary\": {\n    \"responsibility\": \"Parse process arguments, call pricing, and print a quote or error.\",\n    \"rationale\": \"Process input/output changes independently of the price formula.\",\n    \"excludes\": [\n      \"Rounding weights\",\n      \"Looking up tariffs\",\n      \"Calculating handling fees\"\n    ]\n  },\n  \"interfaces\": [\n    \"action.cli\"\n  ]\n}"}, "component.pricing": {"fields": {"boundary": "{\n  \"responsibility\": \"Validate inputs and calculate the complete quote in integer cents.\",\n  \"rationale\": \"The domain formula is reusable outside process argument parsing.\",\n  \"excludes\": [\n    \"Parsing process arguments\",\n    \"Printing output\",\n    \"Owning tariff values\"\n  ]\n}", "description": "Validate inputs and calculate the complete quote in integer cents.", "interfaces": "[\n  \"action.quote\"\n]", "kind": "component", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"component\",\n  \"description\": \"Validate inputs and calculate the complete quote in integer cents.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"boundary\": {\n    \"responsibility\": \"Validate inputs and calculate the complete quote in integer cents.\",\n    \"rationale\": \"The domain formula is reusable outside process argument parsing.\",\n    \"excludes\": [\n      \"Parsing process arguments\",\n      \"Printing output\",\n      \"Owning tariff values\"\n    ]\n  },\n  \"interfaces\": [\n    \"action.quote\"\n  ]\n}"}, "component.tariffs": {"fields": {"boundary": "{\n  \"responsibility\": \"Provide the domestic and remote per-kilogram rates.\",\n  \"rationale\": \"The table of rates has one owner and a public lookup contract.\",\n  \"excludes\": [\n    \"Parsing user input\",\n    \"Weight rounding\",\n    \"Handling-fee policy\"\n  ]\n}", "description": "Provide the domestic and remote per-kilogram rates.", "interfaces": "[\n  \"action.rate\"\n]", "kind": "component", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"component\",\n  \"description\": \"Provide the domestic and remote per-kilogram rates.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"boundary\": {\n    \"responsibility\": \"Provide the domestic and remote per-kilogram rates.\",\n    \"rationale\": \"The table of rates has one owner and a public lookup contract.\",\n    \"excludes\": [\n      \"Parsing user input\",\n      \"Weight rounding\",\n      \"Handling-fee policy\"\n    ]\n  },\n  \"interfaces\": [\n    \"action.rate\"\n  ]\n}"}, "rule.no_cli_tariffs": {"fields": {"description": "Require pricing to mediate access to tariffs.", "kind": "rule", "maturity": "specified", "rule": "{\n  \"category\": \"architecture\",\n  \"statement\": \"CLI may import pricing; pricing imports tariffs. Direct CLI imports of tariffs are forbidden.\",\n  \"scope\": \"targeted\",\n  \"blocking\": true,\n  \"verification\": [\n    \"architecture.python_ast\"\n  ],\n  \"constraint\": {\n    \"relation\": \"imports\",\n    \"from\": \"component.cli\",\n    \"to\": \"component.tariffs\",\n    \"reach\": \"direct\",\n    \"policy\": \"forbid\"\n  }\n}", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"rule\",\n  \"description\": \"Require pricing to mediate access to tariffs.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"rule\": {\n    \"category\": \"architecture\",\n    \"statement\": \"CLI may import pricing; pricing imports tariffs. Direct CLI imports of tariffs are forbidden.\",\n    \"scope\": \"targeted\",\n    \"blocking\": true,\n    \"verification\": [\n      \"architecture.python_ast\"\n    ],\n    \"constraint\": {\n      \"relation\": \"imports\",\n      \"from\": \"component.cli\",\n      \"to\": \"component.tariffs\",\n      \"reach\": \"direct\",\n      \"policy\": \"forbid\"\n    }\n  }\n}"}, "rule.price": {"fields": {"description": "Preserve exact quoted amounts and rejection behavior.", "kind": "rule", "maturity": "specified", "rule": "{\n  \"category\": \"behavior\",\n  \"statement\": \"Quotes follow the accepted contract, begun-kilogram rounding, input rejection, and CLI exit/output guarantees.\",\n  \"scope\": \"global\",\n  \"blocking\": true,\n  \"verification\": [\n    \"behavior.unittest\"\n  ]\n}", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"rule\",\n  \"description\": \"Preserve exact quoted amounts and rejection behavior.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"rule\": {\n    \"category\": \"behavior\",\n    \"statement\": \"Quotes follow the accepted contract, begun-kilogram rounding, input rejection, and CLI exit/output guarantees.\",\n    \"scope\": \"global\",\n    \"blocking\": true,\n    \"verification\": [\n      \"behavior.unittest\"\n    ]\n  }\n}"}, "scenario.architecture": {"fields": {"description": "Report FAIL and the forbidden relationship; after repair report PASS.", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"architecture\",\n  \"given\": \"Actual CLI source contains a direct tariffs import.\",\n  \"when\": \"Run the concrete Python AST checker.\",\n  \"then\": \"Report FAIL and the forbidden relationship; after repair report PASS.\"\n}", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Report FAIL and the forbidden relationship; after repair report PASS.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"scenario\": {\n    \"category\": \"architecture\",\n    \"given\": \"Actual CLI source contains a direct tariffs import.\",\n    \"when\": \"Run the concrete Python AST checker.\",\n    \"then\": \"Report FAIL and the forbidden relationship; after repair report PASS.\"\n  }\n}"}, "scenario.cli_invalid": {"fields": {"description": "Exit 2 with English stderr and no stdout quote.", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Weight is malformed, nonpositive, absent, or the zone is unknown.\",\n  \"when\": \"Run CLI.\",\n  \"then\": \"Exit 2 with English stderr and no stdout quote.\"\n}", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Exit 2 with English stderr and no stdout quote.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Weight is malformed, nonpositive, absent, or the zone is unknown.\",\n    \"when\": \"Run CLI.\",\n    \"then\": \"Exit 2 with English stderr and no stdout quote.\"\n  }\n}"}, "scenario.domestic": {"fields": {"description": "Return/print 100 cents and exit 0.", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"normal\",\n  \"given\": \"Positive domestic parcel weighing 1 gram.\",\n  \"when\": \"Quote from API and CLI.\",\n  \"then\": \"Return/print 100 cents and exit 0.\"\n}", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Return/print 100 cents and exit 0.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"scenario\": {\n    \"category\": \"normal\",\n    \"given\": \"Positive domestic parcel weighing 1 gram.\",\n    \"when\": \"Quote from API and CLI.\",\n    \"then\": \"Return/print 100 cents and exit 0.\"\n  }\n}"}, "scenario.invalid_weight": {"fields": {"description": "Raise ValueError without effects.", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Weight is 0, -1, 1.5, a string, None or bool.\",\n  \"when\": \"Call quote.\",\n  \"then\": \"Raise ValueError without effects.\"\n}", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Raise ValueError without effects.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Weight is 0, -1, 1.5, a string, None or bool.\",\n    \"when\": \"Call quote.\",\n    \"then\": \"Raise ValueError without effects.\"\n  }\n}"}, "scenario.invalid_zone": {"fields": {"description": "Raise ValueError without effects.", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Zone is unknown or blank.\",\n  \"when\": \"Call quote or rate.\",\n  \"then\": \"Raise ValueError without effects.\"\n}", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Raise ValueError without effects.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Zone is unknown or blank.\",\n    \"when\": \"Call quote or rate.\",\n    \"then\": \"Raise ValueError without effects.\"\n  }\n}"}, "scenario.remote": {"fields": {"description": "Return/print 150 cents and exit 0.", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"normal\",\n  \"given\": \"Positive remote parcel weighing 1 gram.\",\n  \"when\": \"Quote from API and CLI.\",\n  \"then\": \"Return/print 150 cents and exit 0.\"\n}", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Return/print 150 cents and exit 0.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"scenario\": {\n    \"category\": \"normal\",\n    \"given\": \"Positive remote parcel weighing 1 gram.\",\n    \"when\": \"Quote from API and CLI.\",\n    \"then\": \"Return/print 150 cents and exit 0.\"\n  }\n}"}, "scenario.weights": {"fields": {"description": "Only a begun kilogram changes the base price; no fee is added.", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"boundary\",\n  \"given\": \"Weights are 1, 999, 1000, 1001, 2000, 2001 and a large positive integer.\",\n  \"when\": \"Quote each zone at kilogram boundaries.\",\n  \"then\": \"Only a begun kilogram changes the base price; no fee is added.\"\n}", "source_refs": "[\n  {\n    \"source\": \"source.contract\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Only a begun kilogram changes the base price; no fee is added.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.contract\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"scenario\": {\n    \"category\": \"boundary\",\n    \"given\": \"Weights are 1, 999, 1000, 1001, 2000, 2001 and a large positive integer.\",\n    \"when\": \"Quote each zone at kilogram boundaries.\",\n    \"then\": \"Only a begun kilogram changes the base price; no fee is added.\"\n  }\n}"}}, "project": "{\n  \"id\": \"project.parcel\",\n  \"title\": \"Parcel price CLI A\",\n  \"goal\": \"Calculate a correct parcel quote from positive integer grams and zone.\",\n  \"scope\": \"Three stdlib Python modules and fixed behavioral/architecture checks.\",\n  \"assumptions\": [\n    \"The exact CLI spelling and English errors are agent-resolved implementation choices within the brief.\"\n  ],\n  \"workflow\": {\n    \"mode\": \"autonomous\",\n    \"mandate\": \"The delegated independent test authorizes modeling, implementation and verification of this isolated parcel CLI, and explicitly requests its technical acceptance through the installed workflow; no deployment or external side effects are included.\",\n    \"gates\": {\n      \"model_changes\": {\n        \"requirement\": \"standing\",\n        \"authorities\": [\n          \"actor.independent\"\n        ],\n        \"scope\": [\n          \"action.cli\",\n          \"action.quote\",\n          \"action.rate\"\n        ]\n      },\n      \"implementation\": {\n        \"requirement\": \"standing\",\n        \"authorities\": [\n          \"actor.independent\"\n        ],\n        \"scope\": [\n          \"action.cli\",\n          \"action.quote\",\n          \"action.rate\"\n        ]\n      },\n      \"acceptance\": {\n        \"requirement\": \"standing\",\n        \"authorities\": [\n          \"actor.independent\"\n        ],\n        \"scope\": [\n          \"action.cli\",\n          \"action.quote\",\n          \"action.rate\"\n        ]\n      }\n    }\n  }\n}", "questions": {}, "references": {"action.cli": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "action.quote": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "action.rate": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "component.cli": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "component.pricing": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "component.tariffs": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "edge.e1": [], "edge.e10": [], "edge.e11": [], "edge.e12": [], "edge.e13": [], "edge.e14": [], "edge.e15": [], "edge.e16": [], "edge.e17": [], "edge.e18": [], "edge.e19": [], "edge.e2": [], "edge.e20": [], "edge.e21": [], "edge.e22": [], "edge.e23": [], "edge.e24": [], "edge.e25": [], "edge.e26": [], "edge.e27": [], "edge.e28": [], "edge.e3": [], "edge.e4": [], "edge.e5": [], "edge.e6": [], "edge.e7": [], "edge.e8": [], "edge.e9": [], "rule.no_cli_tariffs": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "rule.price": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "scenario.architecture": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "scenario.cli_invalid": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "scenario.domestic": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "scenario.invalid_weight": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "scenario.invalid_zone": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "scenario.remote": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"], "scenario.weights": ["{\n  \"source\": \"source.contract\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"provenance\"\n}"]}, "snapshot": "{\n  \"format\": \"gdd-snapshot/0.2\",\n  \"revision\": \"sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4\",\n  \"assets\": [\n    {\n      \"path\": \"gdd.json\",\n      \"sha256\": \"1f1303a5f4acbaaa0b7de84dfcc3f744a85a25243f9e4abbe4a38a924272871a\"\n    },\n    {\n      \"path\": \"sources/contract.md\",\n      \"sha256\": \"6e229c0aa787e9b693610816380cff84819fa84b80b0799a9f9554ee90bb37b7\"\n    }\n  ]\n}", "sources": {"source.brief": {"fields": {"format": "text/markdown", "normative": "false", "revision": "{\n  \"sha256\": \"b9be45c57a62c54ac9391555f6d2547aa4aaf1c021abfce3d0dccc563f35d478\"\n}", "role": "input", "title": "Original independent task", "uri": "sources/brief.md"}, "full": "{\n  \"role\": \"input\",\n  \"title\": \"Original independent task\",\n  \"uri\": \"sources/brief.md\",\n  \"format\": \"text/markdown\",\n  \"normative\": false,\n  \"revision\": {\n    \"sha256\": \"b9be45c57a62c54ac9391555f6d2547aa4aaf1c021abfce3d0dccc563f35d478\"\n  }\n}"}, "source.contract": {"fields": {"format": "text/markdown", "normative": "true", "revision": "{\n  \"sha256\": \"6e229c0aa787e9b693610816380cff84819fa84b80b0799a9f9554ee90bb37b7\"\n}", "role": "input", "title": "Accepted contract A", "uri": "sources/contract.md"}, "full": "{\n  \"role\": \"input\",\n  \"title\": \"Accepted contract A\",\n  \"uri\": \"sources/contract.md\",\n  \"format\": \"text/markdown\",\n  \"normative\": true,\n  \"revision\": {\n    \"sha256\": \"6e229c0aa787e9b693610816380cff84819fa84b80b0799a9f9554ee90bb37b7\"\n  }\n}"}}}}</script>
+    <script>/* GDD viewer: projection and deterministic SVG layout. No model mutations. */
+"use strict";
+const GDD = (() => {
+  const data = JSON.parse(document.getElementById("gdd-data").textContent);
+  const model = data.model;
+  const $ = (id) => document.getElementById(id);
+  const state = {
+    search: "",
+    kind: "",
+    relation: "",
+    community: "",
+    scenarios: false,
+    fold: false,
+    tab: "nodes",
+    selected: null,
+  };
+  const positions = new Map();
+  let projection = {
+    nodes: [],
+    edges: [],
+    glyphs: [],
+    bundles: [],
+    internal: [],
+    representatives: new Map(),
+  };
+  let camera = { x: 0, y: 0, k: 1 };
+  const communities = Object.keys(model.nodes)
+    .filter((id) => model.nodes[id].kind === "community")
+    .sort();
+  const memberships = new Map(Object.keys(model.nodes).map((id) => [id, []]));
+  for (const edge of model.edges) {
+    if (edge.relation === "member_of") memberships.get(edge.from).push(edge.to);
+  }
+  for (const [id, list] of memberships)
+    memberships.set(id, [...new Set(list)].sort());
+  const kinds = [
+    "component",
+    "action",
+    "entity",
+    "rule",
+    "scenario",
+    "machine",
+    "screen",
+    "community",
+  ];
+  const symbols = new Map([
+    ["component", "C"],
+    ["action", "A"],
+    ["entity", "E"],
+    ["rule", "R"],
+    ["scenario", "S"],
+    ["machine", "M"],
+    ["screen", "UI"],
+    ["community", "◉"],
+  ]);
+  function el(tag, text, className) {
+    const item = document.createElement(tag);
+    if (text !== undefined) item.textContent = text;
+    if (className) item.className = className;
+    return item;
+  }
+  function svg(tag, attrs = {}, text) {
+    const item = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [key, value] of Object.entries(attrs))
+      item.setAttribute(key, value);
+    if (text !== undefined) item.textContent = text;
+    return item;
+  }
+  const label = (id) => model.nodes[id].label || id;
+  const short = (text) => (text.length > 27 ? text.slice(0, 24) + "…" : text);
+  function project() {
+    const available = new Set(data.manifest.shown_nodes);
+    const query = state.search.trim().toLocaleLowerCase();
+    const matchingEdges = new Set(
+      model.edges
+        .filter((e) =>
+          data.text.edges[e.id].toLocaleLowerCase().includes(query),
+        )
+        .flatMap((e) => [e.from, e.to]),
+    );
+    const nodes = [...available].filter((id) => {
+      const node = model.nodes[id];
+      return (
+        (!state.kind || node.kind === state.kind) &&
+        (state.scenarios ||
+          node.kind !== "scenario" ||
+          state.kind === "scenario" ||
+          Boolean(query)) &&
+        (!state.community ||
+          id === state.community ||
+          memberships.get(id).includes(state.community)) &&
+        (!query ||
+          id.toLocaleLowerCase().includes(query) ||
+          data.text.nodes[id].full.toLocaleLowerCase().includes(query) ||
+          matchingEdges.has(id))
+      );
+    });
+    const included = new Set(nodes);
+    const edges = model.edges.filter(
+      (e) =>
+        included.has(e.from) &&
+        included.has(e.to) &&
+        (!state.relation || e.relation === state.relation),
+    );
+    const representatives = new Map(nodes.map((id) => [id, id]));
+    if (state.fold) {
+      // Overlap stays explicit in data/inspector. One deterministic visual representative per member.
+      for (const id of nodes) {
+        const candidates = memberships.get(id).filter((c) => included.has(c));
+        if (model.nodes[id].kind !== "community" && candidates.length)
+          representatives.set(id, candidates[0]);
+      }
+    }
+    const glyphMap = new Map();
+    for (const id of nodes) {
+      const rep = representatives.get(id);
+      if (!glyphMap.has(rep)) glyphMap.set(rep, { id: rep, members: [] });
+      glyphMap.get(rep).members.push(id);
+    }
+    const bundleMap = new Map(),
+      internal = [];
+    for (const edge of edges) {
+      const from = representatives.get(edge.from),
+        to = representatives.get(edge.to);
+      if (from === to && (from !== edge.from || to !== edge.to)) {
+        internal.push(edge.id);
+        continue;
+      }
+      const key = JSON.stringify([from, to]);
+      if (!bundleMap.has(key)) bundleMap.set(key, { key, from, to, edges: [] });
+      bundleMap.get(key).edges.push(edge);
+    }
+    projection = {
+      nodes,
+      edges,
+      glyphs: [...glyphMap.values()],
+      bundles: [...bundleMap.values()],
+      internal,
+      representatives,
+    };
+    updateManifest();
+    return projection;
+  }
+  function manifest() {
+    return {
+      format: "gdd-view-state/0.2",
+      generator: data.generator,
+      spec_revision: data.spec_revision,
+      observation_inputs: data.observation_inputs,
+      scope: data.scope,
+      artifact_scope: data.manifest,
+      filters: {
+        search: state.search,
+        kind: state.kind,
+        relation: state.relation,
+        community: state.community,
+        scenarios: state.scenarios,
+      },
+      folding: {
+        enabled: state.fold,
+        overlap_policy:
+          "first visible community by canonical ID; all memberships retained",
+      },
+      shown_nodes: [...projection.nodes].sort(),
+      shown_edges: projection.edges.map((e) => e.id).sort(),
+      omitted_nodes: Object.keys(model.nodes)
+        .filter((id) => !projection.nodes.includes(id))
+        .sort(),
+      omitted_edges: model.edges
+        .filter((e) => !projection.edges.includes(e))
+        .map((e) => e.id)
+        .sort(),
+      glyphs: projection.glyphs.map((g) => ({ id: g.id, node_ids: g.members })),
+      bundles: projection.bundles.map((b) => ({
+        from: b.from,
+        to: b.to,
+        edge_ids: b.edges.map((e) => e.id),
+      })),
+      folded_internal_edges: [...projection.internal].sort(),
+    };
+  }
+  function updateManifest() {
+    let item = $("gdd-view-manifest");
+    if (!item) {
+      item = el("script");
+      item.id = "gdd-view-manifest";
+      item.type = "application/json";
+      document.body.append(item);
+    }
+    item.textContent = JSON.stringify(manifest());
+  }
+  function layout(reflow = true) {
+    const glyphs = projection.glyphs;
+    glyphs.forEach((g, i) => {
+      if (positions.has(g.id)) return;
+      const node = model.nodes[g.id],
+        typeIndex = Math.max(0, kinds.indexOf(node.kind));
+      const community = memberships.get(g.id)[0];
+      const sector = community ? communities.indexOf(community) : typeIndex;
+      const angle = i * 2.399963229728653,
+        radius = 65 + 26 * Math.sqrt(i + 1);
+      const base = (sector * 2 * Math.PI) / Math.max(communities.length, 8);
+      positions.set(g.id, {
+        x: 600 + Math.cos(base) * 170 + Math.cos(angle) * radius,
+        y: 400 + Math.sin(base) * 140 + Math.sin(angle) * radius,
+      });
+    });
+    if (!reflow || glyphs.length > 200) return; // Bounded layout work; larger graphs keep a deterministic seeded layout.
+    for (let iteration = 0; iteration < 160; iteration++) {
+      const forces = new Map(glyphs.map((g) => [g.id, { x: 0, y: 0 }]));
+      for (let i = 0; i < glyphs.length; i++)
+        for (let j = i + 1; j < glyphs.length; j++) {
+          const a = positions.get(glyphs[i].id),
+            b = positions.get(glyphs[j].id);
+          const dx = a.x - b.x,
+            dy = a.y - b.y,
+            d2 = Math.max(dx * dx + dy * dy, 1),
+            d = Math.sqrt(d2),
+            force = Math.min(2400 / d2, 9);
+          forces.get(glyphs[i].id).x += (dx / d) * force;
+          forces.get(glyphs[i].id).y += (dy / d) * force;
+          forces.get(glyphs[j].id).x -= (dx / d) * force;
+          forces.get(glyphs[j].id).y -= (dy / d) * force;
+        }
+      for (const b of projection.bundles) {
+        if (b.from === b.to) continue;
+        const a = positions.get(b.from),
+          z = positions.get(b.to),
+          dx = z.x - a.x,
+          dy = z.y - a.y,
+          d = Math.max(Math.hypot(dx, dy), 1),
+          force = (d - 135) * 0.012;
+        forces.get(b.from).x += (dx / d) * force;
+        forces.get(b.from).y += (dy / d) * force;
+        forces.get(b.to).x -= (dx / d) * force;
+        forces.get(b.to).y -= (dy / d) * force;
+      }
+      for (const g of glyphs) {
+        const p = positions.get(g.id),
+          f = forces.get(g.id),
+          cool = 1 - iteration / 190;
+        p.x += (f.x + (600 - p.x) * 0.004) * cool;
+        p.y += (f.y + (400 - p.y) * 0.004) * cool;
+      }
+    }
+  }
+  function edgeGeometry(bundle) {
+    const a = positions.get(bundle.from),
+      b = positions.get(bundle.to);
+    if (bundle.from === bundle.to)
+      return {
+        d: `M ${a.x - 12} ${a.y - 14} C ${a.x - 75} ${a.y - 95}, ${a.x + 75} ${a.y - 95}, ${a.x + 13} ${a.y - 16}`,
+        x: a.x,
+        y: a.y - 62,
+      };
+    const dx = b.x - a.x,
+      dy = b.y - a.y,
+      d = Math.max(Math.hypot(dx, dy), 1),
+      ux = dx / d,
+      uy = dy / d;
+    const reverse = projection.bundles.some(
+      (other) => other.from === bundle.to && other.to === bundle.from,
+    );
+    const offset = reverse ? 25 : 0,
+      cx = (a.x + b.x) / 2 - uy * offset,
+      cy = (a.y + b.y) / 2 + ux * offset;
+    return {
+      d: `M ${a.x + ux * 21} ${a.y + uy * 21} Q ${cx} ${cy} ${b.x - ux * 23} ${b.y - uy * 23}`,
+      x: (a.x + b.x) / 2 - (uy * offset) / 2,
+      y: (a.y + b.y) / 2 + (ux * offset) / 2 - 7,
+    };
+  }
+  function draw() {
+    $("edge-layer").replaceChildren();
+    $("node-layer").replaceChildren();
+    for (const bundle of projection.bundles) {
+      const geometry = edgeGeometry(bundle),
+        group = svg("g", {
+          class: "edge-group",
+          "data-edge-ids": JSON.stringify(bundle.edges.map((e) => e.id)),
+        });
+      group.append(
+        svg("path", { class: "edge-path", d: geometry.d }),
+        svg("path", { class: "edge-hit", d: geometry.d }),
+      );
+      const names = [...new Set(bundle.edges.map((e) => e.relation))];
+      const text =
+        names.length === 1 ? names[0] : `${names[0]} +${names.length - 1}`;
+      group.append(
+        svg(
+          "text",
+          { class: "edge-label", x: geometry.x, y: geometry.y },
+          text + (bundle.edges.length > 1 ? ` ×${bundle.edges.length}` : ""),
+        ),
+      );
+      group.append(
+        svg(
+          "title",
+          {},
+          bundle.edges
+            .map((e) => `${e.id}: ${e.from} → ${e.to} · ${e.relation}`)
+            .join("\n"),
+        ),
+      );
+      group.addEventListener("click", () => GDD.select("bundle", bundle.key));
+      $("edge-layer").append(group);
+    }
+    for (const glyph of projection.glyphs) {
+      const node = model.nodes[glyph.id],
+        p = positions.get(glyph.id),
+        type = kinds.includes(node.kind) ? node.kind : "component";
+      const folded = glyph.members.length > 1;
+      const group = svg("g", {
+        class: `node-group type-${type}${folded ? " folded" : ""}${node.maturity === "specified" ? "" : " sketch"}`,
+        "data-node-id": glyph.id,
+        "data-member-ids": JSON.stringify(glyph.members),
+        transform: `translate(${p.x},${p.y})`,
+      });
+      group.append(
+        svg("circle", { class: "node-glyph", r: folded ? 22 : 18 }),
+        svg("circle", { class: "node-accent", r: 3, cx: 14, cy: -13 }),
+      );
+      group.append(
+        svg(
+          "text",
+          { class: "node-symbol", y: 5 },
+          folded ? String(glyph.members.length) : symbols.get(node.kind) || "?",
+        ),
+      );
+      group.append(
+        svg(
+          "text",
+          { class: "node-label", y: 40 },
+          short(
+            model.nodes[glyph.id].label ||
+              glyph.id.split(".").slice(1).join(".") ||
+              glyph.id,
+          ),
+        ),
+      );
+      group.append(
+        svg(
+          "text",
+          { class: "node-kind", y: 54 },
+          folded ? "folded community" : node.kind,
+        ),
+      );
+      group.append(svg("title", {}, `${glyph.id}\n${node.description}`));
+      group.addEventListener("click", () => {
+        if (!dragged) GDD.select("node", glyph.id);
+      });
+      group.addEventListener("pointerdown", (event) =>
+        startDrag(event, glyph.id),
+      );
+      $("node-layer").append(group);
+    }
+    highlight();
+    applyCamera();
+  }
+  function highlight() {
+    const selection = state.selected,
+      selectedNodes = new Set(),
+      selectedEdges = new Set();
+    if (selection?.type === "node") {
+      selectedNodes.add(projection.representatives.get(selection.id));
+      for (const e of projection.edges)
+        if (e.from === selection.id || e.to === selection.id) {
+          selectedNodes.add(projection.representatives.get(e.from));
+          selectedNodes.add(projection.representatives.get(e.to));
+          selectedEdges.add(e.id);
+        }
+    } else if (selection?.type === "edge") selectedEdges.add(selection.id);
+    else if (selection?.type === "bundle")
+      for (const b of projection.bundles)
+        if (b.key === selection.id)
+          b.edges.forEach((e) => selectedEdges.add(e.id));
+    for (const b of projection.bundles)
+      if (b.edges.some((e) => selectedEdges.has(e.id))) {
+        selectedNodes.add(b.from);
+        selectedNodes.add(b.to);
+      }
+    for (const item of $("node-layer").children) {
+      const id = item.getAttribute("data-node-id");
+      item.classList.toggle(
+        "selected",
+        selection?.type === "node" &&
+          projection.representatives.get(selection.id) === id,
+      );
+      item.classList.toggle("connected", selectedNodes.has(id));
+      item.classList.toggle(
+        "dim",
+        selectedNodes.size > 0 && !selectedNodes.has(id),
+      );
+    }
+    for (const item of $("edge-layer").children) {
+      const active = JSON.parse(item.getAttribute("data-edge-ids")).some((id) =>
+        selectedEdges.has(id),
+      );
+      item.classList.toggle("connected", active);
+      item.classList.toggle("dim", selectedNodes.size > 0 && !active);
+    }
+  }
+  function applyCamera() {
+    $("viewport").setAttribute(
+      "transform",
+      `translate(${camera.x},${camera.y}) scale(${camera.k})`,
+    );
+    $("zoom-level").textContent = Math.round(camera.k * 100) + "%";
+  }
+  function fit() {
+    const bounds = $("graph").getBoundingClientRect(),
+      all = projection.glyphs.map((g) => positions.get(g.id));
+    if (!all.length) return;
+    const minX = Math.min(...all.map((p) => p.x)) - 100,
+      maxX = Math.max(...all.map((p) => p.x)) + 100;
+    const minY = Math.min(...all.map((p) => p.y)) - 90,
+      maxY = Math.max(...all.map((p) => p.y)) + 100;
+    const k = Math.min(
+      (bounds.width - 30) / (maxX - minX),
+      (bounds.height - 120) / (maxY - minY),
+      1.6,
+    );
+    camera = {
+      k: Math.max(0.08, k),
+      x: bounds.width / 2 - ((minX + maxX) / 2) * k,
+      y: bounds.height / 2 - ((minY + maxY) / 2) * k + 10,
+    };
+    applyCamera();
+  }
+  function zoom(factor, x, y) {
+    const bounds = $("graph").getBoundingClientRect();
+    x ??= bounds.width / 2;
+    y ??= bounds.height / 2;
+    const next = Math.max(0.05, Math.min(4, camera.k * factor)),
+      ratio = next / camera.k;
+    camera = {
+      x: x - (x - camera.x) * ratio,
+      y: y - (y - camera.y) * ratio,
+      k: next,
+    };
+    applyCamera();
+  }
+  let drag = null,
+    dragged = false;
+  function startDrag(event, id = null) {
+    if (event.button !== 0) return;
+    event.stopPropagation();
+    dragged = false;
+    drag = {
+      id,
+      x: event.clientX,
+      y: event.clientY,
+      startX: event.clientX,
+      startY: event.clientY,
+    };
+    $("graph").setPointerCapture(event.pointerId);
+  }
+  $("graph").addEventListener("pointerdown", (event) => {
+    if (!event.target.closest(".edge-group")) startDrag(event);
+  });
+  $("graph").addEventListener("pointermove", (event) => {
+    if (!drag) return;
+    const dx = event.clientX - drag.x,
+      dy = event.clientY - drag.y;
+    if (
+      Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 3
+    )
+      dragged = true;
+    if (drag.id) {
+      const p = positions.get(drag.id);
+      p.x += dx / camera.k;
+      p.y += dy / camera.k;
+      draw();
+    } else {
+      camera.x += dx;
+      camera.y += dy;
+      applyCamera();
+    }
+    drag.x = event.clientX;
+    drag.y = event.clientY;
+  });
+  function endDrag() {
+    if (drag?.id && !dragged) GDD.select("node", drag.id);
+    drag = null;
+    setTimeout(() => {
+      dragged = false;
+    }, 0);
+  }
+  $("graph").addEventListener("pointerup", endDrag);
+  $("graph").addEventListener("pointercancel", () => {
+    drag = null;
+    dragged = false;
+  });
+  $("graph").addEventListener(
+    "wheel",
+    (event) => {
+      event.preventDefault();
+      const r = $("graph").getBoundingClientRect();
+      zoom(
+        Math.exp(-event.deltaY * 0.0015),
+        event.clientX - r.left,
+        event.clientY - r.top,
+      );
+    },
+    { passive: false },
+  );
+  $("zoom-in").onclick = () => zoom(1.2);
+  $("zoom-out").onclick = () => zoom(1 / 1.2);
+  $("fit").onclick = fit;
+  return {
+    data,
+    model,
+    $,
+    state,
+    el,
+    label,
+    memberships,
+    communities,
+    kinds,
+    project,
+    layout,
+    draw,
+    fit,
+    highlight,
+    manifest,
+    get projection() {
+      return projection;
+    },
+  };
+})();
+
+/* Canonical model records are always rendered as text. */
+(() => {
+  const { data, model, $, state, el, label, memberships } = GDD;
+  const detail = $("detail");
+  function section(title) {
+    const box = el("section", undefined, "detail-section");
+    box.append(el("h3", title));
+    detail.append(box);
+    return box;
+  }
+  function raw(parent, title, value, open = false, exact = null) {
+    const box = el("details"),
+      summary = el("summary", title);
+    box.open = open;
+    box.append(
+      summary,
+      el(
+        "pre",
+        exact ??
+          (typeof value === "string" ? value : JSON.stringify(value, null, 2)),
+      ),
+    );
+    parent.append(box);
+  }
+  function button(parent, text, type, id) {
+    const item = el("button", text, "detail-link");
+    item.onclick = () => GDD.select(type, id);
+    parent.append(item);
+    return item;
+  }
+  function heading(tag, title, id, description) {
+    detail.replaceChildren(
+      el("span", tag, "detail-tag"),
+      el("h2", title, "detail-title"),
+    );
+    if (id) detail.append(el("p", id, "canonical-id"));
+    if (description) detail.append(el("p", description, "detail-description"));
+  }
+  function kv(parent, key, value) {
+    const row = el("dl", undefined, "kv");
+    row.append(el("dt", key), el("dd", String(value)));
+    parent.append(row);
+  }
+  function location(id) {
+    const box = section("Canonical location");
+    const loc = data.locations[id];
+    if (loc) kv(box, "File / pointer", `${loc[0]}${loc[1]}`);
+    kv(box, "Model revision", data.spec_revision);
+  }
+  function sourceReferences(node, id) {
+    const references = [
+      ...(node.source_refs || []),
+      ...(node.design_refs || []),
+    ];
+    if (!references.length) return;
+    const box = section("Sources and design references");
+    references.forEach((ref, index) => {
+      button(box, ref.source, "source", ref.source);
+      raw(box, "Reference", ref, false, data.text.references[id][index]);
+    });
+  }
+  function edgeDetails(edge) {
+    heading("Canonical relation", edge.relation, edge.id, edge.description);
+    const box = section("Direction");
+    button(box, `${edge.from} →`, "node", edge.from);
+    button(box, `→ ${edge.to}`, "node", edge.to);
+    const peers = model.edges.filter(
+      (e) => e.from === edge.from && e.to === edge.to,
+    );
+    if (peers.length > 1) {
+      const group = section(`${peers.length} parallel relations`);
+      peers.forEach((e) =>
+        button(group, `${e.id} · ${e.relation}`, "edge", e.id),
+      );
+    }
+    sourceReferences(edge, edge.id);
+    location(edge.id);
+    raw(detail, "All relation fields", edge, true, data.text.edges[edge.id]);
+  }
+  function nodeDetails(id) {
+    const node = model.nodes[id];
+    heading(node.kind, label(id), id, node.description);
+    detail.append(
+      el(
+        "span",
+        node.maturity === "specified" ? "Specified" : "Sketch (default)",
+        "badge",
+      ),
+    );
+    detail.append(
+      el(
+        "p",
+        "Maturity describes the model's level of detail. Readiness and implementation are assessed separately.",
+        "notice",
+      ),
+    );
+    const memberOf = memberships.get(id);
+    if (memberOf.length) {
+      const box = section("Member of communities");
+      memberOf.forEach((c) => button(box, label(c), "node", c));
+    }
+    if (node.behavior !== undefined) {
+      const box = section("Pseudocode / behavior");
+      raw(
+        box,
+        "Show behavior",
+        node.behavior,
+        true,
+        data.text.nodes[id].fields.behavior,
+      );
+    }
+    if (node.contract) {
+      const box = section("Contract");
+      raw(
+        box,
+        "Input, output, errors and effects",
+        node.contract,
+        true,
+        data.text.nodes[id].fields.contract,
+      );
+    }
+    if (node.boundary) {
+      raw(section("Component responsibility and boundary rationale"),
+          "Responsibility, rationale and exclusions", node.boundary, true,
+          data.text.nodes[id].fields.boundary);
+    }
+    if (node.kind === "component" && node.interfaces) {
+      const box = section("Authoritative public action contracts");
+      node.interfaces.forEach((action) => button(box, label(action), "node", action));
+    }
+    for (const key of [
+      "fields",
+      "rule",
+      "scenario",
+      "machine",
+      "interaction",
+      "realization",
+    ])
+      if (node[key] !== undefined)
+        raw(
+          section(key),
+          `Show ${key}`,
+          node[key],
+          true,
+          data.text.nodes[id].fields[key],
+        );
+    if (node.kind === "community") {
+      if (data.boundaries?.communities[id]) {
+        const boundary = data.boundaries.communities[id];
+        const box = section("Derived public boundary");
+        box.append(el("p", "Component ownership determines this view. Membership grants no permissions.", "notice"));
+        boundary.public_contracts.forEach((contract) =>
+          button(box, `${contract.provider} · ${label(contract.action)}`, "node", contract.action));
+        raw(box, "Membership basis, calls and omissions", boundary, true);
+      }
+      const members = [...memberships]
+        .filter(([, groups]) => groups.includes(id))
+        .map(([member]) => member);
+      const box = section(`${members.length} members`);
+      members.forEach((member) =>
+        button(
+          box,
+          `${label(member)}${memberships.get(member).length > 1 ? " · overlap" : ""}`,
+          "node",
+          member,
+        ),
+      );
+      const internals = GDD.projection.edges.filter(
+        (e) =>
+          GDD.projection.internal.includes(e.id) &&
+          GDD.projection.representatives.get(e.from) === id,
+      );
+      if (internals.length) {
+        const internalBox = section(
+          `${internals.length} folded internal relations`,
+        );
+        internals.forEach((e) =>
+          button(internalBox, `${e.id} · ${e.relation}`, "edge", e.id),
+        );
+      }
+    }
+    const related = model.edges.filter((e) => e.from === id || e.to === id);
+    if (related.length) {
+      const box = section(`Relations · ${related.length}`);
+      related.forEach((e) =>
+        button(
+          box,
+          `${e.from === id ? "→" : "←"} ${e.relation} · ${e.from === id ? e.to : e.from}\n${e.id}`,
+          "edge",
+          e.id,
+        ),
+      );
+    }
+    const questions = Object.entries(model.questions || {}).filter(([, q]) =>
+      q.targets.includes(id),
+    );
+    if (questions.length) {
+      const box = section("Open questions / model data");
+      questions.forEach(([qid, q]) =>
+        raw(box, qid, q, true, data.text.questions[qid].full),
+      );
+    }
+    sourceReferences(node, id);
+    location(id);
+    raw(detail, "All node fields", node, false, data.text.nodes[id].full);
+  }
+  function overview() {
+    heading(
+      "Model overview",
+      model.project.title,
+      model.project.id,
+      model.project.goal,
+    );
+    detail.append(
+      el(
+        "p",
+        "Explore intent, contracts and pseudocode. This view never writes back to the model.",
+        "notice",
+      ),
+    );
+    const counts = section("The graph");
+    kv(counts, "Nodes", Object.keys(model.nodes).length);
+    kv(counts, "Relations", model.edges.length);
+    kv(
+      counts,
+      "Scope",
+      data.scope.length ? data.scope.join(", ") : "Entire model",
+    );
+    const legend = section("Node types");
+    for (const kind of [
+      ...new Set(Object.values(model.nodes).map((n) => n.kind)),
+    ].sort()) {
+      const row = el("p"),
+        dot = el(
+          "span",
+          undefined,
+          `type-dot type-${GDD.kinds.includes(kind) ? kind : "component"}`,
+        );
+      row.append(dot, document.createTextNode(kind));
+      legend.append(row);
+    }
+    legend.append(
+      el(
+        "p",
+        "Dashed node: sketch or folded community. Arrows show relation direction. ×N is an inspectable relation bundle.",
+      ),
+    );
+    const sources = Object.keys(model.sources || {});
+    if (sources.length) {
+      const box = section("Sources · separate from intent");
+      sources.forEach((id) => button(box, id, "source", id));
+    }
+    const questions = Object.entries(model.questions || {});
+    if (questions.length) {
+      const box = section("Questions");
+      questions.forEach(([id, q]) =>
+        raw(box, id, q, false, data.text.questions[id].full),
+      );
+    }
+    const revisions = section("Traceability");
+    kv(revisions, "Revision", data.spec_revision);
+    kv(
+      revisions,
+      "Generator",
+      `${data.generator.name} ${data.generator.version}`,
+    );
+    kv(
+      revisions,
+      "Observations",
+      "No observation inputs in this projection",
+    );
+    revisions.append(
+      el(
+        "p",
+        "The view displays model data. It does not calculate readiness or implementation evidence.",
+      ),
+    );
+    raw(detail, "Model snapshot", data.snapshot, false, data.text.snapshot);
+    raw(detail, "Current view manifest", GDD.manifest());
+    raw(detail, "Project fields", model.project, false, data.text.project);
+  }
+  GDD.select = (type, id) => {
+    state.selected = type ? { type, id } : null;
+    $("selection-status").textContent = type
+      ? `Selected ${type}: ${id}`
+      : "Model overview";
+    for (const item of $("object-list").children) {
+      if (item.tagName === "BUTTON")
+        item.setAttribute(
+          "aria-pressed",
+          (type === "node" || type === "edge") &&
+            item.getAttribute(
+              type === "node" ? "data-list-node" : "data-list-edge",
+            ) === id,
+        );
+    }
+    if (type === "node") nodeDetails(id);
+    else if (type === "edge") edgeDetails(model.edges.find((e) => e.id === id));
+    else if (type === "bundle") {
+      const bundle = GDD.projection.bundles.find((b) => b.key === id);
+      heading(
+        "Directed relation bundle",
+        `${bundle.edges.length} relations`,
+        `${bundle.from} → ${bundle.to}`,
+      );
+      detail.append(
+        el(
+          "p",
+          "Each ID is an independent canonical relation. The bundle changes only the drawing.",
+          "notice",
+        ),
+      );
+      const box = section("All relations");
+      bundle.edges.forEach((e) =>
+        button(
+          box,
+          `${e.id}\n${e.from} → ${e.to} · ${e.relation}`,
+          "edge",
+          e.id,
+        ),
+      );
+    } else if (type === "source") {
+      heading("Source · separate from intent", id, id);
+      detail.append(
+        el(
+          "p",
+          "Source claims and planned references are not verified implementation evidence.",
+          "notice",
+        ),
+      );
+      raw(
+        detail,
+        "Source data",
+        model.sources[id],
+        true,
+        data.text.sources[id].full,
+      );
+      location(id);
+    } else overview();
+    $("inspector").scrollTop = 0;
+    if (type && window.matchMedia("(max-width: 850px)").matches)
+      $("inspector").scrollIntoView({ block: "start", behavior: "instant" });
+    GDD.highlight();
+  };
+  GDD.showOverview = () => GDD.select(null, null);
+})();
+
+/* Browser controls operate only on local view state. */
+(() => {
+  const { data, model, $, state, el, label } = GDD;
+  $("project-title").textContent = model.project.title;
+  $("renderer-meta").textContent = `${data.generator.name} ${data.generator.version} · Offline`;
+  document.title = `${model.project.title} · GDD`;
+  $("total-count").textContent = `${Object.keys(model.nodes).length} nodes`;
+  $("revision").textContent = `Model ${data.spec_revision}`;
+  $("revision").title = data.spec_revision;
+  function option(select, value, title) {
+    const item = el("option", title);
+    item.value = value;
+    $(select).append(item);
+  }
+  [...new Set(Object.values(model.nodes).map((n) => n.kind))]
+    .sort()
+    .forEach((kind) => option("kind", kind, kind));
+  [...new Set(model.edges.map((e) => e.relation))]
+    .sort()
+    .forEach((relation) => option("relation", relation, relation));
+  GDD.communities.forEach((id) => option("community", id, label(id)));
+  $("scenario-count").textContent =
+    `(${Object.values(model.nodes).filter((n) => n.kind === "scenario").length})`;
+  state.scenarios = data.scope.some(
+    (id) => model.nodes[id].kind === "scenario",
+  );
+  $("scenarios").checked = state.scenarios;
+  function list() {
+    const box = $("object-list");
+    box.replaceChildren();
+    const objects =
+      state.tab === "nodes"
+        ? GDD.projection.nodes
+        : GDD.projection.edges.map((e) => e.id);
+    for (const id of objects) {
+      const node = state.tab === "nodes" ? model.nodes[id] : null;
+      const edge = node ? null : model.edges.find((e) => e.id === id);
+      const item = el("button", undefined, "object-row");
+      item.setAttribute("aria-controls", "detail");
+      item.setAttribute(
+        "aria-pressed",
+        state.selected?.type === (node ? "node" : "edge") &&
+          state.selected.id === id,
+      );
+      item.setAttribute(node ? "data-list-node" : "data-list-edge", id);
+      const title = el("span", undefined, "row-title"),
+        dot = el(
+          "span",
+          undefined,
+          `type-dot type-${node && GDD.kinds.includes(node.kind) ? node.kind : "component"}`,
+        );
+      title.append(dot, document.createTextNode(node ? label(id) : id));
+      const hidden = node && GDD.projection.representatives.get(id) !== id;
+      item.append(
+        title,
+        el(
+          "span",
+          node
+            ? `${node.kind}${hidden ? " · folded member" : ""}`
+            : `${edge.from} → ${edge.to} · ${edge.relation}`,
+          "row-meta",
+        ),
+      );
+      item.onclick = () => GDD.select(node ? "node" : "edge", id);
+      box.append(item);
+    }
+    if (!objects.length) box.append(el("p", "No matches.", "hint"));
+    $("tab-nodes").setAttribute("aria-pressed", state.tab === "nodes");
+    $("tab-edges").setAttribute("aria-pressed", state.tab === "edges");
+  }
+  function refresh(reflow = true) {
+    GDD.project();
+    GDD.layout(reflow);
+    GDD.draw();
+    list();
+    const p = GDD.projection,
+      totalNodes = Object.keys(model.nodes).length,
+      totalEdges = model.edges.length;
+    $("view-count").textContent =
+      `${p.nodes.length}/${totalNodes} nodes · ${p.edges.length}/${totalEdges} relations`;
+    $("projection-status").textContent = state.fold
+      ? `${p.glyphs.length} glyphs · ${p.internal.length} folded internal relations`
+      : `${totalNodes - p.nodes.length} nodes and ${totalEdges - p.edges.length} relations omitted`;
+    $("fold-hint").textContent = state.fold
+      ? "Overlap is represented in the first visible community by ID. All memberships can be inspected."
+      : "Membership is grouping, not ownership.";
+    $("empty").hidden = Boolean(p.nodes.length);
+    GDD.showOverview();
+    GDD.fit();
+  }
+  for (const key of ["search", "kind", "relation", "community"])
+    $(key).addEventListener(key === "search" ? "input" : "change", () => {
+      state[key] = $(key).value;
+      refresh(false);
+    });
+  $("fold").onchange = () => {
+    state.fold = $("fold").checked;
+    refresh();
+  };
+  $("scenarios").onchange = () => {
+    state.scenarios = $("scenarios").checked;
+    refresh(false);
+  };
+  $("tab-nodes").onclick = () => {
+    state.tab = "nodes";
+    list();
+  };
+  $("tab-edges").onclick = () => {
+    state.tab = "edges";
+    list();
+  };
+  $("reset").onclick = () => {
+    for (const key of ["search", "kind", "relation", "community"]) {
+      state[key] = "";
+      $(key).value = "";
+    }
+    state.fold = false;
+    $("fold").checked = false;
+    state.scenarios = true;
+    $("scenarios").checked = true;
+    state.tab = "nodes";
+    refresh();
+  };
+  $("overview").onclick = GDD.showOverview;
+  $("manifest-download").onclick = () => {
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(GDD.manifest(), null, 2) + "\n"], {
+        type: "application/json",
+      }),
+    );
+    const link = el("a");
+    link.href = url;
+    link.download = "gdd-view-state.json";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  window.addEventListener("resize", GDD.fit);
+  refresh();
+})();
+</script>
+  </body>
+</html>

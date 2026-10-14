@@ -1,0 +1,13 @@
+{
+  "type": "submit",
+  "expected_revision": "sha256:982ad2869b4d7147a6ef598828414a4eb3aa99b70b6db76e7c6c904512427805",
+  "idempotency_key": "b.submit",
+  "package": "package.parcel.b",
+  "attempt": "attempt.parcel.b.1",
+  "summary": "Implemented and reviewed parcel contract B and concrete checks within the single authorized package.",
+  "artifact_uri": "evidence/b-integration-review.md",
+  "changed_resources": [
+    "src/parcel/pricing.py",
+    "tests/test_b.py"
+  ]
+}

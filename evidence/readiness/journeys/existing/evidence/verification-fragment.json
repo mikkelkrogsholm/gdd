@@ -1,0 +1,96 @@
+{
+  "records": {
+    "binding.lifecycle.tests.v1": {
+      "kind": "binding",
+      "spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+      "targets": [
+        "rule.lifecycle",
+        "action.reserve",
+        "action.cancel",
+        "entity.reservation",
+        "machine.reservation"
+      ],
+      "implementation": "implementation.reservation",
+      "role": "test",
+      "resource": "test_reservation.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:6afe527327bc4ad8fc6a250000a75b09a3591856a2367c44adf79fb185a747e6",
+      "code_revision": "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9"
+    },
+    "evidence.lifecycle.integrated.v1": {
+      "kind": "evidence",
+      "check": "check.lifecycle",
+      "check_revision": "sha256:4ec0c746c18b920e63670489206689fb786e9b6c26b5096aa6edd8636dd5d8b7",
+      "implementation": "implementation.reservation",
+      "spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+      "code_revision": "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9",
+      "checker": {
+        "name": "stdlib.unittest",
+        "version": "3.12.2"
+      },
+      "scope": [
+        "rule.lifecycle",
+        "action.reserve",
+        "action.cancel",
+        "entity.reservation",
+        "machine.reservation"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project/evidence/lifecycle.integrated.run.json"
+    },
+    "binding.lifecycle.code.v1": {
+      "kind": "binding",
+      "description": "Actual implementation inspected in the isolated project.",
+      "spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+      "targets": [
+        "component.reservation",
+        "entity.reservation",
+        "action.reserve",
+        "action.cancel",
+        "machine.reservation",
+        "rule.lifecycle"
+      ],
+      "implementation": "implementation.reservation",
+      "role": "code",
+      "resource": "reservation.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:6b854b7a3d295eaa7de32f2ae8df85a6a9c4d2e5dba5f1e57b0c0708b89ac010",
+      "code_revision": "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9"
+    }
+  },
+  "host": {
+    "implementation": "implementation.reservation",
+    "code_revision": "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9",
+    "verified_bindings": [
+      "binding.lifecycle.tests.v1",
+      "binding.lifecycle.code.v1"
+    ],
+    "trusted_evidence": [
+      "evidence.lifecycle.integrated.v1"
+    ],
+    "supported_methods": [
+      "unittest"
+    ],
+    "environment": {
+      "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+    },
+    "negative_controls": [
+      "constructor-return",
+      "cancelled-reopen"
+    ],
+    "evidence_selection": {
+      "check.lifecycle": "evidence.lifecycle.integrated.v1"
+    }
+  }
+}

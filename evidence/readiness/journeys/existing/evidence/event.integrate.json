@@ -1,0 +1,18 @@
+{
+  "type": "integrate",
+  "expected_revision": "sha256:80129edd13cb268d96c87c443971a5d2bc9a7dd1824a5699ca402245a86f2ff5",
+  "idempotency_key": "integrate.lifecycle.1",
+  "package": "package.lifecycle",
+  "attempt": "attempt.lifecycle.1",
+  "base_code_revision": "sha256:f9f7e6003e9e46d3dd865759ffc2522688467e5e115f98e91f0b6b2c56f7d282",
+  "code_revision": "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9",
+  "verified_resources": [
+    "reservation.py",
+    "test_reservation.py"
+  ],
+  "review": {
+    "reviewer": "actor.independent_agent",
+    "verdict": "PASS",
+    "evidence_uri": "evidence/integration-review.md"
+  }
+}

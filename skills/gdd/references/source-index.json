@@ -1,0 +1,402 @@
+{
+  "format": "gdd-skill-assets/1",
+  "origin": {
+    "repository": "https://github.com/mikkelkrogsholm/gdd.git",
+    "git_base_revision": "e9359d1c10d1664b8c721a02b4cb8d198b9fb271",
+    "revision_basis": "Working tree based on the recorded Git base; per-file SHA-256 identifies copied bytes, including later edits."
+  },
+  "files": [
+    {
+      "path": "references/gdd/AGENTS.md",
+      "source": "AGENTS.md",
+      "sha256": "fe0d1352827b13ad314af7bae748cb5bd38b4b1ae568701c4c6a85ee61cf20dd",
+      "bytes": 785
+    },
+    {
+      "path": "references/gdd/GDD.md",
+      "source": "GDD.md",
+      "sha256": "f5c050fe425a77c54ab2f8739352898069e132e0c6f95b2058297b0a041a36c5",
+      "bytes": 3316
+    },
+    {
+      "path": "references/gdd/GRAPHIFY.md",
+      "source": "GRAPHIFY.md",
+      "sha256": "a1655b0e2cba42022d8c2a7d68b43cd50f4f057922cda4f9ff014d225325fb1f",
+      "bytes": 10615
+    },
+    {
+      "path": "references/gdd/HOST.md",
+      "source": "HOST.md",
+      "sha256": "6524b6db862cb69f045122c46ea5edf73fdeabe2b72758586fde7f12e0179bea",
+      "bytes": 9883
+    },
+    {
+      "path": "references/gdd/SPEC.md",
+      "source": "SPEC.md",
+      "sha256": "52af968b7f0b07dec3db143dd00051293f912cb6383826ae99361d79a1428e1d",
+      "bytes": 13959
+    },
+    {
+      "path": "references/gdd/VALIDATOR.md",
+      "source": "VALIDATOR.md",
+      "sha256": "13c2ab9e8ecad2e1a9822ff704ed17a1fdef19683f0085cc98b22db050895e8a",
+      "bytes": 15902
+    },
+    {
+      "path": "references/gdd/VIEWER.md",
+      "source": "VIEWER.md",
+      "sha256": "f7a31d64f3078c3e29cb3560cd5a92adf81ccd762f2bdf260b2415aad21b5c0a",
+      "bytes": 9585
+    },
+    {
+      "path": "references/gdd/WORKFLOW.md",
+      "source": "WORKFLOW.md",
+      "sha256": "89d4ceb2441e2db32251373d1e00f0d4647b320d9587b7127bb3b8d9a6e7c4f3",
+      "bytes": 9018
+    },
+    {
+      "path": "references/gdd/agents/gdd-lead.md",
+      "source": "agents/gdd-lead.md",
+      "sha256": "30b7eb799fb16544d46dd57a424cdd0add279591f881b4494ec7b8c1d66cfa35",
+      "bytes": 2986
+    },
+    {
+      "path": "references/gdd/agents/gdd-worker.md",
+      "source": "agents/gdd-worker.md",
+      "sha256": "6e47e320dcbcf4d6754376a64809edc53b61a12bbaf559e49758a66ccd5a9eb9",
+      "bytes": 2021
+    },
+    {
+      "path": "references/gdd/schemas/README.md",
+      "source": "schemas/README.md",
+      "sha256": "ddb1ba8a65e0179606849f4bdc3827c9aae65945f23e7c001b4d2ac1d448fab5",
+      "bytes": 3935
+    },
+    {
+      "path": "references/gdd/schemas/boundaries.schema.json",
+      "source": "schemas/boundaries.schema.json",
+      "sha256": "9d030fddaaeb53147be7b02a27636048cca1e5bb0a40d6a713c47843ae2834d7",
+      "bytes": 6603
+    },
+    {
+      "path": "references/gdd/schemas/design-review.schema.json",
+      "source": "schemas/design-review.schema.json",
+      "sha256": "78adc8599f0ed26143fb97465171332fbf32c105a278f88901e102833979b897",
+      "bytes": 3704
+    },
+    {
+      "path": "references/gdd/schemas/extension.schema.json",
+      "source": "schemas/extension.schema.json",
+      "sha256": "fe31ae35826eb910191b1948fcd3fad33eae3180ed6575ee114dc20767731a1a",
+      "bytes": 2676
+    },
+    {
+      "path": "references/gdd/schemas/fragment-0.2.schema.json",
+      "source": "schemas/fragment-0.2.schema.json",
+      "sha256": "14637f322e176659bdac4beed05ed56deadafe557ce8d91ea31a20152eacbf3c",
+      "bytes": 46384
+    },
+    {
+      "path": "references/gdd/schemas/fragment.schema.json",
+      "source": "schemas/fragment.schema.json",
+      "sha256": "9ac57170b985febb19f19f46712f125c9d750011f3f24a33c3cac4d655ada5d2",
+      "bytes": 47487
+    },
+    {
+      "path": "references/gdd/schemas/gdd-0.2.schema.json",
+      "source": "schemas/gdd-0.2.schema.json",
+      "sha256": "e21f1641872945f0b62facf7243c7a78c80b160bfb3f56d59be0fa0f7bf30623",
+      "bytes": 59140
+    },
+    {
+      "path": "references/gdd/schemas/gdd.schema.json",
+      "source": "schemas/gdd.schema.json",
+      "sha256": "6943438bde1e39e1b94add00c3ca1083e85a5fc8ae92d143ed0d3667b15e452a",
+      "bytes": 60243
+    },
+    {
+      "path": "references/gdd/schemas/graphify-mapping.schema.json",
+      "source": "schemas/graphify-mapping.schema.json",
+      "sha256": "bfa77063b989acf5b4a487f0e90d54b5eb919af846f2e8360c3a6beec1ce7590",
+      "bytes": 3329
+    },
+    {
+      "path": "references/gdd/schemas/observations.schema.json",
+      "source": "schemas/observations.schema.json",
+      "sha256": "c59d7caba9c54853dbbe9ea326a93b8c6e3069fc31683bc0c2ef1bfe23de3c58",
+      "bytes": 7462
+    },
+    {
+      "path": "references/gdd/schemas/records.schema.json",
+      "source": "schemas/records.schema.json",
+      "sha256": "a1069ce8358aedbb4c3b710072ce7e633d52e5a28e8b8bb82a61e683e89bb052",
+      "bytes": 15872
+    },
+    {
+      "path": "references/gdd/schemas/report.schema.json",
+      "source": "schemas/report.schema.json",
+      "sha256": "89da06e6842cdc788a18ca4e6c4b1b6fd01340378d8a78b11f1160fd97a449c3",
+      "bytes": 8245
+    },
+    {
+      "path": "references/gdd/schemas/snapshot.schema.json",
+      "source": "schemas/snapshot.schema.json",
+      "sha256": "381a1b00790f81b29f8bdda0ad9d505d714d890de74d9c41c73546139d257fce",
+      "bytes": 935
+    },
+    {
+      "path": "references/gdd/schemas/validator-inputs.schema.json",
+      "source": "schemas/validator-inputs.schema.json",
+      "sha256": "0aace1cd95de671e7c07336cb6d5fc3beda7d0c1bfd4ec5608a3c9af46e974e7",
+      "bytes": 8446
+    },
+    {
+      "path": "references/gdd/schemas/view-state.schema.json",
+      "source": "schemas/view-state.schema.json",
+      "sha256": "ca9ede44d2bda23b17ce8ad68bfb451ba688817c4a7dafd76f06634ef97337ea",
+      "bytes": 5555
+    },
+    {
+      "path": "references/gdd/schemas/view.schema.json",
+      "source": "schemas/view.schema.json",
+      "sha256": "a03774d1379de3f276c8c66526e573e88c32a5deac9025fb849ae91b28972d1d",
+      "bytes": 12752
+    },
+    {
+      "path": "references/gdd/schemas/workflow.schema.json",
+      "source": "schemas/workflow.schema.json",
+      "sha256": "e57c0cb459e80b1a27a6607508b0c6be1dbae2670bc2485cc2b9121da52155ac",
+      "bytes": 26833
+    },
+    {
+      "path": "references/gdd/standard/AGENT-PROTOCOL.md",
+      "source": "standard/AGENT-PROTOCOL.md",
+      "sha256": "799b40a0eb206315a479452f88e67ab650ec639522bcaa7222866757cb7a50ea",
+      "bytes": 7833
+    },
+    {
+      "path": "references/gdd/standard/DECISIONS.md",
+      "source": "standard/DECISIONS.md",
+      "sha256": "d2c84a52b99a601cc64f834e1035f1f17922be831bb3931b08e065f8b8fd1cd3",
+      "bytes": 3671
+    },
+    {
+      "path": "references/gdd/standard/DESIGN-PRINCIPLES.md",
+      "source": "standard/DESIGN-PRINCIPLES.md",
+      "sha256": "1f80f38a3baab1f8827c169952167c2d88c626b822ebbfbfa3f04fb000f43bea",
+      "bytes": 7157
+    },
+    {
+      "path": "references/gdd/standard/FORMAT.md",
+      "source": "standard/FORMAT.md",
+      "sha256": "6788233e080b60c8a03a8cd4f1961c1f87b4c97c8da03b05609aff7c13c30b5d",
+      "bytes": 15295
+    },
+    {
+      "path": "references/gdd/standard/INTEGRATIONS.md",
+      "source": "standard/INTEGRATIONS.md",
+      "sha256": "de5e3b38e0c080eb8a5f6e77d639da4876f54291dfd891d45427756ff956dae2",
+      "bytes": 8454
+    },
+    {
+      "path": "references/gdd/standard/MIGRATION.md",
+      "source": "standard/MIGRATION.md",
+      "sha256": "9fff62289f13344643834237634adea8c7f350e2b1b60d0fd9112b767a4c87e8",
+      "bytes": 4810
+    },
+    {
+      "path": "references/gdd/standard/VALIDATION.md",
+      "source": "standard/VALIDATION.md",
+      "sha256": "2cf048c00e0a2efc1f329a80c9aab82348aabcc90bca3fcb06cf2c9609622fb3",
+      "bytes": 12339
+    }
+  ],
+  "repository_only_links": [
+    {
+      "from": "AGENTS.md",
+      "href": "evidence/README.md",
+      "source_target": "evidence/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "GRAPHIFY.md",
+      "href": "examples/graphify/producer-evidence.json",
+      "source_target": "examples/graphify/producer-evidence.json",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "GRAPHIFY.md",
+      "href": "examples/graphify/README.md",
+      "source_target": "examples/graphify/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "GRAPHIFY.md",
+      "href": "conformance/graphify-cases.yaml",
+      "source_target": "conformance/graphify-cases.yaml",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "GRAPHIFY.md",
+      "href": "evidence/graphify-review.md",
+      "source_target": "evidence/graphify-review.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "SPEC.md",
+      "href": "conformance/cases.yaml",
+      "source_target": "conformance/cases.yaml",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "SPEC.md",
+      "href": "conformance/design.cases.json",
+      "source_target": "conformance/design.cases.json",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "SPEC.md",
+      "href": "research/2026-10-13-existing-work.md",
+      "source_target": "research/2026-10-13-existing-work.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "SPEC.md",
+      "href": "archive/gdd-0.2/README.md",
+      "source_target": "archive/gdd-0.2/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "INSTALL.md",
+      "source_target": "INSTALL.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "evidence/review-loops/README.md",
+      "source_target": "evidence/review-loops/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "evidence/graphify-review.md",
+      "source_target": "evidence/graphify-review.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "evidence/visualization-review.md",
+      "source_target": "evidence/visualization-review.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "evidence/validator-conformance.json",
+      "source_target": "evidence/validator-conformance.json",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "evidence/validator-review.md",
+      "source_target": "evidence/validator-review.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "gdd_validator/validator.py",
+      "source_target": "gdd_validator/validator.py",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "examples/agent-native/README.md",
+      "source_target": "examples/agent-native/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "evidence/workflow-review.md",
+      "source_target": "evidence/workflow-review.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "examples/concert.graph.html",
+      "source_target": "examples/concert.graph.html",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "evidence/review-loops/README.md",
+      "source_target": "evidence/review-loops/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "evidence/visualization-review.md",
+      "source_target": "evidence/visualization-review.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "examples/concert-0.3.graph.html",
+      "source_target": "examples/concert-0.3.graph.html",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "WORKFLOW.md",
+      "href": "examples/agent-native/README.md",
+      "source_target": "examples/agent-native/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "standard/MIGRATION.md",
+      "href": "../archive/gdd-0.1/SPEC.md",
+      "source_target": "archive/gdd-0.1/SPEC.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "standard/MIGRATION.md",
+      "href": "../archive/gdd-0.1/concert.gdd.yaml",
+      "source_target": "archive/gdd-0.1/concert.gdd.yaml",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "standard/MIGRATION.md",
+      "href": "../examples/concert.gdd.yaml",
+      "source_target": "examples/concert.gdd.yaml",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "standard/MIGRATION.md",
+      "href": "../archive/gdd-0.2/README.md",
+      "source_target": "archive/gdd-0.2/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "standard/MIGRATION.md",
+      "href": "../examples/concert-0.3.gdd.yaml",
+      "source_target": "examples/concert-0.3.gdd.yaml",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "standard/VALIDATION.md",
+      "href": "../conformance/diagnostics.csv",
+      "source_target": "conformance/diagnostics.csv",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "standard/VALIDATION.md",
+      "href": "../conformance/cases.yaml",
+      "source_target": "conformance/cases.yaml",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "standard/VALIDATION.md",
+      "href": "../conformance/design.cases.json",
+      "source_target": "conformance/design.cases.json",
+      "role": "optional-repository-reference"
+    }
+  ]
+}

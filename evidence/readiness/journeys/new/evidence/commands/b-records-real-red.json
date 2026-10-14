@@ -1,0 +1,19 @@
+{
+  "label": "b-records-real-red",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "validate",
+    "gdd-b/gdd.json",
+    "--profile",
+    "records",
+    "--host-context",
+    "evidence/b-host-red.json",
+    "--output",
+    "evidence/b-records-real-red.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:30:01.894628+00:00",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": ""
+}

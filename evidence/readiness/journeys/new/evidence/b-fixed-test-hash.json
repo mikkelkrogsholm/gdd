@@ -1,0 +1,6 @@
+{
+  "resource": "tests/test_b.py",
+  "sha256": "24f2c5dbf220cb1c4efae9aca9b84ff25c129c6b382b03e5929065496bb6766c",
+  "authored_before_implementation": true,
+  "red_receipt": "evidence/b-fixed-assertions-against-a.run.json"
+}

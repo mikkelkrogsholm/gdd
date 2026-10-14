@@ -1,0 +1,17 @@
+{
+  "label": "integrate-b",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "workflow_event.py",
+    "b",
+    "integrate",
+    "integrate",
+    "evidence/b-host-integrated.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:30:39.194682+00:00",
+  "exit_code": 0,
+  "stdout": "b-status-before-integrate: exit 0\n\nb-event-integrate: exit 0\n\n",
+  "stderr": ""
+}

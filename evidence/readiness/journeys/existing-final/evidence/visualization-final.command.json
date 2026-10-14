@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/gdd",
+    "validate",
+    "gdd.json",
+    "--profile",
+    "visualization",
+    "--view",
+    "graph-final.html",
+    "--output",
+    "visualization-final.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:38:58.401488+00:00",
+  "exit_code": 2,
+  "stdout": "evidence/visualization-final.stdout.txt",
+  "stderr": "evidence/visualization-final.stderr.txt"
+}

@@ -1,0 +1,52 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.6.0"
+  },
+  "spec_revision": null,
+  "profiles": [
+    "model"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": [
+        {
+          "code": "SCHEMA_INVALID",
+          "severity": "error",
+          "message": "{'kind': 'rule', 'description': 'Preserve public reserve signature, identity, default state, transitions, no-ops and rejection guarantees.', 'maturity': 'specified', 'source_refs': [{'source': 'source.requirements', 'purpose': 'contract', 'selector': {'kind': 'whole-document'}}], 'rule': {'category': 'business', 'statement': 'Reservation defaults to draft; reserve retains its signature and identity, draft -> reserved, repeat reserved no-op; cancel reserved -> cancelled, repeat cancelled no-op; reserve cancelled rejects InvalidTransition without mutation.', 'scope': 'targeted', 'blocking': True, 'verification': ['unittest']}} is not valid under any of the given schemas",
+          "location": {
+            "file": "model.json",
+            "pointer": "/nodes/rule.lifecycle"
+          },
+          "related_ids": []
+        }
+      ]
+    },
+    {
+      "check_id": "model.unavailable",
+      "dimension": "model",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Semantic model validation requires a supported GDD 0.2 or 0.3 model manifest; schema validation alone is representation-only.",
+      "diagnostics": [
+        {
+          "code": "FORMAT_UNSUPPORTED",
+          "severity": "warning",
+          "message": "No model semantics for this artifact without its model manifest.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": []
+        }
+      ]
+    }
+  ]
+}

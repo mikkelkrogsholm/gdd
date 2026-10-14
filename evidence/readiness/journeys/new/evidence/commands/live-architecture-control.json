@@ -1,0 +1,13 @@
+{
+  "label": "live-architecture-control",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "live_architecture_control.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:32:54.897007+00:00",
+  "exit_code": 0,
+  "stdout": "live injected architecture FAIL {\"result\": \"FAIL\", \"actual_imports\": [[\"cli\", \"pricing\"], [\"cli\", \"tariffs\"], [\"pricing\", \"tariffs\"]], \"forbidden_cli_tariffs\": true, \"missing_required_imports\": []}\n\nlive forbidden module CLI execution PASS 200\n\nlive repair architecture PASS {\"result\": \"PASS\", \"actual_imports\": [[\"cli\", \"pricing\"], [\"pricing\", \"tariffs\"]], \"forbidden_cli_tariffs\": false, \"missing_required_imports\": []}\n\n",
+  "stderr": ""
+}

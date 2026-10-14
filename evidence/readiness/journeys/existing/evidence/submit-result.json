@@ -1,0 +1,155 @@
+{
+  "format": "gdd-workflow-result/0.1",
+  "applied": true,
+  "replayed": false,
+  "receipt": {
+    "format": "gdd-run-event/0.1",
+    "previous_revision": "sha256:ff4159ca1434fc9390fb1bad65d2e2d1ca5cf9b5ed9390e793b6d1714077aaf5",
+    "event": {
+      "type": "submit",
+      "expected_revision": "sha256:ff4159ca1434fc9390fb1bad65d2e2d1ca5cf9b5ed9390e793b6d1714077aaf5",
+      "idempotency_key": "submit.lifecycle.1",
+      "package": "package.lifecycle",
+      "attempt": "attempt.lifecycle.1",
+      "summary": "Implemented Reservation state, in-place reserve/cancel and fixed lifecycle assertions directly in the isolated project.",
+      "artifact_uri": "evidence/implementation.patch",
+      "changed_resources": [
+        "reservation.py",
+        "test_reservation.py"
+      ]
+    },
+    "revision": "sha256:80129edd13cb268d96c87c443971a5d2bc9a7dd1824a5699ca402245a86f2ff5"
+  },
+  "report": {
+    "format": "gdd-report/0.2",
+    "tool": {
+      "name": "gdd-validator",
+      "version": "0.6.0"
+    },
+    "spec_revision": "sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429",
+    "profiles": [
+      "model",
+      "readiness"
+    ],
+    "scope": [
+      "action.cancel",
+      "action.reserve"
+    ],
+    "checks": [
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "model.semantics",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "records.integrity",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.lifecycle.context.package",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cancel",
+          "action.reserve"
+        ],
+        "reason": "Candidate work package compared with fixed-point closure.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.lifecycle.readiness.structural",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cancel",
+          "action.reserve"
+        ],
+        "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.lifecycle.ownership",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cancel",
+          "action.reserve"
+        ],
+        "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.check_plans",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cancel",
+          "action.reserve"
+        ],
+        "reason": "Selected active checks must cover every blocking rule and method.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.packet_integrity",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.cancel",
+          "action.reserve"
+        ],
+        "reason": "Complete packet must match the current model, assets, selected check declarations and original request.",
+        "diagnostics": []
+      }
+    ]
+  },
+  "state": {
+    "status": "active",
+    "code_revision": "sha256:f9f7e6003e9e46d3dd865759ffc2522688467e5e115f98e91f0b6b2c56f7d282",
+    "packages": {
+      "package.lifecycle": {
+        "status": "submitted",
+        "attempt": "attempt.lifecycle.1",
+        "base_code_revision": "sha256:f9f7e6003e9e46d3dd865759ffc2522688467e5e115f98e91f0b6b2c56f7d282",
+        "result": {
+          "type": "submit",
+          "expected_revision": "sha256:ff4159ca1434fc9390fb1bad65d2e2d1ca5cf9b5ed9390e793b6d1714077aaf5",
+          "idempotency_key": "submit.lifecycle.1",
+          "package": "package.lifecycle",
+          "attempt": "attempt.lifecycle.1",
+          "summary": "Implemented Reservation state, in-place reserve/cancel and fixed lifecycle assertions directly in the isolated project.",
+          "artifact_uri": "evidence/implementation.patch",
+          "changed_resources": [
+            "reservation.py",
+            "test_reservation.py"
+          ]
+        }
+      }
+    },
+    "attempts": [
+      "attempt.lifecycle.1"
+    ]
+  }
+}

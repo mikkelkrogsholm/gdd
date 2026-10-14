@@ -1,0 +1,25 @@
+{
+  "format": "gdd-observations/0.2",
+  "source_id": "source.graphify",
+  "artifact": {
+    "path": "graphify.raw.json",
+    "revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+    "byte_count": 1978
+  },
+  "importer": {
+    "name": "gdd-graphify",
+    "version": "0.1.2",
+    "profile": "graphify-999.0.0-ast"
+  },
+  "input_claims": {
+    "locator": "file:///private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/graphify-input.json",
+    "producer_version": null,
+    "code_revision": null,
+    "trust": "unverified"
+  },
+  "producer_claims": {},
+  "nodes": [],
+  "edges": [],
+  "opaque": [],
+  "binding_candidates": []
+}

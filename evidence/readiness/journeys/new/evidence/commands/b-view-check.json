@@ -1,0 +1,19 @@
+{
+  "label": "b-view-check",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "validate",
+    "gdd-b/gdd.json",
+    "--profile",
+    "visualization",
+    "--view",
+    "evidence/b-graph.html",
+    "--output",
+    "evidence/b-view-check.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:27:57.300751+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

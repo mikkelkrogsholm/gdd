@@ -1,0 +1,56 @@
+{
+  "format": "gdd-context/0.2",
+  "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+  "scope": [
+    "component.reservations"
+  ],
+  "nodes": [
+    "action.cancel",
+    "action.reserve",
+    "component.reservations",
+    "entity.reservation",
+    "machine.reservation",
+    "rule.lifecycle",
+    "scenario.cancel",
+    "scenario.cancelled",
+    "scenario.default",
+    "scenario.draft-cancel",
+    "scenario.repeat-cancel",
+    "scenario.repeat-reserve",
+    "scenario.reserve"
+  ],
+  "edges": [
+    "edge.action-cancel-changes",
+    "edge.action-cancel-constrained",
+    "edge.action-cancel-owner",
+    "edge.action-reserve-changes",
+    "edge.action-reserve-constrained",
+    "edge.action-reserve-owner",
+    "edge.cancel-exercises",
+    "edge.cancel-verifies",
+    "edge.cancelled-exercises",
+    "edge.cancelled-verifies",
+    "edge.default-exercises",
+    "edge.default-verifies",
+    "edge.draft-cancel-exercises",
+    "edge.draft-cancel-verifies",
+    "edge.entity-reservation-owner",
+    "edge.machine-reservation-owner",
+    "edge.machine-state",
+    "edge.repeat-cancel-exercises",
+    "edge.repeat-cancel-verifies",
+    "edge.repeat-reserve-exercises",
+    "edge.repeat-reserve-verifies",
+    "edge.reserve-exercises",
+    "edge.reserve-input",
+    "edge.reserve-verifies"
+  ],
+  "sources": [
+    "source.brief",
+    "source.graphify"
+  ],
+  "questions": [
+    "question.graphify_contracts"
+  ],
+  "extensions": []
+}

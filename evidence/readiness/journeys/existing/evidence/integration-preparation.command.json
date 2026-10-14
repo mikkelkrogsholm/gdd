@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/python",
+    "evidence/prepare-integration.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:26:38.409943+00:00",
+  "finished_at": "2026-10-14T13:26:38.542150+00:00",
+  "exit_code": 0,
+  "stdout": "--- reservation.before.py\n+++ reservation.py\n@@ -1,6 +1,23 @@\n+class InvalidTransition(ValueError):\n+    \"\"\"The requested operation cannot run from the current lifecycle state.\"\"\"\n+\n+\n class Reservation:\n-    pass\n+    def __init__(self):\n+        self.state = \"draft\"\n \n \n def reserve(value: Reservation) -> Reservation:\n-    return Reservation()\n+    if value.state == \"draft\":\n+        value.state = \"reserved\"\n+    elif value.state != \"reserved\":\n+        raise InvalidTransition(f\"Cannot reserve a {value.state} Reservation\")\n+    return value\n+\n+\n+def cancel(value: Reservation) -> Reservation:\n+    if value.state == \"reserved\":\n+        value.state = \"cancelled\"\n+    elif value.state != \"cancelled\":\n+        raise InvalidTransition(f\"Cannot cancel a {value.state} Reservation\")\n+    return value\n\n",
+  "stderr": ""
+}

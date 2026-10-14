@@ -1,0 +1,18 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:ff4159ca1434fc9390fb1bad65d2e2d1ca5cf9b5ed9390e793b6d1714077aaf5",
+  "event": {
+    "type": "submit",
+    "expected_revision": "sha256:ff4159ca1434fc9390fb1bad65d2e2d1ca5cf9b5ed9390e793b6d1714077aaf5",
+    "idempotency_key": "submit.lifecycle.1",
+    "package": "package.lifecycle",
+    "attempt": "attempt.lifecycle.1",
+    "summary": "Implemented Reservation state, in-place reserve/cancel and fixed lifecycle assertions directly in the isolated project.",
+    "artifact_uri": "evidence/implementation.patch",
+    "changed_resources": [
+      "reservation.py",
+      "test_reservation.py"
+    ]
+  },
+  "revision": "sha256:80129edd13cb268d96c87c443971a5d2bc9a7dd1824a5699ca402245a86f2ff5"
+}

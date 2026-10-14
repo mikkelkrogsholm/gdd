@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/python",
+    "-B",
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/installed-skill/gdd/scripts/verify_assets.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:38:58.572390+00:00",
+  "exit_code": 0,
+  "stdout": "evidence/skill-assets.stdout.txt",
+  "stderr": "evidence/skill-assets.stderr.txt"
+}

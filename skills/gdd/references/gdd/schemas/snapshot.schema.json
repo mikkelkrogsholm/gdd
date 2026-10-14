@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/schemas/0.2/snapshot.schema.json",
+  "title": "GDD 0.2 snapshot.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-snapshot/0.2"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+          }
+        },
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "format",
+    "revision",
+    "assets"
+  ],
+  "additionalProperties": false
+}

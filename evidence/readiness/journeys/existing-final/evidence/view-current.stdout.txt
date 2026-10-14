@@ -1,0 +1,22 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-viewer",
+    "version": "0.2.0"
+  },
+  "spec_revision": "sha256:49b823814e9275834c374bc8331c1fc6ebe5273806aa960b414094f80d83f1cb",
+  "profiles": [
+    "visualization"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "integration.visualization",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Generated a read-only gdd-viewer-html/0.1 projection.",
+      "diagnostics": []
+    }
+  ]
+}

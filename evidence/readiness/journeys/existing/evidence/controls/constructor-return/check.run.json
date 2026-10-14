@@ -1,0 +1,34 @@
+{
+  "format": "gdd-host-check/0.1",
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_reservation"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project/evidence/controls/constructor-return",
+  "started_at": "2026-10-14T13:27:13.322314+00:00",
+  "executed": true,
+  "exit_code": 1,
+  "result": "FAIL",
+  "stdout": "",
+  "stderr": "test_cancel_changes_reserved_and_returns_input (test_reservation.ReservationLifecycleTests.test_cancel_changes_reserved_and_returns_input) ... ok\ntest_cancelled_reserve_rejects_without_mutation (test_reservation.ReservationLifecycleTests.test_cancelled_reserve_rejects_without_mutation) ... ok\ntest_default_is_draft (test_reservation.ReservationLifecycleTests.test_default_is_draft) ... ok\ntest_draft_cancel_rejects_without_mutation (test_reservation.ReservationLifecycleTests.test_draft_cancel_rejects_without_mutation) ... ok\ntest_public_reserve_signature (test_reservation.ReservationLifecycleTests.test_public_reserve_signature) ... ok\ntest_repeated_cancel_is_harmless (test_reservation.ReservationLifecycleTests.test_repeated_cancel_is_harmless) ... ok\ntest_repeated_reserve_is_harmless (test_reservation.ReservationLifecycleTests.test_repeated_reserve_is_harmless) ... FAIL\ntest_reserve_returns_input_and_changes_draft (test_reservation.ReservationLifecycleTests.test_reserve_returns_input_and_changes_draft) ... FAIL\ntest_unsupported_cancel_state_rejects_without_mutation (test_reservation.ReservationLifecycleTests.test_unsupported_cancel_state_rejects_without_mutation) ... ok\ntest_unsupported_reserve_state_rejects_without_mutation (test_reservation.ReservationLifecycleTests.test_unsupported_reserve_state_rejects_without_mutation) ... ok\n\n======================================================================\nFAIL: test_repeated_reserve_is_harmless (test_reservation.ReservationLifecycleTests.test_repeated_reserve_is_harmless)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project/evidence/controls/constructor-return/test_reservation.py\", line 26, in test_repeated_reserve_is_harmless\n    self.assertIs(reservation.reserve(value), value)\nAssertionError: <reservation.Reservation object at 0x1013a7a70> is not <reservation.Reservation object at 0x1013a7a40>\n\n======================================================================\nFAIL: test_reserve_returns_input_and_changes_draft (test_reservation.ReservationLifecycleTests.test_reserve_returns_input_and_changes_draft)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project/evidence/controls/constructor-return/test_reservation.py\", line 20, in test_reserve_returns_input_and_changes_draft\n    self.assertIs(reservation.reserve(value), value)\nAssertionError: <reservation.Reservation object at 0x1013a7980> is not <reservation.Reservation object at 0x1013a7a70>\n\n----------------------------------------------------------------------\nRan 10 tests in 0.001s\n\nFAILED (failures=2)\n",
+  "snapshot": {
+    "format": "gdd-code-snapshot/0.1",
+    "files": {
+      "reservation.py": "203d6467a2308607f84164b19c553ad0933eb85d1eadec9134c758a3d4ac70b7",
+      "test_reservation.py": "6afe527327bc4ad8fc6a250000a75b09a3591856a2367c44adf79fb185a747e6"
+    },
+    "revision": "sha256:e5092e6eda408c1389901195db82fe52aa5867a98bd890deaf56a83482e71945"
+  },
+  "code_revision": "sha256:e5092e6eda408c1389901195db82fe52aa5867a98bd890deaf56a83482e71945",
+  "runner": {
+    "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "reason": "Actual caller-selected checker process completed.",
+  "code_revision_after": "sha256:e5092e6eda408c1389901195db82fe52aa5867a98bd890deaf56a83482e71945",
+  "finished_at": "2026-10-14T13:27:13.376694+00:00"
+}

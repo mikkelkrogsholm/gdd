@@ -1,0 +1,15 @@
+{
+  "label": "b-snapshot",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "snapshot",
+    "gdd-b/gdd.json",
+    "--output",
+    "evidence/b-snapshot.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:27:56.843775+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

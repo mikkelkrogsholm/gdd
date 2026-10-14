@@ -1,0 +1,70 @@
+{
+  "records": {
+    "binding.behavior.b_red": {
+      "kind": "binding",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "targets": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "test",
+      "resource": "tests/test_b.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:24f2c5dbf220cb1c4efae9aca9b84ff25c129c6b382b03e5929065496bb6766c",
+      "code_revision": "sha256:55a41aeea12f79fffe9fe67d3d113ba999b0f2ddc4fedc73ff86d5a97cf7e3c0"
+    },
+    "evidence.behavior.b_red": {
+      "kind": "evidence",
+      "check": "check.behavior.b",
+      "check_revision": "sha256:c293fa92a1ba58a91ed01575801817fb2e9e0bb0b0408fee5496d7bb4bcc157c",
+      "implementation": "implementation.parcel",
+      "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+      "code_revision": "sha256:55a41aeea12f79fffe9fe67d3d113ba999b0f2ddc4fedc73ff86d5a97cf7e3c0",
+      "checker": {
+        "name": "stdlib.unittest",
+        "version": "3.12.2"
+      },
+      "scope": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "result": "FAIL",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/b-fixed-assertions-against-a.run.json"
+    }
+  },
+  "host": {
+    "implementation": "implementation.parcel",
+    "code_revision": "sha256:55a41aeea12f79fffe9fe67d3d113ba999b0f2ddc4fedc73ff86d5a97cf7e3c0",
+    "verified_bindings": [
+      "binding.behavior.b_red"
+    ],
+    "trusted_evidence": [
+      "evidence.behavior.b_red"
+    ],
+    "supported_methods": [
+      "behavior.unittest"
+    ],
+    "environment": {
+      "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+    },
+    "negative_controls": [
+      "remote-fee-omitted"
+    ],
+    "evidence_selection": {
+      "check.behavior.b": "evidence.behavior.b_red"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "resource": "tests/test_b.py",
+  "sha256": "24f2c5dbf220cb1c4efae9aca9b84ff25c129c6b382b03e5929065496bb6766c",
+  "red_result": "FAIL",
+  "red_receipt": "evidence/b-fixed-assertions-against-a.run.json",
+  "red_code_revision": "sha256:55a41aeea12f79fffe9fe67d3d113ba999b0f2ddc4fedc73ff86d5a97cf7e3c0",
+  "green_result": "PASS",
+  "green_receipt": "evidence/b-behavior-current.run.json",
+  "green_code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970",
+  "expectations_unchanged": true
+}

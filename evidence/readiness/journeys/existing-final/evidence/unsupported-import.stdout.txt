@@ -1,0 +1,57 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-graphify",
+    "version": "0.1.2"
+  },
+  "spec_revision": null,
+  "profiles": [
+    "import.graphify"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "graphify.raw",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Supplied artifact sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb: original bytes hashed; producer completeness and code correctness are not inferred.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.layout",
+      "dimension": "integration",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Select an explicitly supported Graphify layout profile.",
+      "diagnostics": [
+        {
+          "code": "FORMAT_UNSUPPORTED",
+          "severity": "warning",
+          "message": "Select an explicitly supported Graphify layout profile.",
+          "location": {
+            "file": "graphify.raw.json",
+            "pointer": ""
+          },
+          "related_ids": []
+        }
+      ]
+    },
+    {
+      "check_id": "graphify.integrity",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Original bytes match the recorded SHA-256 and length.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.projection",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+      "diagnostics": []
+    }
+  ]
+}

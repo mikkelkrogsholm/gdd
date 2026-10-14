@@ -1,0 +1,13 @@
+{
+  "label": "implement-a",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "implement_a.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:25:16.410166+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

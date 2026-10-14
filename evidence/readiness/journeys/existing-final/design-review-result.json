@@ -1,0 +1,30 @@
+{
+  "format": "gdd-design-review-status/0.3",
+  "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+  "status": "COMPLETE",
+  "reasons": [
+    "All four advisory assessments are present and match the supplied revisions; findings require judgment."
+  ],
+  "findings": [],
+  "scope": [
+    "component.reservations"
+  ],
+  "requested_scope": [
+    "component.reservations"
+  ],
+  "implementation": "implementation.reservations",
+  "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+  "notice": "Advisory review applicability only. This tool does not prove review execution or KISS/DRY compliance and does not grant acceptance.",
+  "review_identity": {
+    "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+    "implementation": "implementation.reservations",
+    "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+    "scope": [
+      "component.reservations"
+    ],
+    "reviewer": {
+      "name": "actor.independent-agent",
+      "version": "installed-skill-cold-start-1"
+    }
+  }
+}

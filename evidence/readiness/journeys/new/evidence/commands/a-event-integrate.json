@@ -1,0 +1,22 @@
+{
+  "label": "a-event-integrate",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "workflow",
+    "event",
+    "gdd-a/gdd.json",
+    "--run",
+    "run-a",
+    "--event",
+    "evidence/a-event-integrate.json",
+    "--host-context",
+    "evidence/a-host-integrated.json",
+    "--output",
+    "evidence/a-event-integrate-result.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:25:57.145833+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

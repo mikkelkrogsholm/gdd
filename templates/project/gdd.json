@@ -1,0 +1,41 @@
+{
+  "format": "gdd/0.3",
+  "project": {
+    "id": "project.new",
+    "title": "New GDD project",
+    "goal": "Draft: define the intended user outcome from actual project sources.",
+    "scope": "Draft: refine or replace one component and one action before implementation."
+  },
+  "nodes": {
+    "component.main": {
+      "kind": "component",
+      "label": "Main component draft",
+      "description": "Draft placeholder for the first component; its responsibility and boundary are unresolved.",
+      "maturity": "sketch"
+    },
+    "action.main": {
+      "kind": "action",
+      "label": "Main action draft",
+      "description": "Draft placeholder for the first action; its contract and behavior are unresolved.",
+      "maturity": "sketch"
+    }
+  },
+  "edges": [
+    {
+      "id": "edge.main_owner",
+      "from": "action.main",
+      "to": "component.main",
+      "relation": "owned_by"
+    }
+  ],
+  "sources": {},
+  "questions": {
+    "question.scope": {
+      "statement": "What user outcome, behavior and boundaries should the draft component and action implement?",
+      "targets": ["component.main", "action.main"],
+      "blocks": ["implementation", "acceptance"],
+      "status": "open"
+    }
+  },
+  "record_files": ["records.json"]
+}

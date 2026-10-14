@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_reservation"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:35:19.965973+00:00",
+  "exit_code": 0,
+  "stdout": "evidence/green-before-integration.stdout.txt",
+  "stderr": "evidence/green-before-integration.stderr.txt"
+}

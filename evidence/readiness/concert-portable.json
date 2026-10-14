@@ -1,0 +1,2274 @@
+{
+  "format": "gdd-portable-concert-trial/0.1",
+  "command": [
+    "uv",
+    "run",
+    "--no-sync",
+    "python",
+    "examples/concert-app/tools/replay.py",
+    "--output",
+    "/tmp/gdd-readiness-concert-final"
+  ],
+  "exit_code": 0,
+  "environment": {
+    "GDD_PLAYWRIGHT": "/tmp/gdd-readiness-browser-01/node_modules/playwright",
+    "PLAYWRIGHT_BROWSERS_PATH": "/tmp/gdd-readiness-browser-01/browsers"
+  },
+  "node": "v25.9.0",
+  "playwright": "1.64.1",
+  "fresh_browser_install": true,
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "source_hashes": {
+    "gdd_validator/validator.py": "6086e3d41e540734b0513b9d1172308c0f926c8cde26fd2b4c38cbf7ffa660ba",
+    "gdd_validator/loading.py": "e6a77da4945ead7c770b965cb6c0e7c2b94aa7fd1b63911f4817177e3fcc8d88",
+    "gdd_validator/record_integrity.py": "953c88766ce936a18a8b300a0f4b58910db05f8cd11075e8cc073702841be3d5",
+    "gdd_validator/boundaries.py": "0b5bbbbded88cddb9c9a83567397925a4a63d2394bb2f76d8d9938ad0f1a7d0e",
+    "gdd_validator/workflow_run.py": "f9d73cf55a14a5b316f2cbdc04e53334725f9182f1110bb4766e2e627a198ad1",
+    "gdd_validator/design_review.py": "37ef3f606ed182446184833d215a81575bcf174072794bb3a2322a0d614e417d",
+    "gdd_validator/host.py": "c9df578aa89163807de8cba730a0510fd6b1da4a2655b95331fcb59cca6134d3",
+    "gdd_validator/records.py": "1911fc98709d1303bb432f04148a487607334d679c94b10a454e122447b7193b",
+    "gdd_validator/__init__.py": "9ba88aa58c5e399dc58ea4ee791f1d5ba0d92f80dc20b57edefa2879caf5b41a",
+    "gdd_validator/decision.py": "9afd19288354f4b7cf2aa57204fdc4962b27306b5faf32897a650126e14815e9",
+    "gdd_validator/visualization.py": "7b21f99edce81a0850678c9c1f29504e184cb66ab3a4180f105c9043691544ab",
+    "gdd_validator/graphify.py": "3aa82bbcc18a7cdff2476a3639cc02bae8f8dffa5c56a8c4fb3b73e47f004ebd",
+    "gdd_validator/model.py": "187b04294444352b1888a2b28e89a445f47534c5566d60a28aeb8c52dad9f1d3",
+    "gdd_validator/graphify_proposal.py": "53b5ecebc402d71acbef8ad17fc81a8245326791fb11c51ed86e77d868d55098",
+    "gdd_validator/cli.py": "2dd7ce53be315dcadaa7673cb629686eeea35c7a430895d1ff42d1a958f20e8e",
+    "gdd_validator/numeric.py": "514b8b0bdcf51792fc76e27ec7b979b553f685ebb1f077cb6d4ceae7175b6e7e",
+    "gdd_validator/graphify_io.py": "57ee12eaa619ab5b849e5bfe72bcda5bc9f25554987ffb37232e63c1282383c3",
+    "gdd_validator/planning.py": "f826e058bd3b407ae2b9ee821e045b6311808a9723c753692eeb2abf383da8f1",
+    "gdd_validator/scaffold.py": "b8202d0769a8d9acb27b1332544069d1081474199a152b6f1d850f4e9562b327",
+    "gdd_validator/workflow.py": "a87e3bbf0f136c56cc2ef9521021402ffe5c53b0d1236c5ff9adbb2054d7c367",
+    "gdd_validator/readiness.py": "4fcebeb170b8e878c1007dfb49bbee7d1ba12af21cee6478babbf857aae60083",
+    "gdd_validator/atomic.py": "f9af27aad136c00cfc524c585b92bc515e3c59cb63613329be5583c5b9c67b4c",
+    "gdd_validator/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "gdd_validator/report.py": "ad43e3e17ac1c547cf2bd29d2c9defa6f981bf89da00212ca1c76b1abe112160",
+    "gdd_validator/viewer/graph.js": "b4fa44a8f822573b1548d5edec397f4f7afaae5c8e492ddc31c148247fa0b404",
+    "gdd_validator/viewer/inspector.js": "a9eff1af71e380e6693034cf4c45e24c868cca0a66e553ef55ba2280cfd705c0",
+    "gdd_validator/viewer/shell.html": "34ff3bb311c89e7823c2b2525d5a2c9b8728aa7730e58e060437769e80620dc6",
+    "gdd_validator/viewer/style.css": "d86df4ce315a1aac0d7277a41c5c25ea08bf97fb805535c41a2cba5825604f21",
+    "gdd_validator/viewer/app.js": "1ee571b95091b52a4a972682caf3abcf11c13839affd1de71dcc151798925b95",
+    "schemas/snapshot.schema.json": "381a1b00790f81b29f8bdda0ad9d505d714d890de74d9c41c73546139d257fce",
+    "schemas/report.schema.json": "89da06e6842cdc788a18ca4e6c4b1b6fd01340378d8a78b11f1160fd97a449c3",
+    "schemas/gdd-0.2.schema.json": "e21f1641872945f0b62facf7243c7a78c80b160bfb3f56d59be0fa0f7bf30623",
+    "schemas/view-state.schema.json": "ca9ede44d2bda23b17ce8ad68bfb451ba688817c4a7dafd76f06634ef97337ea",
+    "schemas/graphify-mapping.schema.json": "bfa77063b989acf5b4a487f0e90d54b5eb919af846f2e8360c3a6beec1ce7590",
+    "schemas/gdd.schema.json": "6943438bde1e39e1b94add00c3ca1083e85a5fc8ae92d143ed0d3667b15e452a",
+    "schemas/README.md": "ddb1ba8a65e0179606849f4bdc3827c9aae65945f23e7c001b4d2ac1d448fab5",
+    "schemas/boundaries.schema.json": "9d030fddaaeb53147be7b02a27636048cca1e5bb0a40d6a713c47843ae2834d7",
+    "schemas/validator-inputs.schema.json": "0aace1cd95de671e7c07336cb6d5fc3beda7d0c1bfd4ec5608a3c9af46e974e7",
+    "schemas/workflow.schema.json": "e57c0cb459e80b1a27a6607508b0c6be1dbae2670bc2485cc2b9121da52155ac",
+    "schemas/fragment.schema.json": "9ac57170b985febb19f19f46712f125c9d750011f3f24a33c3cac4d655ada5d2",
+    "schemas/observations.schema.json": "c59d7caba9c54853dbbe9ea326a93b8c6e3069fc31683bc0c2ef1bfe23de3c58",
+    "schemas/fragment-0.2.schema.json": "14637f322e176659bdac4beed05ed56deadafe557ce8d91ea31a20152eacbf3c",
+    "schemas/records.schema.json": "a1069ce8358aedbb4c3b710072ce7e633d52e5a28e8b8bb82a61e683e89bb052",
+    "schemas/design-review.schema.json": "78adc8599f0ed26143fb97465171332fbf32c105a278f88901e102833979b897",
+    "schemas/extension.schema.json": "fe31ae35826eb910191b1948fcd3fad33eae3180ed6575ee114dc20767731a1a",
+    "schemas/view.schema.json": "a03774d1379de3f276c8c66526e573e88c32a5deac9025fb849ae91b28972d1d"
+  },
+  "files": {
+    "provenance": {
+      "original_path": "/tmp/gdd-readiness-concert-final/replay.provenance.json",
+      "sha256": "ee88e37df0fe0d73e6054b989860b7feba510a59d2f018cfd24e55d0e0dbc76c",
+      "content": {
+        "format": "concert-replay-provenance/1",
+        "notice": "New execution of archived delivered app/test bytes through the listed current host tools. Historical records are not selected as new evidence.",
+        "archived_delivery_git_commit": "7e27757c34b6fa57ecc69660e263c99e1420649b",
+        "source": "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/concert-app",
+        "tools": {
+          "tools/browser.cjs": "cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+          "tools/capture.cjs": "8921068dcbe99f4998ae279701c059ba4be020df868d4c47e72e2edd533a3921",
+          "tools/experiment.py": "1626d859c7d1d3eedc5c2cf10195687ecdb9d6532a471d434fefcdb7b7b1a2f0",
+          "tools/import_check.py": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+          "tools/replay.py": "c0838419f6124784b3ad824816e4e570cbd76d96d71dc58144fbcec55bceebb5",
+          "tools/test_import_check.py": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90"
+        },
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+        "python_executable": "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python3",
+        "node": "node",
+        "node_executable": "/opt/homebrew/bin/node",
+        "playwright_module": "/tmp/gdd-readiness-browser-01/node_modules/playwright",
+        "browser_executable": "Playwright-managed Chromium"
+      }
+    },
+    "summary": {
+      "original_path": "/tmp/gdd-readiness-concert-final/summary.json",
+      "sha256": "37ec258b0b01ae6359d390401d5fe9ca4a884e6cf97481239940f2a1322205b4",
+      "content": {
+        "format": "concert-replay/0.1",
+        "new_agent_generation": false,
+        "phases": {
+          "a": {
+            "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+            "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+            "acceptance_current": true,
+            "browser_cases": 5
+          },
+          "b": {
+            "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+            "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+            "acceptance_current": true,
+            "browser_cases": 8
+          }
+        }
+      }
+    },
+    "red": {
+      "original_path": "/tmp/gdd-readiness-concert-final/evidence/phase-b/requirements.red.run.json",
+      "sha256": "f35fa3a56cd27ebd2a3b9bebe3df2aff0531edc32029dc02b314967d9be00764",
+      "content": {
+        "argv": [
+          "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python3",
+          "-B",
+          "-m",
+          "pytest",
+          "tests/test_requirement_change.py",
+          "-q"
+        ],
+        "cwd": "/private/tmp/gdd-readiness-concert-final",
+        "exit_code": 1,
+        "stdout": "FFF.FF.FFF                                                               [100%]\n=================================== FAILURES ===================================\n____ test_global_limit_rejects_third_across_concerts_and_leaves_key_unbound ____\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_global_limit_rejects_thir0/requirements.sqlite')\n\n    def test_global_limit_rejects_third_across_concerts_and_leaves_key_unbound(database):\n        reserve(database, \"one\")\n        reserve(database, \"two\", \"northern\")\n>       error(\"ActiveReservationLimitReached\", reserve, database, \"three\", \"matinee\")\n\ntests/test_requirement_change.py:33: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'ActiveReservationLimitReached'\noperation = <function reserve at 0x10a581c60>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_global_limit_rejects_thir0/requirements.sqlite'), 'three', 'matinee')\n\n    def error(code, operation, *args):\n>       with pytest.raises(reservations.DomainError) as raised:\nE       Failed: DID NOT RAISE DomainError\n\ntests/test_requirement_change.py:21: Failed\n__________________ test_principal_allowances_are_independent ___________________\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_principal_allowances_are_0/requirements.sqlite')\n\n    def test_principal_allowances_are_independent(database):\n        reserve(database, \"a1\")\n        reserve(database, \"a2\", \"northern\")\n        reserve(database, \"b1\", principal=\"bob\")\n        reserve(database, \"b2\", \"northern\", principal=\"bob\")\n        assert reservations.list_own(database, \"alice\")[\"active_count\"] == 2\n        assert reservations.list_own(database, \"bob\")[\"active_count\"] == 2\n>       error(\"ActiveReservationLimitReached\", reserve, database, \"b3\", \"midnight\", \"bob\")\n\ntests/test_requirement_change.py:47: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'ActiveReservationLimitReached'\noperation = <function reserve at 0x10a581c60>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_principal_allowances_are_0/requirements.sqlite'), 'b3', 'midnight', 'bob')\n\n    def error(code, operation, *args):\n>       with pytest.raises(reservations.DomainError) as raised:\nE       Failed: DID NOT RAISE DomainError\n\ntests/test_requirement_change.py:21: Failed\n______ test_cancellation_frees_allowance_and_failed_key_can_then_succeed _______\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_cancellation_frees_allowa0/requirements.sqlite')\n\n    def test_cancellation_frees_allowance_and_failed_key_can_then_succeed(database):\n        first = reserve(database, \"one\")\n        reserve(database, \"two\", \"northern\")\n>       error(\"ActiveReservationLimitReached\", reserve, database, \"failed\", \"matinee\")\n\ntests/test_requirement_change.py:53: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'ActiveReservationLimitReached'\noperation = <function reserve at 0x10a581c60>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_cancellation_frees_allowa0/requirements.sqlite'), 'failed', 'matinee')\n\n    def error(code, operation, *args):\n>       with pytest.raises(reservations.DomainError) as raised:\nE       Failed: DID NOT RAISE DomainError\n\ntests/test_requirement_change.py:21: Failed\n_ test_precedence_is_input_then_replay_then_existence_then_limit_then_capacity _\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_precedence_is_input_then_0/requirements.sqlite')\n\n    def test_precedence_is_input_then_replay_then_existence_then_limit_then_capacity(database):\n        reserve(database, \"one\")\n        reserve(database, \"two\", \"northern\")\n        error(\"InvalidInput\", reserve, database, \"\", \"midnight\")\n        error(\"IdempotencyConflict\", reserve, database, \"one\", \"missing\")\n        error(\"ConcertNotFound\", reserve, database, \"new\", \"missing\")\n        with storage.transaction(database, write=True) as connection:\n            connection.execute(\"UPDATE concerts SET capacity=0 WHERE id='matinee'\")\n>       error(\"ActiveReservationLimitReached\", reserve, database, \"new\", \"matinee\")\n\ntests/test_requirement_change.py:81: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'ActiveReservationLimitReached'\noperation = <function reserve at 0x10a581c60>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_precedence_is_input_then_0/requirements.sqlite'), 'new', 'matinee')\n\n    def error(code, operation, *args):\n        with pytest.raises(reservations.DomainError) as raised:\n            operation(*args)\n>       assert raised.value.code == code\nE       AssertionError: assert 'SoldOut' == 'ActiveReserv...nLimitReached'\nE         \nE         - ActiveReservationLimitReached\nE         + SoldOut\n\ntests/test_requirement_change.py:23: AssertionError\n____ test_concurrent_new_keys_across_concerts_share_one_remaining_allowance ____\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_concurrent_new_keys_acros0/requirements.sqlite')\n\n    def test_concurrent_new_keys_across_concerts_share_one_remaining_allowance(database):\n        reserve(database, \"existing\")\n        barrier = Barrier(2)\n        def attempt(pair):\n            key, concert = pair\n            barrier.wait(timeout=5)\n            try:\n                return reserve(database, key, concert)\n            except reservations.DomainError as failure:\n                return {\"error\": failure.code}\n        with ThreadPoolExecutor(max_workers=2) as pool:\n            outcomes = list(pool.map(attempt, [(\"competing-one\", \"northern\"), (\"competing-two\", \"matinee\")]))\n>       assert sum(outcome.get(\"state\") == \"reserved\" for outcome in outcomes) == 1\nE       assert 2 == 1\nE        +  where 2 = sum(<generator object test_concurrent_new_keys_across_concerts_share_one_remaining_allowance.<locals>.<genexpr> at 0x10a4d0e10>)\n\ntests/test_requirement_change.py:97: AssertionError\n_______________ test_server_exposes_single_current_policy_value ________________\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_server_exposes_single_cur0/requirements.sqlite')\n\n    def test_server_exposes_single_current_policy_value(database):\n>       assert reservations.ACTIVE_LIMIT == 2\nE       assert None == 2\nE        +  where None = reservations.ACTIVE_LIMIT\n\ntests/test_requirement_change.py:114: AssertionError\n____ test_incompatible_existing_a_data_is_rejected_without_history_mutation ____\n\ntmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_incompatible_existing_a_d0')\n\n    def test_incompatible_existing_a_data_is_rejected_without_history_mutation(tmp_path):\n        path = tmp_path / \"incompatible.sqlite\"\n        storage.initialize(path)\n        with storage.transaction(path, write=True) as connection:\n            for key, concert in [(\"one\", \"midnight\"), (\"two\", \"northern\"), (\"three\", \"matinee\")]:\n                storage.insert_reservation(connection, \"alice\", concert, key)\n        before = path.read_bytes()\n>       error(\"PolicyMigrationRequired\", reservations.initialize, path)\n\ntests/test_requirement_change.py:125: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'PolicyMigrationRequired'\noperation = <function initialize at 0x10a581940>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_incompatible_existing_a_d0/incompatible.sqlite'),)\n\n    def error(code, operation, *args):\n>       with pytest.raises(reservations.DomainError) as raised:\nE       Failed: DID NOT RAISE DomainError\n\ntests/test_requirement_change.py:21: Failed\n_______ test_compatible_a_history_and_cancelled_keys_survive_activation ________\n\ntmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-245/test_compatible_a_history_and_0')\n\n    def test_compatible_a_history_and_cancelled_keys_survive_activation(tmp_path):\n        path = tmp_path / \"compatible.sqlite\"\n        storage.initialize(path)\n        with storage.transaction(path, write=True) as connection:\n            cancelled = storage.insert_reservation(connection, \"alice\", \"midnight\", \"old-cancelled\")\n            storage.cancel_reservation(connection, cancelled[\"id\"])\n            storage.insert_reservation(connection, \"alice\", \"northern\", \"old-one\")\n            storage.insert_reservation(connection, \"alice\", \"matinee\", \"old-two\")\n        reservations.initialize(path)\n        assert reserve(path, \"old-cancelled\") == {\"id\": cancelled[\"id\"], \"state\": \"cancelled\"}\n        history = reservations.list_own(path, \"alice\")\n>       assert history[\"active_count\"] == 2 and history[\"active_limit\"] == 2 and len(history[\"reservations\"]) == 3\nE       assert (2 == 2 and None == 2)\n\ntests/test_requirement_change.py:142: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_requirement_change.py::test_global_limit_rejects_third_across_concerts_and_leaves_key_unbound\nFAILED tests/test_requirement_change.py::test_principal_allowances_are_independent\nFAILED tests/test_requirement_change.py::test_cancellation_frees_allowance_and_failed_key_can_then_succeed\nFAILED tests/test_requirement_change.py::test_precedence_is_input_then_replay_then_existence_then_limit_then_capacity\nFAILED tests/test_requirement_change.py::test_concurrent_new_keys_across_concerts_share_one_remaining_allowance\nFAILED tests/test_requirement_change.py::test_server_exposes_single_current_policy_value\nFAILED tests/test_requirement_change.py::test_incompatible_existing_a_data_is_rejected_without_history_mutation\nFAILED tests/test_requirement_change.py::test_compatible_a_history_and_cancelled_keys_survive_activation\n8 failed, 2 passed in 0.55s\n",
+        "stderr": "",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+        "code_revision": "sha256:d34b8841f6f27a8365d3b77d9acbcdeff5a38f72ba73338338afdd894841b586",
+        "host_tool_sources": {
+          "tools/browser.cjs": "cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+          "tools/import_check.py": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+          "tools/test_import_check.py": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90"
+        }
+      }
+    },
+    "a_acceptance": {
+      "original_path": "/tmp/gdd-readiness-concert-final/evidence/phase-a/acceptance.json",
+      "sha256": "b889269209243fd1b9546de17a53650a83d7d86179bafbc0f41b549788da0e22",
+      "content": {
+        "format": "gdd-workflow-result/0.1",
+        "applied": true,
+        "replayed": false,
+        "receipt": {
+          "format": "gdd-run-event/0.1",
+          "previous_revision": "sha256:44820975b115ff2008d54f2d5013f5a31e16b989a7a1308ff8a8d054200e7ee7",
+          "event": {
+            "type": "accept",
+            "expected_revision": "sha256:44820975b115ff2008d54f2d5013f5a31e16b989a7a1308ff8a8d054200e7ee7",
+            "idempotency_key": "a.accept.run"
+          },
+          "revision": "sha256:e3faa3e2fa278e9abe63d8697a25f1c09e71fe20742005b93c86e7a6ccf2aadd"
+        },
+        "report": {
+          "format": "gdd-report/0.2",
+          "tool": {
+            "name": "gdd-validator",
+            "version": "0.7.0"
+          },
+          "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+          "profiles": [
+            "model",
+            "readiness",
+            "records"
+          ],
+          "scope": [
+            "action.cancel",
+            "action.catalog",
+            "action.current_session",
+            "action.list_own_reservations",
+            "action.login",
+            "action.logout",
+            "action.reserve",
+            "component.api",
+            "screen.reserve"
+          ],
+          "checks": [
+            {
+              "check_id": "representation.schema",
+              "dimension": "model",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Local JSON Schema validation.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "representation.schema",
+              "dimension": "model",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Local JSON Schema validation.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "model.semantics",
+              "dimension": "model",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "records.integrity",
+              "dimension": "model",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.backend.context.package",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.reserve"
+              ],
+              "reason": "Candidate work package compared with fixed-point closure.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.backend.readiness.structural",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.reserve"
+              ],
+              "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.backend.ownership",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.reserve"
+              ],
+              "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.frontend.context.package",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "screen.reserve"
+              ],
+              "reason": "Candidate work package compared with fixed-point closure.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.frontend.readiness.structural",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "screen.reserve"
+              ],
+              "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.frontend.ownership",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "screen.reserve"
+              ],
+              "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.transport.context.package",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.current_session",
+                "action.login",
+                "action.logout",
+                "component.api"
+              ],
+              "reason": "Candidate work package compared with fixed-point closure.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.transport.readiness.structural",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.current_session",
+                "action.login",
+                "action.logout",
+                "component.api"
+              ],
+              "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.transport.ownership",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.current_session",
+                "action.login",
+                "action.logout",
+                "component.api"
+              ],
+              "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "workflow.check_plans",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.current_session",
+                "action.list_own_reservations",
+                "action.login",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Selected active checks must cover every blocking rule and method.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "parallel.independence",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.current_session",
+                "action.list_own_reservations",
+                "action.login",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Declared write resources, effects, revisions and integration plans checked; runtime safety is not proven.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "workflow.packet_integrity",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.current_session",
+                "action.list_own_reservations",
+                "action.login",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Complete packet must match the current model, assets, selected check declarations and original request.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "workflow.code_binding",
+              "dimension": "integration",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.current_session",
+                "action.list_own_reservations",
+                "action.login",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Host implementation and code revision must equal this run's integrated result.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "workflow.check_selection",
+              "dimension": "integration",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.current_session",
+                "action.list_own_reservations",
+                "action.login",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Verification uses the exact check plans frozen in this workplan.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "implementation.required.0",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.api_boundary"
+              ],
+              "reason": "Applicability of recorded rule.api_boundary/python_import_graph; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+              "evidence_refs": [
+                "evidence.app.a.python_import_graph"
+              ]
+            },
+            {
+              "check_id": "implementation.required.1",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.atomicity"
+              ],
+              "reason": "Applicability of recorded rule.atomicity/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+              "evidence_refs": [
+                "evidence.app.a.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.2",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.auth_context"
+              ],
+              "reason": "Applicability of recorded rule.auth_context/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+              "evidence_refs": [
+                "evidence.app.a.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.3",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.authorization"
+              ],
+              "reason": "Applicability of recorded rule.authorization/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+              "evidence_refs": [
+                "evidence.app.a.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.4",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.capacity"
+              ],
+              "reason": "Applicability of recorded rule.capacity/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+              "evidence_refs": [
+                "evidence.app.a.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.5",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.idempotency"
+              ],
+              "reason": "Applicability of recorded rule.idempotency/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+              "evidence_refs": [
+                "evidence.app.a.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.6",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.state_machine"
+              ],
+              "reason": "Applicability of recorded rule.state_machine/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+              "evidence_refs": [
+                "evidence.app.a.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.7",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.ui_complete"
+              ],
+              "reason": "Applicability of recorded rule.ui_complete/browser_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+              "evidence_refs": [
+                "evidence.app.a.browser_concert"
+              ]
+            },
+            {
+              "check_id": "authorization.activity",
+              "dimension": "authorization",
+              "result": "GRANTED",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.current_session",
+                "action.list_own_reservations",
+                "action.login",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Applicable host-trusted standing mandate.",
+              "diagnostics": [],
+              "activity": "acceptance",
+              "policy_revision": "concert-local-v1",
+              "authority_basis": "The human explicitly requested this bounded local app, requirement change and controlled architecture-error experiment in this conversation. Root independently supplies this trusted host context."
+            }
+          ]
+        },
+        "state": {
+          "status": "accepted",
+          "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+          "packages": {
+            "package.backend": {
+              "status": "integrated",
+              "attempt": "replay.a.package.backend",
+              "base_code_revision": "sha256:3edee535b680a14ce09d2adf73a61af82058f9d00cfdfd292b6bc1d2bde3da7e",
+              "result": {
+                "type": "submit",
+                "expected_revision": "sha256:e4d2942e3426b67f0eff31405c4891a483a931c7c7c6fbc2cfb67d36f7047daf",
+                "idempotency_key": "a.submit.package.backend",
+                "package": "package.backend",
+                "attempt": "replay.a.package.backend",
+                "summary": "Archived lead-reviewed delivery copied for replay; actual current host checks are required for acceptance.",
+                "artifact_uri": "/private/tmp/gdd-readiness-concert-final/workspaces/a.package.backend",
+                "changed_resources": [
+                  "concert_app/storage.py",
+                  "concert_app/reservations.py",
+                  "tests/test_domain.py"
+                ]
+              },
+              "integration": {
+                "type": "integrate",
+                "expected_revision": "sha256:1e4b295b72344fc0d0d9b2ca3c0daa7f7c50cf6debe283e5517807753e584c38",
+                "idempotency_key": "a.integrate.package.backend",
+                "package": "package.backend",
+                "attempt": "replay.a.package.backend",
+                "base_code_revision": "sha256:3edee535b680a14ce09d2adf73a61af82058f9d00cfdfd292b6bc1d2bde3da7e",
+                "code_revision": "sha256:9c9d0795a2ffd5c446859e6b083c5c37dd82270dadbbbf090ecef150f3cf06f1",
+                "verified_resources": [
+                  "concert_app/storage.py",
+                  "concert_app/reservations.py",
+                  "tests/test_domain.py"
+                ],
+                "review": {
+                  "reviewer": "actor.concert.lead",
+                  "verdict": "PASS",
+                  "evidence_uri": "evidence/phase-a/package.backend.review.json"
+                }
+              }
+            },
+            "package.frontend": {
+              "status": "integrated",
+              "attempt": "replay.a.package.frontend",
+              "base_code_revision": "sha256:3edee535b680a14ce09d2adf73a61af82058f9d00cfdfd292b6bc1d2bde3da7e",
+              "result": {
+                "type": "submit",
+                "expected_revision": "sha256:93183edc032c1fd7edb200d05134ea653c54d11169cb0dd2d455246c169633b3",
+                "idempotency_key": "a.submit.package.frontend",
+                "package": "package.frontend",
+                "attempt": "replay.a.package.frontend",
+                "summary": "Archived lead-reviewed delivery copied for replay; actual current host checks are required for acceptance.",
+                "artifact_uri": "/private/tmp/gdd-readiness-concert-final/workspaces/a.package.frontend",
+                "changed_resources": [
+                  "concert_app/static/index.html",
+                  "concert_app/static/app.js",
+                  "concert_app/static/style.css"
+                ]
+              },
+              "integration": {
+                "type": "integrate",
+                "expected_revision": "sha256:d32daa8af625581232e8744a1574ce7b56ea5dd4dd7fc0179d6549224a623953",
+                "idempotency_key": "a.integrate.package.frontend",
+                "package": "package.frontend",
+                "attempt": "replay.a.package.frontend",
+                "base_code_revision": "sha256:9c9d0795a2ffd5c446859e6b083c5c37dd82270dadbbbf090ecef150f3cf06f1",
+                "code_revision": "sha256:85595e16896dc269355d80494938c587d9256d2c3e093432e2c287f1361935c1",
+                "verified_resources": [
+                  "concert_app/static/index.html",
+                  "concert_app/static/app.js",
+                  "concert_app/static/style.css"
+                ],
+                "review": {
+                  "reviewer": "actor.concert.lead",
+                  "verdict": "PASS",
+                  "evidence_uri": "evidence/phase-a/package.frontend.review.json"
+                }
+              }
+            },
+            "package.transport": {
+              "status": "integrated",
+              "attempt": "replay.a.package.transport",
+              "base_code_revision": "sha256:3edee535b680a14ce09d2adf73a61af82058f9d00cfdfd292b6bc1d2bde3da7e",
+              "result": {
+                "type": "submit",
+                "expected_revision": "sha256:0f17a5cf329128d3cac03c5874d3ad5bd1711a510290da3eae67129aecf5008a",
+                "idempotency_key": "a.submit.package.transport",
+                "package": "package.transport",
+                "attempt": "replay.a.package.transport",
+                "summary": "Archived lead-reviewed delivery copied for replay; actual current host checks are required for acceptance.",
+                "artifact_uri": "/private/tmp/gdd-readiness-concert-final/workspaces/a.package.transport",
+                "changed_resources": [
+                  "concert_app/api.py",
+                  "concert_app/identity.py",
+                  "concert_app/__main__.py",
+                  "run.py",
+                  "tests/test_http.py"
+                ]
+              },
+              "integration": {
+                "type": "integrate",
+                "expected_revision": "sha256:6b850c7e2a96c4bfdcc093ab41680f93fdde6700d7169f77187a6ce426f22825",
+                "idempotency_key": "a.integrate.package.transport",
+                "package": "package.transport",
+                "attempt": "replay.a.package.transport",
+                "base_code_revision": "sha256:85595e16896dc269355d80494938c587d9256d2c3e093432e2c287f1361935c1",
+                "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+                "verified_resources": [
+                  "concert_app/api.py",
+                  "concert_app/identity.py",
+                  "concert_app/__main__.py",
+                  "run.py",
+                  "tests/test_http.py"
+                ],
+                "review": {
+                  "reviewer": "actor.concert.lead",
+                  "verdict": "PASS",
+                  "evidence_uri": "evidence/phase-a/package.transport.review.json"
+                }
+              }
+            }
+          },
+          "attempts": [
+            "replay.a.package.backend",
+            "replay.a.package.frontend",
+            "replay.a.package.transport"
+          ]
+        }
+      }
+    },
+    "b_acceptance": {
+      "original_path": "/tmp/gdd-readiness-concert-final/evidence/phase-b/acceptance.json",
+      "sha256": "1683f5fd69f17ecfe784be50d1eaddb23ec60cbdda3b6268b8a78fc0d67bf1a8",
+      "content": {
+        "format": "gdd-workflow-result/0.1",
+        "applied": true,
+        "replayed": false,
+        "receipt": {
+          "format": "gdd-run-event/0.1",
+          "previous_revision": "sha256:96e1840395096328b0811617bd5d0458829306b105a02cf71a6fe2f666f34471",
+          "event": {
+            "type": "accept",
+            "expected_revision": "sha256:96e1840395096328b0811617bd5d0458829306b105a02cf71a6fe2f666f34471",
+            "idempotency_key": "b.accept.run"
+          },
+          "revision": "sha256:a3b4d86a2809a2524ca4ec7e74692b7c671cba7667564c986a3b70434c1d747b"
+        },
+        "report": {
+          "format": "gdd-report/0.2",
+          "tool": {
+            "name": "gdd-validator",
+            "version": "0.7.0"
+          },
+          "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+          "profiles": [
+            "model",
+            "readiness",
+            "records"
+          ],
+          "scope": [
+            "action.cancel",
+            "action.catalog",
+            "action.list_own_reservations",
+            "action.logout",
+            "action.reserve",
+            "component.api",
+            "screen.reserve"
+          ],
+          "checks": [
+            {
+              "check_id": "representation.schema",
+              "dimension": "model",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Local JSON Schema validation.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "representation.schema",
+              "dimension": "model",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Local JSON Schema validation.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "model.semantics",
+              "dimension": "model",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "records.integrity",
+              "dimension": "model",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.backend.context.package",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.reserve"
+              ],
+              "reason": "Candidate work package compared with fixed-point closure.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.backend.readiness.structural",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.reserve"
+              ],
+              "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.backend.ownership",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.reserve"
+              ],
+              "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.presentation.context.package",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.logout",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Candidate work package compared with fixed-point closure.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.presentation.readiness.structural",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.logout",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "package.presentation.ownership",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.logout",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "workflow.check_plans",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Selected active checks must cover every blocking rule and method.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "parallel.independence",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Declared write resources, effects, revisions and integration plans checked; runtime safety is not proven.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "workflow.packet_integrity",
+              "dimension": "readiness",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Complete packet must match the current model, assets, selected check declarations and original request.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "workflow.code_binding",
+              "dimension": "integration",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Host implementation and code revision must equal this run's integrated result.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "workflow.check_selection",
+              "dimension": "integration",
+              "result": "PASS",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Verification uses the exact check plans frozen in this workplan.",
+              "diagnostics": []
+            },
+            {
+              "check_id": "implementation.required.0",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.active_limit"
+              ],
+              "reason": "Applicability of recorded rule.active_limit/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+              "evidence_refs": [
+                "evidence.app.b.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.1",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.api_boundary"
+              ],
+              "reason": "Applicability of recorded rule.api_boundary/python_import_graph; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+              "evidence_refs": [
+                "evidence.app.b.python_import_graph"
+              ]
+            },
+            {
+              "check_id": "implementation.required.2",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.atomicity"
+              ],
+              "reason": "Applicability of recorded rule.atomicity/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+              "evidence_refs": [
+                "evidence.app.b.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.3",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.auth_context"
+              ],
+              "reason": "Applicability of recorded rule.auth_context/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+              "evidence_refs": [
+                "evidence.app.b.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.4",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.authorization"
+              ],
+              "reason": "Applicability of recorded rule.authorization/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+              "evidence_refs": [
+                "evidence.app.b.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.5",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.capacity"
+              ],
+              "reason": "Applicability of recorded rule.capacity/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+              "evidence_refs": [
+                "evidence.app.b.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.6",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.idempotency"
+              ],
+              "reason": "Applicability of recorded rule.idempotency/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+              "evidence_refs": [
+                "evidence.app.b.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.7",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.state_machine"
+              ],
+              "reason": "Applicability of recorded rule.state_machine/pytest_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+              "evidence_refs": [
+                "evidence.app.b.pytest_concert"
+              ]
+            },
+            {
+              "check_id": "implementation.required.8",
+              "dimension": "implementation",
+              "result": "PASS",
+              "scope": [
+                "rule.ui_complete"
+              ],
+              "reason": "Applicability of recorded rule.ui_complete/browser_concert; application check not executed by validator.",
+              "diagnostics": [],
+              "implementation": "implementation.concert.sqlite",
+              "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+              "evidence_refs": [
+                "evidence.app.b.browser_concert"
+              ]
+            },
+            {
+              "check_id": "authorization.activity",
+              "dimension": "authorization",
+              "result": "GRANTED",
+              "scope": [
+                "action.cancel",
+                "action.catalog",
+                "action.list_own_reservations",
+                "action.logout",
+                "action.reserve",
+                "component.api",
+                "screen.reserve"
+              ],
+              "reason": "Applicable host-trusted standing mandate.",
+              "diagnostics": [],
+              "activity": "acceptance",
+              "policy_revision": "concert-local-v1",
+              "authority_basis": "The human explicitly requested this bounded local app, requirement change and controlled architecture-error experiment in this conversation. Root independently supplies this trusted host context."
+            }
+          ]
+        },
+        "state": {
+          "status": "accepted",
+          "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+          "packages": {
+            "package.backend": {
+              "status": "integrated",
+              "attempt": "replay.b.package.backend",
+              "base_code_revision": "sha256:d34b8841f6f27a8365d3b77d9acbcdeff5a38f72ba73338338afdd894841b586",
+              "result": {
+                "type": "submit",
+                "expected_revision": "sha256:aa627ff400c9d58de2347cdce3b761c25aab7e352e65dd9f9ec43db4c3f18708",
+                "idempotency_key": "b.submit.package.backend",
+                "package": "package.backend",
+                "attempt": "replay.b.package.backend",
+                "summary": "Archived lead-reviewed delivery copied for replay; actual current host checks are required for acceptance.",
+                "artifact_uri": "/private/tmp/gdd-readiness-concert-final/workspaces/b.package.backend",
+                "changed_resources": [
+                  "concert_app/reservations.py",
+                  "tests/test_domain.py"
+                ]
+              },
+              "integration": {
+                "type": "integrate",
+                "expected_revision": "sha256:a1461dc34b0d1df161fef71ce335f3d46c63160b87567140e0637aa2f542ae66",
+                "idempotency_key": "b.integrate.package.backend",
+                "package": "package.backend",
+                "attempt": "replay.b.package.backend",
+                "base_code_revision": "sha256:d34b8841f6f27a8365d3b77d9acbcdeff5a38f72ba73338338afdd894841b586",
+                "code_revision": "sha256:da808054a7d7f8250796f64e3e195ef3cba0527ff3f4d0b8f5e597ae3ad4081b",
+                "verified_resources": [
+                  "concert_app/reservations.py",
+                  "tests/test_domain.py"
+                ],
+                "review": {
+                  "reviewer": "actor.concert.lead",
+                  "verdict": "PASS",
+                  "evidence_uri": "evidence/phase-b/package.backend.review.json"
+                }
+              }
+            },
+            "package.presentation": {
+              "status": "integrated",
+              "attempt": "replay.b.package.presentation",
+              "base_code_revision": "sha256:d34b8841f6f27a8365d3b77d9acbcdeff5a38f72ba73338338afdd894841b586",
+              "result": {
+                "type": "submit",
+                "expected_revision": "sha256:78ddbbfcc8ab6fa4a3cfcc9fc7b1684940b3072f0d451a3431fb56b1991f0ce5",
+                "idempotency_key": "b.submit.package.presentation",
+                "package": "package.presentation",
+                "attempt": "replay.b.package.presentation",
+                "summary": "Archived lead-reviewed delivery copied for replay; actual current host checks are required for acceptance.",
+                "artifact_uri": "/private/tmp/gdd-readiness-concert-final/workspaces/b.package.presentation",
+                "changed_resources": [
+                  "concert_app/api.py",
+                  "concert_app/static/app.js",
+                  "tests/test_http.py"
+                ]
+              },
+              "integration": {
+                "type": "integrate",
+                "expected_revision": "sha256:3d8f95af04947937c4bc1a6342194ba0da8dd117dff401a3e4bb68e920b089f9",
+                "idempotency_key": "b.integrate.package.presentation",
+                "package": "package.presentation",
+                "attempt": "replay.b.package.presentation",
+                "base_code_revision": "sha256:da808054a7d7f8250796f64e3e195ef3cba0527ff3f4d0b8f5e597ae3ad4081b",
+                "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+                "verified_resources": [
+                  "concert_app/api.py",
+                  "concert_app/static/app.js",
+                  "tests/test_http.py"
+                ],
+                "review": {
+                  "reviewer": "actor.concert.lead",
+                  "verdict": "PASS",
+                  "evidence_uri": "evidence/phase-b/package.presentation.review.json"
+                }
+              }
+            }
+          },
+          "attempts": [
+            "replay.b.package.backend",
+            "replay.b.package.presentation"
+          ]
+        }
+      }
+    },
+    "architecture": {
+      "original_path": "/tmp/gdd-readiness-concert-final/evidence/phase-b/import.controls.json",
+      "sha256": "413995cbd9de72431fe6c70ffbc5fc43f04965d62b51bf673b6275fe9afc512d",
+      "content": {
+        "format": "concert-import-controls/0.1",
+        "checker": {
+          "name": "concert-python-import-graph",
+          "version": "0.1.0"
+        },
+        "profile": "concert-python-component-imports/0.1",
+        "matched": true,
+        "expected": {
+          "clean": "PASS",
+          "injected": "FAIL",
+          "repaired": "PASS",
+          "missing": "UNKNOWN"
+        },
+        "controls": {
+          "clean": {
+            "format": "concert-import-scan/0.1",
+            "checker": {
+              "name": "concert-python-import-graph",
+              "version": "0.1.0"
+            },
+            "profile": "concert-python-component-imports/0.1",
+            "method": "python_import_graph",
+            "result": "PASS",
+            "executed": true,
+            "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+            "code_revision": "sha256:6de993fa819790b85cec887073d931e7d27c852faa4e144e73a579eb413a774d",
+            "scope": [
+              "rule.api_boundary"
+            ],
+            "bindings": {
+              "component.api": [
+                "concert_app/api.py",
+                "concert_app/__main__.py"
+              ],
+              "component.identity": [
+                "concert_app/identity.py"
+              ],
+              "component.reservations": [
+                "concert_app/reservations.py"
+              ],
+              "component.storage": [
+                "concert_app/storage.py"
+              ]
+            },
+            "files": {
+              "concert_app/__init__.py": "1c1a9c3c9c4e5f62d857377254edf252b2dce3d7b07a9972621201e380574ebb",
+              "concert_app/__main__.py": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+              "concert_app/api.py": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+              "concert_app/identity.py": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+              "concert_app/reservations.py": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+              "concert_app/storage.py": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf"
+            },
+            "imports": [
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 3,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "argparse",
+                "imported": "argparse",
+                "statement": "import argparse",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 4,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 6,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "concert_app.api",
+                "imported": "make_server",
+                "statement": "from .api import make_server",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 3,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "http.cookies",
+                "imported": "SimpleCookie, CookieError",
+                "statement": "from http.cookies import SimpleCookie, CookieError",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 4,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "http.server",
+                "imported": "BaseHTTPRequestHandler, ThreadingHTTPServer",
+                "statement": "from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 5,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "json",
+                "imported": "json",
+                "statement": "import json",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 6,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 7,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "re",
+                "imported": "re",
+                "statement": "import re",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 8,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "urllib.parse",
+                "imported": "urlsplit",
+                "statement": "from urllib.parse import urlsplit",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.identity",
+                "imported": "identity",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.reservations",
+                "imported": "reservations",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 3,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "hmac",
+                "imported": "compare_digest",
+                "statement": "from hmac import compare_digest",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 4,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "secrets",
+                "imported": "token_urlsafe",
+                "statement": "from secrets import token_urlsafe",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 5,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "threading",
+                "imported": "Lock",
+                "statement": "from threading import Lock",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/reservations.py",
+                "line": 3,
+                "source_sha256": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+                "module": "concert_app.storage",
+                "imported": "storage",
+                "statement": "from . import storage",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 3,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "contextlib",
+                "imported": "contextmanager",
+                "statement": "from contextlib import contextmanager",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 4,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 5,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "sqlite3",
+                "imported": "sqlite3",
+                "statement": "import sqlite3",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 6,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "uuid",
+                "imported": "uuid4",
+                "statement": "from uuid import uuid4",
+                "local": false
+              }
+            ],
+            "edges": [
+              {
+                "from": "component.api",
+                "to": "component.api",
+                "source_file": "concert_app/__main__.py",
+                "line": 6,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "concert_app.api",
+                "imported": "make_server",
+                "statement": "from .api import make_server",
+                "local": true
+              },
+              {
+                "from": "component.api",
+                "to": "component.identity",
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.identity",
+                "imported": "identity",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "from": "component.api",
+                "to": "component.reservations",
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.reservations",
+                "imported": "reservations",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "from": "component.reservations",
+                "to": "component.storage",
+                "source_file": "concert_app/reservations.py",
+                "line": 3,
+                "source_sha256": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+                "module": "concert_app.storage",
+                "imported": "storage",
+                "statement": "from . import storage",
+                "local": true
+              }
+            ],
+            "constraints": [
+              {
+                "rule": "rule.api_boundary",
+                "relation": "imports",
+                "from": "component.api",
+                "to": "component.storage",
+                "reach": "direct",
+                "policy": "forbid"
+              }
+            ],
+            "violations": [],
+            "unknown": [],
+            "notice": "Observed static imports only; graph/source text is never executed and this scan alone grants no GDD acceptance."
+          },
+          "injected": {
+            "format": "concert-import-scan/0.1",
+            "checker": {
+              "name": "concert-python-import-graph",
+              "version": "0.1.0"
+            },
+            "profile": "concert-python-component-imports/0.1",
+            "method": "python_import_graph",
+            "result": "FAIL",
+            "executed": true,
+            "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+            "code_revision": "sha256:f15191ab2ee4faacdbce23b09cd136613b6b9f2ca7a1f5201236f3fd1a961f34",
+            "scope": [
+              "rule.api_boundary"
+            ],
+            "bindings": {
+              "component.api": [
+                "concert_app/api.py",
+                "concert_app/__main__.py"
+              ],
+              "component.identity": [
+                "concert_app/identity.py"
+              ],
+              "component.reservations": [
+                "concert_app/reservations.py"
+              ],
+              "component.storage": [
+                "concert_app/storage.py"
+              ]
+            },
+            "files": {
+              "concert_app/__init__.py": "1c1a9c3c9c4e5f62d857377254edf252b2dce3d7b07a9972621201e380574ebb",
+              "concert_app/__main__.py": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+              "concert_app/api.py": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+              "concert_app/identity.py": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+              "concert_app/reservations.py": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+              "concert_app/storage.py": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf"
+            },
+            "imports": [
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 3,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "argparse",
+                "imported": "argparse",
+                "statement": "import argparse",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 4,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 6,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "concert_app.api",
+                "imported": "make_server",
+                "statement": "from .api import make_server",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 3,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "http.cookies",
+                "imported": "SimpleCookie, CookieError",
+                "statement": "from http.cookies import SimpleCookie, CookieError",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 4,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "http.server",
+                "imported": "BaseHTTPRequestHandler, ThreadingHTTPServer",
+                "statement": "from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 5,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "json",
+                "imported": "json",
+                "statement": "import json",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 6,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 7,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "re",
+                "imported": "re",
+                "statement": "import re",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 8,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "urllib.parse",
+                "imported": "urlsplit",
+                "statement": "from urllib.parse import urlsplit",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "concert_app.identity",
+                "imported": "identity",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "concert_app.reservations",
+                "imported": "reservations",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 177,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "concert_app.storage",
+                "imported": "storage",
+                "statement": "from . import storage",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 3,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "hmac",
+                "imported": "compare_digest",
+                "statement": "from hmac import compare_digest",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 4,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "secrets",
+                "imported": "token_urlsafe",
+                "statement": "from secrets import token_urlsafe",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 5,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "threading",
+                "imported": "Lock",
+                "statement": "from threading import Lock",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/reservations.py",
+                "line": 3,
+                "source_sha256": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+                "module": "concert_app.storage",
+                "imported": "storage",
+                "statement": "from . import storage",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 3,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "contextlib",
+                "imported": "contextmanager",
+                "statement": "from contextlib import contextmanager",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 4,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 5,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "sqlite3",
+                "imported": "sqlite3",
+                "statement": "import sqlite3",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 6,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "uuid",
+                "imported": "uuid4",
+                "statement": "from uuid import uuid4",
+                "local": false
+              }
+            ],
+            "edges": [
+              {
+                "from": "component.api",
+                "to": "component.api",
+                "source_file": "concert_app/__main__.py",
+                "line": 6,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "concert_app.api",
+                "imported": "make_server",
+                "statement": "from .api import make_server",
+                "local": true
+              },
+              {
+                "from": "component.api",
+                "to": "component.identity",
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "concert_app.identity",
+                "imported": "identity",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "from": "component.api",
+                "to": "component.reservations",
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "concert_app.reservations",
+                "imported": "reservations",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "from": "component.api",
+                "to": "component.storage",
+                "source_file": "concert_app/api.py",
+                "line": 177,
+                "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                "module": "concert_app.storage",
+                "imported": "storage",
+                "statement": "from . import storage",
+                "local": true
+              },
+              {
+                "from": "component.reservations",
+                "to": "component.storage",
+                "source_file": "concert_app/reservations.py",
+                "line": 3,
+                "source_sha256": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+                "module": "concert_app.storage",
+                "imported": "storage",
+                "statement": "from . import storage",
+                "local": true
+              }
+            ],
+            "constraints": [
+              {
+                "rule": "rule.api_boundary",
+                "relation": "imports",
+                "from": "component.api",
+                "to": "component.storage",
+                "reach": "direct",
+                "policy": "forbid"
+              }
+            ],
+            "violations": [
+              {
+                "rule": "rule.api_boundary",
+                "constraint": {
+                  "rule": "rule.api_boundary",
+                  "relation": "imports",
+                  "from": "component.api",
+                  "to": "component.storage",
+                  "reach": "direct",
+                  "policy": "forbid"
+                },
+                "path": [
+                  {
+                    "from": "component.api",
+                    "to": "component.storage",
+                    "source_file": "concert_app/api.py",
+                    "line": 177,
+                    "source_sha256": "01cd838d85d5c3375a254025cf3727e794da056f6c8b4756933d810ff333bff4",
+                    "module": "concert_app.storage",
+                    "imported": "storage",
+                    "statement": "from . import storage",
+                    "local": true
+                  }
+                ]
+              }
+            ],
+            "unknown": [],
+            "notice": "Observed static imports only; graph/source text is never executed and this scan alone grants no GDD acceptance."
+          },
+          "repaired": {
+            "format": "concert-import-scan/0.1",
+            "checker": {
+              "name": "concert-python-import-graph",
+              "version": "0.1.0"
+            },
+            "profile": "concert-python-component-imports/0.1",
+            "method": "python_import_graph",
+            "result": "PASS",
+            "executed": true,
+            "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+            "code_revision": "sha256:6de993fa819790b85cec887073d931e7d27c852faa4e144e73a579eb413a774d",
+            "scope": [
+              "rule.api_boundary"
+            ],
+            "bindings": {
+              "component.api": [
+                "concert_app/api.py",
+                "concert_app/__main__.py"
+              ],
+              "component.identity": [
+                "concert_app/identity.py"
+              ],
+              "component.reservations": [
+                "concert_app/reservations.py"
+              ],
+              "component.storage": [
+                "concert_app/storage.py"
+              ]
+            },
+            "files": {
+              "concert_app/__init__.py": "1c1a9c3c9c4e5f62d857377254edf252b2dce3d7b07a9972621201e380574ebb",
+              "concert_app/__main__.py": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+              "concert_app/api.py": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+              "concert_app/identity.py": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+              "concert_app/reservations.py": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+              "concert_app/storage.py": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf"
+            },
+            "imports": [
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 3,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "argparse",
+                "imported": "argparse",
+                "statement": "import argparse",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 4,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 6,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "concert_app.api",
+                "imported": "make_server",
+                "statement": "from .api import make_server",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 3,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "http.cookies",
+                "imported": "SimpleCookie, CookieError",
+                "statement": "from http.cookies import SimpleCookie, CookieError",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 4,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "http.server",
+                "imported": "BaseHTTPRequestHandler, ThreadingHTTPServer",
+                "statement": "from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 5,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "json",
+                "imported": "json",
+                "statement": "import json",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 6,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 7,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "re",
+                "imported": "re",
+                "statement": "import re",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 8,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "urllib.parse",
+                "imported": "urlsplit",
+                "statement": "from urllib.parse import urlsplit",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.identity",
+                "imported": "identity",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.reservations",
+                "imported": "reservations",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 3,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "hmac",
+                "imported": "compare_digest",
+                "statement": "from hmac import compare_digest",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 4,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "secrets",
+                "imported": "token_urlsafe",
+                "statement": "from secrets import token_urlsafe",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 5,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "threading",
+                "imported": "Lock",
+                "statement": "from threading import Lock",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/reservations.py",
+                "line": 3,
+                "source_sha256": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+                "module": "concert_app.storage",
+                "imported": "storage",
+                "statement": "from . import storage",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 3,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "contextlib",
+                "imported": "contextmanager",
+                "statement": "from contextlib import contextmanager",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 4,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 5,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "sqlite3",
+                "imported": "sqlite3",
+                "statement": "import sqlite3",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/storage.py",
+                "line": 6,
+                "source_sha256": "4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+                "module": "uuid",
+                "imported": "uuid4",
+                "statement": "from uuid import uuid4",
+                "local": false
+              }
+            ],
+            "edges": [
+              {
+                "from": "component.api",
+                "to": "component.api",
+                "source_file": "concert_app/__main__.py",
+                "line": 6,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "concert_app.api",
+                "imported": "make_server",
+                "statement": "from .api import make_server",
+                "local": true
+              },
+              {
+                "from": "component.api",
+                "to": "component.identity",
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.identity",
+                "imported": "identity",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "from": "component.api",
+                "to": "component.reservations",
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.reservations",
+                "imported": "reservations",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "from": "component.reservations",
+                "to": "component.storage",
+                "source_file": "concert_app/reservations.py",
+                "line": 3,
+                "source_sha256": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+                "module": "concert_app.storage",
+                "imported": "storage",
+                "statement": "from . import storage",
+                "local": true
+              }
+            ],
+            "constraints": [
+              {
+                "rule": "rule.api_boundary",
+                "relation": "imports",
+                "from": "component.api",
+                "to": "component.storage",
+                "reach": "direct",
+                "policy": "forbid"
+              }
+            ],
+            "violations": [],
+            "unknown": [],
+            "notice": "Observed static imports only; graph/source text is never executed and this scan alone grants no GDD acceptance."
+          },
+          "missing": {
+            "format": "concert-import-scan/0.1",
+            "checker": {
+              "name": "concert-python-import-graph",
+              "version": "0.1.0"
+            },
+            "profile": "concert-python-component-imports/0.1",
+            "method": "python_import_graph",
+            "result": "UNKNOWN",
+            "executed": true,
+            "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+            "code_revision": "sha256:fe1fdeb279b90a2548e87cef8385bcd6d0828ca6746a05063c1ebb9b1c05ac03",
+            "scope": [
+              "rule.api_boundary"
+            ],
+            "bindings": {
+              "component.api": [
+                "concert_app/api.py",
+                "concert_app/__main__.py"
+              ],
+              "component.identity": [
+                "concert_app/identity.py"
+              ],
+              "component.reservations": [
+                "concert_app/reservations.py"
+              ],
+              "component.storage": [
+                "concert_app/storage.py"
+              ]
+            },
+            "files": {
+              "concert_app/__init__.py": "1c1a9c3c9c4e5f62d857377254edf252b2dce3d7b07a9972621201e380574ebb",
+              "concert_app/__main__.py": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+              "concert_app/api.py": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+              "concert_app/identity.py": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+              "concert_app/reservations.py": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8"
+            },
+            "imports": [
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 3,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "argparse",
+                "imported": "argparse",
+                "statement": "import argparse",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 4,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/__main__.py",
+                "line": 6,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "concert_app.api",
+                "imported": "make_server",
+                "statement": "from .api import make_server",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 3,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "http.cookies",
+                "imported": "SimpleCookie, CookieError",
+                "statement": "from http.cookies import SimpleCookie, CookieError",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 4,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "http.server",
+                "imported": "BaseHTTPRequestHandler, ThreadingHTTPServer",
+                "statement": "from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 5,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "json",
+                "imported": "json",
+                "statement": "import json",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 6,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "pathlib",
+                "imported": "Path",
+                "statement": "from pathlib import Path",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 7,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "re",
+                "imported": "re",
+                "statement": "import re",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 8,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "urllib.parse",
+                "imported": "urlsplit",
+                "statement": "from urllib.parse import urlsplit",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.identity",
+                "imported": "identity",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.reservations",
+                "imported": "reservations",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 3,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "hmac",
+                "imported": "compare_digest",
+                "statement": "from hmac import compare_digest",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 4,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "secrets",
+                "imported": "token_urlsafe",
+                "statement": "from secrets import token_urlsafe",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/identity.py",
+                "line": 5,
+                "source_sha256": "9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+                "module": "threading",
+                "imported": "Lock",
+                "statement": "from threading import Lock",
+                "local": false
+              },
+              {
+                "source_file": "concert_app/reservations.py",
+                "line": 3,
+                "source_sha256": "df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+                "module": "concert_app.storage",
+                "imported": "storage",
+                "statement": "from . import storage",
+                "local": true
+              }
+            ],
+            "edges": [
+              {
+                "from": "component.api",
+                "to": "component.api",
+                "source_file": "concert_app/__main__.py",
+                "line": 6,
+                "source_sha256": "c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+                "module": "concert_app.api",
+                "imported": "make_server",
+                "statement": "from .api import make_server",
+                "local": true
+              },
+              {
+                "from": "component.api",
+                "to": "component.identity",
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.identity",
+                "imported": "identity",
+                "statement": "from . import identity, reservations",
+                "local": true
+              },
+              {
+                "from": "component.api",
+                "to": "component.reservations",
+                "source_file": "concert_app/api.py",
+                "line": 10,
+                "source_sha256": "629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+                "module": "concert_app.reservations",
+                "imported": "reservations",
+                "statement": "from . import identity, reservations",
+                "local": true
+              }
+            ],
+            "constraints": [
+              {
+                "rule": "rule.api_boundary",
+                "relation": "imports",
+                "from": "component.api",
+                "to": "component.storage",
+                "reach": "direct",
+                "policy": "forbid"
+              }
+            ],
+            "violations": [],
+            "unknown": [
+              {
+                "reason": "A bound source file is missing.",
+                "component": "component.storage",
+                "source_file": "concert_app/storage.py"
+              },
+              {
+                "reason": "Constraint endpoint has no unambiguous existing binding.",
+                "component": "component.storage",
+                "rule": "rule.api_boundary"
+              },
+              {
+                "reason": "Local imported module is missing or ambiguous.",
+                "source_file": "concert_app/reservations.py",
+                "line": 3,
+                "module": "concert_app.storage"
+              }
+            ],
+            "notice": "Observed static imports only; graph/source text is never executed and this scan alone grants no GDD acceptance."
+          }
+        }
+      }
+    }
+  }
+}

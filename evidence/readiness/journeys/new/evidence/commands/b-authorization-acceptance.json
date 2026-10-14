@@ -1,0 +1,27 @@
+{
+  "label": "b-authorization-acceptance",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "validate",
+    "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/gdd-b/gdd.json",
+    "--profile",
+    "records",
+    "--activity",
+    "acceptance",
+    "--scope",
+    "action.cli",
+    "--scope",
+    "action.quote",
+    "--scope",
+    "action.rate",
+    "--host-context",
+    "evidence/b-host-acceptance.json",
+    "--output",
+    "evidence/b-authorization-acceptance.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:30:40.686081+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

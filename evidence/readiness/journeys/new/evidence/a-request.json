@@ -1,0 +1,45 @@
+{
+  "format": "gdd-work-request/0.1",
+  "id": "work.parcel.a",
+  "objective": "Implement parcel quoting with no handling fee.",
+  "implementation": "implementation.parcel",
+  "base_code_revision": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "packages": [
+    {
+      "id": "package.parcel.a",
+      "scope": [
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "write_resources": [
+        "src/parcel/__init__.py",
+        "src/parcel/cli.py",
+        "src/parcel/pricing.py",
+        "src/parcel/tariffs.py",
+        "tests/shared_contract.py",
+        "tests/test_a.py",
+        "tests/check_architecture.py"
+      ],
+      "read_resources": [
+        "gdd-a/gdd.json",
+        "evidence/a-context.json"
+      ],
+      "workspace": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+      "deliverables": [
+        "Implemented CLI and fixed behavioral checks.",
+        "Actual architecture check and control failures.",
+        "Reviewed integration and revision-bound current evidence."
+      ],
+      "integration_plan": "The independent lead edits and reviews the concrete files directly, then executes both checks on the combined result before technical acceptance."
+    }
+  ],
+  "serialized": [],
+  "integration": {
+    "owner": "actor.independent",
+    "checks": [
+      "check.behavior.a",
+      "check.architecture.a"
+    ]
+  }
+}

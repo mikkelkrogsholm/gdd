@@ -1,0 +1,286 @@
+{
+  "format": "gdd-run-status/0.1",
+  "revision": "sha256:bf89248c426af188cbb037050b972d0feef4d6b9235dc17de10cc0227d3ec27e",
+  "state": {
+    "status": "accepted",
+    "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+    "packages": {
+      "package.lifecycle": {
+        "status": "integrated",
+        "attempt": "attempt.lifecycle.1",
+        "base_code_revision": "sha256:4ced61844691f43672b4b7f5d34625dd58d3e5c780e6e5fd3a00811df38573e0",
+        "result": {
+          "type": "submit",
+          "expected_revision": "sha256:7537859858e928f125a7a9748b46ac5182b5cebf493197396107d43f937ea495",
+          "idempotency_key": "submit.lifecycle.1",
+          "package": "package.lifecycle",
+          "attempt": "attempt.lifecycle.1",
+          "summary": "Implemented draft/reserved/cancelled lifecycle, same-instance reserve and cancel, idempotency, and InvalidTransition; all eight fixed checks pass.",
+          "artifact_uri": "evidence/implementation.diff",
+          "changed_resources": [
+            "reservation.py",
+            "test_reservation.py"
+          ]
+        },
+        "integration": {
+          "type": "integrate",
+          "expected_revision": "sha256:d25d648e184147845ce14da5ea14b10a88572a081973f83f61cfa462cfef1b20",
+          "idempotency_key": "integrate.lifecycle.1",
+          "package": "package.lifecycle",
+          "attempt": "attempt.lifecycle.1",
+          "base_code_revision": "sha256:4ced61844691f43672b4b7f5d34625dd58d3e5c780e6e5fd3a00811df38573e0",
+          "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+          "verified_resources": [
+            "reservation.py",
+            "test_reservation.py"
+          ],
+          "review": {
+            "reviewer": "actor.independent-agent",
+            "verdict": "PASS",
+            "evidence_uri": "evidence/final-integration-review.json"
+          }
+        }
+      }
+    },
+    "attempts": [
+      "attempt.lifecycle.1"
+    ]
+  },
+  "available_packages": [],
+  "event_count": 4,
+  "acceptance_current": true,
+  "report": {
+    "format": "gdd-report/0.2",
+    "tool": {
+      "name": "gdd-validator",
+      "version": "0.7.0"
+    },
+    "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+    "profiles": [
+      "model",
+      "readiness",
+      "records"
+    ],
+    "scope": [
+      "component.reservations"
+    ],
+    "checks": [
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "model.semantics",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "check.revision_unresolved",
+        "dimension": "model",
+        "result": "UNKNOWN",
+        "scope": [],
+        "reason": "Historical snapshot unavailable for decision.adopt-lifecycle; targets not rebound to current model.",
+        "diagnostics": [
+          {
+            "code": "REVISION_UNRESOLVED",
+            "severity": "warning",
+            "message": "Historical snapshot unavailable for decision.adopt-lifecycle; targets not rebound to current model.",
+            "location": {
+              "file": null,
+              "pointer": ""
+            },
+            "related_ids": [
+              "decision.adopt-lifecycle"
+            ]
+          }
+        ]
+      },
+      {
+        "check_id": "check.revision_unresolved",
+        "dimension": "model",
+        "result": "UNKNOWN",
+        "scope": [],
+        "reason": "Historical snapshot unavailable for check.lifecycle; targets not rebound to current model.",
+        "diagnostics": [
+          {
+            "code": "REVISION_UNRESOLVED",
+            "severity": "warning",
+            "message": "Historical snapshot unavailable for check.lifecycle; targets not rebound to current model.",
+            "location": {
+              "file": null,
+              "pointer": ""
+            },
+            "related_ids": [
+              "check.lifecycle"
+            ]
+          }
+        ]
+      },
+      {
+        "check_id": "check.revision_unresolved",
+        "dimension": "model",
+        "result": "UNKNOWN",
+        "scope": [],
+        "reason": "Historical snapshot unavailable for decision.adopt-lifecycle.v2; targets not rebound to current model.",
+        "diagnostics": [
+          {
+            "code": "REVISION_UNRESOLVED",
+            "severity": "warning",
+            "message": "Historical snapshot unavailable for decision.adopt-lifecycle.v2; targets not rebound to current model.",
+            "location": {
+              "file": null,
+              "pointer": ""
+            },
+            "related_ids": [
+              "decision.adopt-lifecycle.v2"
+            ]
+          }
+        ]
+      },
+      {
+        "check_id": "check.revision_unresolved",
+        "dimension": "model",
+        "result": "UNKNOWN",
+        "scope": [],
+        "reason": "Historical snapshot unavailable for check.lifecycle.v2; targets not rebound to current model.",
+        "diagnostics": [
+          {
+            "code": "REVISION_UNRESOLVED",
+            "severity": "warning",
+            "message": "Historical snapshot unavailable for check.lifecycle.v2; targets not rebound to current model.",
+            "location": {
+              "file": null,
+              "pointer": ""
+            },
+            "related_ids": [
+              "check.lifecycle.v2"
+            ]
+          }
+        ]
+      },
+      {
+        "check_id": "package.lifecycle.context.package",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "component.reservations"
+        ],
+        "reason": "Candidate work package compared with fixed-point closure.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.lifecycle.readiness.structural",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "component.reservations"
+        ],
+        "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.lifecycle.ownership",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "component.reservations"
+        ],
+        "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.check_plans",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "component.reservations"
+        ],
+        "reason": "Selected active checks must cover every blocking rule and method.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.packet_integrity",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "component.reservations"
+        ],
+        "reason": "Complete packet must match the current model, assets, selected check declarations and original request.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.code_binding",
+        "dimension": "integration",
+        "result": "PASS",
+        "scope": [
+          "component.reservations"
+        ],
+        "reason": "Host implementation and code revision must equal this run's integrated result.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.check_selection",
+        "dimension": "integration",
+        "result": "PASS",
+        "scope": [
+          "component.reservations"
+        ],
+        "reason": "Verification uses the exact check plans frozen in this workplan.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "implementation.required.0",
+        "dimension": "implementation",
+        "result": "PASS",
+        "scope": [
+          "rule.lifecycle"
+        ],
+        "reason": "Applicability of recorded rule.lifecycle/unittest; application check not executed by validator.",
+        "diagnostics": [],
+        "implementation": "implementation.reservations",
+        "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+        "evidence_refs": [
+          "evidence.lifecycle.v1"
+        ]
+      },
+      {
+        "check_id": "authorization.activity",
+        "dimension": "authorization",
+        "result": "GRANTED",
+        "scope": [
+          "component.reservations"
+        ],
+        "reason": "Applicable host-trusted standing mandate.",
+        "diagnostics": [],
+        "activity": "acceptance",
+        "policy_revision": "policy.trial.1",
+        "authority_basis": "The direct human task authorizes this isolated modeling, implementation and verification trial and requests integration and acceptance. The human authorized the active agent to perform these bounded actions; actor.independent-agent is the delegated execution authority."
+      },
+      {
+        "check_id": "workflow.question.question.graphify_contracts",
+        "dimension": "integration",
+        "result": "PASS",
+        "scope": [
+          "question.graphify_contracts"
+        ],
+        "reason": "Acceptance blocker needs a trusted current resolution.",
+        "diagnostics": []
+      }
+    ]
+  }
+}

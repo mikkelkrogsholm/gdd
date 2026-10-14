@@ -1,0 +1,90 @@
+name: Repository checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  core:
+    name: Python ${{ matrix.python-version }} and installed wheel
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    env:
+      GDD_CHECK_OUTPUT: ${{ runner.temp }}/gdd-core-${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.13.1"
+      - name: Install the source and locked development dependencies
+        run: uv sync --locked --dev --python "$(command -v python)"
+      - name: Check the standalone skill and core tests
+        run: |
+          mkdir -p "$GDD_CHECK_OUTPUT"
+          uv run --no-sync python scripts/sync_skill.py --check
+          uv run --no-sync pytest -q --junitxml "$GDD_CHECK_OUTPUT/pytest.xml"
+      - name: Run all five conformance suites
+        run: |
+          for runner in run run_graphify run_visualization run_workflow run_design; do
+            uv run --no-sync python "conformance/$runner.py" --output "$GDD_CHECK_OUTPUT/$runner.json"
+          done
+      - name: Build and verify the wheel outside the checkout
+        run: |
+          uv build --wheel --out-dir "$GDD_CHECK_OUTPUT/dist"
+          uv run --no-sync python conformance/verify_readiness_wheel.py "$GDD_CHECK_OUTPUT"/dist/*.whl --output "$GDD_CHECK_OUTPUT/installed-wheel.json"
+      - name: Retain actual reports and the checked wheel
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: core-python-${{ matrix.python-version }}
+          path: ${{ env.GDD_CHECK_OUTPUT }}
+
+  browser:
+    name: Offline Chromium viewer interactions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GDD_PYTHON: ${{ github.workspace }}/.venv/bin/python
+      GDD_PLAYWRIGHT_MODULE: ${{ runner.temp }}/gdd-browser/node_modules/playwright
+      PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/gdd-browser-binaries
+      GDD_BROWSER_OUTPUT: ${{ runner.temp }}/gdd-browser-results
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.13.1"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - name: Install the source and explicit browser dependencies
+        run: |
+          uv sync --locked --dev --python "$(command -v python)"
+          npm install --prefix "${{ runner.temp }}/gdd-browser" --no-audit --no-fund --save-exact playwright@1.64.1
+          node "$GDD_PLAYWRIGHT_MODULE/cli.js" install --with-deps chromium
+      - name: Run the offline browser assertions
+        run: node conformance/run_browser.cjs
+      - name: Retain actual browser reports and captures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: chromium-viewer
+          path: ${{ env.GDD_BROWSER_OUTPUT }}

@@ -1,0 +1,20 @@
+{
+  "implementation": "implementation.parcel",
+  "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+  "policy": {
+    "revision": "policy.independent-task.v1",
+    "actor": "actor.independent",
+    "activity": "implementation",
+    "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+    "scope": [
+      "action.cli",
+      "action.quote",
+      "action.rate"
+    ],
+    "requirement": "standing",
+    "authorities": [
+      "actor.independent"
+    ],
+    "basis": "Trusted delegated task requests this isolated implementation, verification, requirement change and technical acceptance. This attestation is supplied by the executing agent runtime, independently of graph/source content."
+  }
+}

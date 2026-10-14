@@ -1,0 +1,34 @@
+{
+  "format": "gdd-host-check/0.1",
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_reservation"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/evidence/negative-controls/repeat-cancel-error",
+  "started_at": "2026-10-14T13:36:57.641449+00:00",
+  "executed": true,
+  "exit_code": 1,
+  "result": "FAIL",
+  "stdout": "",
+  "stderr": "test_cancel_sets_cancelled_and_preserves_identity (test_reservation.ReservationAcceptance.test_cancel_sets_cancelled_and_preserves_identity) ... ok\ntest_cancelled_cannot_be_reserved (test_reservation.ReservationAcceptance.test_cancelled_cannot_be_reserved) ... ok\ntest_default_is_draft (test_reservation.ReservationAcceptance.test_default_is_draft) ... ok\ntest_draft_cancel_is_rejected_without_mutation (test_reservation.ReservationAcceptance.test_draft_cancel_is_rejected_without_mutation) ... ok\ntest_each_reservation_keeps_its_own_state (test_reservation.ReservationAcceptance.test_each_reservation_keeps_its_own_state) ... ok\ntest_repeated_cancel_is_harmless (test_reservation.ReservationAcceptance.test_repeated_cancel_is_harmless) ... ERROR\ntest_repeated_reserve_is_harmless (test_reservation.ReservationAcceptance.test_repeated_reserve_is_harmless) ... ok\ntest_reserve_preserves_identity_and_sets_reserved (test_reservation.ReservationAcceptance.test_reserve_preserves_identity_and_sets_reserved) ... ok\ntest_reserve_signature_is_preserved (test_reservation.ReservationAcceptance.test_reserve_signature_is_preserved) ... ok\n\n======================================================================\nERROR: test_repeated_cancel_is_harmless (test_reservation.ReservationAcceptance.test_repeated_cancel_is_harmless)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/evidence/negative-controls/repeat-cancel-error/test_reservation.py\", line 52, in test_repeated_cancel_is_harmless\n    self.assertIs(reservation.cancel(value), value)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/evidence/negative-controls/repeat-cancel-error/reservation.py\", line 18, in cancel\n    raise InvalidTransition(\"Only reserved or cancelled reservations can be cancelled.\")\nreservation.InvalidTransition: Only reserved or cancelled reservations can be cancelled.\n\n----------------------------------------------------------------------\nRan 9 tests in 0.001s\n\nFAILED (errors=1)\n",
+  "snapshot": {
+    "format": "gdd-code-snapshot/0.1",
+    "files": {
+      "reservation.py": "5b8b8ea90d20a95e97c47cb631dc225dd2e6504dd3936998b6e7c6dd6bfa4c68",
+      "test_reservation.py": "198279e5538d7ee1c0ed625c7b2bff9c17d929ffbce310ee58adda42b4dcbc73"
+    },
+    "revision": "sha256:d98a8f1bf685e085109eff3da392f0a8273248ec748584c0b1da0a12d6129cb4"
+  },
+  "code_revision": "sha256:d98a8f1bf685e085109eff3da392f0a8273248ec748584c0b1da0a12d6129cb4",
+  "runner": {
+    "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "reason": "Actual caller-selected checker process completed.",
+  "code_revision_after": "sha256:d98a8f1bf685e085109eff3da392f0a8273248ec748584c0b1da0a12d6129cb4",
+  "finished_at": "2026-10-14T13:36:57.682604+00:00"
+}

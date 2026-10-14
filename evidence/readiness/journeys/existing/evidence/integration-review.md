@@ -1,0 +1,3 @@
+# Direct integration review
+
+The dispatched packet was performed directly by the current agent. No worker was spawned. The actual patch changes only reservation.py and adds test_reservation.py; these are the declared write resources. The fixed tests retain their hash from the red execution. Public reserve annotations, parameter name and return identity are checked; all six model scenarios and additional unsupported-state boundaries have assertions. The model and requirements were not changed after dispatch. Ten checks passed before registration; current acceptance evidence will be executed again after the integration event. The four-principle advisory review is evidence/design-review.json.

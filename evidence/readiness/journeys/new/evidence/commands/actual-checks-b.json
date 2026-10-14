@@ -1,0 +1,14 @@
+{
+  "label": "actual-checks-b",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "execute_current.py",
+    "b"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:30:40.196642+00:00",
+  "exit_code": 0,
+  "stdout": "injected architecture FAIL {\"result\": \"FAIL\", \"actual_imports\": [[\"cli\", \"pricing\"], [\"cli\", \"tariffs\"], [\"pricing\", \"tariffs\"]], \"forbidden_cli_tariffs\": true, \"missing_required_imports\": []}\n\nrepaired architecture PASS {\"result\": \"PASS\", \"actual_imports\": [[\"cli\", \"pricing\"], [\"pricing\", \"tariffs\"]], \"forbidden_cli_tariffs\": false, \"missing_required_imports\": []}\n\ncurrent behavior PASS\n",
+  "stderr": ""
+}

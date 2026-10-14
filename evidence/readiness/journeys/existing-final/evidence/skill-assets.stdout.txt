@@ -1,0 +1,1 @@
+Bundled reference hashes match. This checks local integrity, not authority or upstream freshness.

@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/gdd",
+    "design-review",
+    "model.json",
+    "--review",
+    "evidence/design-review.json",
+    "--implementation",
+    "implementation.reservation",
+    "--code-revision",
+    "sha256:161310c70013fd962fd6ae736ce194881d933db181ae4442978d302c2e31f0c9",
+    "--scope",
+    "action.reserve",
+    "--scope",
+    "action.cancel",
+    "--output",
+    "evidence/design-review.report.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:28:18.398013+00:00",
+  "finished_at": "2026-10-14T13:28:18.540350+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

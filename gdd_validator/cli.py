@@ -17,6 +17,7 @@ from .workflow_run import create_run, run_status, advance_run
 from .boundaries import boundary_view
 from .design_review import review_design
 from .visualization import model_bundle
+from .scaffold import init_project
 
 __all__ = ["main"]
 
@@ -24,6 +25,10 @@ __all__ = ["main"]
 def main() -> int:
     parser = argparse.ArgumentParser(prog="gdd", description="GDD 0.2 and 0.3 model tools")
     commands = parser.add_subparsers(dest="command", required=True)
+    initialize = commands.add_parser("init", help="Create a valid, unready GDD 0.3 project draft")
+    initialize.add_argument("path", type=Path)
+    initialize.add_argument("--project-id", default="project.new")
+    initialize.add_argument("--title", default="New GDD project")
     validation = commands.add_parser("validate")
     validation.add_argument("path", type=Path)
     validation.add_argument(
@@ -103,6 +108,10 @@ def main() -> int:
     if hasattr(args, "scope"):
         args.scope = list(dict.fromkeys(args.scope or []))
     try:
+        if args.command == "init":
+            result = init_project(args.path, project_id=args.project_id, title=args.title)
+            sys.stdout.write(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n")
+            return 0
         if args.command == "boundaries":
             result = boundary_view(model_bundle(args.path))
             code = 0

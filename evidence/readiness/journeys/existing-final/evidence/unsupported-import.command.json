@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/gdd",
+    "graphify",
+    "import",
+    "graphify-input.json",
+    "--profile",
+    "graphify-999.0.0-ast",
+    "--output",
+    "observations-unsupported"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:37:20.878455+00:00",
+  "exit_code": 2,
+  "stdout": "evidence/unsupported-import.stdout.txt",
+  "stderr": "evidence/unsupported-import.stderr.txt"
+}

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/gdd",
+    "snapshot",
+    "gdd.json",
+    "--output",
+    "snapshot-current.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:32:25.315141+00:00",
+  "exit_code": 2,
+  "stdout": "evidence/snapshot-current.stdout.txt",
+  "stderr": "evidence/snapshot-current.stderr.txt"
+}

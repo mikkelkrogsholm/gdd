@@ -1,7 +1,0 @@
-{
-  "reviewer": "actor.concert.lead",
-  "result": "PASS",
-  "basis": "Read Storage and Reservations source. SQL stays in Storage; API-facing results omit private fields. Actual lead replay passed30 file-SQLite tests; no phase-B guard is active.",
-  "receipt": "backend.host.run.json",
-  "worker_receipt": "backend.worker.json"
-}

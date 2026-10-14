@@ -1,0 +1,42 @@
+{
+  "base_spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+  "result_spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+  "changed_ids": [
+    "component.cli",
+    "component.pricing",
+    "component.tariffs",
+    "action.cli",
+    "action.quote",
+    "action.rate",
+    "rule.price",
+    "rule.no_cli_tariffs",
+    "scenario.domestic",
+    "scenario.remote",
+    "scenario.weights",
+    "scenario.invalid_weight",
+    "scenario.invalid_zone",
+    "scenario.cli_invalid",
+    "scenario.architecture",
+    "source.contract"
+  ],
+  "added_ids": [
+    "source.change"
+  ],
+  "deleted_ids": [],
+  "rationale": "The requested remote-only flat fee belongs in pricing.quote; tariff rates and CLI responsibilities stay fixed.",
+  "sources": [
+    "source.change",
+    "source.brief"
+  ],
+  "affected_contracts": [
+    "action.quote"
+  ],
+  "affected_scenarios": [
+    "scenario.remote",
+    "scenario.weights"
+  ],
+  "implementation_resources": [
+    "src/parcel/pricing.py"
+  ],
+  "fixed_verification_resource": "tests/test_b.py"
+}

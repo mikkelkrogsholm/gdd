@@ -1,0 +1,66 @@
+{
+  "records": {
+    "binding.lifecycle.v1": {
+      "kind": "binding",
+      "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+      "targets": [
+        "rule.lifecycle"
+      ],
+      "implementation": "implementation.reservations",
+      "role": "test",
+      "resource": "test_reservation.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:198279e5538d7ee1c0ed625c7b2bff9c17d929ffbce310ee58adda42b4dcbc73",
+      "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f"
+    },
+    "evidence.lifecycle.v1": {
+      "kind": "evidence",
+      "check": "check.lifecycle.v3",
+      "check_revision": "sha256:9b3f7a90c17ec70b4529fe380e070aac3bd39fd5d410480a562145edf098fdd2",
+      "implementation": "implementation.reservations",
+      "spec_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+      "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+      "checker": {
+        "name": "stdlib.unittest",
+        "version": "3.12.2"
+      },
+      "scope": [
+        "rule.lifecycle"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project/evidence/integrated-test.run.json"
+    }
+  },
+  "host": {
+    "implementation": "implementation.reservations",
+    "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+    "verified_bindings": [
+      "binding.lifecycle.v1"
+    ],
+    "trusted_evidence": [
+      "evidence.lifecycle.v1"
+    ],
+    "supported_methods": [
+      "unittest"
+    ],
+    "environment": {
+      "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+    },
+    "negative_controls": [
+      "replacement-return",
+      "resurrection",
+      "repeat-cancel-error"
+    ],
+    "evidence_selection": {
+      "check.lifecycle.v3": "evidence.lifecycle.v1"
+    }
+  }
+}

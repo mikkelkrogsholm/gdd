@@ -1,0 +1,14 @@
+{
+  "label": "register-evidence-b",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "register_evidence.py",
+    "b"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:30:40.847297+00:00",
+  "exit_code": 0,
+  "stdout": "b-records-current: exit 0\n\nb-authorization-acceptance: exit 0\n\nb-design-review: exit 0\n\n",
+  "stderr": ""
+}

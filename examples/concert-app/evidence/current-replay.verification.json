@@ -1,0 +1,957 @@
+{
+  "format": "concert-reference-verification/1",
+  "notice": "New replay of the curated reference with current host scripts and newly bound checker evidence. This does not replay agents or replace original execution claims.",
+  "argv": [
+    "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python",
+    "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation/examples/concert-app/tools/replay.py",
+    "--output",
+    "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation-portable-replay-recorded"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation",
+  "environment_overrides": {
+    "PYTHONPATH": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation",
+    "GDD_PLAYWRIGHT": "/Users/mikkelfreltoftkrogsholm/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright",
+    "GDD_CHROME": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "GDD_NODE": "/opt/homebrew/bin/node",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "started_unix": 1791983140.0194108,
+  "elapsed_seconds": 52.50581622123718,
+  "exit_code": 0,
+  "stdout": "{\n  \"format\": \"concert-replay/0.1\",\n  \"new_agent_generation\": false,\n  \"phases\": {\n    \"a\": {\n      \"spec_revision\": \"sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9\",\n      \"code_revision\": \"sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f\",\n      \"acceptance_current\": true,\n      \"browser_cases\": 5\n    },\n    \"b\": {\n      \"spec_revision\": \"sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170\",\n      \"code_revision\": \"sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d\",\n      \"acceptance_current\": true,\n      \"browser_cases\": 8\n    }\n  }\n}\n",
+  "stderr": "",
+  "validator_dependency_sources": {
+    "gdd_validator/__init__.py": "529dbef55289834a10fb3a8b6d27135edf35d68b3e5b0f9ca63502683da89e9e",
+    "gdd_validator/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "gdd_validator/atomic.py": "f9af27aad136c00cfc524c585b92bc515e3c59cb63613329be5583c5b9c67b4c",
+    "gdd_validator/boundaries.py": "0b5bbbbded88cddb9c9a83567397925a4a63d2394bb2f76d8d9938ad0f1a7d0e",
+    "gdd_validator/cli.py": "4003d31a8f3c1f916ba221eda25a1168108307f5f3d09f88c68ec8c2f964fd15",
+    "gdd_validator/decision.py": "9afd19288354f4b7cf2aa57204fdc4962b27306b5faf32897a650126e14815e9",
+    "gdd_validator/design_review.py": "37ef3f606ed182446184833d215a81575bcf174072794bb3a2322a0d614e417d",
+    "gdd_validator/graphify.py": "3aa82bbcc18a7cdff2476a3639cc02bae8f8dffa5c56a8c4fb3b73e47f004ebd",
+    "gdd_validator/graphify_io.py": "57ee12eaa619ab5b849e5bfe72bcda5bc9f25554987ffb37232e63c1282383c3",
+    "gdd_validator/graphify_proposal.py": "53b5ecebc402d71acbef8ad17fc81a8245326791fb11c51ed86e77d868d55098",
+    "gdd_validator/loading.py": "e6a77da4945ead7c770b965cb6c0e7c2b94aa7fd1b63911f4817177e3fcc8d88",
+    "gdd_validator/model.py": "187b04294444352b1888a2b28e89a445f47534c5566d60a28aeb8c52dad9f1d3",
+    "gdd_validator/numeric.py": "514b8b0bdcf51792fc76e27ec7b979b553f685ebb1f077cb6d4ceae7175b6e7e",
+    "gdd_validator/planning.py": "f826e058bd3b407ae2b9ee821e045b6311808a9723c753692eeb2abf383da8f1",
+    "gdd_validator/readiness.py": "4fcebeb170b8e878c1007dfb49bbee7d1ba12af21cee6478babbf857aae60083",
+    "gdd_validator/record_integrity.py": "953c88766ce936a18a8b300a0f4b58910db05f8cd11075e8cc073702841be3d5",
+    "gdd_validator/records.py": "1911fc98709d1303bb432f04148a487607334d679c94b10a454e122447b7193b",
+    "gdd_validator/report.py": "ad43e3e17ac1c547cf2bd29d2c9defa6f981bf89da00212ca1c76b1abe112160",
+    "gdd_validator/validator.py": "7c0c8351a88182ba360e2b613ae9a3757a231b01d1198dec87d8f10dd53cbf98",
+    "gdd_validator/visualization.py": "7b21f99edce81a0850678c9c1f29504e184cb66ab3a4180f105c9043691544ab",
+    "gdd_validator/workflow.py": "a87e3bbf0f136c56cc2ef9521021402ffe5c53b0d1236c5ff9adbb2054d7c367",
+    "gdd_validator/workflow_run.py": "43f4f0e0f26add20821d6a9a244f60823199693f03e09eedacd78f7d66f153d6",
+    "schemas/boundaries.schema.json": "9d030fddaaeb53147be7b02a27636048cca1e5bb0a40d6a713c47843ae2834d7",
+    "schemas/design-review.schema.json": "78adc8599f0ed26143fb97465171332fbf32c105a278f88901e102833979b897",
+    "schemas/extension.schema.json": "fe31ae35826eb910191b1948fcd3fad33eae3180ed6575ee114dc20767731a1a",
+    "schemas/fragment-0.2.schema.json": "14637f322e176659bdac4beed05ed56deadafe557ce8d91ea31a20152eacbf3c",
+    "schemas/fragment.schema.json": "9ac57170b985febb19f19f46712f125c9d750011f3f24a33c3cac4d655ada5d2",
+    "schemas/gdd-0.2.schema.json": "e21f1641872945f0b62facf7243c7a78c80b160bfb3f56d59be0fa0f7bf30623",
+    "schemas/gdd.schema.json": "6943438bde1e39e1b94add00c3ca1083e85a5fc8ae92d143ed0d3667b15e452a",
+    "schemas/graphify-mapping.schema.json": "bfa77063b989acf5b4a487f0e90d54b5eb919af846f2e8360c3a6beec1ce7590",
+    "schemas/observations.schema.json": "c59d7caba9c54853dbbe9ea326a93b8c6e3069fc31683bc0c2ef1bfe23de3c58",
+    "schemas/records.schema.json": "a1069ce8358aedbb4c3b710072ce7e633d52e5a28e8b8bb82a61e683e89bb052",
+    "schemas/report.schema.json": "89da06e6842cdc788a18ca4e6c4b1b6fd01340378d8a78b11f1160fd97a449c3",
+    "schemas/snapshot.schema.json": "381a1b00790f81b29f8bdda0ad9d505d714d890de74d9c41c73546139d257fce",
+    "schemas/validator-inputs.schema.json": "0aace1cd95de671e7c07336cb6d5fc3beda7d0c1bfd4ec5608a3c9af46e974e7",
+    "schemas/view-state.schema.json": "ca9ede44d2bda23b17ce8ad68bfb451ba688817c4a7dafd76f06634ef97337ea",
+    "schemas/view.schema.json": "a03774d1379de3f276c8c66526e573e88c32a5deac9025fb849ae91b28972d1d",
+    "schemas/workflow.schema.json": "e57c0cb459e80b1a27a6607508b0c6be1dbae2670bc2485cc2b9121da52155ac"
+  },
+  "summary": {
+    "format": "concert-replay/0.1",
+    "new_agent_generation": false,
+    "phases": {
+      "a": {
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+        "acceptance_current": true,
+        "browser_cases": 5
+      },
+      "b": {
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+        "acceptance_current": true,
+        "browser_cases": 8
+      }
+    }
+  },
+  "script_provenance": {
+    "format": "concert-replay-provenance/1",
+    "notice": "New execution of archived delivered app/test bytes through the listed current host tools. Historical records are not selected as new evidence.",
+    "archived_delivery_git_commit": "7e27757c34b6fa57ecc69660e263c99e1420649b",
+    "source": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation/examples/concert-app",
+    "tools": {
+      "tools/browser.cjs": "cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+      "tools/capture.cjs": "8921068dcbe99f4998ae279701c059ba4be020df868d4c47e72e2edd533a3921",
+      "tools/experiment.py": "1626d859c7d1d3eedc5c2cf10195687ecdb9d6532a471d434fefcdb7b7b1a2f0",
+      "tools/import_check.py": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+      "tools/replay.py": "c0838419f6124784b3ad824816e4e570cbd76d96d71dc58144fbcec55bceebb5",
+      "tools/test_import_check.py": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90"
+    },
+    "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+    "python_executable": "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python",
+    "node": "/opt/homebrew/bin/node",
+    "node_executable": "/opt/homebrew/bin/node",
+    "playwright_module": "/Users/mikkelfreltoftkrogsholm/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright",
+    "browser_executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+  },
+  "checks": {
+    "a": {
+      "pytest": {
+        "argv": [
+          "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python",
+          "-B",
+          "-m",
+          "pytest",
+          "tests",
+          "tools/test_import_check.py",
+          "-q"
+        ],
+        "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation-portable-replay-recorded",
+        "exit_code": 0,
+        "stdout": "............................................................. [ 62%]\n.....................................                                    [100%]\n98 passed, 11 subtests passed in 10.87s\n",
+        "stderr": "",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+        "host_tool_sources": {
+          "tools/browser.cjs": "cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+          "tools/import_check.py": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+          "tools/test_import_check.py": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90"
+        }
+      },
+      "capacity_bypass": {
+        "argv": [
+          "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python",
+          "-B",
+          "-m",
+          "pytest",
+          "tests/test_domain.py",
+          "-k",
+          "zero_capacity or sold_out or concurrent_last_seat",
+          "-q"
+        ],
+        "cwd": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/concert-capacity-negative-n7zgie03",
+        "exit_code": 1,
+        "stdout": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n_ ReservationTests.test_concurrent_last_seat_uses_multiple_connections_without_overbooking _\n\nself = <test_domain.ReservationTests testMethod=test_concurrent_last_seat_uses_multiple_connections_without_overbooking>\n\n    def test_concurrent_last_seat_uses_multiple_connections_without_overbooking(self):\n        self.capacity(\"midnight\", 1)\n        barrier = Barrier(8)\n        def attempt(index):\n            barrier.wait(timeout=5)\n            try:\n                return self.reserve(f\"request-{index}\", principal=f\"person-{index}\")\n            except reservations.DomainError as error:\n                return error.code\n        with ThreadPoolExecutor(max_workers=8) as executor:\n            results = list(executor.map(attempt, range(8)))\n>       self.assertEqual(sum(isinstance(result, dict) for result in results), 1)\nE       AssertionError: 8 != 1\n\ntests/test_domain.py:178: AssertionError\n_ ReservationTests.test_sold_out_binds_no_key_and_can_succeed_after_cancellation _\n\nself = <test_domain.ReservationTests testMethod=test_sold_out_binds_no_key_and_can_succeed_after_cancellation>\n\n    def test_sold_out_binds_no_key_and_can_succeed_after_cancellation(self):\n        self.capacity(\"midnight\", 1)\n        original = self.reserve(\"occupant\")\n>       self.assert_error(\"SoldOut\", reservations.reserve, self.database, \"bob\", \"midnight\", \"retry\")\n\ntests/test_domain.py:104: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_domain.py:22: in assert_error\n    with self.assertRaises(reservations.DomainError) as raised:\nE   AssertionError: DomainError not raised\n_________ ReservationTests.test_zero_capacity_rejects_new_reservation __________\n\nself = <test_domain.ReservationTests testMethod=test_zero_capacity_rejects_new_reservation>\n\n    def test_zero_capacity_rejects_new_reservation(self):\n        self.capacity(\"midnight\", 0)\n>       self.assert_error(\"SoldOut\", reservations.reserve, self.database, \"alice\", \"midnight\", \"empty\")\n\ntests/test_domain.py:113: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_domain.py:22: in assert_error\n    with self.assertRaises(reservations.DomainError) as raised:\nE   AssertionError: DomainError not raised\n=========================== short test summary info ============================\nFAILED tests/test_domain.py::ReservationTests::test_concurrent_last_seat_uses_multiple_connections_without_overbooking\nFAILED tests/test_domain.py::ReservationTests::test_sold_out_binds_no_key_and_can_succeed_after_cancellation\nFAILED tests/test_domain.py::ReservationTests::test_zero_capacity_rejects_new_reservation\n3 failed, 27 deselected in 0.12s\n",
+        "stderr": "",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+        "code_revision": "sha256:3f62737d00f21fad304b876e1f0d4ce942de97dbf40dbec477866ad2d5b4e7e9",
+        "host_tool_sources": {}
+      },
+      "browser_command": {
+        "argv": [
+          "/opt/homebrew/bin/node",
+          "tools/browser.cjs",
+          "--url",
+          "http://127.0.0.1:59040",
+          "--phase",
+          "a",
+          "--output",
+          "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation-portable-replay-recorded/evidence/phase-a"
+        ],
+        "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation-portable-replay-recorded",
+        "exit_code": 0,
+        "stdout": "{\"result\":\"PASS\",\"cases\":5,\"browser\":\"155.0.8059.41\"}\n",
+        "stderr": "",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+        "host_tool_sources": {
+          "tools/browser.cjs": "cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+          "tools/import_check.py": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+          "tools/test_import_check.py": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90"
+        }
+      },
+      "browser": {
+        "format": "concert-browser-receipt/0.1",
+        "executed": true,
+        "result": "PASS",
+        "phase": "a",
+        "browser": "155.0.8059.41",
+        "url": "http://127.0.0.1:59040",
+        "cases": [
+          {
+            "name": "public program and invalid credentials",
+            "result": "PASS"
+          },
+          {
+            "name": "lost-response-retry-does-not-duplicate",
+            "result": "PASS"
+          },
+          {
+            "name": "phase A permits three across concerts and cancellation preserves history",
+            "result": "PASS"
+          },
+          {
+            "name": "identity switch hides old history and suppresses a late private response",
+            "result": "PASS"
+          },
+          {
+            "name": "keyboard, labelled forms, 320px and 200 percent layout",
+            "result": "PASS"
+          }
+        ],
+        "errors": [],
+        "reserve_requests": [
+          {
+            "concert_id": "midnight",
+            "request_key": "e1b9c90c-4d79-46f5-998d-7377c8b48c86"
+          },
+          {
+            "concert_id": "midnight",
+            "request_key": "e1b9c90c-4d79-46f5-998d-7377c8b48c86"
+          },
+          {
+            "concert_id": "northern",
+            "request_key": "4ad24f76-05f2-45e4-b098-53e8c861927a"
+          },
+          {
+            "concert_id": "matinee",
+            "request_key": "674f868b-548b-4cde-9fc9-c69e2d279db2"
+          }
+        ],
+        "negative_controls": [
+          "lost-response-retry-does-not-duplicate"
+        ],
+        "final_history": {
+          "reservations": [
+            {
+              "id": "1507529932a241039211098827413a93",
+              "concert_id": "matinee",
+              "state": "reserved"
+            },
+            {
+              "id": "8e784a0e0f044f46bb72870c5e9c45e7",
+              "concert_id": "northern",
+              "state": "reserved"
+            },
+            {
+              "id": "ff4fd29bf5494172ae0c11fda59343a1",
+              "concert_id": "midnight",
+              "state": "cancelled"
+            }
+          ],
+          "active_count": 2,
+          "active_limit": null
+        }
+      },
+      "import_control_results": {
+        "clean": "PASS",
+        "injected": "FAIL",
+        "repaired": "PASS",
+        "missing": "UNKNOWN"
+      }
+    },
+    "b": {
+      "pytest": {
+        "argv": [
+          "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python",
+          "-B",
+          "-m",
+          "pytest",
+          "tests",
+          "tools/test_import_check.py",
+          "-q"
+        ],
+        "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation-portable-replay-recorded",
+        "exit_code": 0,
+        "stdout": "............................................................. [ 54%]\n...................................................                      [100%]\n112 passed, 11 subtests passed in 12.95s\n",
+        "stderr": "",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+        "host_tool_sources": {
+          "tools/browser.cjs": "cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+          "tools/import_check.py": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+          "tools/test_import_check.py": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90"
+        }
+      },
+      "capacity_bypass": {
+        "argv": [
+          "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python",
+          "-B",
+          "-m",
+          "pytest",
+          "tests/test_domain.py",
+          "-k",
+          "zero_capacity or sold_out or concurrent_last_seat",
+          "-q"
+        ],
+        "cwd": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/concert-capacity-negative-qm8wgxn_",
+        "exit_code": 1,
+        "stdout": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n_ ReservationTests.test_concurrent_last_seat_uses_multiple_connections_without_overbooking _\n\nself = <test_domain.ReservationTests testMethod=test_concurrent_last_seat_uses_multiple_connections_without_overbooking>\n\n    def test_concurrent_last_seat_uses_multiple_connections_without_overbooking(self):\n        self.capacity(\"midnight\", 1)\n        barrier = Barrier(8)\n        def attempt(index):\n            barrier.wait(timeout=5)\n            try:\n                return self.reserve(f\"request-{index}\", principal=f\"person-{index}\")\n            except reservations.DomainError as error:\n                return error.code\n        with ThreadPoolExecutor(max_workers=8) as executor:\n            results = list(executor.map(attempt, range(8)))\n>       self.assertEqual(sum(isinstance(result, dict) for result in results), 1)\nE       AssertionError: 8 != 1\n\ntests/test_domain.py:180: AssertionError\n_ ReservationTests.test_sold_out_binds_no_key_and_can_succeed_after_cancellation _\n\nself = <test_domain.ReservationTests testMethod=test_sold_out_binds_no_key_and_can_succeed_after_cancellation>\n\n    def test_sold_out_binds_no_key_and_can_succeed_after_cancellation(self):\n        self.capacity(\"midnight\", 1)\n        original = self.reserve(\"occupant\")\n>       self.assert_error(\"SoldOut\", reservations.reserve, self.database, \"bob\", \"midnight\", \"retry\")\n\ntests/test_domain.py:106: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_domain.py:22: in assert_error\n    with self.assertRaises(reservations.DomainError) as raised:\nE   AssertionError: DomainError not raised\n_________ ReservationTests.test_zero_capacity_rejects_new_reservation __________\n\nself = <test_domain.ReservationTests testMethod=test_zero_capacity_rejects_new_reservation>\n\n    def test_zero_capacity_rejects_new_reservation(self):\n        self.capacity(\"midnight\", 0)\n>       self.assert_error(\"SoldOut\", reservations.reserve, self.database, \"alice\", \"midnight\", \"empty\")\n\ntests/test_domain.py:115: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_domain.py:22: in assert_error\n    with self.assertRaises(reservations.DomainError) as raised:\nE   AssertionError: DomainError not raised\n=========================== short test summary info ============================\nFAILED tests/test_domain.py::ReservationTests::test_concurrent_last_seat_uses_multiple_connections_without_overbooking\nFAILED tests/test_domain.py::ReservationTests::test_sold_out_binds_no_key_and_can_succeed_after_cancellation\nFAILED tests/test_domain.py::ReservationTests::test_zero_capacity_rejects_new_reservation\n3 failed, 27 deselected in 0.13s\n",
+        "stderr": "",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+        "code_revision": "sha256:f34b26f87f65270c9ba4e3d975d39c06ca2f6409de1ae986061d946b7f3808c8",
+        "host_tool_sources": {}
+      },
+      "browser_command": {
+        "argv": [
+          "/opt/homebrew/bin/node",
+          "tools/browser.cjs",
+          "--url",
+          "http://127.0.0.1:59302",
+          "--phase",
+          "b",
+          "--output",
+          "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation-portable-replay-recorded/evidence/phase-b"
+        ],
+        "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation-portable-replay-recorded",
+        "exit_code": 0,
+        "stdout": "{\"result\":\"PASS\",\"cases\":8,\"browser\":\"155.0.8059.41\"}\n",
+        "stderr": "",
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+        "host_tool_sources": {
+          "tools/browser.cjs": "cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+          "tools/import_check.py": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+          "tools/test_import_check.py": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90"
+        }
+      },
+      "browser": {
+        "format": "concert-browser-receipt/0.1",
+        "executed": true,
+        "result": "PASS",
+        "phase": "b",
+        "browser": "155.0.8059.41",
+        "url": "http://127.0.0.1:59302",
+        "cases": [
+          {
+            "name": "public program and invalid credentials",
+            "result": "PASS"
+          },
+          {
+            "name": "phase B preserves A history, uses server limit and permits cancellation at limit",
+            "result": "PASS"
+          },
+          {
+            "name": "postcommit-unknown500-retains-key-at-limit",
+            "result": "PASS",
+            "transport": "Real upstream commit; browser control substitutes unknown500 response. Separate real HTTP test induces serialization failure."
+          },
+          {
+            "name": "lost-response-retry-does-not-duplicate",
+            "result": "PASS"
+          },
+          {
+            "name": "identity switch hides old history and suppresses a late private response",
+            "result": "PASS"
+          },
+          {
+            "name": "uncertain-logout-retry-preserves-original-identity-expectation",
+            "result": "PASS"
+          },
+          {
+            "name": "shared-cookie session changes reject stale reserve, history and logout",
+            "result": "PASS"
+          },
+          {
+            "name": "keyboard, labelled forms, 320px and 200 percent layout",
+            "result": "PASS"
+          }
+        ],
+        "errors": [],
+        "reserve_requests": [
+          {
+            "concert_id": "midnight",
+            "request_key": "browser-b-unbound"
+          },
+          {
+            "concert_id": "northern",
+            "request_key": "802bca33-3edb-4134-a79a-e9f5e593fe4f"
+          },
+          {
+            "concert_id": "midnight",
+            "request_key": "fc279903-b7f1-4b7b-80dc-ddbd05bc88dd"
+          },
+          {
+            "concert_id": "midnight",
+            "request_key": "f8fa7dd1-d688-45ec-9d26-df8e2d1aa77e"
+          }
+        ],
+        "negative_controls": [
+          "lost-response-retry-does-not-duplicate"
+        ],
+        "final_history": {
+          "reservations": [
+            {
+              "id": "e4535e135ddd45d4abedbe57d6cc240a",
+              "concert_id": "midnight",
+              "state": "reserved"
+            },
+            {
+              "id": "c11490fe160c44fdb96b7f8f2d5d5922",
+              "concert_id": "northern",
+              "state": "cancelled"
+            },
+            {
+              "id": "1507529932a241039211098827413a93",
+              "concert_id": "matinee",
+              "state": "reserved"
+            },
+            {
+              "id": "8e784a0e0f044f46bb72870c5e9c45e7",
+              "concert_id": "northern",
+              "state": "cancelled"
+            },
+            {
+              "id": "ff4fd29bf5494172ae0c11fda59343a1",
+              "concert_id": "midnight",
+              "state": "cancelled"
+            }
+          ],
+          "active_count": 2,
+          "active_limit": 2
+        }
+      },
+      "import_control_results": {
+        "clean": "PASS",
+        "injected": "FAIL",
+        "repaired": "PASS",
+        "missing": "UNKNOWN"
+      }
+    }
+  },
+  "requirements_red": {
+    "argv": [
+      "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python",
+      "-B",
+      "-m",
+      "pytest",
+      "tests/test_requirement_change.py",
+      "-q"
+    ],
+    "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-readiness-workers-kybx7925/curation-portable-replay-recorded",
+    "exit_code": 1,
+    "stdout": "FFF.FF.FFF                                                               [100%]\n=================================== FAILURES ===================================\n____ test_global_limit_rejects_third_across_concerts_and_leaves_key_unbound ____\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_global_limit_rejects_thir0/requirements.sqlite')\n\n    def test_global_limit_rejects_third_across_concerts_and_leaves_key_unbound(database):\n        reserve(database, \"one\")\n        reserve(database, \"two\", \"northern\")\n>       error(\"ActiveReservationLimitReached\", reserve, database, \"three\", \"matinee\")\n\ntests/test_requirement_change.py:33: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'ActiveReservationLimitReached'\noperation = <function reserve at 0x103e31ee0>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_global_limit_rejects_thir0/requirements.sqlite'), 'three', 'matinee')\n\n    def error(code, operation, *args):\n>       with pytest.raises(reservations.DomainError) as raised:\nE       Failed: DID NOT RAISE DomainError\n\ntests/test_requirement_change.py:21: Failed\n__________________ test_principal_allowances_are_independent ___________________\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_principal_allowances_are_0/requirements.sqlite')\n\n    def test_principal_allowances_are_independent(database):\n        reserve(database, \"a1\")\n        reserve(database, \"a2\", \"northern\")\n        reserve(database, \"b1\", principal=\"bob\")\n        reserve(database, \"b2\", \"northern\", principal=\"bob\")\n        assert reservations.list_own(database, \"alice\")[\"active_count\"] == 2\n        assert reservations.list_own(database, \"bob\")[\"active_count\"] == 2\n>       error(\"ActiveReservationLimitReached\", reserve, database, \"b3\", \"midnight\", \"bob\")\n\ntests/test_requirement_change.py:47: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'ActiveReservationLimitReached'\noperation = <function reserve at 0x103e31ee0>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_principal_allowances_are_0/requirements.sqlite'), 'b3', 'midnight', 'bob')\n\n    def error(code, operation, *args):\n>       with pytest.raises(reservations.DomainError) as raised:\nE       Failed: DID NOT RAISE DomainError\n\ntests/test_requirement_change.py:21: Failed\n______ test_cancellation_frees_allowance_and_failed_key_can_then_succeed _______\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_cancellation_frees_allowa0/requirements.sqlite')\n\n    def test_cancellation_frees_allowance_and_failed_key_can_then_succeed(database):\n        first = reserve(database, \"one\")\n        reserve(database, \"two\", \"northern\")\n>       error(\"ActiveReservationLimitReached\", reserve, database, \"failed\", \"matinee\")\n\ntests/test_requirement_change.py:53: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'ActiveReservationLimitReached'\noperation = <function reserve at 0x103e31ee0>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_cancellation_frees_allowa0/requirements.sqlite'), 'failed', 'matinee')\n\n    def error(code, operation, *args):\n>       with pytest.raises(reservations.DomainError) as raised:\nE       Failed: DID NOT RAISE DomainError\n\ntests/test_requirement_change.py:21: Failed\n_ test_precedence_is_input_then_replay_then_existence_then_limit_then_capacity _\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_precedence_is_input_then_0/requirements.sqlite')\n\n    def test_precedence_is_input_then_replay_then_existence_then_limit_then_capacity(database):\n        reserve(database, \"one\")\n        reserve(database, \"two\", \"northern\")\n        error(\"InvalidInput\", reserve, database, \"\", \"midnight\")\n        error(\"IdempotencyConflict\", reserve, database, \"one\", \"missing\")\n        error(\"ConcertNotFound\", reserve, database, \"new\", \"missing\")\n        with storage.transaction(database, write=True) as connection:\n            connection.execute(\"UPDATE concerts SET capacity=0 WHERE id='matinee'\")\n>       error(\"ActiveReservationLimitReached\", reserve, database, \"new\", \"matinee\")\n\ntests/test_requirement_change.py:81: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'ActiveReservationLimitReached'\noperation = <function reserve at 0x103e31ee0>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_precedence_is_input_then_0/requirements.sqlite'), 'new', 'matinee')\n\n    def error(code, operation, *args):\n        with pytest.raises(reservations.DomainError) as raised:\n            operation(*args)\n>       assert raised.value.code == code\nE       AssertionError: assert 'SoldOut' == 'ActiveReserv...nLimitReached'\nE         \nE         - ActiveReservationLimitReached\nE         + SoldOut\n\ntests/test_requirement_change.py:23: AssertionError\n____ test_concurrent_new_keys_across_concerts_share_one_remaining_allowance ____\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_concurrent_new_keys_acros0/requirements.sqlite')\n\n    def test_concurrent_new_keys_across_concerts_share_one_remaining_allowance(database):\n        reserve(database, \"existing\")\n        barrier = Barrier(2)\n        def attempt(pair):\n            key, concert = pair\n            barrier.wait(timeout=5)\n            try:\n                return reserve(database, key, concert)\n            except reservations.DomainError as failure:\n                return {\"error\": failure.code}\n        with ThreadPoolExecutor(max_workers=2) as pool:\n            outcomes = list(pool.map(attempt, [(\"competing-one\", \"northern\"), (\"competing-two\", \"matinee\")]))\n>       assert sum(outcome.get(\"state\") == \"reserved\" for outcome in outcomes) == 1\nE       assert 2 == 1\nE        +  where 2 = sum(<generator object test_concurrent_new_keys_across_concerts_share_one_remaining_allowance.<locals>.<genexpr> at 0x103f1c2b0>)\n\ntests/test_requirement_change.py:97: AssertionError\n_______________ test_server_exposes_single_current_policy_value ________________\n\ndatabase = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_server_exposes_single_cur0/requirements.sqlite')\n\n    def test_server_exposes_single_current_policy_value(database):\n>       assert reservations.ACTIVE_LIMIT == 2\nE       assert None == 2\nE        +  where None = reservations.ACTIVE_LIMIT\n\ntests/test_requirement_change.py:114: AssertionError\n____ test_incompatible_existing_a_data_is_rejected_without_history_mutation ____\n\ntmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_incompatible_existing_a_d0')\n\n    def test_incompatible_existing_a_data_is_rejected_without_history_mutation(tmp_path):\n        path = tmp_path / \"incompatible.sqlite\"\n        storage.initialize(path)\n        with storage.transaction(path, write=True) as connection:\n            for key, concert in [(\"one\", \"midnight\"), (\"two\", \"northern\"), (\"three\", \"matinee\")]:\n                storage.insert_reservation(connection, \"alice\", concert, key)\n        before = path.read_bytes()\n>       error(\"PolicyMigrationRequired\", reservations.initialize, path)\n\ntests/test_requirement_change.py:125: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncode = 'PolicyMigrationRequired'\noperation = <function initialize at 0x103e31bc0>\nargs = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_incompatible_existing_a_d0/incompatible.sqlite'),)\n\n    def error(code, operation, *args):\n>       with pytest.raises(reservations.DomainError) as raised:\nE       Failed: DID NOT RAISE DomainError\n\ntests/test_requirement_change.py:21: Failed\n_______ test_compatible_a_history_and_cancelled_keys_survive_activation ________\n\ntmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-229/test_compatible_a_history_and_0')\n\n    def test_compatible_a_history_and_cancelled_keys_survive_activation(tmp_path):\n        path = tmp_path / \"compatible.sqlite\"\n        storage.initialize(path)\n        with storage.transaction(path, write=True) as connection:\n            cancelled = storage.insert_reservation(connection, \"alice\", \"midnight\", \"old-cancelled\")\n            storage.cancel_reservation(connection, cancelled[\"id\"])\n            storage.insert_reservation(connection, \"alice\", \"northern\", \"old-one\")\n            storage.insert_reservation(connection, \"alice\", \"matinee\", \"old-two\")\n        reservations.initialize(path)\n        assert reserve(path, \"old-cancelled\") == {\"id\": cancelled[\"id\"], \"state\": \"cancelled\"}\n        history = reservations.list_own(path, \"alice\")\n>       assert history[\"active_count\"] == 2 and history[\"active_limit\"] == 2 and len(history[\"reservations\"]) == 3\nE       assert (2 == 2 and None == 2)\n\ntests/test_requirement_change.py:142: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_requirement_change.py::test_global_limit_rejects_third_across_concerts_and_leaves_key_unbound\nFAILED tests/test_requirement_change.py::test_principal_allowances_are_independent\nFAILED tests/test_requirement_change.py::test_cancellation_frees_allowance_and_failed_key_can_then_succeed\nFAILED tests/test_requirement_change.py::test_precedence_is_input_then_replay_then_existence_then_limit_then_capacity\nFAILED tests/test_requirement_change.py::test_concurrent_new_keys_across_concerts_share_one_remaining_allowance\nFAILED tests/test_requirement_change.py::test_server_exposes_single_current_policy_value\nFAILED tests/test_requirement_change.py::test_incompatible_existing_a_data_is_rejected_without_history_mutation\nFAILED tests/test_requirement_change.py::test_compatible_a_history_and_cancelled_keys_survive_activation\n8 failed, 2 passed in 0.13s\n",
+    "stderr": "",
+    "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+    "code_revision": "sha256:d34b8841f6f27a8365d3b77d9acbcdeff5a38f72ba73338338afdd894841b586",
+    "host_tool_sources": {
+      "tools/browser.cjs": "cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+      "tools/import_check.py": "55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+      "tools/test_import_check.py": "3030b2c576b470de04fd43a9eff4c10ea18fb5b32a316ec33aa5b307af47cf90"
+    }
+  },
+  "new_record_bindings": {
+    "a": {
+      "binding.app.a.pytest_concert": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "rule.capacity",
+          "rule.idempotency",
+          "rule.authorization",
+          "rule.atomicity",
+          "rule.state_machine",
+          "rule.auth_context"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "test",
+        "resource": "tests/",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:b64408506cfb5bdf9217da693d1643204df0b7090622d26b9ceb776265b67783",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "evidence.app.a.pytest_concert": {
+        "kind": "evidence",
+        "check": "check.app.a.pytest_concert",
+        "check_revision": "sha256:f1663bee3b96edf6c327fb3714263da04da7d1cf8a103edaf58da5536514bf3b",
+        "implementation": "implementation.concert.sqlite",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+        "checker": {
+          "name": "pytest+SQLite+HTTP",
+          "version": "9.1.1"
+        },
+        "scope": [
+          "rule.capacity",
+          "rule.idempotency",
+          "rule.authorization",
+          "rule.atomicity",
+          "rule.state_machine",
+          "rule.auth_context"
+        ],
+        "result": "PASS",
+        "executed": true,
+        "reason": "Actual replay suite passed; real SQLite rollback faults and unchanged assertions rejected a capacity bypass.",
+        "environment": {
+          "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+          "sqlite": "3.46.0",
+          "database": "fresh real SQLite files with protected writes and preserved A-to-B history",
+          "http": "actual loopback ThreadingHTTPServer with ephemeral ports"
+        },
+        "evidence_uri": "evidence/phase-a/pytest.run.json"
+      },
+      "binding.app.a.python_import_graph": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "rule.api_boundary"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "test",
+        "resource": "tools/import_check.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "evidence.app.a.python_import_graph": {
+        "kind": "evidence",
+        "check": "check.app.a.python_import_graph",
+        "check_revision": "sha256:8a61d7f0e6378eb59edb274ff8b78ea644504935efe215e67054aadd5bb86ef9",
+        "implementation": "implementation.concert.sqlite",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+        "checker": {
+          "name": "concert-python-import-graph",
+          "version": "0.1.0"
+        },
+        "scope": [
+          "rule.api_boundary"
+        ],
+        "result": "PASS",
+        "executed": true,
+        "reason": "Actual clean/injected/repaired/missing import controls yielded PASS/FAIL/PASS/UNKNOWN.",
+        "environment": {
+          "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+        },
+        "evidence_uri": "evidence/phase-a/import.controls.json"
+      },
+      "binding.app.a.browser_concert": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "rule.ui_complete"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "test",
+        "resource": "tools/browser.cjs",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "evidence.app.a.browser_concert": {
+        "kind": "evidence",
+        "check": "check.app.a.browser_concert",
+        "check_revision": "sha256:85fb10751d57d014de5651e2e9eae1b617391555fb3560e0caceefa9960f4d2f",
+        "implementation": "implementation.concert.sqlite",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f",
+        "checker": {
+          "name": "Playwright/Chrome",
+          "version": "155.0.8059.41"
+        },
+        "scope": [
+          "rule.ui_complete"
+        ],
+        "result": "PASS",
+        "executed": true,
+        "reason": "Real local browser controls passed, including committed reservation with lost response and same-key retry.",
+        "environment": {
+          "browser": "155.0.8059.41",
+          "http": "actual loopback ThreadingHTTPServer with ephemeral ports"
+        },
+        "evidence_uri": "evidence/phase-a/browser.run.json"
+      },
+      "binding.app.a.code.api.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "component.api"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/api.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:4914843c53f383873a2b4327150cb53404efa958833c7e53f79ab263f5789345",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "binding.app.a.code.api.1": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "component.api"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/__main__.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "binding.app.a.code.identity.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "component.identity"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/identity.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "binding.app.a.code.reservations.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "component.reservations"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/reservations.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:9fb8a3d8a738b85d748cb50bdf72060fc24fb74476447df0f511fb867705cc48",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "binding.app.a.code.storage.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "component.storage"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/storage.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "binding.app.a.code.frontend.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "component.frontend"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/static/index.html",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:57e8730f0b0d4b06fb3eb609e72f8ddf563040d17a1c7c9a3378c031a7d40739",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "binding.app.a.code.frontend.1": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "component.frontend"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/static/app.js",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:3e304871669d24aa64cf82168ee671513fd891780923be7a02f08a73b8a551c4",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      },
+      "binding.app.a.code.frontend.2": {
+        "kind": "binding",
+        "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+        "targets": [
+          "component.frontend"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/static/style.css",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:8875cb9d2757d28d9bbf2946ac58f214efbc5ab0025ee3a66de6492fed400c89",
+        "code_revision": "sha256:411bb341b635150210493248ddfd889dbdf6ea7283f862f728a69b72ef34b53f"
+      }
+    },
+    "b": {
+      "binding.app.b.pytest_concert": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "rule.capacity",
+          "rule.idempotency",
+          "rule.authorization",
+          "rule.atomicity",
+          "rule.state_machine",
+          "rule.auth_context",
+          "rule.active_limit"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "test",
+        "resource": "tests/",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:c45d14b4dff15f37d5b58d68dfe1ca16bfa786ae2d5e09fbdafcfce78e96dc37",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "evidence.app.b.pytest_concert": {
+        "kind": "evidence",
+        "check": "check.app.b.pytest_concert",
+        "check_revision": "sha256:8b3349599aee0e1c5073c578d773693a11811066d70b4e325833678b6ac6efcd",
+        "implementation": "implementation.concert.sqlite",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+        "checker": {
+          "name": "pytest+SQLite+HTTP",
+          "version": "9.1.1"
+        },
+        "scope": [
+          "rule.capacity",
+          "rule.idempotency",
+          "rule.authorization",
+          "rule.atomicity",
+          "rule.state_machine",
+          "rule.auth_context",
+          "rule.active_limit"
+        ],
+        "result": "PASS",
+        "executed": true,
+        "reason": "Actual replay suite passed; real SQLite rollback faults and unchanged assertions rejected a capacity bypass.",
+        "environment": {
+          "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+          "sqlite": "3.46.0",
+          "database": "fresh real SQLite files with protected writes and preserved A-to-B history",
+          "http": "actual loopback ThreadingHTTPServer with ephemeral ports"
+        },
+        "evidence_uri": "evidence/phase-b/pytest.run.json"
+      },
+      "binding.app.b.python_import_graph": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "rule.api_boundary"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "test",
+        "resource": "tools/import_check.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:55400842a157a1fa227fa4cc8da5049b6dcb2da288cf4fc1c88a922d5540a781",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "evidence.app.b.python_import_graph": {
+        "kind": "evidence",
+        "check": "check.app.b.python_import_graph",
+        "check_revision": "sha256:8322dd9d74e7930db479a97ff18001f93321273207580d163447fe94e3c079e5",
+        "implementation": "implementation.concert.sqlite",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+        "checker": {
+          "name": "concert-python-import-graph",
+          "version": "0.1.0"
+        },
+        "scope": [
+          "rule.api_boundary"
+        ],
+        "result": "PASS",
+        "executed": true,
+        "reason": "Actual clean/injected/repaired/missing import controls yielded PASS/FAIL/PASS/UNKNOWN.",
+        "environment": {
+          "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+        },
+        "evidence_uri": "evidence/phase-b/import.controls.json"
+      },
+      "binding.app.b.browser_concert": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "rule.ui_complete"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "test",
+        "resource": "tools/browser.cjs",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:cefdf52055d586cddea3cd7d90f057313e1ed9ffd53a620b5db0f912717ed370",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "evidence.app.b.browser_concert": {
+        "kind": "evidence",
+        "check": "check.app.b.browser_concert",
+        "check_revision": "sha256:3e6ce6528fb171eac50f2cc6a7a0f0b200d75bbff4c2692b0c873ad414a352c5",
+        "implementation": "implementation.concert.sqlite",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d",
+        "checker": {
+          "name": "Playwright/Chrome",
+          "version": "155.0.8059.41"
+        },
+        "scope": [
+          "rule.ui_complete"
+        ],
+        "result": "PASS",
+        "executed": true,
+        "reason": "Real local browser controls passed, including committed reservation with lost response and same-key retry.",
+        "environment": {
+          "browser": "155.0.8059.41",
+          "http": "actual loopback ThreadingHTTPServer with ephemeral ports"
+        },
+        "evidence_uri": "evidence/phase-b/browser.run.json"
+      },
+      "binding.app.b.code.api.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "component.api"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/api.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:629ccc4935906c0e7bd78087cd2be06e771e8ddf0397ed78904ccbc58d448bf9",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "binding.app.b.code.api.1": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "component.api"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/__main__.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:c4f2efe0ce455734b1c8feec4f94499a5de88fcfd511260cb31e6202fac2dd0f",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "binding.app.b.code.identity.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "component.identity"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/identity.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:9bc9af8c7414bb1278a8e15886356dfcd7f68bf9752262f47d797dcc92a7efb3",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "binding.app.b.code.reservations.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "component.reservations"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/reservations.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:df41c5966f95b85f3c1223f48f64507da04f1150c187b6e16346ef24a585e0b8",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "binding.app.b.code.storage.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "component.storage"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/storage.py",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:4e0895c77f2fcb1e5dce7fc0c700174664822829db05e445425bc46413abd6cf",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "binding.app.b.code.frontend.0": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "component.frontend"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/static/index.html",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:57e8730f0b0d4b06fb3eb609e72f8ddf563040d17a1c7c9a3378c031a7d40739",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "binding.app.b.code.frontend.1": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "component.frontend"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/static/app.js",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:d26147db8171dee45bcbee3990fb72e72d4a2e0321e3db94553fa61dd9e74cbb",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      },
+      "binding.app.b.code.frontend.2": {
+        "kind": "binding",
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "targets": [
+          "component.frontend"
+        ],
+        "implementation": "implementation.concert.sqlite",
+        "role": "code",
+        "resource": "concert_app/static/style.css",
+        "selector": {
+          "kind": "whole-document"
+        },
+        "status": "checked",
+        "revision": "sha256:8875cb9d2757d28d9bbf2946ac58f214efbc5ab0025ee3a66de6492fed400c89",
+        "code_revision": "sha256:9eaf65801b13bbedf347816709de70e90a60729687930956a981ed3e186b380d"
+      }
+    }
+  }
+}

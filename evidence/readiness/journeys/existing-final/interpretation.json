@@ -1,0 +1,33 @@
+{
+  "status": "proposed",
+  "mapped_observation_ids": [
+    "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+    "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+    "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+    "observation.edge.hcc550328740c7c0ff35a7f0e75e41f807da9dad725444fb19243d3765dfe8e1d"
+  ],
+  "omissions": [
+    {
+      "observation": "observation.edge.hb21d0fe251f651b6c6f81e48fd355a571fa699db7a259a541c8a57493883fbc7",
+      "pointer": "/edges/0",
+      "rationale": "Module containment has the reverse direction from intended owned_by; ownership will be authored separately."
+    },
+    {
+      "observation": "observation.edge.ha38c1549a23a4d48280ebc82033147dfca64563d0d3f5b110f465e25c6ed5ddc",
+      "pointer": "/edges/1",
+      "rationale": "Module containment has the reverse direction from intended owned_by; ownership will be authored separately."
+    },
+    {
+      "observation": "observation.edge.he667f51e7028987250c869ea74f7e197cf6f456bb5dff3962cc8d3d7ebd0f7a8",
+      "pointer": "/edges/3",
+      "rationale": "Return type is preserved in the action contract; do not add duplicate intended dependencies."
+    },
+    {
+      "observation": "observation.edge.h2179a3f1337083c5c1dac19d2fea68c77f99d4603f5888d15aabc30ddefc8224",
+      "pointer": "/edges/4",
+      "rationale": "The old constructor call replaces identity and conflicts with the requested same-object behavior."
+    }
+  ],
+  "raw_artifact_sha256": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+  "authority": "Only the human task mandate can authorize adopting intent."
+}

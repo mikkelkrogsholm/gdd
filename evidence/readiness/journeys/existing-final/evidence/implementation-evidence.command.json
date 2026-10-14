@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/gdd",
+    "validate",
+    "gdd.json",
+    "--profile",
+    "records",
+    "--scope",
+    "component.reservations",
+    "--host-context",
+    "host-acceptance.json",
+    "--output",
+    "implementation-evidence.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:36:58.022308+00:00",
+  "exit_code": 2,
+  "stdout": "evidence/implementation-evidence.stdout.txt",
+  "stderr": "evidence/implementation-evidence.stderr.txt"
+}

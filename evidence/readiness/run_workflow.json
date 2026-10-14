@@ -1,0 +1,131 @@
+{
+  "format": "gdd-workflow-conformance/0.1",
+  "tool": "gdd-validator/0.7.0",
+  "cases": [
+    {
+      "id": "workflow.scope",
+      "assertion": "Read closure never expands implementation scope; full contracts retained.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.determinism",
+      "assertion": "Identical inputs produce identical packets without rewriting source.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.model_drift",
+      "assertion": "Model byte change invalidates previous packet.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.asset_drift",
+      "assertion": "Normative source/design asset change invalidates previous packet.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.packet_tamper",
+      "assertion": "Embedded contract tamper fails complete payload verification.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.parallel_readiness",
+      "assertion": "Parallel declarations cannot replace individual readiness.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.ownership",
+      "assertion": "Unserialized file or workspace overlaps fail.",
+      "result": "PASS",
+      "test_instances": 3
+    },
+    {
+      "id": "workflow.serialization",
+      "assertion": "Explicit ordering resolves declared sequential write overlap.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.graph_dependencies",
+      "assertion": "Graph calls/depends_on do not invent work serialization.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.host_shape",
+      "assertion": "Every API rejects malformed falsey host input.",
+      "result": "PASS",
+      "test_instances": 20
+    },
+    {
+      "id": "workflow.publication",
+      "assertion": "Altered, stale, or malformed packet publishes no run.",
+      "result": "PASS",
+      "test_instances": 3
+    },
+    {
+      "id": "workflow.unresolved_model",
+      "assertion": "Unresolved graph references produce controlled errors before slicing.",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "workflow.historical_records",
+      "assertion": "Unrelated historical/invalid record diagnostics preserve valid scoped gates.",
+      "result": "PASS",
+      "test_instances": 6
+    },
+    {
+      "id": "workflow.draft",
+      "assertion": "Unready draft can be inspected but cannot dispatch.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.current_acceptance",
+      "assertion": "Acceptance requires independent current evidence, trust, revision, checks and question gates.",
+      "result": "PASS",
+      "test_instances": 10
+    },
+    {
+      "id": "workflow.integration",
+      "assertion": "Integration rechecks authorization, actual code and file scope.",
+      "result": "PASS",
+      "test_instances": 6
+    },
+    {
+      "id": "workflow.resume",
+      "assertion": "Retries preserve receipts; cancellation/attempts cannot replay work.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.concurrency",
+      "assertion": "Competing heads permit exactly one event publication.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.cancel_unavailable",
+      "assertion": "Unavailable current model cannot prevent cancellation or preserving late results.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "workflow.native_demo",
+      "assertion": "Actual archived native patches produce red/green application checks and current acceptance.",
+      "result": "PASS",
+      "test_instances": 1
+    }
+  ],
+  "case_count": 20,
+  "pytest_exit": 0,
+  "passed": true,
+  "stdout": "...............................................................          [100%]\n63 passed in 27.18s\n",
+  "stderr": ""
+}

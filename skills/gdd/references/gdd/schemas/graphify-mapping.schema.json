@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Explicit observation-to-proposal mapping; no authorization",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-graphify-mapping/0.2"
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "goal": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "goal"
+      ],
+      "additionalProperties": false
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "observation": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "target": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "kind": {
+            "enum": [
+              "component",
+              "entity",
+              "action",
+              "screen",
+              "rule",
+              "scenario",
+              "machine",
+              "community"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "observation",
+          "target",
+          "kind",
+          "description",
+          "rationale"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "observation": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "from": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "relation": {
+            "enum": [
+              "owned_by",
+              "stored_in",
+              "imports",
+              "calls",
+              "reads",
+              "creates",
+              "changes",
+              "constrains",
+              "exercises",
+              "verifies",
+              "state_of",
+              "navigates_to",
+              "depends_on",
+              "refines",
+              "member_of"
+            ]
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "observation",
+          "id",
+          "from",
+          "to",
+          "relation",
+          "rationale"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "format",
+    "project",
+    "nodes",
+    "edges"
+  ],
+  "additionalProperties": false
+}

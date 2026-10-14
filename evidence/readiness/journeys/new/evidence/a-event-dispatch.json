@@ -1,0 +1,7 @@
+{
+  "type": "dispatch",
+  "expected_revision": "sha256:10ff268c645e5daf7eec6c5cbbe91aa1d094e65cff12a4742475697d4443d9b4",
+  "idempotency_key": "a.dispatch",
+  "package": "package.parcel.a",
+  "attempt": "attempt.parcel.a.1"
+}

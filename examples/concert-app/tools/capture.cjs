@@ -1,10 +1,10 @@
 /* Fresh browser presentation captures, separate from the original execution receipt. */
 const fs = require('node:fs');
 const path = require('node:path');
-const {chromium} = require(process.env.GDD_PLAYWRIGHT || '/Users/mikkelfreltoftkrogsholm/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium} = require(process.env.GDD_PLAYWRIGHT || 'playwright');
 const args = Object.fromEntries(process.argv.slice(2).reduce((pairs,value,index,all) => index % 2 ? pairs : [...pairs,[value.slice(2),all[index+1]]],[]));
 (async () => {
-  const browser = await chromium.launch({executablePath:process.env.GDD_CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
+  const browser = await chromium.launch({headless:true,...(process.env.GDD_CHROME ? {executablePath:process.env.GDD_CHROME} : {})});
   try {
     const captures=[];
     for (const [name,width] of [['desktop',1280],['mobile',320]]) {

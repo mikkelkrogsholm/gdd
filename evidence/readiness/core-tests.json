@@ -1,0 +1,43 @@
+{
+  "format": "gdd-core-test-trial/0.1",
+  "source_base": "e9359d1c10d1664b8c721a02b4cb8d198b9fb271",
+  "state": "working tree including readiness changes",
+  "runs": [
+    {
+      "python_version": "3.12",
+      "command": "python -m pytest -q --junitxml /tmp/gdd-readiness-checks-final/pytest.xml",
+      "junit_original_path": "/tmp/gdd-readiness-checks-final/pytest.xml",
+      "junit_sha256": "571b288b3eb0477bf775fd545b599a70cc3a02d0c4b141eef02a6aecb225a49f",
+      "suite": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "1469",
+        "time": "247.189",
+        "timestamp": "2026-10-14T15:27:00.534394+02:00",
+        "hostname": "MacBook-Pro-tilhrende-Mikkel.local"
+      },
+      "failed_tests": [],
+      "passed": true
+    },
+    {
+      "python_version": "3.11",
+      "command": "python -m pytest -q --junitxml /tmp/gdd-readiness-checks-final/pytest311.xml",
+      "junit_original_path": "/tmp/gdd-readiness-checks-final/pytest311.xml",
+      "junit_sha256": "829f2b1169bb29625bf11880e871a21098a55d28104eb7986e09eebe0cdce224",
+      "suite": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "1469",
+        "time": "203.257",
+        "timestamp": "2026-10-14T15:29:12.555988+02:00",
+        "hostname": "MacBook-Pro-tilhrende-Mikkel.local"
+      },
+      "failed_tests": [],
+      "passed": true
+    }
+  ]
+}

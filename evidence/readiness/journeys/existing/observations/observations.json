@@ -1,0 +1,230 @@
+{
+  "format": "gdd-observations/0.2",
+  "source_id": "source.graphify",
+  "artifact": {
+    "path": "graphify.raw.json",
+    "revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+    "byte_count": 1978
+  },
+  "importer": {
+    "name": "gdd-graphify",
+    "version": "0.1.2",
+    "profile": "graphify-0.9.75-ast"
+  },
+  "input_claims": {
+    "locator": "file:///private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project/graphify-input.json",
+    "producer_version": null,
+    "code_revision": null,
+    "trust": "unverified"
+  },
+  "producer_claims": {},
+  "nodes": [
+    {
+      "id": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+      "identity": {
+        "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+        "pointer": "/nodes/0"
+      },
+      "raw": {
+        "id": "reservation_py",
+        "label": "reservation.py",
+        "file_type": "code",
+        "source_file": "reservation.py",
+        "source_location": "L1"
+      },
+      "producer_id": "reservation_py",
+      "classification": "code_candidate"
+    },
+    {
+      "id": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "identity": {
+        "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+        "pointer": "/nodes/1"
+      },
+      "raw": {
+        "id": "reservation_reservation",
+        "label": "Reservation",
+        "file_type": "code",
+        "source_file": "reservation.py",
+        "source_location": "L1",
+        "_callable": true,
+        "_callable_class": true
+      },
+      "producer_id": "reservation_reservation",
+      "classification": "code_candidate"
+    },
+    {
+      "id": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "identity": {
+        "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+        "pointer": "/nodes/2"
+      },
+      "raw": {
+        "id": "reservation_reserve",
+        "label": "reserve()",
+        "file_type": "code",
+        "source_file": "reservation.py",
+        "source_location": "L5",
+        "_callable": true
+      },
+      "producer_id": "reservation_reserve",
+      "classification": "code_candidate"
+    }
+  ],
+  "edges": [
+    {
+      "id": "observation.edge.hb21d0fe251f651b6c6f81e48fd355a571fa699db7a259a541c8a57493883fbc7",
+      "identity": {
+        "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+        "pointer": "/edges/0"
+      },
+      "raw": {
+        "source": "reservation_py",
+        "target": "reservation_reservation",
+        "relation": "contains",
+        "confidence": "EXTRACTED",
+        "source_file": "reservation.py",
+        "source_location": "L1",
+        "weight": 1.0
+      },
+      "producer_id": null,
+      "source_observation": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+      "target_observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "direction": {
+        "value": "source_to_target",
+        "basis": "profile:graphify-0.9.75-ast"
+      }
+    },
+    {
+      "id": "observation.edge.ha38c1549a23a4d48280ebc82033147dfca64563d0d3f5b110f465e25c6ed5ddc",
+      "identity": {
+        "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+        "pointer": "/edges/1"
+      },
+      "raw": {
+        "source": "reservation_py",
+        "target": "reservation_reserve",
+        "relation": "contains",
+        "confidence": "EXTRACTED",
+        "source_file": "reservation.py",
+        "source_location": "L5",
+        "weight": 1.0
+      },
+      "producer_id": null,
+      "source_observation": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+      "target_observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "direction": {
+        "value": "source_to_target",
+        "basis": "profile:graphify-0.9.75-ast"
+      }
+    },
+    {
+      "id": "observation.edge.hcc550328740c7c0ff35a7f0e75e41f807da9dad725444fb19243d3765dfe8e1d",
+      "identity": {
+        "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+        "pointer": "/edges/2"
+      },
+      "raw": {
+        "source": "reservation_reserve",
+        "target": "reservation_reservation",
+        "relation": "references",
+        "context": "parameter_type",
+        "confidence": "EXTRACTED",
+        "source_file": "reservation.py",
+        "source_location": "L5",
+        "weight": 1.0
+      },
+      "producer_id": null,
+      "source_observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "target_observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "direction": {
+        "value": "source_to_target",
+        "basis": "profile:graphify-0.9.75-ast"
+      }
+    },
+    {
+      "id": "observation.edge.he667f51e7028987250c869ea74f7e197cf6f456bb5dff3962cc8d3d7ebd0f7a8",
+      "identity": {
+        "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+        "pointer": "/edges/3"
+      },
+      "raw": {
+        "source": "reservation_reserve",
+        "target": "reservation_reservation",
+        "relation": "references",
+        "context": "return_type",
+        "confidence": "EXTRACTED",
+        "source_file": "reservation.py",
+        "source_location": "L5",
+        "weight": 1.0
+      },
+      "producer_id": null,
+      "source_observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "target_observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "direction": {
+        "value": "source_to_target",
+        "basis": "profile:graphify-0.9.75-ast"
+      }
+    },
+    {
+      "id": "observation.edge.h2179a3f1337083c5c1dac19d2fea68c77f99d4603f5888d15aabc30ddefc8224",
+      "identity": {
+        "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+        "pointer": "/edges/4"
+      },
+      "raw": {
+        "source": "reservation_reserve",
+        "target": "reservation_reservation",
+        "relation": "calls",
+        "context": "call",
+        "confidence": "EXTRACTED",
+        "source_file": "reservation.py",
+        "source_location": "L6",
+        "weight": 1.0
+      },
+      "producer_id": null,
+      "source_observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "target_observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "direction": {
+        "value": "source_to_target",
+        "basis": "profile:graphify-0.9.75-ast"
+      }
+    }
+  ],
+  "opaque": [],
+  "binding_candidates": [
+    {
+      "observation": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+      "resource_claim": "reservation.py",
+      "selector_claim": "L1",
+      "status": "unverified",
+      "classification": "code_candidate",
+      "code_revision_claims": {
+        "caller": null,
+        "producer": {}
+      }
+    },
+    {
+      "observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "resource_claim": "reservation.py",
+      "selector_claim": "L1",
+      "status": "unverified",
+      "classification": "code_candidate",
+      "code_revision_claims": {
+        "caller": null,
+        "producer": {}
+      }
+    },
+    {
+      "observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "resource_claim": "reservation.py",
+      "selector_claim": "L5",
+      "status": "unverified",
+      "classification": "code_candidate",
+      "code_revision_claims": {
+        "caller": null,
+        "producer": {}
+      }
+    }
+  ]
+}

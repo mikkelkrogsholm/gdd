@@ -12,6 +12,7 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
+from gdd_validator import __version__
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -58,7 +59,7 @@ def run():
         )
     return {
         "format": "gdd-design-conformance/0.3",
-        "tool": "gdd-validator/0.6.0",
+        "tool": "gdd-validator/" + __version__,
         "cases": results,
         "case_count": len(results),
         "test_instances": sum(r["test_instances"] for r in results),

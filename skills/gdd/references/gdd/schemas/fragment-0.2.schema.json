@@ -1,0 +1,1654 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/schemas/0.2/fragment.schema.json",
+  "title": "GDD 0.2 fragment.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-fragment/0.2"
+    },
+    "nodes": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "format",
+    "nodes",
+    "edges"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+    },
+    "selector": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "whole-document",
+            "json-pointer",
+            "markdown-heading",
+            "line-range",
+            "opaque"
+          ]
+        },
+        "value": {
+          "type": "string"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "whole-document"
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "value"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "json-pointer",
+                  "markdown-heading",
+                  "line-range",
+                  "opaque"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "value"
+            ]
+          }
+        }
+      ]
+    },
+    "source_ref": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+        },
+        "purpose": {
+          "enum": [
+            "provenance",
+            "contract"
+          ]
+        },
+        "selector": {
+          "$ref": "#/$defs/selector"
+        }
+      },
+      "required": [
+        "source",
+        "purpose"
+      ],
+      "additionalProperties": false
+    },
+    "type": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "string"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin": {
+              "enum": [
+                "authenticated_context",
+                "input",
+                "derived"
+              ]
+            },
+            "nullable": {
+              "type": "boolean"
+            },
+            "optional": {
+              "type": "boolean"
+            },
+            "min_length": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "integer"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin": {
+              "enum": [
+                "authenticated_context",
+                "input",
+                "derived"
+              ]
+            },
+            "nullable": {
+              "type": "boolean"
+            },
+            "optional": {
+              "type": "boolean"
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "number"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin": {
+              "enum": [
+                "authenticated_context",
+                "input",
+                "derived"
+              ]
+            },
+            "nullable": {
+              "type": "boolean"
+            },
+            "optional": {
+              "type": "boolean"
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "boolean"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin": {
+              "enum": [
+                "authenticated_context",
+                "input",
+                "derived"
+              ]
+            },
+            "nullable": {
+              "type": "boolean"
+            },
+            "optional": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "object"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin": {
+              "enum": [
+                "authenticated_context",
+                "input",
+                "derived"
+              ]
+            },
+            "nullable": {
+              "type": "boolean"
+            },
+            "optional": {
+              "type": "boolean"
+            },
+            "properties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/type"
+              }
+            },
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 0,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "array"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin": {
+              "enum": [
+                "authenticated_context",
+                "input",
+                "derived"
+              ]
+            },
+            "nullable": {
+              "type": "boolean"
+            },
+            "optional": {
+              "type": "boolean"
+            },
+            "items": {
+              "$ref": "#/$defs/type"
+            }
+          },
+          "required": [
+            "type",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "reference"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin": {
+              "enum": [
+                "authenticated_context",
+                "input",
+                "derived"
+              ]
+            },
+            "nullable": {
+              "type": "boolean"
+            },
+            "optional": {
+              "type": "boolean"
+            },
+            "target": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "type",
+            "target"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "enum"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin": {
+              "enum": [
+                "authenticated_context",
+                "input",
+                "derived"
+              ]
+            },
+            "nullable": {
+              "type": "boolean"
+            },
+            "optional": {
+              "type": "boolean"
+            },
+            "values": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "type",
+            "values"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "any"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "origin": {
+              "enum": [
+                "authenticated_context",
+                "input",
+                "derived"
+              ]
+            },
+            "nullable": {
+              "type": "boolean"
+            },
+            "optional": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "node": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "component"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maturity": {
+              "enum": [
+                "sketch",
+                "specified"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "realization": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "obligation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "obligation",
+                  "children"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            },
+            "interfaces": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+              },
+              "minItems": 0,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "kind",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "entity"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maturity": {
+              "enum": [
+                "sketch",
+                "specified"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "realization": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "obligation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "obligation",
+                  "children"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            },
+            "fields": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/type"
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "action"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maturity": {
+              "enum": [
+                "sketch",
+                "specified"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "realization": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "obligation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "obligation",
+                  "children"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            },
+            "contract": {
+              "type": "object",
+              "properties": {
+                "input": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/$defs/type"
+                  }
+                },
+                "context": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/$defs/type"
+                  }
+                },
+                "output": {
+                  "$ref": "#/$defs/type"
+                },
+                "errors": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "preconditions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 0
+                },
+                "external_effects": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 0
+                },
+                "effects_complete": {
+                  "type": "boolean"
+                },
+                "dependencies_complete": {
+                  "type": "boolean"
+                },
+                "risks": {
+                  "type": "object",
+                  "properties": {
+                    "authorization": {
+                      "type": "object",
+                      "properties": {
+                        "relevant": {
+                          "type": "boolean"
+                        },
+                        "rationale": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "scenarios": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                          },
+                          "minItems": 0,
+                          "uniqueItems": true
+                        }
+                      },
+                      "required": [
+                        "relevant",
+                        "rationale",
+                        "scenarios"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "idempotency": {
+                      "type": "object",
+                      "properties": {
+                        "relevant": {
+                          "type": "boolean"
+                        },
+                        "rationale": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "scenarios": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                          },
+                          "minItems": 0,
+                          "uniqueItems": true
+                        }
+                      },
+                      "required": [
+                        "relevant",
+                        "rationale",
+                        "scenarios"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "boundaries": {
+                      "type": "object",
+                      "properties": {
+                        "relevant": {
+                          "type": "boolean"
+                        },
+                        "rationale": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "scenarios": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                          },
+                          "minItems": 0,
+                          "uniqueItems": true
+                        }
+                      },
+                      "required": [
+                        "relevant",
+                        "rationale",
+                        "scenarios"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "concurrency": {
+                      "type": "object",
+                      "properties": {
+                        "relevant": {
+                          "type": "boolean"
+                        },
+                        "rationale": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "scenarios": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                          },
+                          "minItems": 0,
+                          "uniqueItems": true
+                        }
+                      },
+                      "required": [
+                        "relevant",
+                        "rationale",
+                        "scenarios"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "atomicity": {
+                      "type": "object",
+                      "properties": {
+                        "relevant": {
+                          "type": "boolean"
+                        },
+                        "rationale": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "scenarios": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                          },
+                          "minItems": 0,
+                          "uniqueItems": true
+                        }
+                      },
+                      "required": [
+                        "relevant",
+                        "rationale",
+                        "scenarios"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [],
+                  "additionalProperties": false
+                },
+                "error_cases": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "behavior": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "kind",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "screen"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maturity": {
+              "enum": [
+                "sketch",
+                "specified"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "realization": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "obligation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "obligation",
+                  "children"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            },
+            "interaction": {
+              "type": "object",
+              "properties": {
+                "states": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "accessibility": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1
+                },
+                "responsive": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "behavior": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "states",
+                "accessibility",
+                "responsive",
+                "behavior"
+              ],
+              "additionalProperties": false
+            },
+            "design_refs": {
+              "type": "array",
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/source_ref"
+                  },
+                  {
+                    "properties": {
+                      "purpose": {
+                        "const": "contract"
+                      }
+                    }
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "kind",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "rule"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maturity": {
+              "enum": [
+                "sketch",
+                "specified"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "realization": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "obligation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "obligation",
+                  "children"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            },
+            "rule": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "enum": [
+                    "invariant",
+                    "behavior",
+                    "architecture",
+                    "design"
+                  ]
+                },
+                "statement": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "scope": {
+                  "enum": [
+                    "global",
+                    "targeted"
+                  ]
+                },
+                "blocking": {
+                  "type": "boolean"
+                },
+                "verification": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "constraint": {
+                  "type": "object",
+                  "properties": {
+                    "relation": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "from": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "to": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "reach": {
+                      "enum": [
+                        "direct",
+                        "transitive"
+                      ]
+                    },
+                    "policy": {
+                      "const": "forbid"
+                    }
+                  },
+                  "required": [
+                    "relation",
+                    "from",
+                    "to",
+                    "reach",
+                    "policy"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "category",
+                "statement",
+                "scope",
+                "blocking",
+                "verification"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "scenario"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maturity": {
+              "enum": [
+                "sketch",
+                "specified"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "realization": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "obligation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "obligation",
+                  "children"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            },
+            "scenario": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "enum": [
+                    "normal",
+                    "negative",
+                    "boundary",
+                    "concurrency",
+                    "architecture"
+                  ]
+                },
+                "given": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "when": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "then": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "category",
+                "given",
+                "when",
+                "then"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "machine"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maturity": {
+              "enum": [
+                "sketch",
+                "specified"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "realization": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "obligation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "obligation",
+                  "children"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            },
+            "machine": {
+              "type": "object",
+              "properties": {
+                "states": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "initial": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "terminal": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 0,
+                  "uniqueItems": true
+                },
+                "transitions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                      },
+                      "from": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "to": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "trigger": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                      },
+                      "guard": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "effects": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "from",
+                      "to",
+                      "trigger",
+                      "guard",
+                      "effects"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0
+                }
+              },
+              "required": [
+                "states",
+                "initial",
+                "terminal",
+                "transitions"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "community"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maturity": {
+              "enum": [
+                "sketch",
+                "specified"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "realization": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "obligation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "obligation",
+                  "children"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            }
+          },
+          "required": [
+            "kind",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maturity": {
+              "enum": [
+                "sketch",
+                "specified"
+              ]
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "realization": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "obligation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "obligation",
+                  "children"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0
+            },
+            "data": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "kind",
+            "description",
+            "data"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "edge": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "from": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "relation": {
+              "enum": [
+                "owned_by",
+                "stored_in",
+                "imports",
+                "calls",
+                "reads",
+                "creates",
+                "changes",
+                "constrains",
+                "exercises",
+                "verifies",
+                "state_of",
+                "navigates_to",
+                "depends_on",
+                "refines",
+                "member_of"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "from",
+            "to",
+            "relation"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "from": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source_ref"
+              },
+              "minItems": 0
+            },
+            "annotations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+              },
+              "additionalProperties": true
+            },
+            "relation": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+            },
+            "data": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "id",
+            "from",
+            "to",
+            "relation"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

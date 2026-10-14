@@ -1,0 +1,1896 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'sha256-+hD3QXZBkBcFEeegv12nR4sQxUJ1tN3PRuwbxJHer0Y='; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; object-src 'none'; form-action 'none'"
+    />
+    <title>GDD · Graph viewer</title>
+    <style>
+      :root {
+  color-scheme: light;
+  --bg: #f5f6f2;
+  --panel: #fff;
+  --ink: #202b2c;
+  --muted: #657171;
+  --line: #dfe4df;
+  --accent: #17695a;
+  --soft: #e8f2ec;
+  --canvas: #f1f4ef;
+  --node: #fff;
+  --edge: #a8b8b1;
+  --action: #1c7869;
+  --rule: #a57832;
+  --entity: #5277a4;
+  --screen: #8d699d;
+  --community: #56645e;
+  --scenario: #768b71;
+  --focus: #156bba;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(min-content, 1fr) auto;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    14px/1.5 ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 10px;
+}
+button:hover {
+  background: var(--soft);
+  border-color: var(--accent);
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+button[aria-pressed="true"] {
+  background: var(--soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+header {
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+.brand {
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -2px;
+}
+.brand-dot {
+  color: var(--accent);
+  font-size: 12px;
+  vertical-align: top;
+  letter-spacing: 0;
+  padding-left: 3px;
+}
+.heading {
+  min-width: 0;
+  flex: 1;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  color: var(--muted);
+  font-weight: 650;
+}
+h1 {
+  font-size: 19px;
+  line-height: 1.2;
+  margin: 3px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.mode {
+  color: var(--accent);
+  background: var(--soft);
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+h2 {
+  font-size: 15px;
+  font-weight: 650;
+  margin: 0;
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 20px;
+}
+.quiet,
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+.hint {
+  margin: 8px 0 18px;
+}
+.explorer {
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  min-height: min-content;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+}
+main {
+  min-height: 550px;
+  display: grid;
+  grid-template-columns: 265px minmax(280px, 1fr) 340px;
+}
+label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 550;
+  margin: 0 0 6px;
+}
+input[type="search"],
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 9px 8px;
+  min-width: 0;
+}
+input[type="search"] {
+  margin-bottom: 16px;
+}
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.switch-row label {
+  margin: 0;
+  color: var(--ink);
+}
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+.list-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  gap: 6px;
+  padding-bottom: 10px;
+}
+.list-tabs button {
+  flex: 1;
+  font-size: 12px;
+}
+.object-list {
+  overflow: auto;
+  min-height: 70px;
+  flex: 1 1 70px;
+  margin: 10px -8px;
+}
+.object-row {
+  display: block;
+  border: 0;
+  border-radius: 5px;
+  width: 100%;
+  text-align: left;
+  padding: 9px 8px;
+  background: transparent;
+  margin: 0 0 2px;
+  overflow-wrap: anywhere;
+}
+.object-row .row-title {
+  font-size: 12px;
+  display: block;
+  font-weight: 550;
+}
+.row-meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+.type-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--community);
+  margin-right: 6px;
+}
+.reset {
+  margin-top: 10px;
+  font-size: 12px;
+}
+.stage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0)
+    0 0/20px 20px;
+  background-color: var(--canvas);
+}
+.stage-toolbar {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 1;
+  pointer-events: none;
+  align-items: center;
+}
+.stage-toolbar > * {
+  pointer-events: auto;
+}
+.stage-toolbar > div {
+  background: var(--panel);
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.stage-toolbar button {
+  font-size: 11px;
+}
+.live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 7px;
+}
+svg#graph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  user-select: none;
+}
+#arrow path {
+  fill: var(--edge);
+}
+.edge-path {
+  fill: none;
+  stroke: var(--edge);
+  stroke-width: 1.5;
+  marker-end: url(#arrow);
+}
+.edge-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 16;
+  cursor: pointer;
+}
+.edge-label {
+  font-size: 10px;
+  fill: var(--muted);
+  paint-order: stroke;
+  stroke: var(--canvas);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  cursor: pointer;
+}
+.edge-group.selected .edge-path,
+.edge-group.connected .edge-path {
+  stroke: var(--accent);
+  stroke-width: 2.2;
+}
+.edge-group.selected .edge-label {
+  fill: var(--accent);
+}
+.node-glyph {
+  fill: var(--node);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+.node-group {
+  cursor: grab;
+}
+.node-group.selected .node-glyph {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.node-group.connected .node-glyph {
+  stroke: var(--accent);
+}
+.node-group.dim {
+  opacity: 0.22;
+}
+.edge-group.dim {
+  opacity: 0.12;
+}
+.node-label {
+  font-size: 11px;
+  fill: var(--ink);
+  font-weight: 550;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--canvas);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+.node-kind {
+  font-size: 9px;
+  fill: var(--muted);
+  text-anchor: middle;
+}
+.node-symbol {
+  font-size: 13px;
+  fill: var(--ink);
+  text-anchor: middle;
+  font-weight: 650;
+}
+.node-group.folded .node-glyph {
+  fill: var(--soft);
+  stroke-dasharray: 4 3;
+}
+.node-group.sketch .node-glyph {
+  stroke-dasharray: 3 3;
+}
+.canvas-note {
+  position: absolute;
+  bottom: 20px;
+  left: 18px;
+  color: var(--muted);
+  font-size: 11px;
+  max-width: 50%;
+}
+.zoom-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.zoom-controls button {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.zoom-controls span {
+  font:
+    11px ui-monospace,
+    monospace;
+  min-width: 40px;
+  text-align: center;
+}
+#empty {
+  position: absolute;
+  top: 45%;
+  left: 15%;
+  right: 15%;
+  text-align: center;
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 8px;
+}
+.inspector {
+  padding: 22px;
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+  /* Details scroll without setting the graph row's intrinsic minimum height. */
+  contain: size;
+  border-left: 1px solid var(--line);
+  background: var(--panel);
+}
+.detail-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  color: var(--accent);
+  font-weight: 650;
+}
+.detail-title {
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 10px 0 9px;
+  overflow-wrap: anywhere;
+  letter-spacing: -0.4px;
+}
+.canonical-id {
+  font:
+    11px/1.6 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  margin: 0 0 15px;
+}
+.detail-description {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.badge {
+  display: inline-block;
+  border: 1px solid var(--line);
+  font-size: 11px;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 0 5px 8px 0;
+}
+.detail-section {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.detail-section h3 {
+  font-size: 12px;
+  margin: 0 0 10px;
+  font-weight: 650;
+}
+.detail-section p {
+  font-size: 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.kv {
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 12px;
+}
+.kv dt {
+  color: var(--muted);
+}
+.kv dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+pre {
+  font:
+    11px/1.75 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 12px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 380px;
+  overflow: auto;
+}
+details {
+  margin: 12px 0;
+}
+summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 550;
+}
+.detail-link {
+  width: 100%;
+  text-align: left;
+  font-size: 11px;
+  padding: 8px;
+  margin-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+.notice {
+  border-left: 3px solid var(--rule);
+  padding: 8px 10px;
+  background: var(--bg);
+  font-size: 12px;
+  color: var(--muted);
+}
+footer {
+  height: 35px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  font:
+    10px ui-monospace,
+    monospace;
+  color: var(--muted);
+}
+footer span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#revision {
+  max-width: 40%;
+}
+.type-action {
+  --type: var(--action);
+}
+.type-entity {
+  --type: var(--entity);
+}
+.type-rule {
+  --type: var(--rule);
+}
+.type-screen {
+  --type: var(--screen);
+}
+.type-community {
+  --type: var(--community);
+}
+.type-scenario {
+  --type: var(--scenario);
+}
+.type-component,
+.type-machine {
+  --type: var(--community);
+}
+.type-dot,
+.node-accent {
+  fill: var(--type, var(--community));
+  background: var(--type, var(--community));
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #1d2524;
+    --panel: #222d2b;
+    --ink: #e4eae5;
+    --muted: #acb9b1;
+    --line: #3c4c46;
+    --accent: #8aceb3;
+    --soft: #2e433a;
+    --canvas: #1a2320;
+    --node: #2a3932;
+    --edge: #72867a;
+    --action: #71bda6;
+    --rule: #d0ab6e;
+    --entity: #96b6db;
+    --screen: #be9fd0;
+    --community: #a9b9b0;
+    --scenario: #b0c7a3;
+    --focus: #93c4ff;
+  }
+}
+@media (max-width: 1150px) {
+  main {
+    grid-template-columns: 235px minmax(280px, 1fr) 290px;
+  }
+  .inspector {
+    padding: 18px;
+  }
+  .stage-toolbar {
+    flex-wrap: wrap;
+  }
+  .mode {
+    display: none;
+  }
+}
+@media (max-width: 850px) {
+  body {
+    display: block;
+  }
+  header {
+    padding: 12px 16px;
+    gap: 14px;
+    min-height: 78px;
+  }
+  h1 {
+    font-size: 16px;
+  }
+  .eyebrow {
+    font-size: 9px;
+  }
+  header button {
+    font-size: 11px;
+  }
+  main {
+    height: auto;
+    min-height: 0;
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-rows: minmax(min-content, 65dvh) auto;
+  }
+  .stage {
+    min-height: 400px;
+  }
+  .explorer {
+    grid-row: 1;
+    padding: 18px 12px;
+  }
+  .inspector {
+    contain: none;
+    grid-column: 1/-1;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    max-height: none;
+  }
+  footer {
+    position: static;
+    height: auto;
+    min-height: 35px;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+  .canvas-note {
+    display: none;
+  }
+  .stage-toolbar {
+    left: 10px;
+    right: 10px;
+  }
+  .stage-toolbar button {
+    font-size: 10px;
+  }
+}
+@media (max-width: 520px) {
+  header {
+    height: auto;
+    min-height: 78px;
+  }
+  .brand {
+    font-size: 25px;
+  }
+  .heading {
+    flex: 1;
+  }
+  .eyebrow {
+    letter-spacing: 0.6px;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  .stage {
+    height: 60dvh;
+    min-height: 380px;
+    order: 0;
+  }
+  .explorer {
+    order: 1;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+  }
+  .inspector {
+    order: 2;
+  }
+  .object-list {
+    flex-basis: auto;
+    max-height: 230px;
+    min-height: 80px;
+  }
+  .panel-heading {
+    margin-bottom: 12px;
+  }
+  .filter-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hint {
+    margin-bottom: 10px;
+  }
+  header > button {
+    max-width: 80px;
+  }
+  #revision {
+    max-width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+.edge-label {
+  opacity: 0;
+}
+.edge-group:hover .edge-label,
+.edge-group.connected .edge-label,
+.edge-group.selected .edge-label {
+  opacity: 1;
+}
+.node-symbol,
+.node-accent {
+  pointer-events: none;
+}
+.node-group:hover .node-glyph {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+;
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand" aria-label="Graph Driven Development">
+        gdd<span class="brand-dot">●</span>
+      </div>
+      <div class="heading">
+        <span class="eyebrow">GRAPH DRIVEN DEVELOPMENT</span>
+        <h1 id="project-title"></h1>
+      </div>
+      <span class="mode">Read-only view · GDD 0.2</span>
+      <button id="overview">About the model</button>
+    </header>
+    <p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+    <main>
+      <aside class="explorer" aria-label="Explore the graph">
+        <div class="panel-heading">
+          <h2>Explore</h2>
+          <span id="total-count" class="quiet"></span>
+        </div>
+        <label for="search">Search nodes and relations</label>
+        <input
+          id="search"
+          type="search"
+          placeholder="ID, description or pseudocode…"
+          autocomplete="off"
+        />
+        <div class="filter-row">
+          <div>
+            <label for="kind">Node type</label
+            ><select id="kind">
+              <option value="">All types</option>
+            </select>
+          </div>
+          <div>
+            <label for="relation">Relation</label
+            ><select id="relation">
+              <option value="">All relations</option>
+            </select>
+          </div>
+        </div>
+        <label for="community">Community</label
+        ><select id="community">
+          <option value="">Entire graph</option>
+        </select>
+        <div class="switch-row">
+          <label for="scenarios"
+            >Show scenarios <span id="scenario-count"></span></label
+          ><input id="scenarios" type="checkbox" />
+        </div>
+        <div class="switch-row">
+          <label for="fold">Fold communities</label
+          ><input id="fold" type="checkbox" />
+        </div>
+        <p class="hint" id="fold-hint">
+          Membership is grouping, not ownership.
+        </p>
+        <div class="list-tabs" role="group" aria-label="Object list">
+          <button id="tab-nodes" aria-pressed="true">Nodes</button
+          ><button id="tab-edges" aria-pressed="false">Relations</button>
+        </div>
+        <div
+          id="object-list"
+          class="object-list"
+          aria-label="Visible objects"
+        ></div>
+        <button id="reset" class="reset">Reset filters and folding</button>
+      </aside>
+      <section class="stage" aria-label="Interactive graph">
+        <div class="stage-toolbar">
+          <div>
+            <span class="live-dot"></span
+            ><span id="view-count" role="status" aria-live="polite"></span>
+          </div>
+          <button id="manifest-download">Download view manifest</button>
+        </div>
+        <svg
+          id="graph"
+          role="img"
+          aria-label="GDD graph. Use the object list for keyboard inspection."
+        >
+          <defs>
+            <marker
+              id="arrow"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+          </defs>
+          <g id="viewport">
+            <g id="edge-layer"></g>
+            <g id="node-layer"></g>
+          </g>
+        </svg>
+        <div id="empty" hidden>
+          No nodes match the filters. Reset the filters to see the graph again.
+        </div>
+        <div class="canvas-note">
+          Drag to pan · Scroll to zoom · Select a node or connection
+        </div>
+        <div class="zoom-controls" role="group" aria-label="Graph navigation">
+          <button id="zoom-out" aria-label="Zoom out">−</button
+          ><span id="zoom-level">100%</span
+          ><button id="zoom-in" aria-label="Zoom in">+</button
+          ><button id="fit">Fit</button>
+        </div>
+      </section>
+      <aside id="inspector" class="inspector" aria-label="Details">
+        <div id="detail"></div>
+      </aside>
+    </main>
+    <footer>
+      <span id="revision"></span><span id="projection-status"></span
+      ><span id="renderer-meta"></span>
+    </footer>
+    <script id="gdd-data" type="application/json">{"boundaries": {"calls": [], "communities": {}, "components": {"component.reservations": {"boundary": {"excludes": ["Persistence", "Network operations", "Concurrency orchestration", "Authorization policy"], "rationale": "Both transitions govern the same small local object; one module keeps their invariant coherent.", "responsibility": "Own Reservation state transitions and stable Python operations."}, "interfaces_known": true, "public_contracts": [{"action": "action.reserve", "project_id": "project.reservations", "provider": "component.reservations", "spec_revision": "sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9"}, {"action": "action.cancel", "project_id": "project.reservations", "provider": "component.reservations", "spec_revision": "sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9"}]}}, "format": "gdd-boundaries/0.3", "omitted_calls": [], "scope": ["action.cancel", "action.reserve", "component.reservations", "entity.reservation", "machine.reservation", "rule.lifecycle", "scenario.cancel", "scenario.cancelled", "scenario.default", "scenario.draft-cancel", "scenario.repeat-cancel", "scenario.repeat-reserve", "scenario.reserve"], "spec_revision": "sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9", "unresolved": []}, "format": "gdd-view/0.2", "generator": {"name": "gdd-viewer", "profile": "gdd-viewer-html/0.1", "version": "0.2.0"}, "locations": {"action.cancel": ["gdd.json", "/nodes/action.cancel"], "action.reserve": ["gdd.json", "/nodes/action.reserve"], "component.reservations": ["gdd.json", "/nodes/component.reservations"], "edge.action-cancel-changes": ["gdd.json", "/edges/8"], "edge.action-cancel-constrained": ["gdd.json", "/edges/9"], "edge.action-cancel-owner": ["gdd.json", "/edges/3"], "edge.action-reserve-changes": ["gdd.json", "/edges/6"], "edge.action-reserve-constrained": ["gdd.json", "/edges/7"], "edge.action-reserve-owner": ["gdd.json", "/edges/2"], "edge.cancel-exercises": ["gdd.json", "/edges/16"], "edge.cancel-verifies": ["gdd.json", "/edges/17"], "edge.cancelled-exercises": ["gdd.json", "/edges/20"], "edge.cancelled-verifies": ["gdd.json", "/edges/21"], "edge.default-exercises": ["gdd.json", "/edges/10"], "edge.default-verifies": ["gdd.json", "/edges/11"], "edge.draft-cancel-exercises": ["gdd.json", "/edges/22"], "edge.draft-cancel-verifies": ["gdd.json", "/edges/23"], "edge.entity-reservation-owner": ["gdd.json", "/edges/1"], "edge.machine-reservation-owner": ["gdd.json", "/edges/4"], "edge.machine-state": ["gdd.json", "/edges/5"], "edge.repeat-cancel-exercises": ["gdd.json", "/edges/18"], "edge.repeat-cancel-verifies": ["gdd.json", "/edges/19"], "edge.repeat-reserve-exercises": ["gdd.json", "/edges/14"], "edge.repeat-reserve-verifies": ["gdd.json", "/edges/15"], "edge.reserve-exercises": ["gdd.json", "/edges/12"], "edge.reserve-input": ["gdd.json", "/edges/0"], "edge.reserve-verifies": ["gdd.json", "/edges/13"], "entity.reservation": ["gdd.json", "/nodes/entity.reservation"], "machine.reservation": ["gdd.json", "/nodes/machine.reservation"], "question.graphify_contracts": ["gdd.json", "/questions/question.graphify_contracts"], "rule.lifecycle": ["gdd.json", "/nodes/rule.lifecycle"], "scenario.cancel": ["gdd.json", "/nodes/scenario.cancel"], "scenario.cancelled": ["gdd.json", "/nodes/scenario.cancelled"], "scenario.default": ["gdd.json", "/nodes/scenario.default"], "scenario.draft-cancel": ["gdd.json", "/nodes/scenario.draft-cancel"], "scenario.repeat-cancel": ["gdd.json", "/nodes/scenario.repeat-cancel"], "scenario.repeat-reserve": ["gdd.json", "/nodes/scenario.repeat-reserve"], "scenario.reserve": ["gdd.json", "/nodes/scenario.reserve"], "source.brief": ["gdd.json", "/sources/source.brief"], "source.graphify": ["gdd.json", "/sources/source.graphify"]}, "manifest": {"omitted_edges": [], "omitted_nodes": [], "shown_edges": ["edge.action-cancel-changes", "edge.action-cancel-constrained", "edge.action-cancel-owner", "edge.action-reserve-changes", "edge.action-reserve-constrained", "edge.action-reserve-owner", "edge.cancel-exercises", "edge.cancel-verifies", "edge.cancelled-exercises", "edge.cancelled-verifies", "edge.default-exercises", "edge.default-verifies", "edge.draft-cancel-exercises", "edge.draft-cancel-verifies", "edge.entity-reservation-owner", "edge.machine-reservation-owner", "edge.machine-state", "edge.repeat-cancel-exercises", "edge.repeat-cancel-verifies", "edge.repeat-reserve-exercises", "edge.repeat-reserve-verifies", "edge.reserve-exercises", "edge.reserve-input", "edge.reserve-verifies"], "shown_nodes": ["action.cancel", "action.reserve", "component.reservations", "entity.reservation", "machine.reservation", "rule.lifecycle", "scenario.cancel", "scenario.cancelled", "scenario.default", "scenario.draft-cancel", "scenario.repeat-cancel", "scenario.repeat-reserve", "scenario.reserve"]}, "model": {"edges": [{"from": "action.reserve", "id": "edge.reserve-input", "relation": "depends_on", "source_refs": [{"purpose": "provenance", "selector": {"kind": "json-pointer", "value": "/edges/2"}, "source": "source.graphify"}], "to": "entity.reservation"}, {"from": "entity.reservation", "id": "edge.entity-reservation-owner", "relation": "owned_by", "to": "component.reservations"}, {"from": "action.reserve", "id": "edge.action-reserve-owner", "relation": "owned_by", "to": "component.reservations"}, {"from": "action.cancel", "id": "edge.action-cancel-owner", "relation": "owned_by", "to": "component.reservations"}, {"from": "machine.reservation", "id": "edge.machine-reservation-owner", "relation": "owned_by", "to": "component.reservations"}, {"from": "machine.reservation", "id": "edge.machine-state", "relation": "state_of", "to": "entity.reservation"}, {"from": "action.reserve", "id": "edge.action-reserve-changes", "relation": "changes", "to": "entity.reservation"}, {"from": "rule.lifecycle", "id": "edge.action-reserve-constrained", "relation": "constrains", "to": "action.reserve"}, {"from": "action.cancel", "id": "edge.action-cancel-changes", "relation": "changes", "to": "entity.reservation"}, {"from": "rule.lifecycle", "id": "edge.action-cancel-constrained", "relation": "constrains", "to": "action.cancel"}, {"from": "scenario.default", "id": "edge.default-exercises", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.default", "id": "edge.default-verifies", "relation": "verifies", "to": "rule.lifecycle"}, {"from": "scenario.reserve", "id": "edge.reserve-exercises", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.reserve", "id": "edge.reserve-verifies", "relation": "verifies", "to": "rule.lifecycle"}, {"from": "scenario.repeat-reserve", "id": "edge.repeat-reserve-exercises", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.repeat-reserve", "id": "edge.repeat-reserve-verifies", "relation": "verifies", "to": "rule.lifecycle"}, {"from": "scenario.cancel", "id": "edge.cancel-exercises", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.cancel", "id": "edge.cancel-verifies", "relation": "verifies", "to": "rule.lifecycle"}, {"from": "scenario.repeat-cancel", "id": "edge.repeat-cancel-exercises", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.repeat-cancel", "id": "edge.repeat-cancel-verifies", "relation": "verifies", "to": "rule.lifecycle"}, {"from": "scenario.cancelled", "id": "edge.cancelled-exercises", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.cancelled", "id": "edge.cancelled-verifies", "relation": "verifies", "to": "rule.lifecycle"}, {"from": "scenario.draft-cancel", "id": "edge.draft-cancel-exercises", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.draft-cancel", "id": "edge.draft-cancel-verifies", "relation": "verifies", "to": "rule.lifecycle"}], "format": "gdd/0.3", "nodes": {"action.cancel": {"behavior": "Read value.state. If draft, raise InvalidTransition before mutation. If reserved, set cancelled. If cancelled, leave unchanged. Return value itself.", "contract": {"context": {}, "dependencies_complete": true, "effects_complete": true, "error_cases": {"InvalidTransition": ["scenario.draft-cancel"]}, "errors": {"InvalidTransition": "Draft cannot be cancelled; state and identity are unchanged."}, "external_effects": [], "input": {"value": {"origin": "input", "target": "entity.reservation", "type": "reference"}}, "output": {"target": "entity.reservation", "type": "reference"}, "postconditions": ["Reserved becomes cancelled; cancelled remains cancelled.", "The returned object is value by identity."], "preconditions": ["value is a Reservation instance in the declared lifecycle."], "risks": {"atomicity": {"rationale": "InvalidTransition must leave state unchanged.", "relevant": true, "scenarios": ["scenario.draft-cancel"]}, "authorization": {"rationale": "Local object API has no identity or permission system.", "relevant": false, "scenarios": []}, "boundaries": {"rationale": "A cancelled reservation cannot be reserved again.", "relevant": true, "scenarios": ["scenario.cancelled"]}, "concurrency": {"rationale": "The bounded API is single-threaded and in memory.", "relevant": false, "scenarios": []}, "idempotency": {"rationale": "Repeated successful operations must be harmless.", "relevant": true, "scenarios": ["scenario.repeat-cancel"]}}}, "description": "Reserved becomes cancelled; cancelled remains cancelled.", "kind": "action", "label": "cancel()", "maturity": "specified", "source_refs": [{"purpose": "contract", "source": "source.brief"}]}, "action.reserve": {"behavior": "Read value.state. If cancelled, raise InvalidTransition before mutation. If draft, set reserved. If reserved, leave unchanged. Return value itself.", "contract": {"context": {}, "dependencies_complete": true, "effects_complete": true, "error_cases": {"InvalidTransition": ["scenario.cancelled"]}, "errors": {"InvalidTransition": "Cancelled cannot be reserved; state and identity are unchanged."}, "external_effects": [], "input": {"value": {"origin": "input", "target": "entity.reservation", "type": "reference"}}, "output": {"target": "entity.reservation", "type": "reference"}, "postconditions": ["Draft becomes reserved; reserved remains reserved.", "The returned object is value by identity."], "preconditions": ["value is a Reservation instance in the declared lifecycle."], "risks": {"atomicity": {"rationale": "InvalidTransition must leave state unchanged.", "relevant": true, "scenarios": ["scenario.cancelled"]}, "authorization": {"rationale": "Local object API has no identity or permission system.", "relevant": false, "scenarios": []}, "boundaries": {"rationale": "A cancelled reservation cannot be reserved again.", "relevant": true, "scenarios": ["scenario.cancelled"]}, "concurrency": {"rationale": "The bounded API is single-threaded and in memory.", "relevant": false, "scenarios": []}, "idempotency": {"rationale": "Repeated successful operations must be harmless.", "relevant": true, "scenarios": ["scenario.repeat-reserve"]}}}, "description": "Draft becomes reserved; reserved remains reserved.", "kind": "action", "label": "reserve()", "maturity": "specified", "source_refs": [{"purpose": "provenance", "selector": {"kind": "json-pointer", "value": "/nodes/2"}, "source": "source.graphify"}, {"purpose": "contract", "source": "source.brief"}]}, "component.reservations": {"boundary": {"excludes": ["Persistence", "Network operations", "Concurrency orchestration", "Authorization policy"], "rationale": "Both transitions govern the same small local object; one module keeps their invariant coherent.", "responsibility": "Own Reservation state transitions and stable Python operations."}, "description": "Reservation lifecycle module", "interfaces": ["action.reserve", "action.cancel"], "kind": "component", "label": "reservation.py", "maturity": "specified", "source_refs": [{"purpose": "provenance", "selector": {"kind": "json-pointer", "value": "/nodes/0"}, "source": "source.graphify"}, {"purpose": "contract", "source": "source.brief"}]}, "entity.reservation": {"description": "A mutable Reservation with lifecycle state", "fields": {"state": {"description": "Initialized to draft; only the lifecycle operations change it.", "type": "enum", "values": ["draft", "reserved", "cancelled"]}}, "kind": "entity", "label": "Reservation", "maturity": "specified", "source_refs": [{"purpose": "provenance", "selector": {"kind": "json-pointer", "value": "/nodes/1"}, "source": "source.graphify"}, {"purpose": "contract", "source": "source.brief"}]}, "machine.reservation": {"description": "Draft starts the lifecycle; cancellation is terminal for state-changing transitions.", "kind": "machine", "machine": {"initial": "draft", "states": ["draft", "reserved", "cancelled"], "terminal": ["cancelled"], "transitions": [{"effects": "Set state to reserved; preserve object identity.", "from": "draft", "guard": "state equals draft", "id": "transition.reserve", "to": "reserved", "trigger": "action.reserve"}, {"effects": "Set state to cancelled; preserve object identity.", "from": "reserved", "guard": "state equals reserved", "id": "transition.cancel", "to": "cancelled", "trigger": "action.cancel"}]}, "maturity": "specified"}, "rule.lifecycle": {"description": "The agreed lifecycle, stable signature, identity and idempotency are fixed acceptance assertions.", "kind": "rule", "maturity": "specified", "rule": {"blocking": true, "category": "behavior", "scope": "global", "statement": "Reservation defaults to draft. reserve(value: Reservation) -\u003e Reservation preserves identity, reserves draft, leaves repeat reserve harmless, and raises InvalidTransition without mutation on cancelled. cancel cancels reserved, leaves repeat cancel harmless, and preserves identity. Cancel on draft raises InvalidTransition without mutation.", "verification": ["unittest"]}, "source_refs": [{"purpose": "contract", "source": "source.brief"}]}, "scenario.cancel": {"description": "State becomes cancelled and result is value", "kind": "scenario", "maturity": "specified", "scenario": {"category": "normal", "given": "A reserved Reservation", "then": "State becomes cancelled and result is value", "when": "Call cancel(value)"}}, "scenario.cancelled": {"description": "InvalidTransition is raised and state remains cancelled", "kind": "scenario", "maturity": "specified", "scenario": {"category": "negative", "given": "A cancelled Reservation", "then": "InvalidTransition is raised and state remains cancelled", "when": "Call reserve(value)"}}, "scenario.default": {"description": "State is draft", "kind": "scenario", "maturity": "specified", "scenario": {"category": "boundary", "given": "A new Reservation", "then": "State is draft", "when": "Inspect state"}}, "scenario.draft-cancel": {"description": "InvalidTransition is raised and state remains draft", "kind": "scenario", "maturity": "specified", "scenario": {"category": "negative", "given": "A draft Reservation", "then": "InvalidTransition is raised and state remains draft", "when": "Call cancel(value)"}}, "scenario.repeat-cancel": {"description": "Both results are value and state remains cancelled", "kind": "scenario", "maturity": "specified", "scenario": {"category": "boundary", "given": "A cancelled Reservation", "then": "Both results are value and state remains cancelled", "when": "Call cancel(value) twice"}}, "scenario.repeat-reserve": {"description": "Both results are value and state remains reserved", "kind": "scenario", "maturity": "specified", "scenario": {"category": "boundary", "given": "A reserved Reservation", "then": "Both results are value and state remains reserved", "when": "Call reserve(value) twice"}}, "scenario.reserve": {"description": "State becomes reserved and result is value", "kind": "scenario", "maturity": "specified", "scenario": {"category": "normal", "given": "A draft Reservation", "then": "State becomes reserved and result is value", "when": "Call reserve(value)"}}}, "project": {"goal": "Preserve object identity while reserving and cancelling through a bounded lifecycle.", "id": "project.reservations", "scope": "Single-module, single-threaded in-memory Reservation lifecycle.", "title": "Reservation lifecycle"}, "questions": {"question.graphify_contracts": {"blocks": ["implementation", "acceptance"], "resolution": {"decision": "decision.adopt-lifecycle"}, "statement": "Clarify the intended behavior, contracts, rules and scenarios; code observations describe the existing implementation and do not automatically define intent.", "status": "resolved", "targets": ["component.reservations", "entity.reservation", "action.reserve"]}}, "record_files": ["records.json"], "sources": {"source.brief": {"format": "markdown", "normative": true, "revision": {"sha256": "a9820ac9206033720068a79800692c2da6b2af3caab2d944a4ec63dd96a09b5b"}, "role": "input", "title": "Trusted task input and bounded implementation choices", "uri": "INPUT.md"}, "source.graphify": {"format": "graphify-0.9.75-ast", "normative": false, "revision": {"sha256": "f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb"}, "role": "observation", "title": "Original Graphify observation snapshot; producer claims", "uri": "observations/graphify.raw.json"}}}, "observation_inputs": [], "scope": [], "snapshot": {"assets": [{"path": "INPUT.md", "sha256": "a9820ac9206033720068a79800692c2da6b2af3caab2d944a4ec63dd96a09b5b"}, {"path": "gdd.json", "sha256": "9f3964f0114532fd6385d7b4544e35def60229393b3f5a4f34eff1bea8268a36"}], "format": "gdd-snapshot/0.2", "revision": "sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9"}, "spec_revision": "sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9", "text": {"edges": {"edge.action-cancel-changes": "{\n  \"id\": \"edge.action-cancel-changes\",\n  \"from\": \"action.cancel\",\n  \"to\": \"entity.reservation\",\n  \"relation\": \"changes\"\n}", "edge.action-cancel-constrained": "{\n  \"id\": \"edge.action-cancel-constrained\",\n  \"from\": \"rule.lifecycle\",\n  \"to\": \"action.cancel\",\n  \"relation\": \"constrains\"\n}", "edge.action-cancel-owner": "{\n  \"id\": \"edge.action-cancel-owner\",\n  \"from\": \"action.cancel\",\n  \"to\": \"component.reservations\",\n  \"relation\": \"owned_by\"\n}", "edge.action-reserve-changes": "{\n  \"id\": \"edge.action-reserve-changes\",\n  \"from\": \"action.reserve\",\n  \"to\": \"entity.reservation\",\n  \"relation\": \"changes\"\n}", "edge.action-reserve-constrained": "{\n  \"id\": \"edge.action-reserve-constrained\",\n  \"from\": \"rule.lifecycle\",\n  \"to\": \"action.reserve\",\n  \"relation\": \"constrains\"\n}", "edge.action-reserve-owner": "{\n  \"id\": \"edge.action-reserve-owner\",\n  \"from\": \"action.reserve\",\n  \"to\": \"component.reservations\",\n  \"relation\": \"owned_by\"\n}", "edge.cancel-exercises": "{\n  \"id\": \"edge.cancel-exercises\",\n  \"from\": \"scenario.cancel\",\n  \"to\": \"action.cancel\",\n  \"relation\": \"exercises\"\n}", "edge.cancel-verifies": "{\n  \"id\": \"edge.cancel-verifies\",\n  \"from\": \"scenario.cancel\",\n  \"to\": \"rule.lifecycle\",\n  \"relation\": \"verifies\"\n}", "edge.cancelled-exercises": "{\n  \"id\": \"edge.cancelled-exercises\",\n  \"from\": \"scenario.cancelled\",\n  \"to\": \"action.reserve\",\n  \"relation\": \"exercises\"\n}", "edge.cancelled-verifies": "{\n  \"id\": \"edge.cancelled-verifies\",\n  \"from\": \"scenario.cancelled\",\n  \"to\": \"rule.lifecycle\",\n  \"relation\": \"verifies\"\n}", "edge.default-exercises": "{\n  \"id\": \"edge.default-exercises\",\n  \"from\": \"scenario.default\",\n  \"to\": \"action.reserve\",\n  \"relation\": \"exercises\"\n}", "edge.default-verifies": "{\n  \"id\": \"edge.default-verifies\",\n  \"from\": \"scenario.default\",\n  \"to\": \"rule.lifecycle\",\n  \"relation\": \"verifies\"\n}", "edge.draft-cancel-exercises": "{\n  \"id\": \"edge.draft-cancel-exercises\",\n  \"from\": \"scenario.draft-cancel\",\n  \"to\": \"action.cancel\",\n  \"relation\": \"exercises\"\n}", "edge.draft-cancel-verifies": "{\n  \"id\": \"edge.draft-cancel-verifies\",\n  \"from\": \"scenario.draft-cancel\",\n  \"to\": \"rule.lifecycle\",\n  \"relation\": \"verifies\"\n}", "edge.entity-reservation-owner": "{\n  \"id\": \"edge.entity-reservation-owner\",\n  \"from\": \"entity.reservation\",\n  \"to\": \"component.reservations\",\n  \"relation\": \"owned_by\"\n}", "edge.machine-reservation-owner": "{\n  \"id\": \"edge.machine-reservation-owner\",\n  \"from\": \"machine.reservation\",\n  \"to\": \"component.reservations\",\n  \"relation\": \"owned_by\"\n}", "edge.machine-state": "{\n  \"id\": \"edge.machine-state\",\n  \"from\": \"machine.reservation\",\n  \"to\": \"entity.reservation\",\n  \"relation\": \"state_of\"\n}", "edge.repeat-cancel-exercises": "{\n  \"id\": \"edge.repeat-cancel-exercises\",\n  \"from\": \"scenario.repeat-cancel\",\n  \"to\": \"action.cancel\",\n  \"relation\": \"exercises\"\n}", "edge.repeat-cancel-verifies": "{\n  \"id\": \"edge.repeat-cancel-verifies\",\n  \"from\": \"scenario.repeat-cancel\",\n  \"to\": \"rule.lifecycle\",\n  \"relation\": \"verifies\"\n}", "edge.repeat-reserve-exercises": "{\n  \"id\": \"edge.repeat-reserve-exercises\",\n  \"from\": \"scenario.repeat-reserve\",\n  \"to\": \"action.reserve\",\n  \"relation\": \"exercises\"\n}", "edge.repeat-reserve-verifies": "{\n  \"id\": \"edge.repeat-reserve-verifies\",\n  \"from\": \"scenario.repeat-reserve\",\n  \"to\": \"rule.lifecycle\",\n  \"relation\": \"verifies\"\n}", "edge.reserve-exercises": "{\n  \"id\": \"edge.reserve-exercises\",\n  \"from\": \"scenario.reserve\",\n  \"to\": \"action.reserve\",\n  \"relation\": \"exercises\"\n}", "edge.reserve-input": "{\n  \"id\": \"edge.reserve-input\",\n  \"from\": \"action.reserve\",\n  \"to\": \"entity.reservation\",\n  \"relation\": \"depends_on\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.graphify\",\n      \"purpose\": \"provenance\",\n      \"selector\": {\n        \"kind\": \"json-pointer\",\n        \"value\": \"/edges/2\"\n      }\n    }\n  ]\n}", "edge.reserve-verifies": "{\n  \"id\": \"edge.reserve-verifies\",\n  \"from\": \"scenario.reserve\",\n  \"to\": \"rule.lifecycle\",\n  \"relation\": \"verifies\"\n}"}, "nodes": {"action.cancel": {"fields": {"behavior": "Read value.state. If draft, raise InvalidTransition before mutation. If reserved, set cancelled. If cancelled, leave unchanged. Return value itself.", "contract": "{\n  \"input\": {\n    \"value\": {\n      \"type\": \"reference\",\n      \"target\": \"entity.reservation\",\n      \"origin\": \"input\"\n    }\n  },\n  \"context\": {},\n  \"output\": {\n    \"type\": \"reference\",\n    \"target\": \"entity.reservation\"\n  },\n  \"errors\": {\n    \"InvalidTransition\": \"Draft cannot be cancelled; state and identity are unchanged.\"\n  },\n  \"preconditions\": [\n    \"value is a Reservation instance in the declared lifecycle.\"\n  ],\n  \"postconditions\": [\n    \"Reserved becomes cancelled; cancelled remains cancelled.\",\n    \"The returned object is value by identity.\"\n  ],\n  \"external_effects\": [],\n  \"effects_complete\": true,\n  \"dependencies_complete\": true,\n  \"risks\": {\n    \"authorization\": {\n      \"relevant\": false,\n      \"rationale\": \"Local object API has no identity or permission system.\",\n      \"scenarios\": []\n    },\n    \"idempotency\": {\n      \"relevant\": true,\n      \"rationale\": \"Repeated successful operations must be harmless.\",\n      \"scenarios\": [\n        \"scenario.repeat-cancel\"\n      ]\n    },\n    \"boundaries\": {\n      \"relevant\": true,\n      \"rationale\": \"A cancelled reservation cannot be reserved again.\",\n      \"scenarios\": [\n        \"scenario.cancelled\"\n      ]\n    },\n    \"concurrency\": {\n      \"relevant\": false,\n      \"rationale\": \"The bounded API is single-threaded and in memory.\",\n      \"scenarios\": []\n    },\n    \"atomicity\": {\n      \"relevant\": true,\n      \"rationale\": \"InvalidTransition must leave state unchanged.\",\n      \"scenarios\": [\n        \"scenario.draft-cancel\"\n      ]\n    }\n  },\n  \"error_cases\": {\n    \"InvalidTransition\": [\n      \"scenario.draft-cancel\"\n    ]\n  }\n}", "description": "Reserved becomes cancelled; cancelled remains cancelled.", "kind": "action", "label": "cancel()", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"contract\"\n  }\n]"}, "full": "{\n  \"kind\": \"action\",\n  \"description\": \"Reserved becomes cancelled; cancelled remains cancelled.\",\n  \"label\": \"cancel()\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"contract\"\n    }\n  ],\n  \"contract\": {\n    \"input\": {\n      \"value\": {\n        \"type\": \"reference\",\n        \"target\": \"entity.reservation\",\n        \"origin\": \"input\"\n      }\n    },\n    \"context\": {},\n    \"output\": {\n      \"type\": \"reference\",\n      \"target\": \"entity.reservation\"\n    },\n    \"errors\": {\n      \"InvalidTransition\": \"Draft cannot be cancelled; state and identity are unchanged.\"\n    },\n    \"preconditions\": [\n      \"value is a Reservation instance in the declared lifecycle.\"\n    ],\n    \"postconditions\": [\n      \"Reserved becomes cancelled; cancelled remains cancelled.\",\n      \"The returned object is value by identity.\"\n    ],\n    \"external_effects\": [],\n    \"effects_complete\": true,\n    \"dependencies_complete\": true,\n    \"risks\": {\n      \"authorization\": {\n        \"relevant\": false,\n        \"rationale\": \"Local object API has no identity or permission system.\",\n        \"scenarios\": []\n      },\n      \"idempotency\": {\n        \"relevant\": true,\n        \"rationale\": \"Repeated successful operations must be harmless.\",\n        \"scenarios\": [\n          \"scenario.repeat-cancel\"\n        ]\n      },\n      \"boundaries\": {\n        \"relevant\": true,\n        \"rationale\": \"A cancelled reservation cannot be reserved again.\",\n        \"scenarios\": [\n          \"scenario.cancelled\"\n        ]\n      },\n      \"concurrency\": {\n        \"relevant\": false,\n        \"rationale\": \"The bounded API is single-threaded and in memory.\",\n        \"scenarios\": []\n      },\n      \"atomicity\": {\n        \"relevant\": true,\n        \"rationale\": \"InvalidTransition must leave state unchanged.\",\n        \"scenarios\": [\n          \"scenario.draft-cancel\"\n        ]\n      }\n    },\n    \"error_cases\": {\n      \"InvalidTransition\": [\n        \"scenario.draft-cancel\"\n      ]\n    }\n  },\n  \"behavior\": \"Read value.state. If draft, raise InvalidTransition before mutation. If reserved, set cancelled. If cancelled, leave unchanged. Return value itself.\"\n}"}, "action.reserve": {"fields": {"behavior": "Read value.state. If cancelled, raise InvalidTransition before mutation. If draft, set reserved. If reserved, leave unchanged. Return value itself.", "contract": "{\n  \"input\": {\n    \"value\": {\n      \"type\": \"reference\",\n      \"target\": \"entity.reservation\",\n      \"origin\": \"input\"\n    }\n  },\n  \"context\": {},\n  \"output\": {\n    \"type\": \"reference\",\n    \"target\": \"entity.reservation\"\n  },\n  \"errors\": {\n    \"InvalidTransition\": \"Cancelled cannot be reserved; state and identity are unchanged.\"\n  },\n  \"preconditions\": [\n    \"value is a Reservation instance in the declared lifecycle.\"\n  ],\n  \"postconditions\": [\n    \"Draft becomes reserved; reserved remains reserved.\",\n    \"The returned object is value by identity.\"\n  ],\n  \"external_effects\": [],\n  \"effects_complete\": true,\n  \"dependencies_complete\": true,\n  \"risks\": {\n    \"authorization\": {\n      \"relevant\": false,\n      \"rationale\": \"Local object API has no identity or permission system.\",\n      \"scenarios\": []\n    },\n    \"idempotency\": {\n      \"relevant\": true,\n      \"rationale\": \"Repeated successful operations must be harmless.\",\n      \"scenarios\": [\n        \"scenario.repeat-reserve\"\n      ]\n    },\n    \"boundaries\": {\n      \"relevant\": true,\n      \"rationale\": \"A cancelled reservation cannot be reserved again.\",\n      \"scenarios\": [\n        \"scenario.cancelled\"\n      ]\n    },\n    \"concurrency\": {\n      \"relevant\": false,\n      \"rationale\": \"The bounded API is single-threaded and in memory.\",\n      \"scenarios\": []\n    },\n    \"atomicity\": {\n      \"relevant\": true,\n      \"rationale\": \"InvalidTransition must leave state unchanged.\",\n      \"scenarios\": [\n        \"scenario.cancelled\"\n      ]\n    }\n  },\n  \"error_cases\": {\n    \"InvalidTransition\": [\n      \"scenario.cancelled\"\n    ]\n  }\n}", "description": "Draft becomes reserved; reserved remains reserved.", "kind": "action", "label": "reserve()", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.graphify\",\n    \"purpose\": \"provenance\",\n    \"selector\": {\n      \"kind\": \"json-pointer\",\n      \"value\": \"/nodes/2\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"contract\"\n  }\n]"}, "full": "{\n  \"kind\": \"action\",\n  \"description\": \"Draft becomes reserved; reserved remains reserved.\",\n  \"label\": \"reserve()\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.graphify\",\n      \"purpose\": \"provenance\",\n      \"selector\": {\n        \"kind\": \"json-pointer\",\n        \"value\": \"/nodes/2\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"contract\"\n    }\n  ],\n  \"contract\": {\n    \"input\": {\n      \"value\": {\n        \"type\": \"reference\",\n        \"target\": \"entity.reservation\",\n        \"origin\": \"input\"\n      }\n    },\n    \"context\": {},\n    \"output\": {\n      \"type\": \"reference\",\n      \"target\": \"entity.reservation\"\n    },\n    \"errors\": {\n      \"InvalidTransition\": \"Cancelled cannot be reserved; state and identity are unchanged.\"\n    },\n    \"preconditions\": [\n      \"value is a Reservation instance in the declared lifecycle.\"\n    ],\n    \"postconditions\": [\n      \"Draft becomes reserved; reserved remains reserved.\",\n      \"The returned object is value by identity.\"\n    ],\n    \"external_effects\": [],\n    \"effects_complete\": true,\n    \"dependencies_complete\": true,\n    \"risks\": {\n      \"authorization\": {\n        \"relevant\": false,\n        \"rationale\": \"Local object API has no identity or permission system.\",\n        \"scenarios\": []\n      },\n      \"idempotency\": {\n        \"relevant\": true,\n        \"rationale\": \"Repeated successful operations must be harmless.\",\n        \"scenarios\": [\n          \"scenario.repeat-reserve\"\n        ]\n      },\n      \"boundaries\": {\n        \"relevant\": true,\n        \"rationale\": \"A cancelled reservation cannot be reserved again.\",\n        \"scenarios\": [\n          \"scenario.cancelled\"\n        ]\n      },\n      \"concurrency\": {\n        \"relevant\": false,\n        \"rationale\": \"The bounded API is single-threaded and in memory.\",\n        \"scenarios\": []\n      },\n      \"atomicity\": {\n        \"relevant\": true,\n        \"rationale\": \"InvalidTransition must leave state unchanged.\",\n        \"scenarios\": [\n          \"scenario.cancelled\"\n        ]\n      }\n    },\n    \"error_cases\": {\n      \"InvalidTransition\": [\n        \"scenario.cancelled\"\n      ]\n    }\n  },\n  \"behavior\": \"Read value.state. If cancelled, raise InvalidTransition before mutation. If draft, set reserved. If reserved, leave unchanged. Return value itself.\"\n}"}, "component.reservations": {"fields": {"boundary": "{\n  \"responsibility\": \"Own Reservation state transitions and stable Python operations.\",\n  \"rationale\": \"Both transitions govern the same small local object; one module keeps their invariant coherent.\",\n  \"excludes\": [\n    \"Persistence\",\n    \"Network operations\",\n    \"Concurrency orchestration\",\n    \"Authorization policy\"\n  ]\n}", "description": "Reservation lifecycle module", "interfaces": "[\n  \"action.reserve\",\n  \"action.cancel\"\n]", "kind": "component", "label": "reservation.py", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.graphify\",\n    \"purpose\": \"provenance\",\n    \"selector\": {\n      \"kind\": \"json-pointer\",\n      \"value\": \"/nodes/0\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"contract\"\n  }\n]"}, "full": "{\n  \"kind\": \"component\",\n  \"description\": \"Reservation lifecycle module\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.graphify\",\n      \"purpose\": \"provenance\",\n      \"selector\": {\n        \"kind\": \"json-pointer\",\n        \"value\": \"/nodes/0\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"contract\"\n    }\n  ],\n  \"label\": \"reservation.py\",\n  \"interfaces\": [\n    \"action.reserve\",\n    \"action.cancel\"\n  ],\n  \"boundary\": {\n    \"responsibility\": \"Own Reservation state transitions and stable Python operations.\",\n    \"rationale\": \"Both transitions govern the same small local object; one module keeps their invariant coherent.\",\n    \"excludes\": [\n      \"Persistence\",\n      \"Network operations\",\n      \"Concurrency orchestration\",\n      \"Authorization policy\"\n    ]\n  }\n}"}, "entity.reservation": {"fields": {"description": "A mutable Reservation with lifecycle state", "fields": "{\n  \"state\": {\n    \"type\": \"enum\",\n    \"values\": [\n      \"draft\",\n      \"reserved\",\n      \"cancelled\"\n    ],\n    \"description\": \"Initialized to draft; only the lifecycle operations change it.\"\n  }\n}", "kind": "entity", "label": "Reservation", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.graphify\",\n    \"purpose\": \"provenance\",\n    \"selector\": {\n      \"kind\": \"json-pointer\",\n      \"value\": \"/nodes/1\"\n    }\n  },\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"contract\"\n  }\n]"}, "full": "{\n  \"kind\": \"entity\",\n  \"description\": \"A mutable Reservation with lifecycle state\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.graphify\",\n      \"purpose\": \"provenance\",\n      \"selector\": {\n        \"kind\": \"json-pointer\",\n        \"value\": \"/nodes/1\"\n      }\n    },\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"contract\"\n    }\n  ],\n  \"label\": \"Reservation\",\n  \"fields\": {\n    \"state\": {\n      \"type\": \"enum\",\n      \"values\": [\n        \"draft\",\n        \"reserved\",\n        \"cancelled\"\n      ],\n      \"description\": \"Initialized to draft; only the lifecycle operations change it.\"\n    }\n  }\n}"}, "machine.reservation": {"fields": {"description": "Draft starts the lifecycle; cancellation is terminal for state-changing transitions.", "kind": "machine", "machine": "{\n  \"states\": [\n    \"draft\",\n    \"reserved\",\n    \"cancelled\"\n  ],\n  \"initial\": \"draft\",\n  \"terminal\": [\n    \"cancelled\"\n  ],\n  \"transitions\": [\n    {\n      \"id\": \"transition.reserve\",\n      \"from\": \"draft\",\n      \"to\": \"reserved\",\n      \"trigger\": \"action.reserve\",\n      \"guard\": \"state equals draft\",\n      \"effects\": \"Set state to reserved; preserve object identity.\"\n    },\n    {\n      \"id\": \"transition.cancel\",\n      \"from\": \"reserved\",\n      \"to\": \"cancelled\",\n      \"trigger\": \"action.cancel\",\n      \"guard\": \"state equals reserved\",\n      \"effects\": \"Set state to cancelled; preserve object identity.\"\n    }\n  ]\n}", "maturity": "specified"}, "full": "{\n  \"kind\": \"machine\",\n  \"description\": \"Draft starts the lifecycle; cancellation is terminal for state-changing transitions.\",\n  \"maturity\": \"specified\",\n  \"machine\": {\n    \"states\": [\n      \"draft\",\n      \"reserved\",\n      \"cancelled\"\n    ],\n    \"initial\": \"draft\",\n    \"terminal\": [\n      \"cancelled\"\n    ],\n    \"transitions\": [\n      {\n        \"id\": \"transition.reserve\",\n        \"from\": \"draft\",\n        \"to\": \"reserved\",\n        \"trigger\": \"action.reserve\",\n        \"guard\": \"state equals draft\",\n        \"effects\": \"Set state to reserved; preserve object identity.\"\n      },\n      {\n        \"id\": \"transition.cancel\",\n        \"from\": \"reserved\",\n        \"to\": \"cancelled\",\n        \"trigger\": \"action.cancel\",\n        \"guard\": \"state equals reserved\",\n        \"effects\": \"Set state to cancelled; preserve object identity.\"\n      }\n    ]\n  }\n}"}, "rule.lifecycle": {"fields": {"description": "The agreed lifecycle, stable signature, identity and idempotency are fixed acceptance assertions.", "kind": "rule", "maturity": "specified", "rule": "{\n  \"category\": \"behavior\",\n  \"statement\": \"Reservation defaults to draft. reserve(value: Reservation) -\u003e Reservation preserves identity, reserves draft, leaves repeat reserve harmless, and raises InvalidTransition without mutation on cancelled. cancel cancels reserved, leaves repeat cancel harmless, and preserves identity. Cancel on draft raises InvalidTransition without mutation.\",\n  \"scope\": \"global\",\n  \"blocking\": true,\n  \"verification\": [\n    \"unittest\"\n  ]\n}", "source_refs": "[\n  {\n    \"source\": \"source.brief\",\n    \"purpose\": \"contract\"\n  }\n]"}, "full": "{\n  \"kind\": \"rule\",\n  \"description\": \"The agreed lifecycle, stable signature, identity and idempotency are fixed acceptance assertions.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.brief\",\n      \"purpose\": \"contract\"\n    }\n  ],\n  \"rule\": {\n    \"category\": \"behavior\",\n    \"statement\": \"Reservation defaults to draft. reserve(value: Reservation) -\u003e Reservation preserves identity, reserves draft, leaves repeat reserve harmless, and raises InvalidTransition without mutation on cancelled. cancel cancels reserved, leaves repeat cancel harmless, and preserves identity. Cancel on draft raises InvalidTransition without mutation.\",\n    \"scope\": \"global\",\n    \"blocking\": true,\n    \"verification\": [\n      \"unittest\"\n    ]\n  }\n}"}, "scenario.cancel": {"fields": {"description": "State becomes cancelled and result is value", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"normal\",\n  \"given\": \"A reserved Reservation\",\n  \"when\": \"Call cancel(value)\",\n  \"then\": \"State becomes cancelled and result is value\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"State becomes cancelled and result is value\",\n  \"maturity\": \"specified\",\n  \"scenario\": {\n    \"category\": \"normal\",\n    \"given\": \"A reserved Reservation\",\n    \"when\": \"Call cancel(value)\",\n    \"then\": \"State becomes cancelled and result is value\"\n  }\n}"}, "scenario.cancelled": {"fields": {"description": "InvalidTransition is raised and state remains cancelled", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"A cancelled Reservation\",\n  \"when\": \"Call reserve(value)\",\n  \"then\": \"InvalidTransition is raised and state remains cancelled\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"InvalidTransition is raised and state remains cancelled\",\n  \"maturity\": \"specified\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"A cancelled Reservation\",\n    \"when\": \"Call reserve(value)\",\n    \"then\": \"InvalidTransition is raised and state remains cancelled\"\n  }\n}"}, "scenario.default": {"fields": {"description": "State is draft", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"boundary\",\n  \"given\": \"A new Reservation\",\n  \"when\": \"Inspect state\",\n  \"then\": \"State is draft\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"State is draft\",\n  \"maturity\": \"specified\",\n  \"scenario\": {\n    \"category\": \"boundary\",\n    \"given\": \"A new Reservation\",\n    \"when\": \"Inspect state\",\n    \"then\": \"State is draft\"\n  }\n}"}, "scenario.draft-cancel": {"fields": {"description": "InvalidTransition is raised and state remains draft", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"A draft Reservation\",\n  \"when\": \"Call cancel(value)\",\n  \"then\": \"InvalidTransition is raised and state remains draft\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"InvalidTransition is raised and state remains draft\",\n  \"maturity\": \"specified\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"A draft Reservation\",\n    \"when\": \"Call cancel(value)\",\n    \"then\": \"InvalidTransition is raised and state remains draft\"\n  }\n}"}, "scenario.repeat-cancel": {"fields": {"description": "Both results are value and state remains cancelled", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"boundary\",\n  \"given\": \"A cancelled Reservation\",\n  \"when\": \"Call cancel(value) twice\",\n  \"then\": \"Both results are value and state remains cancelled\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Both results are value and state remains cancelled\",\n  \"maturity\": \"specified\",\n  \"scenario\": {\n    \"category\": \"boundary\",\n    \"given\": \"A cancelled Reservation\",\n    \"when\": \"Call cancel(value) twice\",\n    \"then\": \"Both results are value and state remains cancelled\"\n  }\n}"}, "scenario.repeat-reserve": {"fields": {"description": "Both results are value and state remains reserved", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"boundary\",\n  \"given\": \"A reserved Reservation\",\n  \"when\": \"Call reserve(value) twice\",\n  \"then\": \"Both results are value and state remains reserved\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Both results are value and state remains reserved\",\n  \"maturity\": \"specified\",\n  \"scenario\": {\n    \"category\": \"boundary\",\n    \"given\": \"A reserved Reservation\",\n    \"when\": \"Call reserve(value) twice\",\n    \"then\": \"Both results are value and state remains reserved\"\n  }\n}"}, "scenario.reserve": {"fields": {"description": "State becomes reserved and result is value", "kind": "scenario", "maturity": "specified", "scenario": "{\n  \"category\": \"normal\",\n  \"given\": \"A draft Reservation\",\n  \"when\": \"Call reserve(value)\",\n  \"then\": \"State becomes reserved and result is value\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"State becomes reserved and result is value\",\n  \"maturity\": \"specified\",\n  \"scenario\": {\n    \"category\": \"normal\",\n    \"given\": \"A draft Reservation\",\n    \"when\": \"Call reserve(value)\",\n    \"then\": \"State becomes reserved and result is value\"\n  }\n}"}}, "project": "{\n  \"id\": \"project.reservations\",\n  \"title\": \"Reservation lifecycle\",\n  \"goal\": \"Preserve object identity while reserving and cancelling through a bounded lifecycle.\",\n  \"scope\": \"Single-module, single-threaded in-memory Reservation lifecycle.\"\n}", "questions": {"question.graphify_contracts": {"fields": {"blocks": "[\n  \"implementation\",\n  \"acceptance\"\n]", "resolution": "{\n  \"decision\": \"decision.adopt-lifecycle\"\n}", "statement": "Clarify the intended behavior, contracts, rules and scenarios; code observations describe the existing implementation and do not automatically define intent.", "status": "resolved", "targets": "[\n  \"component.reservations\",\n  \"entity.reservation\",\n  \"action.reserve\"\n]"}, "full": "{\n  \"statement\": \"Clarify the intended behavior, contracts, rules and scenarios; code observations describe the existing implementation and do not automatically define intent.\",\n  \"targets\": [\n    \"component.reservations\",\n    \"entity.reservation\",\n    \"action.reserve\"\n  ],\n  \"blocks\": [\n    \"implementation\",\n    \"acceptance\"\n  ],\n  \"status\": \"resolved\",\n  \"resolution\": {\n    \"decision\": \"decision.adopt-lifecycle\"\n  }\n}"}}, "references": {"action.cancel": ["{\n  \"source\": \"source.brief\",\n  \"purpose\": \"contract\"\n}"], "action.reserve": ["{\n  \"source\": \"source.graphify\",\n  \"purpose\": \"provenance\",\n  \"selector\": {\n    \"kind\": \"json-pointer\",\n    \"value\": \"/nodes/2\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"contract\"\n}"], "component.reservations": ["{\n  \"source\": \"source.graphify\",\n  \"purpose\": \"provenance\",\n  \"selector\": {\n    \"kind\": \"json-pointer\",\n    \"value\": \"/nodes/0\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"contract\"\n}"], "edge.action-cancel-changes": [], "edge.action-cancel-constrained": [], "edge.action-cancel-owner": [], "edge.action-reserve-changes": [], "edge.action-reserve-constrained": [], "edge.action-reserve-owner": [], "edge.cancel-exercises": [], "edge.cancel-verifies": [], "edge.cancelled-exercises": [], "edge.cancelled-verifies": [], "edge.default-exercises": [], "edge.default-verifies": [], "edge.draft-cancel-exercises": [], "edge.draft-cancel-verifies": [], "edge.entity-reservation-owner": [], "edge.machine-reservation-owner": [], "edge.machine-state": [], "edge.repeat-cancel-exercises": [], "edge.repeat-cancel-verifies": [], "edge.repeat-reserve-exercises": [], "edge.repeat-reserve-verifies": [], "edge.reserve-exercises": [], "edge.reserve-input": ["{\n  \"source\": \"source.graphify\",\n  \"purpose\": \"provenance\",\n  \"selector\": {\n    \"kind\": \"json-pointer\",\n    \"value\": \"/edges/2\"\n  }\n}"], "edge.reserve-verifies": [], "entity.reservation": ["{\n  \"source\": \"source.graphify\",\n  \"purpose\": \"provenance\",\n  \"selector\": {\n    \"kind\": \"json-pointer\",\n    \"value\": \"/nodes/1\"\n  }\n}", "{\n  \"source\": \"source.brief\",\n  \"purpose\": \"contract\"\n}"], "machine.reservation": [], "rule.lifecycle": ["{\n  \"source\": \"source.brief\",\n  \"purpose\": \"contract\"\n}"], "scenario.cancel": [], "scenario.cancelled": [], "scenario.default": [], "scenario.draft-cancel": [], "scenario.repeat-cancel": [], "scenario.repeat-reserve": [], "scenario.reserve": []}, "snapshot": "{\n  \"format\": \"gdd-snapshot/0.2\",\n  \"revision\": \"sha256:1e2e6549d768bee9fbe47932d0182f29037056b677d6762cdd9349e1affce2a9\",\n  \"assets\": [\n    {\n      \"path\": \"INPUT.md\",\n      \"sha256\": \"a9820ac9206033720068a79800692c2da6b2af3caab2d944a4ec63dd96a09b5b\"\n    },\n    {\n      \"path\": \"gdd.json\",\n      \"sha256\": \"9f3964f0114532fd6385d7b4544e35def60229393b3f5a4f34eff1bea8268a36\"\n    }\n  ]\n}", "sources": {"source.brief": {"fields": {"format": "markdown", "normative": "true", "revision": "{\n  \"sha256\": \"a9820ac9206033720068a79800692c2da6b2af3caab2d944a4ec63dd96a09b5b\"\n}", "role": "input", "title": "Trusted task input and bounded implementation choices", "uri": "INPUT.md"}, "full": "{\n  \"role\": \"input\",\n  \"title\": \"Trusted task input and bounded implementation choices\",\n  \"uri\": \"INPUT.md\",\n  \"format\": \"markdown\",\n  \"normative\": true,\n  \"revision\": {\n    \"sha256\": \"a9820ac9206033720068a79800692c2da6b2af3caab2d944a4ec63dd96a09b5b\"\n  }\n}"}, "source.graphify": {"fields": {"format": "graphify-0.9.75-ast", "normative": "false", "revision": "{\n  \"sha256\": \"f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb\"\n}", "role": "observation", "title": "Original Graphify observation snapshot; producer claims", "uri": "observations/graphify.raw.json"}, "full": "{\n  \"role\": \"observation\",\n  \"title\": \"Original Graphify observation snapshot; producer claims\",\n  \"uri\": \"observations/graphify.raw.json\",\n  \"format\": \"graphify-0.9.75-ast\",\n  \"normative\": false,\n  \"revision\": {\n    \"sha256\": \"f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb\"\n  }\n}"}}}}</script>
+    <script>/* GDD viewer: projection and deterministic SVG layout. No model mutations. */
+"use strict";
+const GDD = (() => {
+  const data = JSON.parse(document.getElementById("gdd-data").textContent);
+  const model = data.model;
+  const $ = (id) => document.getElementById(id);
+  const state = {
+    search: "",
+    kind: "",
+    relation: "",
+    community: "",
+    scenarios: false,
+    fold: false,
+    tab: "nodes",
+    selected: null,
+  };
+  const positions = new Map();
+  let projection = {
+    nodes: [],
+    edges: [],
+    glyphs: [],
+    bundles: [],
+    internal: [],
+    representatives: new Map(),
+  };
+  let camera = { x: 0, y: 0, k: 1 };
+  const communities = Object.keys(model.nodes)
+    .filter((id) => model.nodes[id].kind === "community")
+    .sort();
+  const memberships = new Map(Object.keys(model.nodes).map((id) => [id, []]));
+  for (const edge of model.edges) {
+    if (edge.relation === "member_of") memberships.get(edge.from).push(edge.to);
+  }
+  for (const [id, list] of memberships)
+    memberships.set(id, [...new Set(list)].sort());
+  const kinds = [
+    "component",
+    "action",
+    "entity",
+    "rule",
+    "scenario",
+    "machine",
+    "screen",
+    "community",
+  ];
+  const symbols = new Map([
+    ["component", "C"],
+    ["action", "A"],
+    ["entity", "E"],
+    ["rule", "R"],
+    ["scenario", "S"],
+    ["machine", "M"],
+    ["screen", "UI"],
+    ["community", "◉"],
+  ]);
+  function el(tag, text, className) {
+    const item = document.createElement(tag);
+    if (text !== undefined) item.textContent = text;
+    if (className) item.className = className;
+    return item;
+  }
+  function svg(tag, attrs = {}, text) {
+    const item = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [key, value] of Object.entries(attrs))
+      item.setAttribute(key, value);
+    if (text !== undefined) item.textContent = text;
+    return item;
+  }
+  const label = (id) => model.nodes[id].label || id;
+  const short = (text) => (text.length > 27 ? text.slice(0, 24) + "…" : text);
+  function project() {
+    const available = new Set(data.manifest.shown_nodes);
+    const query = state.search.trim().toLocaleLowerCase();
+    const matchingEdges = new Set(
+      model.edges
+        .filter((e) =>
+          data.text.edges[e.id].toLocaleLowerCase().includes(query),
+        )
+        .flatMap((e) => [e.from, e.to]),
+    );
+    const nodes = [...available].filter((id) => {
+      const node = model.nodes[id];
+      return (
+        (!state.kind || node.kind === state.kind) &&
+        (state.scenarios ||
+          node.kind !== "scenario" ||
+          state.kind === "scenario" ||
+          Boolean(query)) &&
+        (!state.community ||
+          id === state.community ||
+          memberships.get(id).includes(state.community)) &&
+        (!query ||
+          id.toLocaleLowerCase().includes(query) ||
+          data.text.nodes[id].full.toLocaleLowerCase().includes(query) ||
+          matchingEdges.has(id))
+      );
+    });
+    const included = new Set(nodes);
+    const edges = model.edges.filter(
+      (e) =>
+        included.has(e.from) &&
+        included.has(e.to) &&
+        (!state.relation || e.relation === state.relation),
+    );
+    const representatives = new Map(nodes.map((id) => [id, id]));
+    if (state.fold) {
+      // Overlap stays explicit in data/inspector. One deterministic visual representative per member.
+      for (const id of nodes) {
+        const candidates = memberships.get(id).filter((c) => included.has(c));
+        if (model.nodes[id].kind !== "community" && candidates.length)
+          representatives.set(id, candidates[0]);
+      }
+    }
+    const glyphMap = new Map();
+    for (const id of nodes) {
+      const rep = representatives.get(id);
+      if (!glyphMap.has(rep)) glyphMap.set(rep, { id: rep, members: [] });
+      glyphMap.get(rep).members.push(id);
+    }
+    const bundleMap = new Map(),
+      internal = [];
+    for (const edge of edges) {
+      const from = representatives.get(edge.from),
+        to = representatives.get(edge.to);
+      if (from === to && (from !== edge.from || to !== edge.to)) {
+        internal.push(edge.id);
+        continue;
+      }
+      const key = JSON.stringify([from, to]);
+      if (!bundleMap.has(key)) bundleMap.set(key, { key, from, to, edges: [] });
+      bundleMap.get(key).edges.push(edge);
+    }
+    projection = {
+      nodes,
+      edges,
+      glyphs: [...glyphMap.values()],
+      bundles: [...bundleMap.values()],
+      internal,
+      representatives,
+    };
+    updateManifest();
+    return projection;
+  }
+  function manifest() {
+    return {
+      format: "gdd-view-state/0.2",
+      generator: data.generator,
+      spec_revision: data.spec_revision,
+      observation_inputs: data.observation_inputs,
+      scope: data.scope,
+      artifact_scope: data.manifest,
+      filters: {
+        search: state.search,
+        kind: state.kind,
+        relation: state.relation,
+        community: state.community,
+        scenarios: state.scenarios,
+      },
+      folding: {
+        enabled: state.fold,
+        overlap_policy:
+          "first visible community by canonical ID; all memberships retained",
+      },
+      shown_nodes: [...projection.nodes].sort(),
+      shown_edges: projection.edges.map((e) => e.id).sort(),
+      omitted_nodes: Object.keys(model.nodes)
+        .filter((id) => !projection.nodes.includes(id))
+        .sort(),
+      omitted_edges: model.edges
+        .filter((e) => !projection.edges.includes(e))
+        .map((e) => e.id)
+        .sort(),
+      glyphs: projection.glyphs.map((g) => ({ id: g.id, node_ids: g.members })),
+      bundles: projection.bundles.map((b) => ({
+        from: b.from,
+        to: b.to,
+        edge_ids: b.edges.map((e) => e.id),
+      })),
+      folded_internal_edges: [...projection.internal].sort(),
+    };
+  }
+  function updateManifest() {
+    let item = $("gdd-view-manifest");
+    if (!item) {
+      item = el("script");
+      item.id = "gdd-view-manifest";
+      item.type = "application/json";
+      document.body.append(item);
+    }
+    item.textContent = JSON.stringify(manifest());
+  }
+  function layout(reflow = true) {
+    const glyphs = projection.glyphs;
+    glyphs.forEach((g, i) => {
+      if (positions.has(g.id)) return;
+      const node = model.nodes[g.id],
+        typeIndex = Math.max(0, kinds.indexOf(node.kind));
+      const community = memberships.get(g.id)[0];
+      const sector = community ? communities.indexOf(community) : typeIndex;
+      const angle = i * 2.399963229728653,
+        radius = 65 + 26 * Math.sqrt(i + 1);
+      const base = (sector * 2 * Math.PI) / Math.max(communities.length, 8);
+      positions.set(g.id, {
+        x: 600 + Math.cos(base) * 170 + Math.cos(angle) * radius,
+        y: 400 + Math.sin(base) * 140 + Math.sin(angle) * radius,
+      });
+    });
+    if (!reflow || glyphs.length > 200) return; // Bounded layout work; larger graphs keep a deterministic seeded layout.
+    for (let iteration = 0; iteration < 160; iteration++) {
+      const forces = new Map(glyphs.map((g) => [g.id, { x: 0, y: 0 }]));
+      for (let i = 0; i < glyphs.length; i++)
+        for (let j = i + 1; j < glyphs.length; j++) {
+          const a = positions.get(glyphs[i].id),
+            b = positions.get(glyphs[j].id);
+          const dx = a.x - b.x,
+            dy = a.y - b.y,
+            d2 = Math.max(dx * dx + dy * dy, 1),
+            d = Math.sqrt(d2),
+            force = Math.min(2400 / d2, 9);
+          forces.get(glyphs[i].id).x += (dx / d) * force;
+          forces.get(glyphs[i].id).y += (dy / d) * force;
+          forces.get(glyphs[j].id).x -= (dx / d) * force;
+          forces.get(glyphs[j].id).y -= (dy / d) * force;
+        }
+      for (const b of projection.bundles) {
+        if (b.from === b.to) continue;
+        const a = positions.get(b.from),
+          z = positions.get(b.to),
+          dx = z.x - a.x,
+          dy = z.y - a.y,
+          d = Math.max(Math.hypot(dx, dy), 1),
+          force = (d - 135) * 0.012;
+        forces.get(b.from).x += (dx / d) * force;
+        forces.get(b.from).y += (dy / d) * force;
+        forces.get(b.to).x -= (dx / d) * force;
+        forces.get(b.to).y -= (dy / d) * force;
+      }
+      for (const g of glyphs) {
+        const p = positions.get(g.id),
+          f = forces.get(g.id),
+          cool = 1 - iteration / 190;
+        p.x += (f.x + (600 - p.x) * 0.004) * cool;
+        p.y += (f.y + (400 - p.y) * 0.004) * cool;
+      }
+    }
+  }
+  function edgeGeometry(bundle) {
+    const a = positions.get(bundle.from),
+      b = positions.get(bundle.to);
+    if (bundle.from === bundle.to)
+      return {
+        d: `M ${a.x - 12} ${a.y - 14} C ${a.x - 75} ${a.y - 95}, ${a.x + 75} ${a.y - 95}, ${a.x + 13} ${a.y - 16}`,
+        x: a.x,
+        y: a.y - 62,
+      };
+    const dx = b.x - a.x,
+      dy = b.y - a.y,
+      d = Math.max(Math.hypot(dx, dy), 1),
+      ux = dx / d,
+      uy = dy / d;
+    const reverse = projection.bundles.some(
+      (other) => other.from === bundle.to && other.to === bundle.from,
+    );
+    const offset = reverse ? 25 : 0,
+      cx = (a.x + b.x) / 2 - uy * offset,
+      cy = (a.y + b.y) / 2 + ux * offset;
+    return {
+      d: `M ${a.x + ux * 21} ${a.y + uy * 21} Q ${cx} ${cy} ${b.x - ux * 23} ${b.y - uy * 23}`,
+      x: (a.x + b.x) / 2 - (uy * offset) / 2,
+      y: (a.y + b.y) / 2 + (ux * offset) / 2 - 7,
+    };
+  }
+  function draw() {
+    $("edge-layer").replaceChildren();
+    $("node-layer").replaceChildren();
+    for (const bundle of projection.bundles) {
+      const geometry = edgeGeometry(bundle),
+        group = svg("g", {
+          class: "edge-group",
+          "data-edge-ids": JSON.stringify(bundle.edges.map((e) => e.id)),
+        });
+      group.append(
+        svg("path", { class: "edge-path", d: geometry.d }),
+        svg("path", { class: "edge-hit", d: geometry.d }),
+      );
+      const names = [...new Set(bundle.edges.map((e) => e.relation))];
+      const text =
+        names.length === 1 ? names[0] : `${names[0]} +${names.length - 1}`;
+      group.append(
+        svg(
+          "text",
+          { class: "edge-label", x: geometry.x, y: geometry.y },
+          text + (bundle.edges.length > 1 ? ` ×${bundle.edges.length}` : ""),
+        ),
+      );
+      group.append(
+        svg(
+          "title",
+          {},
+          bundle.edges
+            .map((e) => `${e.id}: ${e.from} → ${e.to} · ${e.relation}`)
+            .join("\n"),
+        ),
+      );
+      group.addEventListener("click", () => GDD.select("bundle", bundle.key));
+      $("edge-layer").append(group);
+    }
+    for (const glyph of projection.glyphs) {
+      const node = model.nodes[glyph.id],
+        p = positions.get(glyph.id),
+        type = kinds.includes(node.kind) ? node.kind : "component";
+      const folded = glyph.members.length > 1;
+      const group = svg("g", {
+        class: `node-group type-${type}${folded ? " folded" : ""}${node.maturity === "specified" ? "" : " sketch"}`,
+        "data-node-id": glyph.id,
+        "data-member-ids": JSON.stringify(glyph.members),
+        transform: `translate(${p.x},${p.y})`,
+      });
+      group.append(
+        svg("circle", { class: "node-glyph", r: folded ? 22 : 18 }),
+        svg("circle", { class: "node-accent", r: 3, cx: 14, cy: -13 }),
+      );
+      group.append(
+        svg(
+          "text",
+          { class: "node-symbol", y: 5 },
+          folded ? String(glyph.members.length) : symbols.get(node.kind) || "?",
+        ),
+      );
+      group.append(
+        svg(
+          "text",
+          { class: "node-label", y: 40 },
+          short(
+            model.nodes[glyph.id].label ||
+              glyph.id.split(".").slice(1).join(".") ||
+              glyph.id,
+          ),
+        ),
+      );
+      group.append(
+        svg(
+          "text",
+          { class: "node-kind", y: 54 },
+          folded ? "folded community" : node.kind,
+        ),
+      );
+      group.append(svg("title", {}, `${glyph.id}\n${node.description}`));
+      group.addEventListener("click", () => {
+        if (!dragged) GDD.select("node", glyph.id);
+      });
+      group.addEventListener("pointerdown", (event) =>
+        startDrag(event, glyph.id),
+      );
+      $("node-layer").append(group);
+    }
+    highlight();
+    applyCamera();
+  }
+  function highlight() {
+    const selection = state.selected,
+      selectedNodes = new Set(),
+      selectedEdges = new Set();
+    if (selection?.type === "node") {
+      selectedNodes.add(projection.representatives.get(selection.id));
+      for (const e of projection.edges)
+        if (e.from === selection.id || e.to === selection.id) {
+          selectedNodes.add(projection.representatives.get(e.from));
+          selectedNodes.add(projection.representatives.get(e.to));
+          selectedEdges.add(e.id);
+        }
+    } else if (selection?.type === "edge") selectedEdges.add(selection.id);
+    else if (selection?.type === "bundle")
+      for (const b of projection.bundles)
+        if (b.key === selection.id)
+          b.edges.forEach((e) => selectedEdges.add(e.id));
+    for (const b of projection.bundles)
+      if (b.edges.some((e) => selectedEdges.has(e.id))) {
+        selectedNodes.add(b.from);
+        selectedNodes.add(b.to);
+      }
+    for (const item of $("node-layer").children) {
+      const id = item.getAttribute("data-node-id");
+      item.classList.toggle(
+        "selected",
+        selection?.type === "node" &&
+          projection.representatives.get(selection.id) === id,
+      );
+      item.classList.toggle("connected", selectedNodes.has(id));
+      item.classList.toggle(
+        "dim",
+        selectedNodes.size > 0 && !selectedNodes.has(id),
+      );
+    }
+    for (const item of $("edge-layer").children) {
+      const active = JSON.parse(item.getAttribute("data-edge-ids")).some((id) =>
+        selectedEdges.has(id),
+      );
+      item.classList.toggle("connected", active);
+      item.classList.toggle("dim", selectedNodes.size > 0 && !active);
+    }
+  }
+  function applyCamera() {
+    $("viewport").setAttribute(
+      "transform",
+      `translate(${camera.x},${camera.y}) scale(${camera.k})`,
+    );
+    $("zoom-level").textContent = Math.round(camera.k * 100) + "%";
+  }
+  function fit() {
+    const bounds = $("graph").getBoundingClientRect(),
+      all = projection.glyphs.map((g) => positions.get(g.id));
+    if (!all.length) return;
+    const minX = Math.min(...all.map((p) => p.x)) - 100,
+      maxX = Math.max(...all.map((p) => p.x)) + 100;
+    const minY = Math.min(...all.map((p) => p.y)) - 90,
+      maxY = Math.max(...all.map((p) => p.y)) + 100;
+    const k = Math.min(
+      (bounds.width - 30) / (maxX - minX),
+      (bounds.height - 120) / (maxY - minY),
+      1.6,
+    );
+    camera = {
+      k: Math.max(0.08, k),
+      x: bounds.width / 2 - ((minX + maxX) / 2) * k,
+      y: bounds.height / 2 - ((minY + maxY) / 2) * k + 10,
+    };
+    applyCamera();
+  }
+  function zoom(factor, x, y) {
+    const bounds = $("graph").getBoundingClientRect();
+    x ??= bounds.width / 2;
+    y ??= bounds.height / 2;
+    const next = Math.max(0.05, Math.min(4, camera.k * factor)),
+      ratio = next / camera.k;
+    camera = {
+      x: x - (x - camera.x) * ratio,
+      y: y - (y - camera.y) * ratio,
+      k: next,
+    };
+    applyCamera();
+  }
+  let drag = null,
+    dragged = false;
+  function startDrag(event, id = null) {
+    if (event.button !== 0) return;
+    event.stopPropagation();
+    dragged = false;
+    drag = {
+      id,
+      x: event.clientX,
+      y: event.clientY,
+      startX: event.clientX,
+      startY: event.clientY,
+    };
+    $("graph").setPointerCapture(event.pointerId);
+  }
+  $("graph").addEventListener("pointerdown", (event) => {
+    if (!event.target.closest(".edge-group")) startDrag(event);
+  });
+  $("graph").addEventListener("pointermove", (event) => {
+    if (!drag) return;
+    const dx = event.clientX - drag.x,
+      dy = event.clientY - drag.y;
+    if (
+      Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 3
+    )
+      dragged = true;
+    if (drag.id) {
+      const p = positions.get(drag.id);
+      p.x += dx / camera.k;
+      p.y += dy / camera.k;
+      draw();
+    } else {
+      camera.x += dx;
+      camera.y += dy;
+      applyCamera();
+    }
+    drag.x = event.clientX;
+    drag.y = event.clientY;
+  });
+  function endDrag() {
+    if (drag?.id && !dragged) GDD.select("node", drag.id);
+    drag = null;
+    setTimeout(() => {
+      dragged = false;
+    }, 0);
+  }
+  $("graph").addEventListener("pointerup", endDrag);
+  $("graph").addEventListener("pointercancel", () => {
+    drag = null;
+    dragged = false;
+  });
+  $("graph").addEventListener(
+    "wheel",
+    (event) => {
+      event.preventDefault();
+      const r = $("graph").getBoundingClientRect();
+      zoom(
+        Math.exp(-event.deltaY * 0.0015),
+        event.clientX - r.left,
+        event.clientY - r.top,
+      );
+    },
+    { passive: false },
+  );
+  $("zoom-in").onclick = () => zoom(1.2);
+  $("zoom-out").onclick = () => zoom(1 / 1.2);
+  $("fit").onclick = fit;
+  return {
+    data,
+    model,
+    $,
+    state,
+    el,
+    label,
+    memberships,
+    communities,
+    kinds,
+    project,
+    layout,
+    draw,
+    fit,
+    highlight,
+    manifest,
+    get projection() {
+      return projection;
+    },
+  };
+})();
+
+/* Canonical model records are always rendered as text. */
+(() => {
+  const { data, model, $, state, el, label, memberships } = GDD;
+  const detail = $("detail");
+  function section(title) {
+    const box = el("section", undefined, "detail-section");
+    box.append(el("h3", title));
+    detail.append(box);
+    return box;
+  }
+  function raw(parent, title, value, open = false, exact = null) {
+    const box = el("details"),
+      summary = el("summary", title);
+    box.open = open;
+    box.append(
+      summary,
+      el(
+        "pre",
+        exact ??
+          (typeof value === "string" ? value : JSON.stringify(value, null, 2)),
+      ),
+    );
+    parent.append(box);
+  }
+  function button(parent, text, type, id) {
+    const item = el("button", text, "detail-link");
+    item.onclick = () => GDD.select(type, id);
+    parent.append(item);
+    return item;
+  }
+  function heading(tag, title, id, description) {
+    detail.replaceChildren(
+      el("span", tag, "detail-tag"),
+      el("h2", title, "detail-title"),
+    );
+    if (id) detail.append(el("p", id, "canonical-id"));
+    if (description) detail.append(el("p", description, "detail-description"));
+  }
+  function kv(parent, key, value) {
+    const row = el("dl", undefined, "kv");
+    row.append(el("dt", key), el("dd", String(value)));
+    parent.append(row);
+  }
+  function location(id) {
+    const box = section("Canonical location");
+    const loc = data.locations[id];
+    if (loc) kv(box, "File / pointer", `${loc[0]}${loc[1]}`);
+    kv(box, "Model revision", data.spec_revision);
+  }
+  function sourceReferences(node, id) {
+    const references = [
+      ...(node.source_refs || []),
+      ...(node.design_refs || []),
+    ];
+    if (!references.length) return;
+    const box = section("Sources and design references");
+    references.forEach((ref, index) => {
+      button(box, ref.source, "source", ref.source);
+      raw(box, "Reference", ref, false, data.text.references[id][index]);
+    });
+  }
+  function edgeDetails(edge) {
+    heading("Canonical relation", edge.relation, edge.id, edge.description);
+    const box = section("Direction");
+    button(box, `${edge.from} →`, "node", edge.from);
+    button(box, `→ ${edge.to}`, "node", edge.to);
+    const peers = model.edges.filter(
+      (e) => e.from === edge.from && e.to === edge.to,
+    );
+    if (peers.length > 1) {
+      const group = section(`${peers.length} parallel relations`);
+      peers.forEach((e) =>
+        button(group, `${e.id} · ${e.relation}`, "edge", e.id),
+      );
+    }
+    sourceReferences(edge, edge.id);
+    location(edge.id);
+    raw(detail, "All relation fields", edge, true, data.text.edges[edge.id]);
+  }
+  function nodeDetails(id) {
+    const node = model.nodes[id];
+    heading(node.kind, label(id), id, node.description);
+    detail.append(
+      el(
+        "span",
+        node.maturity === "specified" ? "Specified" : "Sketch (default)",
+        "badge",
+      ),
+    );
+    detail.append(
+      el(
+        "p",
+        "Maturity describes the model's level of detail. Readiness and implementation are assessed separately.",
+        "notice",
+      ),
+    );
+    const memberOf = memberships.get(id);
+    if (memberOf.length) {
+      const box = section("Member of communities");
+      memberOf.forEach((c) => button(box, label(c), "node", c));
+    }
+    if (node.behavior !== undefined) {
+      const box = section("Pseudocode / behavior");
+      raw(
+        box,
+        "Show behavior",
+        node.behavior,
+        true,
+        data.text.nodes[id].fields.behavior,
+      );
+    }
+    if (node.contract) {
+      const box = section("Contract");
+      raw(
+        box,
+        "Input, output, errors and effects",
+        node.contract,
+        true,
+        data.text.nodes[id].fields.contract,
+      );
+    }
+    if (node.boundary) {
+      raw(section("Component responsibility and boundary rationale"),
+          "Responsibility, rationale and exclusions", node.boundary, true,
+          data.text.nodes[id].fields.boundary);
+    }
+    if (node.kind === "component" && node.interfaces) {
+      const box = section("Authoritative public action contracts");
+      node.interfaces.forEach((action) => button(box, label(action), "node", action));
+    }
+    for (const key of [
+      "fields",
+      "rule",
+      "scenario",
+      "machine",
+      "interaction",
+      "realization",
+    ])
+      if (node[key] !== undefined)
+        raw(
+          section(key),
+          `Show ${key}`,
+          node[key],
+          true,
+          data.text.nodes[id].fields[key],
+        );
+    if (node.kind === "community") {
+      if (data.boundaries?.communities[id]) {
+        const boundary = data.boundaries.communities[id];
+        const box = section("Derived public boundary");
+        box.append(el("p", "Component ownership determines this view. Membership grants no permissions.", "notice"));
+        boundary.public_contracts.forEach((contract) =>
+          button(box, `${contract.provider} · ${label(contract.action)}`, "node", contract.action));
+        raw(box, "Membership basis, calls and omissions", boundary, true);
+      }
+      const members = [...memberships]
+        .filter(([, groups]) => groups.includes(id))
+        .map(([member]) => member);
+      const box = section(`${members.length} members`);
+      members.forEach((member) =>
+        button(
+          box,
+          `${label(member)}${memberships.get(member).length > 1 ? " · overlap" : ""}`,
+          "node",
+          member,
+        ),
+      );
+      const internals = GDD.projection.edges.filter(
+        (e) =>
+          GDD.projection.internal.includes(e.id) &&
+          GDD.projection.representatives.get(e.from) === id,
+      );
+      if (internals.length) {
+        const internalBox = section(
+          `${internals.length} folded internal relations`,
+        );
+        internals.forEach((e) =>
+          button(internalBox, `${e.id} · ${e.relation}`, "edge", e.id),
+        );
+      }
+    }
+    const related = model.edges.filter((e) => e.from === id || e.to === id);
+    if (related.length) {
+      const box = section(`Relations · ${related.length}`);
+      related.forEach((e) =>
+        button(
+          box,
+          `${e.from === id ? "→" : "←"} ${e.relation} · ${e.from === id ? e.to : e.from}\n${e.id}`,
+          "edge",
+          e.id,
+        ),
+      );
+    }
+    const questions = Object.entries(model.questions || {}).filter(([, q]) =>
+      q.targets.includes(id),
+    );
+    if (questions.length) {
+      const box = section("Open questions / model data");
+      questions.forEach(([qid, q]) =>
+        raw(box, qid, q, true, data.text.questions[qid].full),
+      );
+    }
+    sourceReferences(node, id);
+    location(id);
+    raw(detail, "All node fields", node, false, data.text.nodes[id].full);
+  }
+  function overview() {
+    heading(
+      "Model overview",
+      model.project.title,
+      model.project.id,
+      model.project.goal,
+    );
+    detail.append(
+      el(
+        "p",
+        "Explore intent, contracts and pseudocode. This view never writes back to the model.",
+        "notice",
+      ),
+    );
+    const counts = section("The graph");
+    kv(counts, "Nodes", Object.keys(model.nodes).length);
+    kv(counts, "Relations", model.edges.length);
+    kv(
+      counts,
+      "Scope",
+      data.scope.length ? data.scope.join(", ") : "Entire model",
+    );
+    const legend = section("Node types");
+    for (const kind of [
+      ...new Set(Object.values(model.nodes).map((n) => n.kind)),
+    ].sort()) {
+      const row = el("p"),
+        dot = el(
+          "span",
+          undefined,
+          `type-dot type-${GDD.kinds.includes(kind) ? kind : "component"}`,
+        );
+      row.append(dot, document.createTextNode(kind));
+      legend.append(row);
+    }
+    legend.append(
+      el(
+        "p",
+        "Dashed node: sketch or folded community. Arrows show relation direction. ×N is an inspectable relation bundle.",
+      ),
+    );
+    const sources = Object.keys(model.sources || {});
+    if (sources.length) {
+      const box = section("Sources · separate from intent");
+      sources.forEach((id) => button(box, id, "source", id));
+    }
+    const questions = Object.entries(model.questions || {});
+    if (questions.length) {
+      const box = section("Questions");
+      questions.forEach(([id, q]) =>
+        raw(box, id, q, false, data.text.questions[id].full),
+      );
+    }
+    const revisions = section("Traceability");
+    kv(revisions, "Revision", data.spec_revision);
+    kv(
+      revisions,
+      "Generator",
+      `${data.generator.name} ${data.generator.version}`,
+    );
+    kv(
+      revisions,
+      "Observations",
+      "No observation inputs in this projection",
+    );
+    revisions.append(
+      el(
+        "p",
+        "The view displays model data. It does not calculate readiness or implementation evidence.",
+      ),
+    );
+    raw(detail, "Model snapshot", data.snapshot, false, data.text.snapshot);
+    raw(detail, "Current view manifest", GDD.manifest());
+    raw(detail, "Project fields", model.project, false, data.text.project);
+  }
+  GDD.select = (type, id) => {
+    state.selected = type ? { type, id } : null;
+    $("selection-status").textContent = type
+      ? `Selected ${type}: ${id}`
+      : "Model overview";
+    for (const item of $("object-list").children) {
+      if (item.tagName === "BUTTON")
+        item.setAttribute(
+          "aria-pressed",
+          (type === "node" || type === "edge") &&
+            item.getAttribute(
+              type === "node" ? "data-list-node" : "data-list-edge",
+            ) === id,
+        );
+    }
+    if (type === "node") nodeDetails(id);
+    else if (type === "edge") edgeDetails(model.edges.find((e) => e.id === id));
+    else if (type === "bundle") {
+      const bundle = GDD.projection.bundles.find((b) => b.key === id);
+      heading(
+        "Directed relation bundle",
+        `${bundle.edges.length} relations`,
+        `${bundle.from} → ${bundle.to}`,
+      );
+      detail.append(
+        el(
+          "p",
+          "Each ID is an independent canonical relation. The bundle changes only the drawing.",
+          "notice",
+        ),
+      );
+      const box = section("All relations");
+      bundle.edges.forEach((e) =>
+        button(
+          box,
+          `${e.id}\n${e.from} → ${e.to} · ${e.relation}`,
+          "edge",
+          e.id,
+        ),
+      );
+    } else if (type === "source") {
+      heading("Source · separate from intent", id, id);
+      detail.append(
+        el(
+          "p",
+          "Source claims and planned references are not verified implementation evidence.",
+          "notice",
+        ),
+      );
+      raw(
+        detail,
+        "Source data",
+        model.sources[id],
+        true,
+        data.text.sources[id].full,
+      );
+      location(id);
+    } else overview();
+    $("inspector").scrollTop = 0;
+    if (type && window.matchMedia("(max-width: 850px)").matches)
+      $("inspector").scrollIntoView({ block: "start", behavior: "instant" });
+    GDD.highlight();
+  };
+  GDD.showOverview = () => GDD.select(null, null);
+})();
+
+/* Browser controls operate only on local view state. */
+(() => {
+  const { data, model, $, state, el, label } = GDD;
+  $("project-title").textContent = model.project.title;
+  $("renderer-meta").textContent = `${data.generator.name} ${data.generator.version} · Offline`;
+  document.title = `${model.project.title} · GDD`;
+  $("total-count").textContent = `${Object.keys(model.nodes).length} nodes`;
+  $("revision").textContent = `Model ${data.spec_revision}`;
+  $("revision").title = data.spec_revision;
+  function option(select, value, title) {
+    const item = el("option", title);
+    item.value = value;
+    $(select).append(item);
+  }
+  [...new Set(Object.values(model.nodes).map((n) => n.kind))]
+    .sort()
+    .forEach((kind) => option("kind", kind, kind));
+  [...new Set(model.edges.map((e) => e.relation))]
+    .sort()
+    .forEach((relation) => option("relation", relation, relation));
+  GDD.communities.forEach((id) => option("community", id, label(id)));
+  $("scenario-count").textContent =
+    `(${Object.values(model.nodes).filter((n) => n.kind === "scenario").length})`;
+  state.scenarios = data.scope.some(
+    (id) => model.nodes[id].kind === "scenario",
+  );
+  $("scenarios").checked = state.scenarios;
+  function list() {
+    const box = $("object-list");
+    box.replaceChildren();
+    const objects =
+      state.tab === "nodes"
+        ? GDD.projection.nodes
+        : GDD.projection.edges.map((e) => e.id);
+    for (const id of objects) {
+      const node = state.tab === "nodes" ? model.nodes[id] : null;
+      const edge = node ? null : model.edges.find((e) => e.id === id);
+      const item = el("button", undefined, "object-row");
+      item.setAttribute("aria-controls", "detail");
+      item.setAttribute(
+        "aria-pressed",
+        state.selected?.type === (node ? "node" : "edge") &&
+          state.selected.id === id,
+      );
+      item.setAttribute(node ? "data-list-node" : "data-list-edge", id);
+      const title = el("span", undefined, "row-title"),
+        dot = el(
+          "span",
+          undefined,
+          `type-dot type-${node && GDD.kinds.includes(node.kind) ? node.kind : "component"}`,
+        );
+      title.append(dot, document.createTextNode(node ? label(id) : id));
+      const hidden = node && GDD.projection.representatives.get(id) !== id;
+      item.append(
+        title,
+        el(
+          "span",
+          node
+            ? `${node.kind}${hidden ? " · folded member" : ""}`
+            : `${edge.from} → ${edge.to} · ${edge.relation}`,
+          "row-meta",
+        ),
+      );
+      item.onclick = () => GDD.select(node ? "node" : "edge", id);
+      box.append(item);
+    }
+    if (!objects.length) box.append(el("p", "No matches.", "hint"));
+    $("tab-nodes").setAttribute("aria-pressed", state.tab === "nodes");
+    $("tab-edges").setAttribute("aria-pressed", state.tab === "edges");
+  }
+  function refresh(reflow = true) {
+    GDD.project();
+    GDD.layout(reflow);
+    GDD.draw();
+    list();
+    const p = GDD.projection,
+      totalNodes = Object.keys(model.nodes).length,
+      totalEdges = model.edges.length;
+    $("view-count").textContent =
+      `${p.nodes.length}/${totalNodes} nodes · ${p.edges.length}/${totalEdges} relations`;
+    $("projection-status").textContent = state.fold
+      ? `${p.glyphs.length} glyphs · ${p.internal.length} folded internal relations`
+      : `${totalNodes - p.nodes.length} nodes and ${totalEdges - p.edges.length} relations omitted`;
+    $("fold-hint").textContent = state.fold
+      ? "Overlap is represented in the first visible community by ID. All memberships can be inspected."
+      : "Membership is grouping, not ownership.";
+    $("empty").hidden = Boolean(p.nodes.length);
+    GDD.showOverview();
+    GDD.fit();
+  }
+  for (const key of ["search", "kind", "relation", "community"])
+    $(key).addEventListener(key === "search" ? "input" : "change", () => {
+      state[key] = $(key).value;
+      refresh(false);
+    });
+  $("fold").onchange = () => {
+    state.fold = $("fold").checked;
+    refresh();
+  };
+  $("scenarios").onchange = () => {
+    state.scenarios = $("scenarios").checked;
+    refresh(false);
+  };
+  $("tab-nodes").onclick = () => {
+    state.tab = "nodes";
+    list();
+  };
+  $("tab-edges").onclick = () => {
+    state.tab = "edges";
+    list();
+  };
+  $("reset").onclick = () => {
+    for (const key of ["search", "kind", "relation", "community"]) {
+      state[key] = "";
+      $(key).value = "";
+    }
+    state.fold = false;
+    $("fold").checked = false;
+    state.scenarios = true;
+    $("scenarios").checked = true;
+    state.tab = "nodes";
+    refresh();
+  };
+  $("overview").onclick = GDD.showOverview;
+  $("manifest-download").onclick = () => {
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(GDD.manifest(), null, 2) + "\n"], {
+        type: "application/json",
+      }),
+    );
+    const link = el("a");
+    link.href = url;
+    link.download = "gdd-view-state.json";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  window.addEventListener("resize", GDD.fit);
+  refresh();
+})();
+</script>
+  </body>
+</html>

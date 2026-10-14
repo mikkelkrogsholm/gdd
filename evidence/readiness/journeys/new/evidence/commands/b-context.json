@@ -1,0 +1,21 @@
+{
+  "label": "b-context",
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/gdd",
+    "context",
+    "gdd-b/gdd.json",
+    "--scope",
+    "action.cli",
+    "--scope",
+    "action.quote",
+    "--scope",
+    "action.rate",
+    "--output",
+    "evidence/b-context.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "timestamp": "2026-10-14T13:27:57.000064+00:00",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

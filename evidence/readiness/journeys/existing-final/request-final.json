@@ -1,0 +1,37 @@
+{
+  "format": "gdd-work-request/0.1",
+  "id": "work.lifecycle",
+  "objective": "Implement the fixed Reservation lifecycle while preserving the reserve signature and object identity.",
+  "implementation": "implementation.reservations",
+  "base_code_revision": "sha256:4ced61844691f43672b4b7f5d34625dd58d3e5c780e6e5fd3a00811df38573e0",
+  "packages": [
+    {
+      "id": "package.lifecycle",
+      "scope": [
+        "component.reservations"
+      ],
+      "write_resources": [
+        "reservation.py",
+        "test_reservation.py"
+      ],
+      "read_resources": [
+        "INPUT.md",
+        "gdd.json",
+        "observations/observations.json"
+      ],
+      "workspace": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+      "deliverables": [
+        "Reservation lifecycle implementation",
+        "Eight fixed acceptance checks"
+      ],
+      "integration_plan": "Review actual changes against the public contracts, execute all fixed assertions and isolated negative controls, and bind evidence to the integrated code."
+    }
+  ],
+  "serialized": [],
+  "integration": {
+    "owner": "actor.independent-agent",
+    "checks": [
+      "check.lifecycle.v3"
+    ]
+  }
+}

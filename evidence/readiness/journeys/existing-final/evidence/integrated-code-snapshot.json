@@ -1,0 +1,8 @@
+{
+  "format": "gdd-code-snapshot/0.1",
+  "files": {
+    "reservation.py": "6c8c481c8c233968e78c24cb7d69c457cadc4d1153841a0fb1b1d943422888bf",
+    "test_reservation.py": "ef46e9579b7769f7ad678eb43d83a7a0836ca3a5df7abc351f92993161e98b41"
+  },
+  "revision": "sha256:08efe473cc0c1ffe6c4c6aad0fd77990e71ff203376bbbc9734844facf09c994"
+}

@@ -1,0 +1,31 @@
+{
+  "format": "gdd-host-check/0.1",
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/venv/bin/python",
+    "-B",
+    "tests/check_architecture.py",
+    "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/missing-code"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project",
+  "started_at": "2026-10-14T13:26:45.426548+00:00",
+  "executed": true,
+  "exit_code": 2,
+  "result": "UNKNOWN",
+  "stdout": "{\"result\": \"UNKNOWN\", \"reason\": \"missing actual code\", \"resource\": \"/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/missing-code/parcel/cli.py\"}\n",
+  "stderr": "",
+  "snapshot": {
+    "format": "gdd-code-snapshot/0.1",
+    "files": {
+      "tests/check_architecture.py": "f2833f3851c10dbc4b72ce90b2a9fa767fcf1be5e0b351786e52405bc945f45a"
+    },
+    "revision": "sha256:e2316019be7f3b1224af13c47d2914516f5ad1cc4a3fadedd4068f49e7269580"
+  },
+  "code_revision": "sha256:e2316019be7f3b1224af13c47d2914516f5ad1cc4a3fadedd4068f49e7269580",
+  "runner": {
+    "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "reason": "Actual caller-selected checker process completed.",
+  "code_revision_after": "sha256:e2316019be7f3b1224af13c47d2914516f5ad1cc4a3fadedd4068f49e7269580",
+  "finished_at": "2026-10-14T13:26:45.460392+00:00"
+}

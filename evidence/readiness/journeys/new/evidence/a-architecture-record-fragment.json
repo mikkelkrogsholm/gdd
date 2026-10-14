@@ -1,0 +1,70 @@
+{
+  "records": {
+    "binding.architecture.a": {
+      "kind": "binding",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "targets": [
+        "rule.no_cli_tariffs",
+        "component.cli",
+        "component.pricing",
+        "component.tariffs"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "test",
+      "resource": "tests/check_architecture.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:f2833f3851c10dbc4b72ce90b2a9fa767fcf1be5e0b351786e52405bc945f45a",
+      "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7"
+    },
+    "evidence.architecture.a": {
+      "kind": "evidence",
+      "check": "check.architecture.a",
+      "check_revision": "sha256:a9c0287e3110b950ffda02cab136fd0e109be887eb02231bccb96658dc39e1fd",
+      "implementation": "implementation.parcel",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+      "checker": {
+        "name": "parcel.python_ast",
+        "version": "1"
+      },
+      "scope": [
+        "rule.no_cli_tariffs",
+        "component.cli",
+        "component.pricing",
+        "component.tariffs"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/a-architecture-repaired.run.json"
+    }
+  },
+  "host": {
+    "implementation": "implementation.parcel",
+    "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+    "verified_bindings": [
+      "binding.architecture.a"
+    ],
+    "trusted_evidence": [
+      "evidence.architecture.a"
+    ],
+    "supported_methods": [
+      "architecture.python_ast"
+    ],
+    "environment": {
+      "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+    },
+    "negative_controls": [
+      "cli-direct-tariffs"
+    ],
+    "evidence_selection": {
+      "check.architecture.a": "evidence.architecture.a"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "format": "gdd-snapshot/0.2",
+  "revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+  "assets": [
+    {
+      "path": "gdd.json",
+      "sha256": "1f1303a5f4acbaaa0b7de84dfcc3f744a85a25243f9e4abbe4a38a924272871a"
+    },
+    {
+      "path": "sources/contract.md",
+      "sha256": "6e229c0aa787e9b693610816380cff84819fa84b80b0799a9f9554ee90bb37b7"
+    }
+  ]
+}

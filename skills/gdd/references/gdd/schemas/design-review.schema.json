@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/schemas/0.3/design-review.schema.json",
+  "title": "Advisory GDD design review",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-design-review/0.3"
+    },
+    "spec_revision": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "implementation": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "code_revision": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "reviewer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "executed": {
+      "type": "boolean"
+    },
+    "assessments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "principle": {
+            "enum": [
+              "kiss",
+              "dry",
+              "separation_of_concerns",
+              "modularity"
+            ]
+          },
+          "status": {
+            "enum": [
+              "reviewed",
+              "unknown",
+              "not_applicable"
+            ]
+          },
+          "rationale": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "targets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "\\S"
+                  },
+                  "uniqueItems": true,
+                  "minItems": 1
+                },
+                "code_locations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "resource": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      },
+                      "selector": {
+                        "type": "string",
+                        "pattern": "\\S"
+                      }
+                    },
+                    "required": [
+                      "resource",
+                      "selector"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1
+                },
+                "consequence": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "recommendation": {
+                  "type": "string",
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "targets",
+                "code_locations",
+                "consequence",
+                "recommendation"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "principle",
+          "status",
+          "rationale",
+          "findings"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 4
+    }
+  },
+  "required": [
+    "format",
+    "spec_revision",
+    "implementation",
+    "code_revision",
+    "scope",
+    "reviewer",
+    "executed",
+    "assessments"
+  ],
+  "additionalProperties": false
+}

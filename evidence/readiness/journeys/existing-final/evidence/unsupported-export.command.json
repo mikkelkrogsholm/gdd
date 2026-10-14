@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/gdd",
+    "graphify",
+    "export",
+    "observations-unsupported",
+    "--output",
+    "recovered-unsupported.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:38:58.387841+00:00",
+  "exit_code": 2,
+  "stdout": "evidence/unsupported-export.stdout.txt",
+  "stderr": "evidence/unsupported-export.stderr.txt"
+}

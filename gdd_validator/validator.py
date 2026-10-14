@@ -5,6 +5,7 @@ import re
 
 from jsonschema import Draft202012Validator
 
+from . import __version__
 from .graphify_io import verify_graphify
 from .loading import InputError, canonical, load_bundle, resolve_asset, schema_checks
 from .model import validate_model
@@ -421,7 +422,7 @@ def validate(
             )
     report = {
         "format": "gdd-report/0.2",
-        "tool": {"name": "gdd-validator", "version": "0.6.0"},
+        "tool": {"name": "gdd-validator", "version": __version__},
         "spec_revision": bundle.revision,
         "profiles": profiles,
         "scope": scope,

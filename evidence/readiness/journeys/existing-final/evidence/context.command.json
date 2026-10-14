@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/venv/bin/gdd",
+    "context",
+    "gdd.json",
+    "--scope",
+    "component.reservations",
+    "--output",
+    "context.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing-final/project",
+  "timestamp": "2026-10-14T13:31:19.994018+00:00",
+  "exit_code": 0,
+  "stdout": "evidence/context.stdout.txt",
+  "stderr": "evidence/context.stderr.txt"
+}

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/schemas/0.2/extension.schema.json",
+  "title": "GDD 0.2 extension.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-extension/0.2"
+    },
+    "namespace": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[A-Za-z0-9.-]+)?(?![\\s\\S])"
+    },
+    "node_kinds": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "data_schema": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "description",
+          "data_schema"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "relations": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+(?![\\s\\S])"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "from": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "context": {
+            "enum": [
+              "outgoing",
+              "incoming",
+              "both",
+              "none"
+            ]
+          },
+          "dependency": {
+            "type": "boolean"
+          },
+          "effect": {
+            "enum": [
+              "none",
+              "read",
+              "create",
+              "change"
+            ]
+          },
+          "data_schema": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "description",
+          "from",
+          "to",
+          "context",
+          "dependency",
+          "effect",
+          "data_schema"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "format",
+    "namespace",
+    "version",
+    "node_kinds",
+    "relations"
+  ],
+  "additionalProperties": false
+}

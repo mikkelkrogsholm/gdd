@@ -1,0 +1,98 @@
+{
+  "format": "gdd-design-review/0.3",
+  "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+  "implementation": "implementation.parcel",
+  "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+  "scope": [
+    "action.cli",
+    "action.quote",
+    "action.rate"
+  ],
+  "reviewer": {
+    "name": "actor.independent",
+    "version": "executing-lead-review-v1"
+  },
+  "executed": true,
+  "assessments": [
+    {
+      "principle": "kiss",
+      "status": "reviewed",
+      "rationale": "The three requested components each use a small public function and stdlib only. No speculative layer was added.",
+      "findings": [
+        {
+          "targets": [
+            "action.quote"
+          ],
+          "code_locations": [
+            {
+              "resource": "src/parcel/pricing.py",
+              "selector": "whole file inspected in the current snapshot"
+            }
+          ],
+          "consequence": "The quote can be read and checked directly.",
+          "recommendation": "Retain this bounded design for the requested scope."
+        }
+      ]
+    },
+    {
+      "principle": "dry",
+      "status": "reviewed",
+      "rationale": "Tariff values are owned once by rate and the begun-kilogram formula is owned once by quote; independent test literals are assertions.",
+      "findings": [
+        {
+          "targets": [
+            "action.rate"
+          ],
+          "code_locations": [
+            {
+              "resource": "src/parcel/tariffs.py",
+              "selector": "whole file inspected in the current snapshot"
+            }
+          ],
+          "consequence": "Changing a rate has one runtime authority.",
+          "recommendation": "Retain this bounded design for the requested scope."
+        }
+      ]
+    },
+    {
+      "principle": "separation_of_concerns",
+      "status": "reviewed",
+      "rationale": "Argument parsing and stdout belong to CLI, integer formula and fee policy to pricing, and rate lookup to tariffs.",
+      "findings": [
+        {
+          "targets": [
+            "action.cli"
+          ],
+          "code_locations": [
+            {
+              "resource": "src/parcel/cli.py",
+              "selector": "whole file inspected in the current snapshot"
+            }
+          ],
+          "consequence": "The fee change does not require process parsing or tariff-table changes.",
+          "recommendation": "Retain this bounded design for the requested scope."
+        }
+      ]
+    },
+    {
+      "principle": "modularity",
+      "status": "reviewed",
+      "rationale": "CLI calls the public quote function; quote calls the public rate function. No shared state or private data access exists.",
+      "findings": [
+        {
+          "targets": [
+            "component.pricing"
+          ],
+          "code_locations": [
+            {
+              "resource": "src/parcel/pricing.py",
+              "selector": "whole file inspected in the current snapshot"
+            }
+          ],
+          "consequence": "The public contracts mediate the dependency chain.",
+          "recommendation": "Retain this bounded design for the requested scope."
+        }
+      ]
+    }
+  ]
+}

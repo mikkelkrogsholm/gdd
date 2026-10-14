@@ -1,0 +1,35 @@
+{
+  "outcome": "accepted scoped implementation",
+  "acceptance_current": true,
+  "tests": {
+    "count": 9,
+    "result": "PASS",
+    "receipt": "evidence/integrated-test.run.json"
+  },
+  "negative_controls": {
+    "count": 3,
+    "all_detected": true,
+    "directory": "evidence/negative-controls"
+  },
+  "raw_integrity": "evidence/raw-integrity.json",
+  "model_revision": "sha256:fee6a315acc673e367d0a65c32ec8d2aa59e002ee76b33700e764162ca8fc62f",
+  "code_revision": "sha256:12579f6b89d1bf9eb00ebbdfec0daaf4c7b7f19c82cbe69e02ba1993ea95559f",
+  "history_assessment": "UNKNOWN: historical snapshots are not loaded by this validator; retained records are not rebound",
+  "guide_friction": [
+    "Exact decision target scope required installed readiness-code inspection.",
+    "Host authority must explicitly include the delegated actor.",
+    "Mixed-history snapshot/context CLI outputs are reports; workflow packets supply usable current reading artifacts.",
+    "Some bundled tool-version headings are older than current reports."
+  ],
+  "principal_artifacts": [
+    "JOURNEY.md",
+    "gdd.json",
+    "plan-final.json",
+    "snapshot-final.json",
+    "context-scoped.json",
+    "graph-final.html",
+    "accept-result.json",
+    "status-accepted.json",
+    "evidence/commands.csv"
+  ]
+}

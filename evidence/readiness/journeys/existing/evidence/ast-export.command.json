@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/gdd",
+    "graphify",
+    "export",
+    "observations",
+    "--output",
+    "evidence/recovered.graphify.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:19:34.175618+00:00",
+  "finished_at": "2026-10-14T13:19:34.312957+00:00",
+  "exit_code": 0,
+  "stdout": "{\n  \"format\": \"gdd-report/0.2\",\n  \"tool\": {\n    \"name\": \"gdd-graphify\",\n    \"version\": \"0.1.2\"\n  },\n  \"spec_revision\": null,\n  \"profiles\": [\n    \"import.graphify\"\n  ],\n  \"scope\": [],\n  \"checks\": [\n    {\n      \"check_id\": \"graphify.raw\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Supplied artifact sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb: original bytes hashed; producer completeness and code correctness are not inferred.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"graphify.layout\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Explicit profile graphify-0.9.75-ast matches the supplied collection layout; unknown fields preserved in original bytes.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"graphify.nodes\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Each supplied node retained; typed producer identities checked.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"graphify.edges\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Every edge indexed independently, including identical records and duplicate producer edge IDs.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"graphify.direction\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Direction is a producer/profile assertion, never proof of implementation behavior.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"graphify.code_candidates\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"graphify.integrity\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Original bytes match the recorded SHA-256 and length.\",\n      \"diagnostics\": []\n    },\n    {\n      \"check_id\": \"graphify.projection\",\n      \"dimension\": \"integration\",\n      \"result\": \"PASS\",\n      \"scope\": [],\n      \"reason\": \"Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.\",\n      \"diagnostics\": []\n    }\n  ]\n}\n",
+  "stderr": ""
+}

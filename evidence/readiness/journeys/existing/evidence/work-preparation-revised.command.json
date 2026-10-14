@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/python",
+    "evidence/prepare-work.py"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:23:54.614899+00:00",
+  "finished_at": "2026-10-14T13:23:54.756238+00:00",
+  "exit_code": 0,
+  "stdout": "{\"spec_revision\": \"sha256:eb3b8706abbc89cd6f4ffab94086b43a79a13cb8982b3ea186258a0c71fec429\", \"base_code_revision\": \"sha256:f9f7e6003e9e46d3dd865759ffc2522688467e5e115f98e91f0b6b2c56f7d282\", \"scope\": [\"action.reserve\", \"action.cancel\"]}\n",
+  "stderr": ""
+}

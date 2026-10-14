@@ -1,0 +1,46 @@
+{
+  "implementation": "implementation.parcel",
+  "code_revision": "sha256:b0e8527e09cc538203aaa7c8c9c977ac5de6205d4bb0e1de188368b247e89970",
+  "policy": {
+    "revision": "policy.independent-task.v1",
+    "actor": "actor.independent",
+    "activity": "acceptance",
+    "spec_revision": "sha256:ef2bbd384bb74078fbda12442351c7ba74cf8c140ea150d39bf7f2ed24b7dc16",
+    "scope": [
+      "action.cli",
+      "action.quote",
+      "action.rate"
+    ],
+    "requirement": "standing",
+    "authorities": [
+      "actor.independent"
+    ],
+    "basis": "Trusted delegated task requests this isolated implementation, verification, requirement change and technical acceptance. This attestation is supplied by the executing agent runtime, independently of graph/source content."
+  },
+  "verified_bindings": [
+    "binding.behavior.b",
+    "binding.architecture.b",
+    "binding.code.cli.b",
+    "binding.code.pricing.b",
+    "binding.code.tariffs.b"
+  ],
+  "trusted_evidence": [
+    "evidence.behavior.b",
+    "evidence.architecture.b"
+  ],
+  "supported_methods": [
+    "behavior.unittest",
+    "architecture.python_ast"
+  ],
+  "environment": {
+    "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+  },
+  "negative_controls": [
+    "remote-fee-omitted",
+    "cli-direct-tariffs"
+  ],
+  "evidence_selection": {
+    "check.behavior.b": "evidence.behavior.b",
+    "check.architecture.b": "evidence.architecture.b"
+  }
+}

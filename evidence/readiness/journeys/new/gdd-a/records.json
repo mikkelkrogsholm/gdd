@@ -1,0 +1,179 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "project.parcel",
+  "records": {
+    "check.behavior.a": {
+      "kind": "check",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "scope": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "method": "behavior.unittest",
+      "required_environment": [
+        "python"
+      ],
+      "negative_controls": [
+        "bad-domestic-rate"
+      ]
+    },
+    "check.architecture.a": {
+      "kind": "check",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "scope": [
+        "rule.no_cli_tariffs",
+        "component.cli",
+        "component.pricing",
+        "component.tariffs"
+      ],
+      "method": "architecture.python_ast",
+      "required_environment": [
+        "python"
+      ],
+      "negative_controls": [
+        "cli-direct-tariffs"
+      ]
+    },
+    "binding.behavior.a": {
+      "kind": "binding",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "targets": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "test",
+      "resource": "tests/test_a.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:5eb19eb71f9edfa4e7458d8bc697da0cbe973705f4a0dfd0c371c526ce78b00f",
+      "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7"
+    },
+    "evidence.behavior.a": {
+      "kind": "evidence",
+      "check": "check.behavior.a",
+      "check_revision": "sha256:1053e0c181ccc474ef8cdc3919c4e62a809ad0f8e6098aad427690682f3e5845",
+      "implementation": "implementation.parcel",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+      "checker": {
+        "name": "stdlib.unittest",
+        "version": "3.12.2"
+      },
+      "scope": [
+        "rule.price",
+        "action.cli",
+        "action.quote",
+        "action.rate"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/a-behavior-current.run.json"
+    },
+    "binding.architecture.a": {
+      "kind": "binding",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "targets": [
+        "rule.no_cli_tariffs",
+        "component.cli",
+        "component.pricing",
+        "component.tariffs"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "test",
+      "resource": "tests/check_architecture.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:f2833f3851c10dbc4b72ce90b2a9fa767fcf1be5e0b351786e52405bc945f45a",
+      "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7"
+    },
+    "evidence.architecture.a": {
+      "kind": "evidence",
+      "check": "check.architecture.a",
+      "check_revision": "sha256:a9c0287e3110b950ffda02cab136fd0e109be887eb02231bccb96658dc39e1fd",
+      "implementation": "implementation.parcel",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7",
+      "checker": {
+        "name": "parcel.python_ast",
+        "version": "1"
+      },
+      "scope": [
+        "rule.no_cli_tariffs",
+        "component.cli",
+        "component.pricing",
+        "component.tariffs"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual host-selected execution; coverage and controls explicitly attested by its caller.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/new/project/evidence/a-architecture-repaired.run.json"
+    },
+    "binding.code.cli.a": {
+      "kind": "binding",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "targets": [
+        "component.cli",
+        "action.cli"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "code",
+      "resource": "src/parcel/cli.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:dad1bd6315c72719b354d00f1400aa5aa4e91e44b39ab4a8bac9a96cb5752306",
+      "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7"
+    },
+    "binding.code.pricing.a": {
+      "kind": "binding",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "targets": [
+        "component.pricing",
+        "action.quote"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "code",
+      "resource": "src/parcel/pricing.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:a291c0d0b91c30758e9b1e2d598739da9bbae119a800a77004ba0a88be46ac77",
+      "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7"
+    },
+    "binding.code.tariffs.a": {
+      "kind": "binding",
+      "spec_revision": "sha256:aed571324f874297017497789d7c763aba9a7b3d73bfc06fa9667832b56ec9c4",
+      "targets": [
+        "component.tariffs",
+        "action.rate"
+      ],
+      "implementation": "implementation.parcel",
+      "role": "code",
+      "resource": "src/parcel/tariffs.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:f1e84d9e687b3eb3a0a2c44af2d3e68f8674ccb99448198da86c202db659d14a",
+      "code_revision": "sha256:69823548dad0e8e64e453c222fd526d4e6daaf03a598c86d7382d8e929506be7"
+    }
+  }
+}

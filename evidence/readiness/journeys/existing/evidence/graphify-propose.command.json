@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/venv/bin/gdd",
+    "graphify",
+    "propose",
+    "observations",
+    "--mapping",
+    "mapping.json",
+    "--output",
+    "proposal.json"
+  ],
+  "cwd": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-independent-00uct8ri/existing/project",
+  "started_at": "2026-10-14T13:20:31.125504+00:00",
+  "finished_at": "2026-10-14T13:20:31.266352+00:00",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "gdd: Edge mapping must preserve the selected endpoint identities and direction.\n"
+}

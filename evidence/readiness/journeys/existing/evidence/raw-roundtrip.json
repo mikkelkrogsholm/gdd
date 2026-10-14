@@ -1,0 +1,42 @@
+{
+  "result": "PASS",
+  "byte_identical": true,
+  "sha256": "f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+  "bytes": 1978,
+  "nodes": 3,
+  "edges": 5,
+  "identities": [
+    {
+      "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+      "pointer": "/nodes/0"
+    },
+    {
+      "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+      "pointer": "/nodes/1"
+    },
+    {
+      "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+      "pointer": "/nodes/2"
+    },
+    {
+      "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+      "pointer": "/edges/0"
+    },
+    {
+      "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+      "pointer": "/edges/1"
+    },
+    {
+      "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+      "pointer": "/edges/2"
+    },
+    {
+      "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+      "pointer": "/edges/3"
+    },
+    {
+      "artifact_revision": "sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+      "pointer": "/edges/4"
+    }
+  ]
+}
