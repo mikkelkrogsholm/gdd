@@ -1,0 +1,7 @@
+{
+  "exit_code": 2,
+  "stdout": "",
+  "stderr": "gdd: Viewer projection exceeded this runtime's nesting capacity.\n",
+  "output_exists": false,
+  "traceback": false
+}

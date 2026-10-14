@@ -1,0 +1,37 @@
+{
+  "format": "gdd-revalidation/0.2",
+  "executed_at": "2026-10-13T17:59:54.758070+00:00",
+  "prior_manifest_sha256": "d91354ba025f49378c386b643d18352ff3300c79bc78f01a9b91e1d7a9868f34",
+  "recorded_files_checked": 60,
+  "changed_files": [],
+  "pytest_passed": 74,
+  "conformance_matched": 58,
+  "parallel_reviews": 2,
+  "code_changes": false,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "5b08f0c4ebda2b2dafa0bec67d5973aca2eb7dcd721f4e02593ee390492f8d44"
+    },
+    {
+      "path": "authorization.json",
+      "sha256": "a14f900540466604c566d031c53abf3548da58ebb13636b069607d893db4301d"
+    },
+    {
+      "path": "backend.json",
+      "sha256": "8844403a748b27602c404e447ecf02c2928afdc42bb52cda2de6360dd49a86b3"
+    },
+    {
+      "path": "conformance.json",
+      "sha256": "24b5a0efee0bf267b34dbbafaae8cfadbd92a89091e38bd5417ee5b65b03e6d7"
+    },
+    {
+      "path": "implementation.json",
+      "sha256": "4009733f575502c1142cae56753a94150c2fd337c4a88f47265f66abfdb7f150"
+    },
+    {
+      "path": "tests.txt",
+      "sha256": "9835d3df432709ac5f639654f5b2ff6c9667e30050e555a199439a9fd86c1e6e"
+    }
+  ]
+}

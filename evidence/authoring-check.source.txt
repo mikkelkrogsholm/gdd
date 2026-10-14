@@ -1,0 +1,148 @@
+from pathlib import Path
+import json,yaml,copy,hashlib,csv,re,importlib.metadata
+from jsonschema import Draft202012Validator,FormatChecker
+R=Path.cwd().resolve(); results=[]
+def record(name,detail):
+    results.append({'check':name,'result':'PASS','detail':detail});print('PASS',name,detail)
+class UniqueLoader(yaml.SafeLoader):pass
+def mapping(loader,node,deep=False):
+    out={}
+    for kn,vn in node.value:
+        k=loader.construct_object(kn,deep=deep)
+        if k in out:raise ValueError('duplicate YAML key')
+        out[k]=loader.construct_object(vn,deep=deep)
+    return out
+UniqueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,mapping)
+def parse_yaml(text):
+    for tok in yaml.scan(text):
+        if isinstance(tok,(yaml.AnchorToken,yaml.AliasToken,yaml.TagToken)):raise ValueError('forbidden YAML feature')
+    return yaml.load(text,Loader=UniqueLoader)
+def load(p):return json.loads(p.read_text()) if p.suffix=='.json' else parse_yaml(p.read_text())
+def sh(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+schemas={p.name:load(p) for p in (R/'schemas').glob('*.json')}
+for name,s in schemas.items():Draft202012Validator.check_schema(s)
+record('schemas.metaschema',f'{len(schemas)} schemas valid against Draft 2020-12')
+names={'gdd/0.2':'gdd.schema.json','gdd-fragment/0.2':'fragment.schema.json','gdd-records/0.2':'records.schema.json','gdd-extension/0.2':'extension.schema.json','gdd-report/0.2':'report.schema.json','gdd-snapshot/0.2':'snapshot.schema.json'}
+files=list((R/'examples').glob('*.yaml'))+list((R/'examples').glob('*.json'))+list((R/'examples/extensions').glob('*.json'))
+for p in files:
+    d=load(p);Draft202012Validator(schemas[names[d['format']]],format_checker=FormatChecker()).validate(d)
+record('examples.schema',f'{len(files)} example artifacts passed their representation schema')
+all_models={}
+for p in files:
+    raw=load(p)
+    if raw['format']!='gdd/0.2':continue
+    d=copy.deepcopy(raw)
+    for include in d.get('includes',[]):
+        target=(p.parent/include).resolve();assert target.is_relative_to(p.parent.resolve())
+        fragment=load(target)
+        assert set(d['nodes']).isdisjoint(fragment['nodes'])
+        d['nodes'].update(fragment['nodes']);d['edges']+=fragment['edges']
+    n=d['nodes'];ids=set(n)
+    for reg in ['sources','questions','extensions']:
+        for i in d.get(reg,{}):assert i not in ids;ids.add(i)
+    parents={}
+    for e in d['edges']:
+        assert e['id'] not in ids;ids.add(e['id'])
+        assert e['from'] in n and e['to'] in n,(p,e)
+        if e['relation']=='refines':assert e['from'] not in parents;parents[e['from']]=e['to']
+    for i in parents:
+        seen=set();cur=i
+        while cur in parents:assert cur not in seen;seen.add(cur);cur=parents[cur]
+    def scan(value):
+        if isinstance(value,dict):
+            if value.get('type')=='reference':assert value['target'] in n and n[value['target']]['kind']=='entity'
+            if value.get('purpose') in ['provenance','contract'] and 'source' in value:assert value['source'] in d.get('sources',{})
+            for v in value.values():scan(v)
+        elif isinstance(value,list):
+            for v in value:scan(v)
+    scan(n)
+    for i,node in n.items():
+        for a in node.get('interfaces',[]):assert a in n and n[a]['kind']=='action'
+        for risk in node.get('contract',{}).get('risks',{}).values():
+            for s in risk['scenarios']:assert s in n and n[s]['kind']=='scenario'
+        for ss in node.get('contract',{}).get('error_cases',{}).values():
+            for s in ss:assert s in n and n[s]['kind']=='scenario'
+        m=node.get('machine')
+        if m:
+            states=m['states'];assert m['initial'] in states;assert set(m['terminal'])<=set(states);pairs=set()
+            for t in m['transitions']:
+                assert t['id'] not in ids;ids.add(t['id'])
+                assert t['from'] in states and t['to'] in states and t['from'] not in m['terminal']
+                assert t['trigger'] in n and n[t['trigger']]['kind']=='action'
+                pair=(t['from'],t['trigger']);assert pair not in pairs;pairs.add(pair)
+    for ext in d.get('extensions',{}).values():
+        ep=p.parent/ext['path'];assert sh(ep)==ext['sha256'];definition=load(ep)
+        assert ext['namespace']==definition['namespace'] and ext['version']==definition['version']
+        for key in [*definition['node_kinds'],*definition['relations']]:assert key.startswith(ext['namespace']+'.')
+        for node in n.values():
+            if node['kind'] in definition['node_kinds']:Draft202012Validator(definition['node_kinds'][node['kind']]['data_schema']).validate(node['data'])
+    for src in d.get('sources',{}).values():
+        if src.get('revision',{}).get('sha256') and not '://' in src['uri']:
+            assert sh(p.parent/src['uri'])==src['revision']['sha256']
+    all_models[p.name]=d
+record('examples.reference_consistency',f'{len(all_models)} models: IDs, basic references, state transitions, decomposition and pinned assets checked (not full GDD conformance)')
+old=load(R/'concert.gdd.yaml');new=all_models['concert.gdd.yaml']
+for reg in ['nodes','rules','scenarios','machines']:assert set(old[reg])<=set(new['nodes'])
+for e in old['edges']:assert e in new['edges']
+for a,n in old['nodes'].items():
+    if n['kind']=='action':assert all(s in new['nodes'][a]['behavior'] for s in n['specification'])
+for i,r in old['rules'].items():assert r['statement']==new['nodes'][i]['rule']['statement']
+for i,s in old['scenarios'].items():
+    assert all(s[k]==new['nodes'][i]['scenario'][k] for k in ['given','when','then'])
+assert (R/'archive/gdd-0.1/concert.gdd.yaml').read_bytes()==(R/'concert.gdd.yaml').read_bytes()==(R/'examples/sources/legacy-concert.gdd.yaml').read_bytes()
+assert (R/'archive/gdd-0.1/SPEC.md').read_text().startswith('# Graph-Driven Development — v0.1')
+record('migration.preservation','Original IDs, original edges, action requirements, rule statements and scenario expectations preserved; legacy YAML bytes match')
+snap=load(R/'examples/concert.snapshot.json')
+pairs=[]
+for a in snap['assets']:assert sh(R/'examples'/a['path'])==a['sha256'];pairs.append([a['path'],a['sha256']])
+assert pairs==sorted(pairs)
+assert snap['revision']=='sha256:'+hashlib.sha256(json.dumps(pairs,ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
+recs=load(R/'examples/concert.records.yaml')['records']
+assert set(recs).isdisjoint(set(new['nodes'])|{e['id'] for e in new['edges']})
+for rec in recs.values():
+    assert rec['spec_revision']==snap['revision']
+    for t in rec.get('targets',rec.get('scope',[])):assert t in new['nodes']
+record('snapshot.records','Example snapshot recomputed; planned records point to it; no executed application evidence')
+def patch(doc,ps):
+    doc=copy.deepcopy(doc)
+    for p in ps:
+        parts=[x.replace('~1','/').replace('~0','~') for x in p['path'].split('/')[1:]];cur=doc
+        for k in parts[:-1]:cur=cur[int(k)] if isinstance(cur,list) else cur[k]
+        k=parts[-1];op=p['op']
+        if isinstance(cur,list):
+            if op=='add':cur.insert(len(cur) if k=='-' else int(k),copy.deepcopy(p['value']))
+            elif op=='replace':cur[int(k)]=copy.deepcopy(p['value'])
+            else:del cur[int(k)]
+        elif op=='remove':del cur[k]
+        else:cur[k]=copy.deepcopy(p['value'])
+    return doc
+cases=load(R/'conformance/cases.yaml')['cases'];executed=[]
+codes={x['code'] for x in csv.DictReader((R/'conformance/diagnostics.csv').open())}
+profiles={'representation','model','readiness','records','import.graphify','visualization'}
+for c in cases:
+    assert c['profile'] in profiles
+    assert c['expected']['diagnostic'] is None or c['expected']['diagnostic'] in codes
+    if c['verification']!='schema_execution':continue
+    source=(R/'conformance'/c['base']).resolve();base=load(source);doc=patch(base,c.get('patches',[]))
+    validator=Draft202012Validator(schemas[names[base['format']]],format_checker=FormatChecker())
+    outcome='FAIL' if list(validator.iter_errors(doc)) else 'PASS'
+    assert outcome==c['expected']['result'],(c['id'],outcome,c['expected'])
+    executed.append({'id':c['id'],'expected':outcome,'observed':outcome})
+record('schema.negative_controls',f'{len(executed)} positive/negative representation cases matched expected outcomes')
+for raw in ['format: gdd/0.2\nformat: gdd/0.2\n','a: &x {}\nb: *x\n']:
+    try:parse_yaml(raw)
+    except ValueError:pass
+    else:raise AssertionError('Parser negative control did not fail')
+record('parsing.negative_controls','Duplicate YAML keys and anchor/alias rejected by temporary authoring-check loader')
+# Local document-link integrity; explicit source/design planned assets in model are not Markdown deliverable links.
+missing=[];count=0
+for p in [R/'README.md',R/'SPEC.md',R/'GDD.md',*list((R/'standard').glob('*.md')),*list((R/'schemas').glob('*.md')),*list((R/'examples').glob('*.md'))]:
+    for target in re.findall(r'\]\(([^)]+)\)',p.read_text()):
+        if '://' in target or target.startswith('#'):continue
+        target=target.split('#')[0];count+=1
+        if not (p.parent/target).exists():missing.append((str(p.relative_to(R)),target))
+# Evidence report is written after this execution; defer precisely this one expected link.
+assert all(target=='evidence/standard-review.md' for _,target in missing),missing
+record('documents.links',f'{count-len(missing)} local links resolve; {len(missing)} evidence-report link pending creation')
+summary={'scope':'Authoring checks of this standard draft; not a reference GDD validator or application verification','versions':{x:importlib.metadata.version(x) for x in ['jsonschema','PyYAML']},'checks':results,'executed_representation_cases':executed,'semantic_cases':'Normative expected outcomes, reviewed; not executed by a GDD validator','total_conformance_cases':len(cases),'example_spec_revision':snap['revision']}
+(R/'evidence/authoring-checks.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n')

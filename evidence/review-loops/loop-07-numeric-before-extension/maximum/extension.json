@@ -1,0 +1,1 @@
+{"format": "gdd-extension/0.2", "namespace": "review.number", "version": "1.0.0", "node_kinds": {"review.number.value": {"description": "Numeric value", "data_schema": {"type": "object", "properties": {"value": {"type": "number", "maximum": 1e23}}, "required": ["value"], "additionalProperties": false}}}, "relations": {}}

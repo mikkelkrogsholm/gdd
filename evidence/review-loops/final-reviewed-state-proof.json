@@ -1,0 +1,15 @@
+{
+  "checked_at": "2026-10-13T21:30:38.916353+00:00",
+  "review_round": 10,
+  "clean_review": true,
+  "checked_files": 121,
+  "added": [],
+  "missing": [],
+  "changed": [],
+  "all_reviewed_hashes_match": true,
+  "source_manifest_sha256": "d2bc6704cf1d6e80e32eb9b6b23841895f14d10f07fd4ec8c68eb2b41877d753",
+  "integrated_verification": "loop-09-tests.txt",
+  "full_pytest_passed": 1230,
+  "conformance_matched": 92,
+  "browser_passed": 23
+}

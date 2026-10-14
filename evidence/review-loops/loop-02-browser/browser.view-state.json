@@ -1,0 +1,166 @@
+{
+  "format": "gdd-view-state/0.2",
+  "generator": {
+    "name": "gdd-viewer",
+    "profile": "gdd-viewer-html/0.1",
+    "version": "0.1.1"
+  },
+  "spec_revision": "sha256:a406943ed7f0e9bdc92bd99390d2d488be1daad970f62fd6a5c93ae6c50467bb",
+  "observation_inputs": [],
+  "scope": [],
+  "artifact_scope": {
+    "omitted_edges": [],
+    "omitted_nodes": [],
+    "shown_edges": [
+      "edge.call_one",
+      "edge.call_two",
+      "edge.depends",
+      "edge.loop",
+      "edge.member_backend",
+      "edge.member_frontend",
+      "edge.reverse",
+      "edge.scenario",
+      "edge.second_frontend"
+    ],
+    "shown_nodes": [
+      "action.second",
+      "community.backend",
+      "community.frontend",
+      "component.orphan",
+      "constructor",
+      "entity.precision",
+      "scenario.hidden"
+    ]
+  },
+  "filters": {
+    "search": "",
+    "kind": "",
+    "relation": "",
+    "community": "",
+    "scenarios": true
+  },
+  "folding": {
+    "enabled": false,
+    "overlap_policy": "first visible community by canonical ID; all memberships retained"
+  },
+  "shown_nodes": [
+    "action.second",
+    "community.backend",
+    "community.frontend",
+    "component.orphan",
+    "constructor",
+    "entity.precision",
+    "scenario.hidden"
+  ],
+  "shown_edges": [
+    "edge.call_one",
+    "edge.call_two",
+    "edge.depends",
+    "edge.loop",
+    "edge.member_backend",
+    "edge.member_frontend",
+    "edge.reverse",
+    "edge.scenario",
+    "edge.second_frontend"
+  ],
+  "omitted_nodes": [],
+  "omitted_edges": [],
+  "glyphs": [
+    {
+      "id": "action.second",
+      "node_ids": [
+        "action.second"
+      ]
+    },
+    {
+      "id": "community.backend",
+      "node_ids": [
+        "community.backend"
+      ]
+    },
+    {
+      "id": "community.frontend",
+      "node_ids": [
+        "community.frontend"
+      ]
+    },
+    {
+      "id": "component.orphan",
+      "node_ids": [
+        "component.orphan"
+      ]
+    },
+    {
+      "id": "constructor",
+      "node_ids": [
+        "constructor"
+      ]
+    },
+    {
+      "id": "entity.precision",
+      "node_ids": [
+        "entity.precision"
+      ]
+    },
+    {
+      "id": "scenario.hidden",
+      "node_ids": [
+        "scenario.hidden"
+      ]
+    }
+  ],
+  "bundles": [
+    {
+      "from": "constructor",
+      "to": "action.second",
+      "edge_ids": [
+        "edge.call_one",
+        "edge.call_two",
+        "edge.depends"
+      ]
+    },
+    {
+      "from": "action.second",
+      "to": "constructor",
+      "edge_ids": [
+        "edge.reverse"
+      ]
+    },
+    {
+      "from": "constructor",
+      "to": "constructor",
+      "edge_ids": [
+        "edge.loop"
+      ]
+    },
+    {
+      "from": "constructor",
+      "to": "community.backend",
+      "edge_ids": [
+        "edge.member_backend"
+      ]
+    },
+    {
+      "from": "constructor",
+      "to": "community.frontend",
+      "edge_ids": [
+        "edge.member_frontend"
+      ]
+    },
+    {
+      "from": "action.second",
+      "to": "community.frontend",
+      "edge_ids": [
+        "edge.second_frontend"
+      ]
+    },
+    {
+      "from": "scenario.hidden",
+      "to": "constructor",
+      "edge_ids": [
+        "edge.scenario"
+      ]
+    }
+  ],
+  "folded_internal_edges": []
+}

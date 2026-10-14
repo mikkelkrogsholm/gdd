@@ -1,0 +1,174 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.2.0"
+  },
+  "spec_revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210",
+  "profiles": [
+    "readiness"
+  ],
+  "scope": [
+    "screen.reserve"
+  ],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "records.integrity",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Required component interfaces are unspecified.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Required component interfaces are unspecified.",
+          "location": {
+            "file": "concert.gdd.yaml",
+            "pointer": "/nodes/component.frontend"
+          },
+          "related_ids": [
+            "component.frontend"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.readiness_contract_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Screen interaction contract is incomplete.",
+      "diagnostics": [
+        {
+          "code": "READINESS_CONTRACT_MISSING",
+          "severity": "error",
+          "message": "Screen interaction contract is incomplete.",
+          "location": {
+            "file": "concert.gdd.yaml",
+            "pointer": "/nodes/screen.reserve"
+          },
+          "related_ids": [
+            "screen.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.scenario_category_missing",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Screen needs normal scenario.",
+      "diagnostics": [
+        {
+          "code": "SCENARIO_CATEGORY_MISSING",
+          "severity": "error",
+          "message": "Screen needs normal scenario.",
+          "location": {
+            "file": "concert.gdd.yaml",
+            "pointer": "/nodes/screen.reserve"
+          },
+          "related_ids": [
+            "screen.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.record_invalid",
+      "dimension": "readiness",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Screen requires current trusted readiness_review decision.",
+      "diagnostics": [
+        {
+          "code": "RECORD_INVALID",
+          "severity": "warning",
+          "message": "Screen requires current trusted readiness_review decision.",
+          "location": {
+            "file": "concert.gdd.yaml",
+            "pointer": "/nodes/screen.reserve"
+          },
+          "related_ids": [
+            "screen.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.contract_source_unpinned",
+      "dimension": "readiness",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Contract source source.design is not normative and pinned.",
+      "diagnostics": [
+        {
+          "code": "CONTRACT_SOURCE_UNPINNED",
+          "severity": "error",
+          "message": "Contract source source.design is not normative and pinned.",
+          "location": {
+            "file": "concert.gdd.yaml",
+            "pointer": "/nodes/screen.reserve"
+          },
+          "related_ids": [
+            "screen.reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.source_unavailable",
+      "dimension": "readiness",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Contract source unavailable: [Errno 2] No such file or directory: '/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/DESIGN.md'.",
+      "diagnostics": [
+        {
+          "code": "SOURCE_UNAVAILABLE",
+          "severity": "warning",
+          "message": "Contract source unavailable: [Errno 2] No such file or directory: '/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/DESIGN.md'.",
+          "location": {
+            "file": "concert.gdd.yaml",
+            "pointer": "/nodes/screen.reserve"
+          },
+          "related_ids": [
+            "screen.reserve"
+          ]
+        }
+      ]
+    }
+  ]
+}

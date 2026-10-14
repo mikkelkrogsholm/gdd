@@ -1,0 +1,97 @@
+{
+  "format": "gdd-browser-conformance/0.1",
+  "browser": "155.0.8059.40",
+  "offline": true,
+  "results": [
+    {
+      "id": "offline-portable-file",
+      "result": "PASS"
+    },
+    {
+      "id": "hostile-text-and-canvas-selection",
+      "result": "PASS"
+    },
+    {
+      "id": "keyboard-inspection",
+      "result": "PASS"
+    },
+    {
+      "id": "parallel-and-opposite-directed-edges",
+      "result": "PASS"
+    },
+    {
+      "id": "self-loop-is-inspectable",
+      "result": "PASS"
+    },
+    {
+      "id": "numeric-contract-precision",
+      "result": "PASS"
+    },
+    {
+      "id": "scenario-reveal-as-first-action",
+      "result": "PASS"
+    },
+    {
+      "id": "kind-search-and-empty-filter",
+      "result": "PASS"
+    },
+    {
+      "id": "relation-and-community-filters",
+      "result": "PASS"
+    },
+    {
+      "id": "overlapping-community-folding-is-lossless",
+      "result": "PASS"
+    },
+    {
+      "id": "zoom-pan-drag-and-reset",
+      "result": "PASS"
+    },
+    {
+      "id": "view-manifest-download",
+      "result": "PASS"
+    },
+    {
+      "id": "parallel-membership-is-not-overlap",
+      "result": "PASS"
+    },
+    {
+      "id": "scoped-artifact-cannot-widen-on-reset",
+      "result": "PASS"
+    },
+    {
+      "id": "extension-and-empty-model",
+      "result": "PASS"
+    },
+    {
+      "id": "responsive-dark-reduced-motion",
+      "result": "PASS"
+    },
+    {
+      "id": "exact-source-and-design-reference-selectors",
+      "result": "PASS"
+    },
+    {
+      "id": "new-selections-reset-inspector-scroll",
+      "result": "PASS"
+    },
+    {
+      "id": "mobile-selection-reveals-details-without-filter-jumps",
+      "result": "PASS"
+    },
+    {
+      "id": "landscape-tablet-panels-and-controls-do-not-overlap",
+      "result": "FAIL",
+      "reason": "Overlapping panels at 740x360"
+    },
+    {
+      "id": "no-script-errors-or-network",
+      "result": "PASS"
+    }
+  ],
+  "passed": 20,
+  "total": 21,
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": []
+}

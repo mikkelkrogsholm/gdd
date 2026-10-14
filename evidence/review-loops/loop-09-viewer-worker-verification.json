@@ -1,0 +1,40 @@
+{
+  "patch": "/tmp/gdd-loop9-viewer-fix-wfb8cqcs/loop9-viewer-capacity.patch",
+  "sha256": "80afdb6f5904ae9785d4f021cb819058daa4e916a627ee92f8f8c2484f33af3b",
+  "baseline": "16 failed, 8 passed in 1.40s",
+  "focused": "65 passed in 3.59s",
+  "successful_html_bytes": [
+    {
+      "id": "concert",
+      "bytes_identical": true,
+      "sha256": "c18e62a54eb8b53383e00a36edf48633596a539d6a1d80d797b7deb54c365144"
+    },
+    {
+      "id": "sketch",
+      "bytes_identical": true,
+      "sha256": "17cd04caa17d666e1ab29dd5db14bcf0e988f3b38c214714e711a835ba494ea0"
+    },
+    {
+      "id": "refinement",
+      "bytes_identical": true,
+      "sha256": "d4662a73d6ebbed56130575af0fbdbf949ad140e300c24576123540c41938f2e"
+    },
+    {
+      "id": "extension",
+      "bytes_identical": true,
+      "sha256": "99c88dcdf8dc5729f9e5d21103d74ac0e03367d0a657911d270f5ab29f312105"
+    },
+    {
+      "id": "fragmented",
+      "bytes_identical": true,
+      "sha256": "0ea036ec03dc6d3bde978b04c0977aed59df3b2d8d9fd82e1f6438e976f3b798"
+    }
+  ],
+  "conformance": {
+    "matched": 16,
+    "total": 16
+  },
+  "renderer_version": "0.1.3",
+  "standard_58_expectations_changed": false,
+  "deep_payload_fixture": "Balanced valid JSON array nested 2000 times; JSON parser reaches capacity before it can classify the view envelope."
+}

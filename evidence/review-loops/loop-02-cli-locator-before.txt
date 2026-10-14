@@ -1,0 +1,110 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_cli_proposal_source_locator_follows_manifest_and_output_aliases[False] __
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat0')
+output_alias = False
+
+    @pytest.mark.parametrize("output_alias", [False, True])
+    def test_cli_proposal_source_locator_follows_manifest_and_output_aliases(
+        tmp_path, output_alias
+    ):
+        folder, _, _, _, mapping = make_bundle(tmp_path)
+        aliases = tmp_path / "aliases"
+        aliases.mkdir()
+        manifest = aliases / "manifest.json"
+        manifest.symlink_to(folder / "observations.json")
+        actual_output = tmp_path / "actual-output"
+        actual_output.mkdir()
+        if output_alias:
+            output_parent = aliases / "output"
+            output_parent.symlink_to(actual_output, target_is_directory=True)
+        else:
+            output_parent = actual_output
+        mapping_path = tmp_path / "mapping.json"
+        mapping_path.write_text(json.dumps(mapping))
+        output = output_parent / "proposal.json"
+        run = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "gdd_validator",
+                "graphify",
+                "propose",
+                str(manifest),
+                "--mapping",
+                str(mapping_path),
+                "--output",
+                str(output),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert run.returncode == 0, run.stderr
+        proposal = json.loads(output.read_text())
+        uri = next(iter(proposal["model_candidate"]["sources"].values()))["uri"]
+>       assert (output.parent / uri).resolve() == (folder / "graphify.raw.json").resolve()
+E       AssertionError: assert PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat0/aliases/graphify.raw.json') == PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat0/observations/graphify.raw.json')
+E        +  where PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat0/aliases/graphify.raw.json') = resolve()
+E        +    where resolve = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat0/actual-output') / '../aliases/graphify.raw.json').resolve
+E        +      where PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat0/actual-output') = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat0/actual-output/proposal.json').parent
+E        +  and   PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat0/observations/graphify.raw.json') = resolve()
+E        +    where resolve = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat0/observations') / 'graphify.raw.json').resolve
+
+tests/test_review_cli_loop2.py:81: AssertionError
+__ test_cli_proposal_source_locator_follows_manifest_and_output_aliases[True] __
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat1')
+output_alias = True
+
+    @pytest.mark.parametrize("output_alias", [False, True])
+    def test_cli_proposal_source_locator_follows_manifest_and_output_aliases(
+        tmp_path, output_alias
+    ):
+        folder, _, _, _, mapping = make_bundle(tmp_path)
+        aliases = tmp_path / "aliases"
+        aliases.mkdir()
+        manifest = aliases / "manifest.json"
+        manifest.symlink_to(folder / "observations.json")
+        actual_output = tmp_path / "actual-output"
+        actual_output.mkdir()
+        if output_alias:
+            output_parent = aliases / "output"
+            output_parent.symlink_to(actual_output, target_is_directory=True)
+        else:
+            output_parent = actual_output
+        mapping_path = tmp_path / "mapping.json"
+        mapping_path.write_text(json.dumps(mapping))
+        output = output_parent / "proposal.json"
+        run = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "gdd_validator",
+                "graphify",
+                "propose",
+                str(manifest),
+                "--mapping",
+                str(mapping_path),
+                "--output",
+                str(output),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert run.returncode == 0, run.stderr
+        proposal = json.loads(output.read_text())
+        uri = next(iter(proposal["model_candidate"]["sources"].values()))["uri"]
+>       assert (output.parent / uri).resolve() == (folder / "graphify.raw.json").resolve()
+E       AssertionError: assert PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat1/graphify.raw.json') == PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat1/observations/graphify.raw.json')
+E        +  where PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat1/graphify.raw.json') = resolve()
+E        +    where resolve = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat1/aliases/output') / '../graphify.raw.json').resolve
+E        +      where PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat1/aliases/output') = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat1/aliases/output/proposal.json').parent
+E        +  and   PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat1/observations/graphify.raw.json') = resolve()
+E        +    where resolve = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-60/test_cli_proposal_source_locat1/observations') / 'graphify.raw.json').resolve
+
+tests/test_review_cli_loop2.py:81: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_cli_loop2.py::test_cli_proposal_source_locator_follows_manifest_and_output_aliases[False]
+FAILED tests/test_review_cli_loop2.py::test_cli_proposal_source_locator_follows_manifest_and_output_aliases[True]
+2 failed, 3 deselected in 0.37s

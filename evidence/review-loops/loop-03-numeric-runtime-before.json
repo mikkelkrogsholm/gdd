@@ -1,0 +1,18 @@
+[
+  {
+    "case": "finite exponent beyond binary float",
+    "exit": 1,
+    "codes": [
+      "SCHEMA_INVALID"
+    ],
+    "expected": "UNKNOWN: syntactically finite JSON number beyond projection capacity"
+  },
+  {
+    "case": "integer beyond runtime digit cap",
+    "exit": 1,
+    "codes": [
+      "SCHEMA_INVALID"
+    ],
+    "expected": "UNKNOWN: syntactically finite JSON number beyond projection capacity"
+  }
+]

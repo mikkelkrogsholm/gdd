@@ -1,0 +1,404 @@
+{
+  "format": "gdd-workflow-result/0.1",
+  "applied": true,
+  "replayed": false,
+  "receipt": {
+    "format": "gdd-run-event/0.1",
+    "previous_revision": "sha256:23f67127eaccf02926a407267b0903a04f683323b7fbcb28a35e69b8fbcfa22c",
+    "event": {
+      "type": "accept",
+      "expected_revision": "sha256:23f67127eaccf02926a407267b0903a04f683323b7fbcb28a35e69b8fbcfa22c",
+      "idempotency_key": "accept.run"
+    },
+    "revision": "sha256:7277cde88aed58e3946d6bc35a581f2f069ca14849e3194a4020d8c7138e3aad"
+  },
+  "report": {
+    "format": "gdd-report/0.2",
+    "tool": {
+      "name": "gdd-validator",
+      "version": "0.5.0"
+    },
+    "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+    "profiles": [
+      "model",
+      "readiness"
+    ],
+    "scope": [
+      "action.discount",
+      "action.quote",
+      "action.tax"
+    ],
+    "checks": [
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "model.semantics",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "records.integrity",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.discount.context.package",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.discount"
+        ],
+        "reason": "Candidate work package compared with fixed-point closure.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.discount.readiness.structural",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.discount"
+        ],
+        "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.discount.ownership",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.discount"
+        ],
+        "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.tax.context.package",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.tax"
+        ],
+        "reason": "Candidate work package compared with fixed-point closure.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.tax.readiness.structural",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.tax"
+        ],
+        "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.tax.ownership",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.tax"
+        ],
+        "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.quote.context.package",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.quote"
+        ],
+        "reason": "Candidate work package compared with fixed-point closure.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.quote.readiness.structural",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.quote"
+        ],
+        "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "package.quote.ownership",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.quote"
+        ],
+        "reason": "Explicit logical file ownership and workspace declarations; actual isolation must be verified by the host.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.check_plans",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.discount",
+          "action.quote",
+          "action.tax"
+        ],
+        "reason": "Selected active checks must cover every blocking rule and method.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "parallel.independence",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.discount",
+          "action.quote",
+          "action.tax"
+        ],
+        "reason": "Declared write resources, effects, revisions and integration plans checked; runtime safety is not proven.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.packet_integrity",
+        "dimension": "readiness",
+        "result": "PASS",
+        "scope": [
+          "action.discount",
+          "action.quote",
+          "action.tax"
+        ],
+        "reason": "Complete packet must match the current model, assets, selected check declarations and original request.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.code_binding",
+        "dimension": "integration",
+        "result": "PASS",
+        "scope": [
+          "action.discount",
+          "action.quote",
+          "action.tax"
+        ],
+        "reason": "Host implementation and code revision must equal this run's integrated result.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "workflow.check_selection",
+        "dimension": "integration",
+        "result": "PASS",
+        "scope": [
+          "action.discount",
+          "action.quote",
+          "action.tax"
+        ],
+        "reason": "Verification uses the exact check plans frozen in this workplan.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "implementation.required.0",
+        "dimension": "implementation",
+        "result": "PASS",
+        "scope": [
+          "rule.discount_floor"
+        ],
+        "reason": "Applicability of recorded rule.discount_floor/stdlib_unittest; application check not executed by validator.",
+        "diagnostics": [],
+        "implementation": "implementation.quote_demo.python",
+        "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874",
+        "evidence_refs": [
+          "evidence.demo.final"
+        ]
+      },
+      {
+        "check_id": "implementation.required.1",
+        "dimension": "implementation",
+        "result": "PASS",
+        "scope": [
+          "rule.input"
+        ],
+        "reason": "Applicability of recorded rule.input/stdlib_unittest; application check not executed by validator.",
+        "diagnostics": [],
+        "implementation": "implementation.quote_demo.python",
+        "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874",
+        "evidence_refs": [
+          "evidence.demo.final"
+        ]
+      },
+      {
+        "check_id": "implementation.required.2",
+        "dimension": "implementation",
+        "result": "PASS",
+        "scope": [
+          "rule.quote_composition"
+        ],
+        "reason": "Applicability of recorded rule.quote_composition/stdlib_unittest; application check not executed by validator.",
+        "diagnostics": [],
+        "implementation": "implementation.quote_demo.python",
+        "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874",
+        "evidence_refs": [
+          "evidence.demo.final"
+        ]
+      },
+      {
+        "check_id": "implementation.required.3",
+        "dimension": "implementation",
+        "result": "PASS",
+        "scope": [
+          "rule.tax_floor"
+        ],
+        "reason": "Applicability of recorded rule.tax_floor/stdlib_unittest; application check not executed by validator.",
+        "diagnostics": [],
+        "implementation": "implementation.quote_demo.python",
+        "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874",
+        "evidence_refs": [
+          "evidence.demo.final"
+        ]
+      },
+      {
+        "check_id": "authorization.activity",
+        "dimension": "authorization",
+        "result": "GRANTED",
+        "scope": [
+          "action.discount",
+          "action.quote",
+          "action.tax"
+        ],
+        "reason": "Applicable host-trusted standing mandate.",
+        "diagnostics": [],
+        "activity": "acceptance",
+        "policy_revision": "demo-policy-v1",
+        "authority_basis": "The human authorized this bounded local GDD development demo; the lead supplies this policy explicitly as host context. No additional GDD implementation approval gate."
+      }
+    ]
+  },
+  "state": {
+    "status": "accepted",
+    "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874",
+    "packages": {
+      "package.discount": {
+        "status": "integrated",
+        "attempt": "native.discount.1",
+        "base_code_revision": "sha256:36574c16bae72b18e3439a476d0d23426da46c2ca1e0f0f71d2dfcb6e1579055",
+        "result": {
+          "type": "submit",
+          "expected_revision": "sha256:87f837521e5992f86d60356d5ca87aa3fc99ae788f610a0dc9c81144be097173",
+          "idempotency_key": "submit.package.discount",
+          "package": "package.discount",
+          "attempt": "native.discount.1",
+          "summary": "Native agent repairs exact floor division; existing tests unchanged.",
+          "artifact_uri": "worker-results/discount/discount.py",
+          "changed_resources": [
+            "quote_demo/discount.py"
+          ]
+        },
+        "integration": {
+          "type": "integrate",
+          "expected_revision": "sha256:4b7c7a0ab635c6f802f2d9e27410be76fa93fc27c9cd55b2cc6bba0fc2bd7659",
+          "idempotency_key": "integrate.package.discount",
+          "package": "package.discount",
+          "attempt": "native.discount.1",
+          "base_code_revision": "sha256:36574c16bae72b18e3439a476d0d23426da46c2ca1e0f0f71d2dfcb6e1579055",
+          "code_revision": "sha256:4f11ee83d684d71c945ef14538fe753fcaee15ae9381c24d8e5629671be98a5d",
+          "review": {
+            "reviewer": "actor.demo_lead",
+            "verdict": "PASS",
+            "evidence_uri": "evidence/discount.review.json"
+          },
+          "verified_resources": [
+            "quote_demo/discount.py"
+          ]
+        }
+      },
+      "package.tax": {
+        "status": "integrated",
+        "attempt": "native.tax.1",
+        "base_code_revision": "sha256:36574c16bae72b18e3439a476d0d23426da46c2ca1e0f0f71d2dfcb6e1579055",
+        "result": {
+          "type": "submit",
+          "expected_revision": "sha256:a986343c372cbb192a0f39e5b6529cb44d59e04931d5a6efaac63303fed2d5a1",
+          "idempotency_key": "submit.package.tax",
+          "package": "package.tax",
+          "attempt": "native.tax.1",
+          "summary": "Native agent repairs exact floor division; existing tests unchanged.",
+          "artifact_uri": "worker-results/tax/tax.py",
+          "changed_resources": [
+            "quote_demo/tax.py"
+          ]
+        },
+        "integration": {
+          "type": "integrate",
+          "expected_revision": "sha256:7654a567caf105ff015b8561983962ea7512b7b623f37b51502b17cd5c59504a",
+          "idempotency_key": "integrate.package.tax",
+          "package": "package.tax",
+          "attempt": "native.tax.1",
+          "base_code_revision": "sha256:4f11ee83d684d71c945ef14538fe753fcaee15ae9381c24d8e5629671be98a5d",
+          "code_revision": "sha256:e9c32589894dc4b697fb2187257835e044684497c981860812e3f82bf10a6d34",
+          "review": {
+            "reviewer": "actor.demo_lead",
+            "verdict": "PASS",
+            "evidence_uri": "evidence/tax.review.json"
+          },
+          "verified_resources": [
+            "quote_demo/tax.py"
+          ]
+        }
+      },
+      "package.quote": {
+        "status": "integrated",
+        "attempt": "native.quote.1",
+        "base_code_revision": "sha256:e9c32589894dc4b697fb2187257835e044684497c981860812e3f82bf10a6d34",
+        "result": {
+          "type": "submit",
+          "expected_revision": "sha256:746c5c0b01eb433455b00fbe297fd032a200b178b96c99faf8356ebe697ab525",
+          "idempotency_key": "submit.package.quote",
+          "package": "package.quote",
+          "attempt": "native.quote.1",
+          "summary": "Review actual integrated composition/CLI; add exact large integer regression without changing existing expectations.",
+          "artifact_uri": "worker-results/quote/quote-test.patch",
+          "changed_resources": [
+            "tests/test_quote.py"
+          ]
+        },
+        "integration": {
+          "type": "integrate",
+          "expected_revision": "sha256:fca1c98eba87d0e9fe9161234d722e958634e3cd39b8f9d3203d2304bdd26bae",
+          "idempotency_key": "integrate.package.quote",
+          "package": "package.quote",
+          "attempt": "native.quote.1",
+          "base_code_revision": "sha256:e9c32589894dc4b697fb2187257835e044684497c981860812e3f82bf10a6d34",
+          "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874",
+          "review": {
+            "reviewer": "actor.demo_lead",
+            "verdict": "PASS",
+            "evidence_uri": "evidence/quote.review.json"
+          },
+          "verified_resources": [
+            "tests/test_quote.py"
+          ]
+        }
+      }
+    },
+    "attempts": [
+      "native.discount.1",
+      "native.tax.1",
+      "native.quote.1"
+    ]
+  }
+}

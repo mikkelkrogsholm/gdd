@@ -1,0 +1,830 @@
+{
+  "objective": "Up to 10 complete review/adversarial/fix loops; stop early only after a clean complete round.",
+  "maximum_loops": 10,
+  "current_loop": 10,
+  "scope": "Whole GDD framework",
+  "loops": [
+    {
+      "number": 1,
+      "status": "verified",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [
+        {
+          "id": "R001",
+          "priority": "P2",
+          "title": "CLI context emits duplicate scope entries",
+          "area": "cli.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R002",
+          "priority": "P1",
+          "title": "Graphify numeric identities alias through binary float equality",
+          "area": "graphify.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R003",
+          "priority": "P1",
+          "title": "Proposal can use an index whose original is unavailable",
+          "area": "graphify_proposal.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R004",
+          "priority": "P2",
+          "title": "Symlink loop escapes controlled diagnostics",
+          "area": "loading.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R005",
+          "priority": "P2",
+          "title": "Schema end anchors admit trailing newline identities/hashes",
+          "area": "schemas",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R006",
+          "priority": "P2",
+          "title": "Publication rename can replace a concurrently created directory",
+          "area": "graphify_io.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R007",
+          "priority": "P1",
+          "title": "Annotations treated as normative type references, causing closure crash",
+          "area": "readiness.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R008",
+          "priority": "P2",
+          "title": "Support descendants wrongly rejected as implementation targets",
+          "area": "readiness.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R009",
+          "priority": "P1",
+          "title": "Character-class glob patterns wrongly prove write independence",
+          "area": "planning.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R010",
+          "priority": "P1",
+          "title": "Directory ownership and normalized workspace aliases miss overlap",
+          "area": "planning.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R011",
+          "priority": "P2",
+          "title": "Contract sources bypass declared JSON format or UTF8 decoding",
+          "area": "readiness.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R012",
+          "priority": "P3",
+          "title": "Empty integer domain accepted",
+          "area": "model.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R013",
+          "priority": "P1",
+          "title": "Narrow rejection bypassed by a broader authorization request",
+          "area": "records.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R014",
+          "priority": "P1",
+          "title": "Historical unrelated check supersession hides current plan",
+          "area": "records.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R015",
+          "priority": "P2",
+          "title": "Package and authorization evaluate inconsistent scopes",
+          "area": "validator.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R016",
+          "priority": "P2",
+          "title": "Malformed scope/profile arguments crash normalization",
+          "area": "validator.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R017",
+          "priority": "P2",
+          "title": "Report helpers accept invalid results or empty success",
+          "area": "report.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R018",
+          "priority": "P2",
+          "title": "Reference inspector rounds source/design selector ordinals",
+          "area": "visualization.py,viewer/inspector.js",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R019",
+          "priority": "P2",
+          "title": "New selection retains stale inspector scroll position",
+          "area": "viewer/inspector.js",
+          "status": "fixed_with_regression"
+        }
+      ],
+      "verification": {
+        "pytest": {
+          "passed": 310,
+          "output": "loop-01-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-01-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-01-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-01-renderer.json"
+        },
+        "browser": {
+          "passed": 20,
+          "total": 20,
+          "output": "loop-01-browser/browser-conformance.json"
+        }
+      }
+    },
+    {
+      "number": 2,
+      "status": "verified",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [
+        {
+          "id": "R020",
+          "priority": "P2",
+          "title": "Compatible narrow decision replacement wrongly blocks broader standing mandate",
+          "area": "records.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R021",
+          "priority": "P1",
+          "title": "Terminal dot and parent directory aliases miss write overlap",
+          "area": "planning.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R022",
+          "priority": "P2",
+          "title": "Unicode version digits differ between JSON Schema engines",
+          "area": "schemas",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R023",
+          "priority": "P1",
+          "title": "Native rename truncates paths at embedded NUL",
+          "area": "atomic.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R024",
+          "priority": "P2",
+          "title": "Proposal source locator uses symlink alias directory",
+          "area": "cli.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R025",
+          "priority": "P2",
+          "title": "Proposal API accepts non-materializable Unicode mappings",
+          "area": "graphify_proposal.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R026",
+          "priority": "P1",
+          "title": "Design refs bypass normative contract purpose and resolution",
+          "area": "model.py,readiness.py,schemas",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R027",
+          "priority": "P1",
+          "title": "Active local schema refs bypass dialect validation",
+          "area": "model.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R028",
+          "priority": "P2",
+          "title": "Supported JSON with deep schemas crashes validator recursion",
+          "area": "loading.py,model.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R029",
+          "priority": "P2",
+          "title": "Huge line-range decimal conversion raises uncaught ValueError",
+          "area": "model.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R030",
+          "priority": "P2",
+          "title": "Unrelated decision can supersede readiness evidence",
+          "area": "readiness.py",
+          "status": "fixed_with_regression"
+        }
+      ],
+      "verification": {
+        "pytest": {
+          "passed": 456,
+          "output": "loop-02-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-02-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-02-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-02-renderer.json"
+        },
+        "browser": {
+          "passed": 20,
+          "total": 20,
+          "output": "loop-02-browser/browser-conformance.json"
+        }
+      }
+    },
+    {
+      "number": 3,
+      "status": "verified",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [
+        {
+          "id": "R031",
+          "priority": "P2",
+          "title": "Tablet landscape layout hides filters and list behind inspector",
+          "area": "viewer/style.css",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R032",
+          "priority": "P2",
+          "title": "NUL in schema-valid model asset path crashes resolver",
+          "area": "loading.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R033",
+          "priority": "P2",
+          "title": "Whole-project trusted readiness review fails to cover screen",
+          "area": "readiness.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R034",
+          "priority": "P2",
+          "title": "Deep Graphify input crashes or becomes false corruption instead of unsupported projection",
+          "area": "graphify.py,graphify_io.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R035",
+          "priority": "P2",
+          "title": "Incompatible verified binding supersession hides current binding",
+          "area": "records.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R036",
+          "priority": "P1",
+          "title": "Dangling current evidence scope can receive model and implementation PASS",
+          "area": "records.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R037",
+          "priority": "P1",
+          "title": "Default project readiness silently omits custom node kinds",
+          "area": "readiness.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R038",
+          "priority": "P1",
+          "title": "Readiness ignores model-ID collision inside selected context",
+          "area": "readiness.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R039",
+          "priority": "P2",
+          "title": "Raw Graphify profile overridden by observations.json basename",
+          "area": "graphify_io.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R040",
+          "priority": "P2",
+          "title": "Finite JSON numbers beyond runtime precision or digit capacity misclassified invalid",
+          "area": "graphify.py",
+          "status": "fixed_with_regression"
+        }
+      ],
+      "verification": {
+        "pytest": {
+          "passed": 542,
+          "output": "loop-03-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-03-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-03-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-03-renderer.json"
+        },
+        "browser": {
+          "passed": 21,
+          "total": 21,
+          "output": "loop-03-browser/browser-conformance.json"
+        }
+      }
+    },
+    {
+      "number": 4,
+      "status": "verified",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [
+        {
+          "id": "R041",
+          "priority": "P2",
+          "title": "Remapped YAML tag directive bypasses built-in tag guard",
+          "area": "loading.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R042",
+          "priority": "P2",
+          "title": "Nested integer-domain check rejects inhabited optional or nullable types",
+          "area": "model.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R043",
+          "priority": "P1",
+          "title": "Invalid active records or supersession can support semantic PASS or GRANTED",
+          "area": "records.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R044",
+          "priority": "P2",
+          "title": "Viewer API silently splits string scope into character IDs",
+          "area": "visualization.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R045",
+          "priority": "P2",
+          "title": "Desktop explorer controls overflow panel and footer at short viewport",
+          "area": "viewer/style.css",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R046",
+          "priority": "P2",
+          "title": "Long valid project title clips or overlaps fixed header",
+          "area": "viewer/style.css",
+          "status": "fixed_with_regression"
+        }
+      ],
+      "verification": {
+        "pytest": {
+          "passed": 691,
+          "output": "loop-04-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-04-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-04-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-04-renderer.json"
+        },
+        "browser": {
+          "passed": 23,
+          "total": 23,
+          "output": "loop-04-browser/browser-conformance.json"
+        }
+      }
+    },
+    {
+      "number": 5,
+      "status": "verified",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [
+        {
+          "id": "R047",
+          "priority": "P1",
+          "title": "Used supersedes reference can target a record ID colliding with model ID",
+          "area": "record_integrity.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R048",
+          "priority": "P1",
+          "title": "Intended imports path can contradict explicit architecture forbid without model failure",
+          "area": "model.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R049",
+          "priority": "P2",
+          "title": "Duplicate surrogate JSON key makes diagnostics unencodable and blocks recovery",
+          "area": "loading.py,graphify.py",
+          "status": "fixed_with_regression"
+        }
+      ],
+      "verification": {
+        "pytest": {
+          "passed": 777,
+          "output": "loop-05-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-05-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-05-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-05-renderer.json"
+        },
+        "browser": {
+          "passed": 23,
+          "total": 23,
+          "output": "loop-05-browser/browser-conformance.json"
+        }
+      }
+    },
+    {
+      "number": 6,
+      "status": "verified",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [
+        {
+          "id": "R050",
+          "priority": "P1",
+          "title": "Internally colliding model IDs can support positive record and authorization claims",
+          "area": "record_integrity.py,records.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R051",
+          "priority": "P1",
+          "title": "Finite decimal rounding erases known model constraint contradiction",
+          "area": "loading.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R052",
+          "priority": "P2",
+          "title": "Parallel integration plan omits required verification methods without becoming unresolved",
+          "area": "planning.py",
+          "status": "fixed_with_regression"
+        }
+      ],
+      "verification": {
+        "pytest": {
+          "passed": 940,
+          "output": "loop-06-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-06-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-06-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-06-renderer.json"
+        },
+        "browser": {
+          "passed": 23,
+          "total": 23,
+          "output": "loop-06-browser/browser-conformance.json"
+        }
+      }
+    },
+    {
+      "number": 7,
+      "status": "verified",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [
+        {
+          "id": "R053",
+          "priority": "P1",
+          "title": "Supported numeric constraints and JSON Schema assertions use rounded binary float/int semantics",
+          "area": "model.py,loading.py,numeric schema validation",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R054",
+          "priority": "P2",
+          "title": "Known evidence check hash mismatch is omitted from global record integrity diagnostics",
+          "area": "records.py",
+          "status": "fixed_with_regression"
+        }
+      ],
+      "verification": {
+        "pytest": {
+          "passed": 1072,
+          "output": "loop-07-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-07-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-07-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-07-renderer.json"
+        },
+        "browser": {
+          "passed": 23,
+          "total": 23,
+          "output": "loop-07-browser/browser-conformance.json"
+        }
+      }
+    },
+    {
+      "number": 8,
+      "status": "verified",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [
+        {
+          "id": "R055",
+          "priority": "P2",
+          "title": "Parser recursion capacity is reported as an invalid JSON/YAML feature rather than unresolved input validity",
+          "area": "loading.py",
+          "status": "fixed_with_regression"
+        }
+      ],
+      "verification": {
+        "pytest": {
+          "passed": 1106,
+          "output": "loop-08-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-08-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-08-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-08-renderer.json"
+        },
+        "browser": {
+          "passed": 23,
+          "total": 23,
+          "output": "loop-08-browser/browser-conformance.json"
+        }
+      }
+    },
+    {
+      "number": 9,
+      "status": "verified",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [
+        {
+          "id": "R056",
+          "priority": "P2",
+          "title": "Unavailable primary model fabricates secondary-record project mismatch",
+          "area": "validator.py",
+          "status": "fixed_with_regression"
+        },
+        {
+          "id": "R057",
+          "priority": "P2",
+          "title": "Viewer serialization exhaustion escapes as traceback or false artifact corruption",
+          "area": "visualization.py",
+          "status": "fixed_with_regression"
+        }
+      ],
+      "verification": {
+        "pytest": {
+          "passed": 1230,
+          "output": "loop-09-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-09-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-09-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-09-renderer.json"
+        },
+        "browser": {
+          "passed": 23,
+          "total": 23,
+          "output": "loop-09-browser/browser-conformance.json"
+        }
+      }
+    },
+    {
+      "number": 10,
+      "status": "verified_clean",
+      "reviews": [
+        "model/readiness/planning",
+        "records/authority/evidence/orchestration",
+        "Graphify/identity/integrity",
+        "viewer/browser",
+        "lead CLI/packaging/cross-contract"
+      ],
+      "findings": [],
+      "verification": {
+        "pytest": {
+          "passed": 1230,
+          "output": "loop-09-tests.txt"
+        },
+        "standard": {
+          "matched": 58,
+          "total": 58,
+          "output": "loop-09-standard.json"
+        },
+        "graphify": {
+          "matched": 18,
+          "total": 18,
+          "output": "loop-09-graphify.json"
+        },
+        "renderer": {
+          "matched": 16,
+          "total": 16,
+          "output": "loop-09-renderer.json"
+        },
+        "browser": {
+          "passed": 23,
+          "total": 23,
+          "output": "loop-09-browser/browser-conformance.json"
+        }
+      },
+      "verification_basis": "Integrated loop-09 results apply to the identical reviewed source. Fresh loop-10 area reviews also passed; hashes unchanged since loop-10 start.",
+      "fresh_review": {
+        "model": {
+          "regressions": 573,
+          "independent_checks": 709
+        },
+        "protocol": {
+          "regressions": 447,
+          "independent_checks": 334
+        },
+        "graphify_cli_filesystem": {
+          "regressions": 417
+        },
+        "viewer": {
+          "regressions": 65,
+          "browser": 23,
+          "independent_browser": 35,
+          "api_schema": 13,
+          "numeric_boundary": 16,
+          "numeric_fidelity": 4,
+          "renderer_cases": 16,
+          "additional_capacity_controls": 4
+        }
+      }
+    }
+  ],
+  "status": "complete",
+  "confirmed_finding_groups": 57,
+  "last_round_clean": true,
+  "final_verification": {
+    "source_state": "final-reviewed-state-proof.json",
+    "wheel_smoke": "final-wheel-smoke.json",
+    "package_source_match": "final-package-source-match.json",
+    "sdist_source_match": "final-sdist-source-match.json",
+    "installed_cli_steps": 17
+  }
+}

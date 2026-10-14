@@ -1,0 +1,79 @@
+{
+  "nodes": [
+    {
+      "id": "reservation_py",
+      "label": "reservation.py",
+      "file_type": "code",
+      "source_file": "reservation.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "reservation_reservation",
+      "label": "Reservation",
+      "file_type": "code",
+      "source_file": "reservation.py",
+      "source_location": "L1",
+      "_callable": true,
+      "_callable_class": true
+    },
+    {
+      "id": "reservation_reserve",
+      "label": "reserve()",
+      "file_type": "code",
+      "source_file": "reservation.py",
+      "source_location": "L5",
+      "_callable": true
+    }
+  ],
+  "edges": [
+    {
+      "source": "reservation_py",
+      "target": "reservation_reservation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "reservation.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "reservation_py",
+      "target": "reservation_reserve",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "reservation.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "reservation_reserve",
+      "target": "reservation_reservation",
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "reservation.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "reservation_reserve",
+      "target": "reservation_reservation",
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "reservation.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "reservation_reserve",
+      "target": "reservation_reservation",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "reservation.py",
+      "source_location": "L6",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

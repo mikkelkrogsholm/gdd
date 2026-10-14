@@ -1,0 +1,134 @@
+{
+  "scope": "Authoring checks of this standard draft; not a reference GDD validator or application verification",
+  "versions": {
+    "jsonschema": "4.24.0",
+    "PyYAML": "6.0.3"
+  },
+  "checks": [
+    {
+      "check": "schemas.metaschema",
+      "result": "PASS",
+      "detail": "6 schemas valid against Draft 2020-12"
+    },
+    {
+      "check": "examples.schema",
+      "result": "PASS",
+      "detail": "10 example artifacts passed their representation schema"
+    },
+    {
+      "check": "examples.reference_consistency",
+      "result": "PASS",
+      "detail": "5 models: IDs, basic references, state transitions, decomposition and pinned assets checked (not full GDD conformance)"
+    },
+    {
+      "check": "migration.preservation",
+      "result": "PASS",
+      "detail": "Original IDs, original edges, action requirements, rule statements and scenario expectations preserved; legacy YAML bytes match"
+    },
+    {
+      "check": "snapshot.records",
+      "result": "PASS",
+      "detail": "Example snapshot recomputed; planned records point to it; no executed application evidence"
+    },
+    {
+      "check": "schema.negative_controls",
+      "result": "PASS",
+      "detail": "16 positive/negative representation cases matched expected outcomes"
+    },
+    {
+      "check": "parsing.negative_controls",
+      "result": "PASS",
+      "detail": "Duplicate YAML keys and anchor/alias rejected by temporary authoring-check loader"
+    },
+    {
+      "check": "documents.links",
+      "result": "PASS",
+      "detail": "34 local links resolve; 0 evidence-report link pending creation"
+    }
+  ],
+  "executed_representation_cases": [
+    {
+      "id": "case.schema.sketch",
+      "expected": "PASS",
+      "observed": "PASS"
+    },
+    {
+      "id": "case.schema.concert",
+      "expected": "PASS",
+      "observed": "PASS"
+    },
+    {
+      "id": "case.schema.unknown_field",
+      "expected": "FAIL",
+      "observed": "FAIL"
+    },
+    {
+      "id": "case.schema.output_type",
+      "expected": "FAIL",
+      "observed": "FAIL"
+    },
+    {
+      "id": "case.schema.unknown_core_relation",
+      "expected": "FAIL",
+      "observed": "FAIL"
+    },
+    {
+      "id": "case.schema.approval_activity",
+      "expected": "FAIL",
+      "observed": "FAIL"
+    },
+    {
+      "id": "case.schema.acceptance_revision",
+      "expected": "FAIL",
+      "observed": "FAIL"
+    },
+    {
+      "id": "case.schema.binding_revision",
+      "expected": "FAIL",
+      "observed": "FAIL"
+    },
+    {
+      "id": "case.schema.check_revision",
+      "expected": "FAIL",
+      "observed": "FAIL"
+    },
+    {
+      "id": "case.schema.pass_not_executed",
+      "expected": "FAIL",
+      "observed": "FAIL"
+    },
+    {
+      "id": "case.schema.implementation_report",
+      "expected": "FAIL",
+      "observed": "FAIL"
+    },
+    {
+      "id": "case.schema.valid_approval",
+      "expected": "PASS",
+      "observed": "PASS"
+    },
+    {
+      "id": "case.schema.valid_acceptance",
+      "expected": "PASS",
+      "observed": "PASS"
+    },
+    {
+      "id": "case.schema.valid_observed_binding",
+      "expected": "PASS",
+      "observed": "PASS"
+    },
+    {
+      "id": "case.schema.valid_unknown_evidence",
+      "expected": "PASS",
+      "observed": "PASS"
+    },
+    {
+      "id": "case.schema.valid_implementation_report",
+      "expected": "PASS",
+      "observed": "PASS"
+    }
+  ],
+  "semantic_cases": "Normative expected outcomes, reviewed; not executed by a GDD validator",
+  "total_conformance_cases": 58,
+  "example_spec_revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210"
+}

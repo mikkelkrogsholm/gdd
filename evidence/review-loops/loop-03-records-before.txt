@@ -1,0 +1,243 @@
+FFFFF...FF...F.FFF                                                       [100%]
+=================================== FAILURES ===================================
+__ test_incompatible_verified_binding_does_not_retire_current_proof[change0] ___
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+change = {'code_revision': 'code.other'}
+
+    @pytest.mark.parametrize("change", [
+        {"code_revision": "code.other"},
+        {"implementation": "implementation.other"},
+        {"spec_revision": "sha256:" + "a" * 64},
+        {"targets": ["rule.y"]},
+    ])
+    def test_incompatible_verified_binding_does_not_retire_current_proof(fixture, change):
+        _, records, host = fixture
+        assert implementation_result(report(fixture)) == "PASS"
+        records["binding.other"] = {
+            **deepcopy(records["binding.x"]), "supersedes": "binding.x", **change,
+        }
+        host["verified_bindings"].append("binding.other")
+        value = report(fixture)
+>       assert implementation_result(value) == "PASS"
+E       AssertionError: assert 'UNKNOWN' == 'PASS'
+E         
+E         - PASS
+E         + UNKNOWN
+
+tests/test_review_protocol_loop3.py:107: AssertionError
+__ test_incompatible_verified_binding_does_not_retire_current_proof[change1] ___
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+change = {'implementation': 'implementation.other'}
+
+    @pytest.mark.parametrize("change", [
+        {"code_revision": "code.other"},
+        {"implementation": "implementation.other"},
+        {"spec_revision": "sha256:" + "a" * 64},
+        {"targets": ["rule.y"]},
+    ])
+    def test_incompatible_verified_binding_does_not_retire_current_proof(fixture, change):
+        _, records, host = fixture
+        assert implementation_result(report(fixture)) == "PASS"
+        records["binding.other"] = {
+            **deepcopy(records["binding.x"]), "supersedes": "binding.x", **change,
+        }
+        host["verified_bindings"].append("binding.other")
+        value = report(fixture)
+>       assert implementation_result(value) == "PASS"
+E       AssertionError: assert 'UNKNOWN' == 'PASS'
+E         
+E         - PASS
+E         + UNKNOWN
+
+tests/test_review_protocol_loop3.py:107: AssertionError
+__ test_incompatible_verified_binding_does_not_retire_current_proof[change2] ___
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+change = {'spec_revision': 'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+
+    @pytest.mark.parametrize("change", [
+        {"code_revision": "code.other"},
+        {"implementation": "implementation.other"},
+        {"spec_revision": "sha256:" + "a" * 64},
+        {"targets": ["rule.y"]},
+    ])
+    def test_incompatible_verified_binding_does_not_retire_current_proof(fixture, change):
+        _, records, host = fixture
+        assert implementation_result(report(fixture)) == "PASS"
+        records["binding.other"] = {
+            **deepcopy(records["binding.x"]), "supersedes": "binding.x", **change,
+        }
+        host["verified_bindings"].append("binding.other")
+        value = report(fixture)
+>       assert implementation_result(value) == "PASS"
+E       AssertionError: assert 'UNKNOWN' == 'PASS'
+E         
+E         - PASS
+E         + UNKNOWN
+
+tests/test_review_protocol_loop3.py:107: AssertionError
+__ test_incompatible_verified_binding_does_not_retire_current_proof[change3] ___
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+change = {'targets': ['rule.y']}
+
+    @pytest.mark.parametrize("change", [
+        {"code_revision": "code.other"},
+        {"implementation": "implementation.other"},
+        {"spec_revision": "sha256:" + "a" * 64},
+        {"targets": ["rule.y"]},
+    ])
+    def test_incompatible_verified_binding_does_not_retire_current_proof(fixture, change):
+        _, records, host = fixture
+        assert implementation_result(report(fixture)) == "PASS"
+        records["binding.other"] = {
+            **deepcopy(records["binding.x"]), "supersedes": "binding.x", **change,
+        }
+        host["verified_bindings"].append("binding.other")
+        value = report(fixture)
+>       assert implementation_result(value) == "PASS"
+E       AssertionError: assert 'UNKNOWN' == 'PASS'
+E         
+E         - PASS
+E         + UNKNOWN
+
+tests/test_review_protocol_loop3.py:107: AssertionError
+___________ test_narrow_binding_cannot_retire_wider_current_mapping ____________
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+
+    def test_narrow_binding_cannot_retire_wider_current_mapping(fixture):
+        _, records, host = fixture
+        records["binding.x"]["targets"].append("rule.y")
+        records.pop("binding.y")
+        host["verified_bindings"] = ["binding.x"]
+        records["binding.other"] = {
+            **deepcopy(records["binding.x"]), "supersedes": "binding.x", "targets": ["rule.x"],
+        }
+        host["verified_bindings"].append("binding.other")
+        value = report(fixture, ["entity.x", "entity.y"])
+        assert implementation_result(value, "rule.x") == "PASS"
+>       assert implementation_result(value, "rule.y") == "PASS"
+E       AssertionError: assert 'UNKNOWN' == 'PASS'
+E         
+E         - PASS
+E         + UNKNOWN
+
+tests/test_review_protocol_loop3.py:122: AssertionError
+_____ test_dangling_current_evidence_scope_is_invalid_and_not_usable[PASS] _____
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+result = 'PASS'
+
+    @pytest.mark.parametrize("result", ["PASS", "FAIL"])
+    def test_dangling_current_evidence_scope_is_invalid_and_not_usable(fixture, result):
+        _, records, _ = fixture
+        records["evidence.x"].update(scope=["rule.x", "entity.deleted"], result=result)
+        value = report(fixture)
+>       assert aggregate(value["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop3.py:160: AssertionError
+_____ test_dangling_current_evidence_scope_is_invalid_and_not_usable[FAIL] _____
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+result = 'FAIL'
+
+    @pytest.mark.parametrize("result", ["PASS", "FAIL"])
+    def test_dangling_current_evidence_scope_is_invalid_and_not_usable(fixture, result):
+        _, records, _ = fixture
+        records["evidence.x"].update(scope=["rule.x", "entity.deleted"], result=result)
+        value = report(fixture)
+>       assert aggregate(value["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop3.py:160: AssertionError
+______________ test_record_id_is_not_an_extra_model_scope_target _______________
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+
+    def test_record_id_is_not_an_extra_model_scope_target(fixture):
+        _, records, _ = fixture
+        records["evidence.x"]["scope"].append("binding.x")
+        value = report(fixture)
+>       assert aggregate(value["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop3.py:183: AssertionError
+_____ test_unknown_evidence_revision_cannot_resolve_or_prove_current_scope _____
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+
+    def test_unknown_evidence_revision_cannot_resolve_or_prove_current_scope(fixture):
+        _, records, _ = fixture
+        records["evidence.x"].update(
+            spec_revision=None, scope=["rule.x", "entity.deleted"], result="UNKNOWN", executed=False,
+        )
+        value = report(fixture)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_protocol_loop3.py:206: AssertionError
+______ test_invalid_evidence_does_not_hide_independent_valid_result[PASS] ______
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+independent_result = 'PASS'
+
+    @pytest.mark.parametrize("independent_result", ["PASS", "FAIL"])
+    def test_invalid_evidence_does_not_hide_independent_valid_result(fixture, independent_result):
+        _, records, _ = fixture
+        records["evidence.x"]["scope"].append("entity.deleted")
+        records["evidence.y"]["result"] = independent_result
+        value = report(fixture, ["entity.x", "entity.y"])
+>       assert aggregate(value["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop3.py:217: AssertionError
+______ test_invalid_evidence_does_not_hide_independent_valid_result[FAIL] ______
+
+fixture = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-74/test_... 'code_revision': 'code.x', 'supported_methods': ['synthetic'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+independent_result = 'FAIL'
+
+    @pytest.mark.parametrize("independent_result", ["PASS", "FAIL"])
+    def test_invalid_evidence_does_not_hide_independent_valid_result(fixture, independent_result):
+        _, records, _ = fixture
+        records["evidence.x"]["scope"].append("entity.deleted")
+        records["evidence.y"]["result"] = independent_result
+        value = report(fixture, ["entity.x", "entity.y"])
+>       assert aggregate(value["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop3.py:217: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_protocol_loop3.py::test_incompatible_verified_binding_does_not_retire_current_proof[change0]
+FAILED tests/test_review_protocol_loop3.py::test_incompatible_verified_binding_does_not_retire_current_proof[change1]
+FAILED tests/test_review_protocol_loop3.py::test_incompatible_verified_binding_does_not_retire_current_proof[change2]
+FAILED tests/test_review_protocol_loop3.py::test_incompatible_verified_binding_does_not_retire_current_proof[change3]
+FAILED tests/test_review_protocol_loop3.py::test_narrow_binding_cannot_retire_wider_current_mapping
+FAILED tests/test_review_protocol_loop3.py::test_dangling_current_evidence_scope_is_invalid_and_not_usable[PASS]
+FAILED tests/test_review_protocol_loop3.py::test_dangling_current_evidence_scope_is_invalid_and_not_usable[FAIL]
+FAILED tests/test_review_protocol_loop3.py::test_record_id_is_not_an_extra_model_scope_target
+FAILED tests/test_review_protocol_loop3.py::test_unknown_evidence_revision_cannot_resolve_or_prove_current_scope
+FAILED tests/test_review_protocol_loop3.py::test_invalid_evidence_does_not_hide_independent_valid_result[PASS]
+FAILED tests/test_review_protocol_loop3.py::test_invalid_evidence_does_not_hide_independent_valid_result[FAIL]
+11 failed, 7 passed in 0.33s

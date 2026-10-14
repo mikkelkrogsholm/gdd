@@ -1,0 +1,898 @@
+format: gdd-conformance-cases/0.2
+status: Standardcases; forventede resultater, ikke en udført validatorrapport.
+patch_format: RFC 6902 JSON Patch; paths er JSON Pointer. Condition-cases kræver de beskrevne ekstra inputs.
+cases:
+- id: case.schema.sketch
+  base: ../examples/sketch.gdd.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: schema_execution
+- id: case.schema.concert
+  base: ../examples/concert.gdd.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: schema_execution
+- id: case.schema.unknown_field
+  base: ../examples/concert.gdd.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  verification: schema_execution
+  patches:
+  - op: add
+    path: /nodes/action.reserve/ready
+    value: true
+- id: case.schema.output_type
+  base: ../examples/concert.gdd.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  verification: schema_execution
+  patches:
+  - op: replace
+    path: /nodes/action.reserve/contract/output
+    value:
+      type: database_handle
+- id: case.schema.unknown_core_relation
+  base: ../examples/concert.gdd.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  verification: schema_execution
+  patches:
+  - op: replace
+    path: /edges/0/relation
+    value: magic
+- id: case.schema.unknown_version
+  base: ../examples/concert.gdd.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: UNKNOWN
+    diagnostic: FORMAT_UNSUPPORTED
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /format
+    value: gdd/99.0
+- id: case.parse.duplicate_key
+  base: ../examples/sketch.gdd.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: YAML_DUPLICATE_KEY
+  verification: parser_execution
+  condition: Indlæs rå YAML med to format-nøgler; afvis før schema. Ikke en JSON Patch-case.
+- id: case.parse.alias
+  base: ../examples/sketch.gdd.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: YAML_FEATURE_FORBIDDEN
+  verification: parser_execution
+  condition: Indlæs rå YAML med anchor/alias/merge key; afvis før schema.
+- id: case.model.dangling_edge
+  base: ../examples/concert.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: REFERENCE_UNRESOLVED
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /edges/0/to
+    value: component.missing
+- id: case.model.wrong_endpoint
+  base: ../examples/concert.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: ENDPOINT_KIND_INVALID
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /edges/0/to
+    value: entity.concert
+- id: case.model.id_collision
+  base: ../examples/concert.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: ID_COLLISION
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /edges/0/id
+    value: action.reserve
+- id: case.model.two_parents
+  base: ../examples/refinement.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: REFINEMENT_PARENT_AMBIGUOUS
+  verification: normative_review
+  patches:
+  - op: add
+    path: /edges/-
+    value:
+      id: edge.extra.parent
+      from: action.charge
+      relation: refines
+      to: component.checkout
+- id: case.model.refinement_cycle
+  base: ../examples/refinement.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: REFINEMENT_CYCLE
+  verification: normative_review
+  patches:
+  - op: add
+    path: /edges/-
+    value:
+      id: edge.cycle
+      from: component.checkout
+      relation: refines
+      to: action.charge
+- id: case.model.parallel_edges
+  base: ../examples/refinement.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: normative_review
+  condition: Bevar alle 6 edges, inklusive calls og depends_on mellem action.charge og action.record.
+- id: case.model.calls_cycle
+  base: ../examples/refinement.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: normative_review
+  patches:
+  - op: add
+    path: /edges/-
+    value:
+      id: edge.call.back
+      from: action.record
+      relation: calls
+      to: action.charge
+- id: case.model.navigation_cycle
+  base: ../examples/sketch.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: normative_review
+  patches:
+  - op: add
+    path: /nodes/screen.a
+    value:
+      kind: screen
+      description: A
+  - op: add
+    path: /nodes/screen.b
+    value:
+      kind: screen
+      description: B
+  - op: add
+    path: /edges/-
+    value:
+      id: edge.nav.ab
+      from: screen.a
+      relation: navigates_to
+      to: screen.b
+  - op: add
+    path: /edges/-
+    value:
+      id: edge.nav.ba
+      from: screen.b
+      relation: navigates_to
+      to: screen.a
+- id: case.machine.initial
+  base: ../examples/concert.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: STATE_UNDECLARED
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /nodes/machine.reservation/machine/initial
+    value: paid
+- id: case.machine.ambiguous
+  base: ../examples/concert.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: TRANSITION_AMBIGUOUS
+  verification: normative_review
+  patches:
+  - op: add
+    path: /nodes/machine.reservation/machine/transitions/-
+    value:
+      id: transition.duplicate
+      from: absent
+      to: reserved
+      trigger: action.reserve
+      guard: Autentificeret bruger; eksisterende koncert; ny request-nøgle; mindst én ledig plads.
+      effects: Opret reservation med state=reserved og bind request-nøglen atomart under kapacitetsbeskyttelsen.
+- id: case.machine.terminal
+  base: ../examples/concert.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: TERMINAL_MUTATION
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /nodes/machine.reservation/machine/transitions/1/from
+    value: cancelled
+- id: case.machine.trigger
+  base: ../examples/concert.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: REFERENCE_UNRESOLVED
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /nodes/machine.reservation/machine/transitions/0/trigger
+    value: action.missing
+- id: case.readiness.sketch
+  base: ../examples/sketch.gdd.yaml
+  profile: readiness
+  scope:
+  - action.hello
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: READINESS_CONTRACT_MISSING
+  verification: normative_review
+- id: case.readiness.contract
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope:
+  - action.reserve
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: READINESS_CONTRACT_MISSING
+  verification: normative_review
+  patches:
+  - op: remove
+    path: /nodes/action.reserve/contract/output
+- id: case.readiness.normal
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope:
+  - action.reserve
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: SCENARIO_CATEGORY_MISSING
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /nodes/scenario.reserve/scenario/category
+    value: negative
+- id: case.readiness.concurrency
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope:
+  - action.reserve
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: SCENARIO_CATEGORY_MISSING
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /nodes/action.reserve/contract/risks/concurrency/scenarios
+    value: []
+- id: case.readiness.effects
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope:
+  - action.reserve
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: EFFECTS_INCOMPLETE
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /nodes/action.reserve/contract/effects_complete
+    value: false
+- id: case.readiness.question
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope:
+  - action.reserve
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: QUESTION_BLOCKS_SCOPE
+  verification: normative_review
+  patches:
+  - op: add
+    path: /questions
+    value:
+      question.capacity:
+        statement: Hvilken kapacitetspolitik gælder?
+        targets:
+        - action.reserve
+        blocks:
+        - implementation
+        status: open
+- id: case.readiness.unrelated_question
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope:
+  - action.reserve
+  expected:
+    dimension: readiness
+    result: PASS
+    diagnostic: null
+  verification: normative_review
+  patches:
+  - op: add
+    path: /questions
+    value:
+      question.design:
+        statement: Hvilken farve bruges på skærmen?
+        targets:
+        - screen.reserve
+        blocks:
+        - implementation
+        status: open
+  condition: Scopeclosure følger udgående action-afhængigheder; frontend-skitse og dens spørgsmål er ikke et
+    implementationstarget. Alle eksterne backend-kontrakter er tilgængelige.
+- id: case.readiness.design
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope:
+  - screen.reserve
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: READINESS_CONTRACT_MISSING
+  verification: normative_review
+  condition: Skærmen er en skitse uden interaction-kontrakt. Desuden er designasset utilgængeligt; dette integrationscheck
+    er UNKNOWN.
+- id: case.auth.absent
+  base: ../examples/concert.gdd.yaml
+  profile: records
+  scope:
+  - action.reserve
+  expected:
+    dimension: authorization
+    result: UNRESOLVED
+    diagnostic: AUTHORIZATION_UNRESOLVED
+  verification: normative_review
+  condition: Der er intet betroet workflowmandat ud over modelfilen.
+- id: case.auth.standing
+  base: ../examples/concert.gdd.yaml
+  profile: records
+  scope:
+  - action.reserve
+  expected:
+    dimension: authorization
+    result: GRANTED
+    diagnostic: null
+  verification: normative_review
+  condition: Tilføj et betroet, revisionsbundet standing mandate for implementation af action.reserve med gældende
+    actor. Ingen ekstra menneskelig godkendelse kræves.
+- id: case.extension.undeclared
+  base: ../examples/sketch.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: EXTENSION_UNDECLARED
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /nodes/action.hello/kind
+    value: example.missing.action
+  - op: add
+    path: /nodes/action.hello/data
+    value: {}
+- id: case.extension.unsupported
+  base: ../examples/extension.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: UNKNOWN
+    diagnostic: EXTENSION_UNSUPPORTED
+  verification: normative_review
+  condition: Extension er deklareret og asset findes, men consumeren understøtter ikke dens schema-/traverseringsprofil.
+- id: case.extension.override
+  base: ../examples/extension.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: EXTENSION_OVERRIDE
+  verification: normative_review
+  condition: Erstat extensionens custom relationkey med core-navnet calls; denne extension kan ikke overtage
+    coresemantik.
+- id: case.extension.data
+  base: ../examples/extension.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: EXTENSION_DATA_INVALID
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /nodes/sensor.room/data/unit
+    value: 12
+- id: case.evidence.stale
+  base: ../examples/concert.records.yaml
+  profile: records
+  scope: []
+  expected:
+    dimension: implementation
+    result: UNKNOWN
+    diagnostic: EVIDENCE_STALE
+  verification: normative_review
+  condition: Et ellers validt PASS-receipt gælder en tidligere spec- eller coderevision; historisk resultat
+    bevares, aktuel anvendelighed er UNKNOWN.
+- id: case.evidence.environment
+  base: ../examples/concert.records.yaml
+  profile: records
+  scope: []
+  expected:
+    dimension: implementation
+    result: UNKNOWN
+    diagnostic: REQUIRED_ENVIRONMENT_MISSING
+  verification: normative_review
+  condition: Concurrencycheck blev kun udført mod en stubdatabase; faktisk valgt transaktionsmiljø er ikke
+    testet.
+- id: case.integration.loss
+  base: ../examples/refinement.gdd.yaml
+  profile: import.graphify
+  scope: []
+  expected:
+    dimension: integration
+    result: FAIL
+    diagnostic: IMPORT_LOSS_DETECTED
+  verification: normative_review
+  condition: En transformer skriver kun én af de to rå relationer mellem samme endpoints.
+- id: case.integration.unsupported
+  base: ../examples/concert.gdd.yaml
+  profile: import.graphify
+  scope: []
+  expected:
+    dimension: integration
+    result: UNKNOWN
+    diagnostic: FORMAT_UNSUPPORTED
+  verification: normative_review
+  condition: Graphify-artifact deklarerer et layout eller en schema-version, som importerprofilen ikke understøtter.
+- id: case.parallel.write_overlap
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope: []
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: WRITE_OWNERSHIP_CONFLICT
+  verification: normative_review
+  condition: To planlagte pakker fra forskellige communities skriver samme kontraktfil uden serialisering.
+- id: case.parallel.unknown_effects
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope: []
+  expected:
+    dimension: readiness
+    result: UNKNOWN
+    diagnostic: INDEPENDENCE_UNRESOLVED
+  verification: normative_review
+  condition: Pakker har ingen kendte edges mellem sig, men effekt- og afhængighedserklæringer mangler.
+- id: case.context.global
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope: []
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: APPLICABLE_RULE_OMITTED
+  verification: normative_review
+  condition: En global regel er udeladt fra arbejdspakken, fordi den ligger uden for et hop-tal eller en community.
+- id: case.include.escape
+  base: ../examples/fragmented.gdd.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: ASSET_PATH_INVALID
+  verification: normative_review
+  patches:
+  - op: replace
+    path: /includes/0
+    value: ../outside.fragment.yaml
+- id: case.include.collision
+  base: ../examples/fragmented.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: ID_COLLISION
+  verification: normative_review
+  condition: Tilføj entity.note i manifestets nodes med samme ID som i fragmentet; ingen override.
+- id: case.schema.approval_activity
+  base: ../examples/concert.records.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  verification: schema_execution
+  patches:
+  - op: add
+    path: /records/decision.fixture
+    value:
+      kind: decision
+      topic: approval
+      scope:
+      - action.reserve
+      spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      policy_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      actor:
+        id: actor.fixture
+        kind: human
+      outcome: accepted
+      rationale: Syntetisk conformance-input, ikke en faktisk godkendelse.
+- id: case.schema.acceptance_revision
+  base: ../examples/concert.records.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  verification: schema_execution
+  patches:
+  - op: add
+    path: /records/decision.fixture
+    value:
+      kind: decision
+      topic: approval
+      scope:
+      - action.reserve
+      spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      policy_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      actor:
+        id: actor.fixture
+        kind: human
+      outcome: accepted
+      rationale: Syntetisk conformance-input, ikke en faktisk godkendelse.
+      activity: acceptance
+- id: case.schema.binding_revision
+  base: ../examples/concert.records.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  verification: schema_execution
+  patches:
+  - op: replace
+    path: /records/binding.component.api/status
+    value: observed
+- id: case.schema.check_revision
+  base: ../examples/concert.records.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  verification: schema_execution
+  patches:
+  - op: add
+    path: /records/evidence.fixture
+    value:
+      kind: evidence
+      check: check.rule.capacity
+      implementation: implementation.example
+      spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      code_revision: synthetic-fixture-only
+      checker:
+        name: fixture
+        version: '0'
+      scope:
+      - rule.capacity
+      result: PASS
+      executed: true
+      reason: Syntetisk conformance-input, ikke udført evidens.
+      environment: {}
+      evidence_uri: fixture://not-an-execution
+- id: case.schema.pass_not_executed
+  base: ../examples/concert.records.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  verification: schema_execution
+  patches:
+  - op: add
+    path: /records/evidence.fixture
+    value:
+      kind: evidence
+      check: check.rule.capacity
+      implementation: implementation.example
+      spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      code_revision: synthetic-fixture-only
+      checker:
+        name: fixture
+        version: '0'
+      scope:
+      - rule.capacity
+      result: PASS
+      executed: false
+      reason: Syntetisk conformance-input, ikke udført evidens.
+      environment: {}
+      evidence_uri: fixture://not-an-execution
+      check_revision: sha256:0000000000000000000000000000000000000000000000000000000000000000
+- id: case.schema.implementation_report
+  base: ../examples/illustrative.report.json
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  verification: schema_execution
+  patches:
+  - op: replace
+    path: /checks/0
+    value:
+      check_id: check.fixture
+      dimension: implementation
+      result: PASS
+      scope:
+      - action.reserve
+      reason: Syntetisk input uden nødvendige revisionsfelter.
+      diagnostics: []
+- id: case.readiness.contract_source
+  base: ../examples/concert.gdd.yaml
+  profile: readiness
+  scope:
+  - action.reserve
+  expected:
+    dimension: readiness
+    result: FAIL
+    diagnostic: CONTRACT_SOURCE_UNPINNED
+  verification: normative_review
+  patches:
+  - op: add
+    path: /nodes/action.reserve/source_refs/-
+    value:
+      source: source.design
+      purpose: contract
+      selector:
+        kind: whole-document
+- id: case.records.check_plan_missing
+  base: ../examples/concert.records.yaml
+  profile: records
+  scope: []
+  expected:
+    dimension: implementation
+    result: UNKNOWN
+    diagnostic: CHECK_PLAN_MISSING
+  verification: normative_review
+  condition: En blocking rule har en erklæret verification-metode uden entydig aktiv checkplan; ingen vakuøs
+    PASS.
+- id: case.records.check_hash_changed
+  base: ../examples/concert.records.yaml
+  profile: records
+  scope: []
+  expected:
+    dimension: implementation
+    result: UNKNOWN
+    diagnostic: CHECK_REVISION_MISMATCH
+  verification: normative_review
+  condition: Evidence-check_revision matcher ikke den registrerede uforanderlige checkplan; resultatet kan
+    ikke anvendes som aktuel evidens.
+- id: case.extension.identity
+  base: ../examples/extension.gdd.yaml
+  profile: model
+  scope: []
+  expected:
+    dimension: model
+    result: FAIL
+    diagnostic: EXTENSION_IDENTITY_MISMATCH
+  verification: normative_review
+  condition: Assetets namespace/version matcher ikke deklarationen, selv hvis en ny bytehash er indsat.
+- id: case.schema.valid_approval
+  base: ../examples/concert.records.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: schema_execution
+  patches:
+  - op: add
+    path: /records/decision.fixture
+    value:
+      kind: decision
+      topic: approval
+      scope:
+      - action.reserve
+      spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      policy_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      actor:
+        id: actor.fixture
+        kind: human
+      outcome: accepted
+      rationale: Syntetisk schemafixture; ikke faktisk godkendelse.
+      activity: implementation
+- id: case.schema.valid_acceptance
+  base: ../examples/concert.records.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: schema_execution
+  patches:
+  - op: add
+    path: /records/decision.fixture
+    value:
+      kind: decision
+      topic: approval
+      scope:
+      - action.reserve
+      spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      policy_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      actor:
+        id: actor.fixture
+        kind: human
+      outcome: accepted
+      rationale: Syntetisk schemafixture; ikke faktisk godkendelse.
+      activity: acceptance
+      implementation: implementation.fixture
+      code_revision: synthetic-only
+- id: case.schema.valid_observed_binding
+  base: ../examples/concert.records.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: schema_execution
+  patches:
+  - op: add
+    path: /records/binding.fixture
+    value:
+      kind: binding
+      spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+      targets:
+      - action.reserve
+      implementation: implementation.fixture
+      role: code
+      resource: synthetic.py
+      selector:
+        kind: whole-document
+      status: observed
+      revision: synthetic-resource
+      code_revision: synthetic-code
+- id: case.schema.valid_unknown_evidence
+  base: ../examples/concert.records.yaml
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: schema_execution
+  patches:
+  - op: add
+    path: /records/evidence.fixture
+    value:
+      kind: evidence
+      check: check.rule.capacity
+      check_revision: sha256:0000000000000000000000000000000000000000000000000000000000000000
+      implementation: implementation.fixture
+      spec_revision: null
+      code_revision: null
+      checker:
+        name: synthetic
+        version: '0'
+      scope:
+      - rule.capacity
+      result: UNKNOWN
+      executed: false
+      reason: Syntetisk schemafixture; ingen kørsel.
+      environment: {}
+      evidence_uri: fixture://not-a-run
+- id: case.schema.valid_implementation_report
+  base: ../examples/illustrative.report.json
+  profile: representation
+  scope: []
+  expected:
+    dimension: model
+    result: PASS
+    diagnostic: null
+  verification: schema_execution
+  patches:
+  - op: replace
+    path: /checks/0
+    value:
+      check_id: check.fixture
+      dimension: implementation
+      result: PASS
+      scope:
+      - action.reserve
+      reason: Syntetisk schemafixture; ikke faktisk verifikation.
+      diagnostics: []
+      implementation: implementation.fixture
+      code_revision: synthetic-code
+      evidence_refs:
+      - evidence.fixture
+  - op: replace
+    path: /spec_revision
+    value: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210

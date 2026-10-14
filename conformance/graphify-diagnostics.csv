@@ -1,0 +1,3 @@
+code,description
+GRAPHIFY_DIRECTION_UNKNOWN,Original direction is not established by the stored endpoints and selected profile.
+GRAPHIFY_INPUT_PROVENANCE_UNKNOWN,Input cannot be classified as a producer-claimed code candidate under the selected profile.

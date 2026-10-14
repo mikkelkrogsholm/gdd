@@ -1,0 +1,2014 @@
+FFFFFFF.FFF..FFF.FFFFFF...F......FFFFFF....FFFF.FF.FFFFFFFFFFFFFFFFFFFF. [ 72%]
+FFFFFFFFFFFFFFFFF........FF                                              [100%]
+=================================== FAILURES ===================================
+__________ test_annotations_cannot_supply_type_references[metadata0] ___________
+
+examples = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_annotations_cannot_supply0/examples')
+metadata = {'type': 'reference'}
+
+    @pytest.mark.parametrize(
+        "metadata",
+        [
+            {"type": "reference"},
+            {"type": "reference", "target": "entity.unrelated"},
+            {"type": "reference", "target": ["not", "an", "ID"]},
+        ],
+    )
+    def test_annotations_cannot_supply_type_references(examples, metadata):
+        path = write_model(
+            examples,
+            lambda m: m["nodes"]["action.reserve"].update(
+                annotations={"example.metadata": metadata}
+            ),
+        )
+>       report = validate(path, profiles=["readiness"], scope=["action.reserve"])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_model.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:254: in validate
+    validate_readiness(bundle, scope, host)
+gdd_validator/readiness.py:130: in validate_readiness
+    closure = context_closure(bundle, sorted(selected))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/readiness.py:41: in context_closure
+    found.update(type_references(node))
+                 ^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/model.py:70: in type_references
+    result |= type_references(item)
+              ^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/model.py:70: in type_references
+    result |= type_references(item)
+              ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'type': 'reference'}
+
+    def type_references(value: Any) -> set[str]:
+        if isinstance(value, dict):
+>           result = {value["target"]} if value.get("type") == "reference" else set()
+                      ^^^^^^^^^^^^^^^
+E           KeyError: 'target'
+
+gdd_validator/model.py:68: KeyError
+__________ test_annotations_cannot_supply_type_references[metadata1] ___________
+
+examples = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_annotations_cannot_supply1/examples')
+metadata = {'type': 'reference', 'target': 'entity.unrelated'}
+
+    @pytest.mark.parametrize(
+        "metadata",
+        [
+            {"type": "reference"},
+            {"type": "reference", "target": "entity.unrelated"},
+            {"type": "reference", "target": ["not", "an", "ID"]},
+        ],
+    )
+    def test_annotations_cannot_supply_type_references(examples, metadata):
+        path = write_model(
+            examples,
+            lambda m: m["nodes"]["action.reserve"].update(
+                annotations={"example.metadata": metadata}
+            ),
+        )
+        report = validate(path, profiles=["readiness"], scope=["action.reserve"])
+        assert aggregate(report["checks"], "readiness") == "PASS"
+>       assert "entity.unrelated" not in context_closure(load_bundle(path), ["action.reserve"])
+E       AssertionError: assert 'entity.unrelated' not in {'action.cancel', 'action.reserve', 'component.api', 'component.reservations', 'component.storage', 'entity.concert', ...}
+E        +  where {'action.cancel', 'action.reserve', 'component.api', 'component.reservations', 'component.storage', 'entity.concert', ...} = context_closure(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...'assets': [{'path': 'review.gdd.json', 'sha256': '590d8779959aedc73ee4f97e17d2f2e5259a4c71632ba518f949d969d9c73cd4'}]}), ['action.reserve'])
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...'assets': [{'path': 'review.gdd.json', 'sha256': '590d8779959aedc73ee4f97e17d2f2e5259a4c71632ba518f949d969d9c73cd4'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_annotations_cannot_supply1/examples/review.gdd.json'))
+
+tests/test_review_model.py:58: AssertionError
+__________ test_annotations_cannot_supply_type_references[metadata2] ___________
+
+examples = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_annotations_cannot_supply2/examples')
+metadata = {'type': 'reference', 'target': ['not', 'an', 'ID']}
+
+    @pytest.mark.parametrize(
+        "metadata",
+        [
+            {"type": "reference"},
+            {"type": "reference", "target": "entity.unrelated"},
+            {"type": "reference", "target": ["not", "an", "ID"]},
+        ],
+    )
+    def test_annotations_cannot_supply_type_references(examples, metadata):
+        path = write_model(
+            examples,
+            lambda m: m["nodes"]["action.reserve"].update(
+                annotations={"example.metadata": metadata}
+            ),
+        )
+>       report = validate(path, profiles=["readiness"], scope=["action.reserve"])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_model.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:254: in validate
+    validate_readiness(bundle, scope, host)
+gdd_validator/readiness.py:130: in validate_readiness
+    closure = context_closure(bundle, sorted(selected))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/readiness.py:41: in context_closure
+    found.update(type_references(node))
+                 ^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/model.py:70: in type_references
+    result |= type_references(item)
+              ^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/model.py:70: in type_references
+    result |= type_references(item)
+              ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'type': 'reference', 'target': ['not', 'an', 'ID']}
+
+    def type_references(value: Any) -> set[str]:
+        if isinstance(value, dict):
+>           result = {value["target"]} if value.get("type") == "reference" else set()
+                     ^^^^^^^^^^^^^^^^^
+E           TypeError: unhashable type: 'list'
+
+gdd_validator/model.py:68: TypeError
+____________ test_type_reference_traversal_uses_only_type_positions ____________
+
+    def test_type_reference_traversal_uses_only_type_positions():
+        spec = {
+            "type": "object",
+            "properties": {
+                "reservation": {
+                    "type": "array",
+                    "items": {"type": "reference", "target": "entity.reservation"},
+                }
+            },
+            # Arbitrary metadata is not a typespec, even if an external caller supplies it.
+            "default": {"type": "reference", "target": "entity.not_a_dependency"},
+            "annotations": {"type": "reference"},
+        }
+>       assert type_references(spec) == {"entity.reservation"}
+               ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_model.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/model.py:70: in type_references
+    result |= type_references(item)
+              ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'type': 'reference'}
+
+    def type_references(value: Any) -> set[str]:
+        if isinstance(value, dict):
+>           result = {value["target"]} if value.get("type") == "reference" else set()
+                      ^^^^^^^^^^^^^^^
+E           KeyError: 'target'
+
+gdd_validator/model.py:68: KeyError
+____ test_support_refinement_descendants_remain_read_context[rule.capacity] ____
+
+examples = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_support_refinement_descen0/examples')
+support = 'rule.capacity'
+
+    @pytest.mark.parametrize("support", ["rule.capacity", "scenario.reserve"])
+    def test_support_refinement_descendants_remain_read_context(examples, support):
+        path = write_model(
+            examples,
+            lambda m: m["edges"].append(
+                {
+                    "id": "edge.support.refines",
+                    "from": support,
+                    "relation": "refines",
+                    "to": "action.reserve",
+                }
+            ),
+        )
+        report = validate(path, profiles=["readiness"], scope=["action.reserve"])
+        assert aggregate(report["checks"], "model") == "PASS"
+>       assert aggregate(report["checks"], "readiness") == "PASS"
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model.py:92: AssertionError
+__ test_support_refinement_descendants_remain_read_context[scenario.reserve] ___
+
+examples = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_support_refinement_descen1/examples')
+support = 'scenario.reserve'
+
+    @pytest.mark.parametrize("support", ["rule.capacity", "scenario.reserve"])
+    def test_support_refinement_descendants_remain_read_context(examples, support):
+        path = write_model(
+            examples,
+            lambda m: m["edges"].append(
+                {
+                    "id": "edge.support.refines",
+                    "from": support,
+                    "relation": "refines",
+                    "to": "action.reserve",
+                }
+            ),
+        )
+        report = validate(path, profiles=["readiness"], scope=["action.reserve"])
+        assert aggregate(report["checks"], "model") == "PASS"
+>       assert aggregate(report["checks"], "readiness") == "PASS"
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model.py:92: AssertionError
+_____ test_parallel_posix_resource_ownership[src/[ab].py-src/a.py-UNKNOWN] _____
+
+left = 'src/[ab].py', right = 'src/a.py', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_model.py:143: AssertionError
+__________ test_parallel_posix_resource_ownership[src/-src/a.py-FAIL] __________
+
+left = 'src/', right = 'src/a.py', result = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_model.py:143: AssertionError
+___ test_parallel_posix_resource_ownership[src/a/-src/a/nested/file.py-FAIL] ___
+
+left = 'src/a/', right = 'src/a/nested/file.py', result = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_model.py:143: AssertionError
+___________ test_parallel_posix_resource_ownership[./-src/a.py-FAIL] ___________
+
+left = './', right = 'src/a.py', result = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_model.py:143: AssertionError
+__ test_parallel_posix_resource_ownership[src/a.py::symbol-src/a.py-UNKNOWN] ___
+
+left = 'src/a.py::symbol', right = 'src/a.py', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_model.py:143: AssertionError
+______ test_parallel_posix_resource_ownership[src\\a.py-src/a.py-UNKNOWN] ______
+
+left = 'src\\a.py', right = 'src/a.py', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_model.py:143: AssertionError
+____ test_parallel_posix_resource_ownership[../outside.py-src/a.py-UNKNOWN] ____
+
+left = '../outside.py', right = 'src/a.py', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_model.py:143: AssertionError
+_________ test_parallel_workspace_aliases_conflict[workspace.shared/.] _________
+
+alias = 'workspace.shared/.'
+
+    @pytest.mark.parametrize("alias", ["workspace.shared/.", "temp/../workspace.shared"])
+    def test_parallel_workspace_aliases_conflict(alias):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["workspace"] = "workspace.shared"
+        plan["packages"][1]["workspace"] = alias
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert "WRITE_OWNERSHIP_CONFLICT" in diagnostics(report)
+E       AssertionError: assert 'WRITE_OWNERSHIP_CONFLICT' in set()
+E        +  where set() = diagnostics({'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-validator', 'version': '0.4.0'}, 'spec_revision': 'sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210', 'profiles': ['readiness'], ...})
+
+tests/test_review_model.py:165: AssertionError
+______ test_parallel_workspace_aliases_conflict[temp/../workspace.shared] ______
+
+alias = 'temp/../workspace.shared'
+
+    @pytest.mark.parametrize("alias", ["workspace.shared/.", "temp/../workspace.shared"])
+    def test_parallel_workspace_aliases_conflict(alias):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["workspace"] = "workspace.shared"
+        plan["packages"][1]["workspace"] = alias
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert "WRITE_OWNERSHIP_CONFLICT" in diagnostics(report)
+E       AssertionError: assert 'WRITE_OWNERSHIP_CONFLICT' in set()
+E        +  where set() = diagnostics({'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-validator', 'version': '0.4.0'}, 'spec_revision': 'sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210', 'profiles': ['readiness'], ...})
+
+tests/test_review_model.py:165: AssertionError
+________ test_parallel_absolute_and_relative_workspace_aliases_conflict ________
+
+    def test_parallel_absolute_and_relative_workspace_aliases_conflict():
+        path = ROOT / "examples/concert.gdd.yaml"
+        bundle = load_bundle(path)
+        plan = parallel_plan(bundle)
+        plan["packages"][0]["workspace"] = "workspace.shared"
+        plan["packages"][1]["workspace"] = str(bundle.root / "workspace.shared")
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert "WRITE_OWNERSHIP_CONFLICT" in diagnostics(report)
+E       AssertionError: assert 'WRITE_OWNERSHIP_CONFLICT' in set()
+E        +  where set() = diagnostics({'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-validator', 'version': '0.4.0'}, 'spec_revision': 'sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210', 'profiles': ['readiness'], ...})
+
+tests/test_review_model.py:175: AssertionError
+_ test_contract_source_format_and_encoding[requirements: do X\n-application/json-selector0-UNKNOWN] _
+
+examples = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_contract_source_format_an0/examples')
+raw = b'requirements: do X\n', format = 'application/json'
+selector = {'kind': 'json-pointer', 'value': '/requirements'}
+result = 'UNKNOWN'
+
+    @pytest.mark.parametrize(
+        "raw,format,selector,result",
+        [
+            (b"requirements: do X\n", "application/json", {"kind": "json-pointer", "value": "/requirements"}, "UNKNOWN"),
+            (b"{", "json", {"kind": "whole-document"}, "UNKNOWN"),
+            (b"\xff\xfe\x80", "text/plain", {"kind": "whole-document"}, "UNKNOWN"),
+            (b'{"requirements":"do X"}', "application/json", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
+            (b"requirements: do X\n", "application/yaml", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
+            ("Læs kravet\u2028præcist".encode("utf-8"), "text/plain", {"kind": "whole-document"}, "PASS"),
+        ],
+    )
+    def test_contract_source_format_and_encoding(examples, raw, format, selector, result):
+        (examples / "contract.asset").write_bytes(raw)
+    
+        def add_source(model):
+            model.setdefault("sources", {})["source.contract"] = {
+                "role": "knowledge",
+                "title": "Contract input",
+                "uri": "contract.asset",
+                "format": format,
+                "normative": True,
+                "revision": {"sha256": sha256(raw).hexdigest()},
+            }
+            model["nodes"]["action.reserve"].setdefault("source_refs", []).append(
+                {"source": "source.contract", "purpose": "contract", "selector": selector}
+            )
+    
+        report = validate(write_model(examples, add_source), profiles=["readiness"], scope=["action.reserve"])
+        assert aggregate(report["checks"], "model") == "PASS"
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_model.py:207: AssertionError
+______ test_contract_source_format_and_encoding[{-json-selector1-UNKNOWN] ______
+
+examples = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_contract_source_format_an1/examples')
+raw = b'{', format = 'json', selector = {'kind': 'whole-document'}
+result = 'UNKNOWN'
+
+    @pytest.mark.parametrize(
+        "raw,format,selector,result",
+        [
+            (b"requirements: do X\n", "application/json", {"kind": "json-pointer", "value": "/requirements"}, "UNKNOWN"),
+            (b"{", "json", {"kind": "whole-document"}, "UNKNOWN"),
+            (b"\xff\xfe\x80", "text/plain", {"kind": "whole-document"}, "UNKNOWN"),
+            (b'{"requirements":"do X"}', "application/json", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
+            (b"requirements: do X\n", "application/yaml", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
+            ("Læs kravet\u2028præcist".encode("utf-8"), "text/plain", {"kind": "whole-document"}, "PASS"),
+        ],
+    )
+    def test_contract_source_format_and_encoding(examples, raw, format, selector, result):
+        (examples / "contract.asset").write_bytes(raw)
+    
+        def add_source(model):
+            model.setdefault("sources", {})["source.contract"] = {
+                "role": "knowledge",
+                "title": "Contract input",
+                "uri": "contract.asset",
+                "format": format,
+                "normative": True,
+                "revision": {"sha256": sha256(raw).hexdigest()},
+            }
+            model["nodes"]["action.reserve"].setdefault("source_refs", []).append(
+                {"source": "source.contract", "purpose": "contract", "selector": selector}
+            )
+    
+        report = validate(write_model(examples, add_source), profiles=["readiness"], scope=["action.reserve"])
+        assert aggregate(report["checks"], "model") == "PASS"
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_model.py:207: AssertionError
+_ test_contract_source_format_and_encoding[\xff\xfe\x80-text/plain-selector2-UNKNOWN] _
+
+examples = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_contract_source_format_an2/examples')
+raw = b'\xff\xfe\x80', format = 'text/plain'
+selector = {'kind': 'whole-document'}, result = 'UNKNOWN'
+
+    @pytest.mark.parametrize(
+        "raw,format,selector,result",
+        [
+            (b"requirements: do X\n", "application/json", {"kind": "json-pointer", "value": "/requirements"}, "UNKNOWN"),
+            (b"{", "json", {"kind": "whole-document"}, "UNKNOWN"),
+            (b"\xff\xfe\x80", "text/plain", {"kind": "whole-document"}, "UNKNOWN"),
+            (b'{"requirements":"do X"}', "application/json", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
+            (b"requirements: do X\n", "application/yaml", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
+            ("Læs kravet\u2028præcist".encode("utf-8"), "text/plain", {"kind": "whole-document"}, "PASS"),
+        ],
+    )
+    def test_contract_source_format_and_encoding(examples, raw, format, selector, result):
+        (examples / "contract.asset").write_bytes(raw)
+    
+        def add_source(model):
+            model.setdefault("sources", {})["source.contract"] = {
+                "role": "knowledge",
+                "title": "Contract input",
+                "uri": "contract.asset",
+                "format": format,
+                "normative": True,
+                "revision": {"sha256": sha256(raw).hexdigest()},
+            }
+            model["nodes"]["action.reserve"].setdefault("source_refs", []).append(
+                {"source": "source.contract", "purpose": "contract", "selector": selector}
+            )
+    
+        report = validate(write_model(examples, add_source), profiles=["readiness"], scope=["action.reserve"])
+        assert aggregate(report["checks"], "model") == "PASS"
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_model.py:207: AssertionError
+________ test_integer_interval_respects_null_and_omission[extra0-FAIL] _________
+
+extra = {}, result = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "extra,result",
+        [({}, "FAIL"), ({"nullable": True}, "PASS"), ({"optional": True}, "PASS")],
+    )
+    def test_integer_interval_respects_null_and_omission(extra, result):
+        model = {
+            "format": "gdd/0.2",
+            "project": {"id": "example.interval", "title": "Interval", "goal": "Check domain consistency"},
+            "nodes": {
+                "entity.value": {
+                    "kind": "entity",
+                    "description": "Domain value",
+                    "fields": {"x": {"type": "integer", "minimum": 0.2, "maximum": 0.8, **extra}},
+                }
+            },
+            "edges": [],
+        }
+        bundle = Bundle(ROOT / "interval.fixture.json", model=model)
+        validate_model(bundle)
+>       assert aggregate(bundle.checks, "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_model.py:229: AssertionError
+_ test_partial_rejection_denies_overlapping_and_whole_project_scope[scope1-explicit] _
+
+requirement = 'explicit', scope = ['action.reserve', 'action.cancel']
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("scope", [["action.reserve"], ["action.reserve", "action.cancel"], []])
+    def test_partial_rejection_denies_overlapping_and_whole_project_scope(requirement, scope):
+        bundle = load_bundle(MODEL)
+        bundle.records["decision.reject"] = approval(bundle, "rejected", ["action.reserve"])
+        bundle.records["decision.accept"] = approval(bundle, "accepted", [])
+        host = {
+            "policy": policy(bundle, requirement),
+            "trusted_decisions": ["decision.reject", "decision.accept"],
+        }
+        authorize(bundle, "implementation", scope, host)
+>       assert aggregate(bundle.checks, "authorization") == "DENIED"
+E       AssertionError: assert 'GRANTED' == 'DENIED'
+E         
+E         - DENIED
+E         + GRANTED
+
+tests/test_review_protocol.py:56: AssertionError
+_ test_partial_rejection_denies_overlapping_and_whole_project_scope[scope1-standing] _
+
+requirement = 'standing', scope = ['action.reserve', 'action.cancel']
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("scope", [["action.reserve"], ["action.reserve", "action.cancel"], []])
+    def test_partial_rejection_denies_overlapping_and_whole_project_scope(requirement, scope):
+        bundle = load_bundle(MODEL)
+        bundle.records["decision.reject"] = approval(bundle, "rejected", ["action.reserve"])
+        bundle.records["decision.accept"] = approval(bundle, "accepted", [])
+        host = {
+            "policy": policy(bundle, requirement),
+            "trusted_decisions": ["decision.reject", "decision.accept"],
+        }
+        authorize(bundle, "implementation", scope, host)
+>       assert aggregate(bundle.checks, "authorization") == "DENIED"
+E       AssertionError: assert 'GRANTED' == 'DENIED'
+E         
+E         - DENIED
+E         + GRANTED
+
+tests/test_review_protocol.py:56: AssertionError
+_ test_partial_rejection_denies_overlapping_and_whole_project_scope[scope1-none] _
+
+requirement = 'none', scope = ['action.reserve', 'action.cancel']
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("scope", [["action.reserve"], ["action.reserve", "action.cancel"], []])
+    def test_partial_rejection_denies_overlapping_and_whole_project_scope(requirement, scope):
+        bundle = load_bundle(MODEL)
+        bundle.records["decision.reject"] = approval(bundle, "rejected", ["action.reserve"])
+        bundle.records["decision.accept"] = approval(bundle, "accepted", [])
+        host = {
+            "policy": policy(bundle, requirement),
+            "trusted_decisions": ["decision.reject", "decision.accept"],
+        }
+        authorize(bundle, "implementation", scope, host)
+>       assert aggregate(bundle.checks, "authorization") == "DENIED"
+E       AssertionError: assert 'GRANTED' == 'DENIED'
+E         
+E         - DENIED
+E         + GRANTED
+
+tests/test_review_protocol.py:56: AssertionError
+_ test_partial_rejection_denies_overlapping_and_whole_project_scope[scope2-explicit] _
+
+requirement = 'explicit', scope = []
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("scope", [["action.reserve"], ["action.reserve", "action.cancel"], []])
+    def test_partial_rejection_denies_overlapping_and_whole_project_scope(requirement, scope):
+        bundle = load_bundle(MODEL)
+        bundle.records["decision.reject"] = approval(bundle, "rejected", ["action.reserve"])
+        bundle.records["decision.accept"] = approval(bundle, "accepted", [])
+        host = {
+            "policy": policy(bundle, requirement),
+            "trusted_decisions": ["decision.reject", "decision.accept"],
+        }
+        authorize(bundle, "implementation", scope, host)
+>       assert aggregate(bundle.checks, "authorization") == "DENIED"
+E       AssertionError: assert 'GRANTED' == 'DENIED'
+E         
+E         - DENIED
+E         + GRANTED
+
+tests/test_review_protocol.py:56: AssertionError
+_ test_partial_rejection_denies_overlapping_and_whole_project_scope[scope2-standing] _
+
+requirement = 'standing', scope = []
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("scope", [["action.reserve"], ["action.reserve", "action.cancel"], []])
+    def test_partial_rejection_denies_overlapping_and_whole_project_scope(requirement, scope):
+        bundle = load_bundle(MODEL)
+        bundle.records["decision.reject"] = approval(bundle, "rejected", ["action.reserve"])
+        bundle.records["decision.accept"] = approval(bundle, "accepted", [])
+        host = {
+            "policy": policy(bundle, requirement),
+            "trusted_decisions": ["decision.reject", "decision.accept"],
+        }
+        authorize(bundle, "implementation", scope, host)
+>       assert aggregate(bundle.checks, "authorization") == "DENIED"
+E       AssertionError: assert 'GRANTED' == 'DENIED'
+E         
+E         - DENIED
+E         + GRANTED
+
+tests/test_review_protocol.py:56: AssertionError
+_ test_partial_rejection_denies_overlapping_and_whole_project_scope[scope2-none] _
+
+requirement = 'none', scope = []
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("scope", [["action.reserve"], ["action.reserve", "action.cancel"], []])
+    def test_partial_rejection_denies_overlapping_and_whole_project_scope(requirement, scope):
+        bundle = load_bundle(MODEL)
+        bundle.records["decision.reject"] = approval(bundle, "rejected", ["action.reserve"])
+        bundle.records["decision.accept"] = approval(bundle, "accepted", [])
+        host = {
+            "policy": policy(bundle, requirement),
+            "trusted_decisions": ["decision.reject", "decision.accept"],
+        }
+        authorize(bundle, "implementation", scope, host)
+>       assert aggregate(bundle.checks, "authorization") == "DENIED"
+E       AssertionError: assert 'GRANTED' == 'DENIED'
+E         
+E         - DENIED
+E         + GRANTED
+
+tests/test_review_protocol.py:56: AssertionError
+_ test_incompatible_check_supersession_preserves_selected_failed_plan[spec_revision] _
+
+incompatibility = 'spec_revision'
+
+    @pytest.mark.parametrize("incompatibility", ["spec_revision", "method", "scope"])
+    def test_incompatible_check_supersession_preserves_selected_failed_plan(incompatibility):
+        bundle = load_bundle(MODEL)
+        original = bundle.records["check.rule.capacity"]
+        if incompatibility == "scope":
+            original["scope"].append("rule.authorization")
+        replacement = {**deepcopy(original), "supersedes": "check.rule.capacity"}
+        if incompatibility == "spec_revision":
+            replacement["spec_revision"] = "sha256:" + "0" * 64
+        elif incompatibility == "method":
+            replacement["method"] = "unrelated_method"
+        else:
+            replacement["scope"] = ["rule.capacity"]
+        bundle.records["check.replacement"] = replacement
+        bundle.records["evidence.failure"] = evidence(bundle, "check.rule.capacity", "FAIL")
+        host = evidence_host(bundle, ["evidence.failure"])
+        host["check_selection"] = {"rule.capacity": {original["method"]: "check.rule.capacity"}}
+>       assert capacity_result(bundle, host) == "FAIL"
+E       AssertionError: assert 'UNKNOWN' == 'FAIL'
+E         
+E         - FAIL
+E         + UNKNOWN
+
+tests/test_review_protocol.py:165: AssertionError
+_ test_incompatible_check_supersession_preserves_selected_failed_plan[method] __
+
+incompatibility = 'method'
+
+    @pytest.mark.parametrize("incompatibility", ["spec_revision", "method", "scope"])
+    def test_incompatible_check_supersession_preserves_selected_failed_plan(incompatibility):
+        bundle = load_bundle(MODEL)
+        original = bundle.records["check.rule.capacity"]
+        if incompatibility == "scope":
+            original["scope"].append("rule.authorization")
+        replacement = {**deepcopy(original), "supersedes": "check.rule.capacity"}
+        if incompatibility == "spec_revision":
+            replacement["spec_revision"] = "sha256:" + "0" * 64
+        elif incompatibility == "method":
+            replacement["method"] = "unrelated_method"
+        else:
+            replacement["scope"] = ["rule.capacity"]
+        bundle.records["check.replacement"] = replacement
+        bundle.records["evidence.failure"] = evidence(bundle, "check.rule.capacity", "FAIL")
+        host = evidence_host(bundle, ["evidence.failure"])
+        host["check_selection"] = {"rule.capacity": {original["method"]: "check.rule.capacity"}}
+>       assert capacity_result(bundle, host) == "FAIL"
+E       AssertionError: assert 'UNKNOWN' == 'FAIL'
+E         
+E         - FAIL
+E         + UNKNOWN
+
+tests/test_review_protocol.py:165: AssertionError
+__ test_incompatible_check_supersession_preserves_selected_failed_plan[scope] __
+
+incompatibility = 'scope'
+
+    @pytest.mark.parametrize("incompatibility", ["spec_revision", "method", "scope"])
+    def test_incompatible_check_supersession_preserves_selected_failed_plan(incompatibility):
+        bundle = load_bundle(MODEL)
+        original = bundle.records["check.rule.capacity"]
+        if incompatibility == "scope":
+            original["scope"].append("rule.authorization")
+        replacement = {**deepcopy(original), "supersedes": "check.rule.capacity"}
+        if incompatibility == "spec_revision":
+            replacement["spec_revision"] = "sha256:" + "0" * 64
+        elif incompatibility == "method":
+            replacement["method"] = "unrelated_method"
+        else:
+            replacement["scope"] = ["rule.capacity"]
+        bundle.records["check.replacement"] = replacement
+        bundle.records["evidence.failure"] = evidence(bundle, "check.rule.capacity", "FAIL")
+        host = evidence_host(bundle, ["evidence.failure"])
+        host["check_selection"] = {"rule.capacity": {original["method"]: "check.rule.capacity"}}
+>       assert capacity_result(bundle, host) == "FAIL"
+E       AssertionError: assert 'UNKNOWN' == 'FAIL'
+E         
+E         - FAIL
+E         + UNKNOWN
+
+tests/test_review_protocol.py:165: AssertionError
+____ test_historical_unrelated_check_cannot_turn_ambiguous_plans_into_pass _____
+
+    def test_historical_unrelated_check_cannot_turn_ambiguous_plans_into_pass():
+        bundle = load_bundle(MODEL)
+        bundle.records["check.alternative"] = deepcopy(bundle.records["check.rule.capacity"])
+        bundle.records["evidence.failure"] = evidence(bundle, "check.rule.capacity", "FAIL")
+        bundle.records["evidence.pass"] = evidence(bundle, "check.alternative", "PASS")
+        host = evidence_host(bundle, ["evidence.failure", "evidence.pass"])
+        assert capacity_result(bundle, host) == "UNKNOWN"
+        bundle.records["check.historical"] = {
+            "kind": "check",
+            "spec_revision": "sha256:" + "0" * 64,
+            "scope": ["rule.authorization"],
+            "method": "authorization_tests",
+            "required_environment": [],
+            "negative_controls": [],
+            "supersedes": "check.rule.capacity",
+        }
+>       assert capacity_result(bundle, host) == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_protocol.py:184: AssertionError
+___ test_package_effective_scope_drives_readiness_authority_and_report[None] ___
+
+explicit_scope = None
+
+    @pytest.mark.parametrize("explicit_scope", [None, [], ["action.reserve"]])
+    def test_package_effective_scope_drives_readiness_authority_and_report(explicit_scope):
+        bundle = load_bundle(MODEL)
+        report = validate(
+            MODEL,
+            profiles=["readiness"],
+            scope=explicit_scope,
+            package=context_package(bundle, ["action.reserve"]),
+            activity="implementation",
+            host_context={"policy": policy(bundle, scope=["action.cancel"])},
+        )
+>       assert report["scope"] == ["action.reserve"]
+E       AssertionError: assert [] == ['action.reserve']
+E         
+E         Right contains one more item: 'action.reserve'
+E         Use -v to get more diff
+
+tests/test_review_protocol.py:250: AssertionError
+_ test_package_effective_scope_drives_readiness_authority_and_report[explicit_scope1] _
+
+explicit_scope = []
+
+    @pytest.mark.parametrize("explicit_scope", [None, [], ["action.reserve"]])
+    def test_package_effective_scope_drives_readiness_authority_and_report(explicit_scope):
+        bundle = load_bundle(MODEL)
+        report = validate(
+            MODEL,
+            profiles=["readiness"],
+            scope=explicit_scope,
+            package=context_package(bundle, ["action.reserve"]),
+            activity="implementation",
+            host_context={"policy": policy(bundle, scope=["action.cancel"])},
+        )
+>       assert report["scope"] == ["action.reserve"]
+E       AssertionError: assert [] == ['action.reserve']
+E         
+E         Right contains one more item: 'action.reserve'
+E         Use -v to get more diff
+
+tests/test_review_protocol.py:250: AssertionError
+_____________ test_package_conflicting_explicit_scope_is_rejected ______________
+
+    def test_package_conflicting_explicit_scope_is_rejected():
+        bundle = load_bundle(MODEL)
+>       with pytest.raises(ValueError, match="conflicts"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:259: Failed
+_______ test_parallel_effective_union_drives_authority_and_report[None] ________
+
+explicit_scope = None
+
+    @pytest.mark.parametrize("explicit_scope", [None, [], ["action.cancel", "action.reserve"]])
+    def test_parallel_effective_union_drives_authority_and_report(explicit_scope):
+        bundle = load_bundle(MODEL)
+        report = validate(
+            MODEL,
+            profiles=["readiness"],
+            scope=explicit_scope,
+            parallel_plan=parallel_plan(bundle),
+            activity="implementation",
+            host_context={"policy": policy(bundle, scope=["action.reserve"])},
+        )
+>       assert report["scope"] == ["action.reserve", "action.cancel"]
+E       AssertionError: assert [] == ['action.rese...ction.cancel']
+E         
+E         Right contains 2 more items, first extra item: 'action.reserve'
+E         Use -v to get more diff
+
+tests/test_review_protocol.py:278: AssertionError
+__ test_parallel_effective_union_drives_authority_and_report[explicit_scope1] __
+
+explicit_scope = []
+
+    @pytest.mark.parametrize("explicit_scope", [None, [], ["action.cancel", "action.reserve"]])
+    def test_parallel_effective_union_drives_authority_and_report(explicit_scope):
+        bundle = load_bundle(MODEL)
+        report = validate(
+            MODEL,
+            profiles=["readiness"],
+            scope=explicit_scope,
+            parallel_plan=parallel_plan(bundle),
+            activity="implementation",
+            host_context={"policy": policy(bundle, scope=["action.reserve"])},
+        )
+>       assert report["scope"] == ["action.reserve", "action.cancel"]
+E       AssertionError: assert [] == ['action.rese...ction.cancel']
+E         
+E         Right contains 2 more items, first extra item: 'action.reserve'
+E         Use -v to get more diff
+
+tests/test_review_protocol.py:278: AssertionError
+__ test_parallel_effective_union_drives_authority_and_report[explicit_scope2] __
+
+explicit_scope = ['action.cancel', 'action.reserve']
+
+    @pytest.mark.parametrize("explicit_scope", [None, [], ["action.cancel", "action.reserve"]])
+    def test_parallel_effective_union_drives_authority_and_report(explicit_scope):
+        bundle = load_bundle(MODEL)
+        report = validate(
+            MODEL,
+            profiles=["readiness"],
+            scope=explicit_scope,
+            parallel_plan=parallel_plan(bundle),
+            activity="implementation",
+            host_context={"policy": policy(bundle, scope=["action.reserve"])},
+        )
+>       assert report["scope"] == ["action.reserve", "action.cancel"]
+E       AssertionError: assert ['action.canc...tion.reserve'] == ['action.rese...ction.cancel']
+E         
+E         At index 0 diff: 'action.cancel' != 'action.reserve'
+E         Use -v to get more diff
+
+tests/test_review_protocol.py:278: AssertionError
+_____________ test_parallel_conflicting_explicit_scope_is_rejected _____________
+
+    def test_parallel_conflicting_explicit_scope_is_rejected():
+        bundle = load_bundle(MODEL)
+>       with pytest.raises(ValueError, match="conflicts"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:286: Failed
+____________________ test_both_scope_envelopes_are_rejected ____________________
+
+    def test_both_scope_envelopes_are_rejected():
+        bundle = load_bundle(MODEL)
+>       with pytest.raises(ValueError, match="cannot be supplied together"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:292: Failed
+___ test_malformed_scope_type_raises_controlled_value_error[action.reserve] ____
+
+value = 'action.reserve'
+
+    @pytest.mark.parametrize("value", ["action.reserve", 1, {}, [1], [["action.reserve"]], [None]])
+    def test_malformed_scope_type_raises_controlled_value_error(value):
+>       with pytest.raises(ValueError, match="Scope must be a list of strings"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'Scope must be a list of strings'
+E         Actual message: 'Scope entries must be GDD IDs.'
+
+tests/test_review_protocol.py:302: AssertionError
+__________ test_malformed_scope_type_raises_controlled_value_error[1] __________
+
+value = 1
+
+    @pytest.mark.parametrize("value", ["action.reserve", 1, {}, [1], [["action.reserve"]], [None]])
+    def test_malformed_scope_type_raises_controlled_value_error(value):
+        with pytest.raises(ValueError, match="Scope must be a list of strings"):
+>           validate(MODEL, scope=value)
+
+tests/test_review_protocol.py:303: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/concert.gdd.yaml')
+profiles = ['model'], scope = 1, model_path = None, host_context = None
+activity = None, package = None, parallel_plan = None, import_audit = None
+graphify_path = None, graphify_profile = None, graphify_producer_version = None
+view_path = None, unsupported_extensions = frozenset()
+
+    def validate(
+        path: str | Path,
+        *,
+        profiles: list[str] | None = None,
+        scope: list[str] | None = None,
+        model_path: str | Path | None = None,
+        host_context: dict | None = None,
+        activity: str | None = None,
+        package: dict | None = None,
+        parallel_plan: dict | None = None,
+        import_audit: dict | None = None,
+        graphify_path: str | Path | None = None,
+        graphify_profile: str | None = None,
+        graphify_producer_version: str | None = None,
+        view_path: str | Path | None = None,
+        unsupported_extensions: frozenset[str] = frozenset(),
+    ) -> dict:
+        profiles = list(dict.fromkeys(profiles or ["model"]))
+>       scope = list(dict.fromkeys(scope or []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'int' object is not iterable
+
+gdd_validator/validator.py:163: TypeError
+_______ test_malformed_scope_type_raises_controlled_value_error[value2] ________
+
+value = {}
+
+    @pytest.mark.parametrize("value", ["action.reserve", 1, {}, [1], [["action.reserve"]], [None]])
+    def test_malformed_scope_type_raises_controlled_value_error(value):
+>       with pytest.raises(ValueError, match="Scope must be a list of strings"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:302: Failed
+_______ test_malformed_scope_type_raises_controlled_value_error[value3] ________
+
+value = [1]
+
+    @pytest.mark.parametrize("value", ["action.reserve", 1, {}, [1], [["action.reserve"]], [None]])
+    def test_malformed_scope_type_raises_controlled_value_error(value):
+        with pytest.raises(ValueError, match="Scope must be a list of strings"):
+>           validate(MODEL, scope=value)
+
+tests/test_review_protocol.py:303: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:193: in validate
+    if any(not re.fullmatch(r"[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*", n) for n in scopes):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/validator.py:193: in <genexpr>
+    if any(not re.fullmatch(r"[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*", n) for n in scopes):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pattern = '[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*', string = 1, flags = 0
+
+    def fullmatch(pattern, string, flags=0):
+        """Try to apply the pattern to all of the string, returning
+        a Match object, or None if no match was found."""
+>       return _compile(pattern, flags).fullmatch(string)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: expected string or bytes-like object, got 'int'
+
+/opt/miniconda3/lib/python3.12/re/__init__.py:172: TypeError
+_______ test_malformed_scope_type_raises_controlled_value_error[value4] ________
+
+value = [['action.reserve']]
+
+    @pytest.mark.parametrize("value", ["action.reserve", 1, {}, [1], [["action.reserve"]], [None]])
+    def test_malformed_scope_type_raises_controlled_value_error(value):
+        with pytest.raises(ValueError, match="Scope must be a list of strings"):
+>           validate(MODEL, scope=value)
+
+tests/test_review_protocol.py:303: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/concert.gdd.yaml')
+profiles = ['model'], scope = [['action.reserve']], model_path = None
+host_context = None, activity = None, package = None, parallel_plan = None
+import_audit = None, graphify_path = None, graphify_profile = None
+graphify_producer_version = None, view_path = None
+unsupported_extensions = frozenset()
+
+    def validate(
+        path: str | Path,
+        *,
+        profiles: list[str] | None = None,
+        scope: list[str] | None = None,
+        model_path: str | Path | None = None,
+        host_context: dict | None = None,
+        activity: str | None = None,
+        package: dict | None = None,
+        parallel_plan: dict | None = None,
+        import_audit: dict | None = None,
+        graphify_path: str | Path | None = None,
+        graphify_profile: str | None = None,
+        graphify_producer_version: str | None = None,
+        view_path: str | Path | None = None,
+        unsupported_extensions: frozenset[str] = frozenset(),
+    ) -> dict:
+        profiles = list(dict.fromkeys(profiles or ["model"]))
+>       scope = list(dict.fromkeys(scope or []))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: unhashable type: 'list'
+
+gdd_validator/validator.py:163: TypeError
+_______ test_malformed_scope_type_raises_controlled_value_error[value5] ________
+
+value = [None]
+
+    @pytest.mark.parametrize("value", ["action.reserve", 1, {}, [1], [["action.reserve"]], [None]])
+    def test_malformed_scope_type_raises_controlled_value_error(value):
+        with pytest.raises(ValueError, match="Scope must be a list of strings"):
+>           validate(MODEL, scope=value)
+
+tests/test_review_protocol.py:303: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:193: in validate
+    if any(not re.fullmatch(r"[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*", n) for n in scopes):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/validator.py:193: in <genexpr>
+    if any(not re.fullmatch(r"[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*", n) for n in scopes):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pattern = '[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*', string = None, flags = 0
+
+    def fullmatch(pattern, string, flags=0):
+        """Try to apply the pattern to all of the string, returning
+        a Match object, or None if no match was found."""
+>       return _compile(pattern, flags).fullmatch(string)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: expected string or bytes-like object, got 'NoneType'
+
+/opt/miniconda3/lib/python3.12/re/__init__.py:172: TypeError
+_______ test_malformed_profile_type_raises_controlled_value_error[model] _______
+
+value = 'model'
+
+    @pytest.mark.parametrize("value", ["model", 1, {}, [1], [["model"]], [None]])
+    def test_malformed_profile_type_raises_controlled_value_error(value):
+>       with pytest.raises(ValueError, match="Profiles must be a list of strings"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'Profiles must be a list of strings'
+E         Actual message: 'Unknown requested profile.'
+
+tests/test_review_protocol.py:308: AssertionError
+_________ test_malformed_profile_type_raises_controlled_value_error[1] _________
+
+value = 1
+
+    @pytest.mark.parametrize("value", ["model", 1, {}, [1], [["model"]], [None]])
+    def test_malformed_profile_type_raises_controlled_value_error(value):
+        with pytest.raises(ValueError, match="Profiles must be a list of strings"):
+>           validate(MODEL, profiles=value)
+
+tests/test_review_protocol.py:309: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/concert.gdd.yaml')
+profiles = 1, scope = None, model_path = None, host_context = None
+activity = None, package = None, parallel_plan = None, import_audit = None
+graphify_path = None, graphify_profile = None, graphify_producer_version = None
+view_path = None, unsupported_extensions = frozenset()
+
+    def validate(
+        path: str | Path,
+        *,
+        profiles: list[str] | None = None,
+        scope: list[str] | None = None,
+        model_path: str | Path | None = None,
+        host_context: dict | None = None,
+        activity: str | None = None,
+        package: dict | None = None,
+        parallel_plan: dict | None = None,
+        import_audit: dict | None = None,
+        graphify_path: str | Path | None = None,
+        graphify_profile: str | None = None,
+        graphify_producer_version: str | None = None,
+        view_path: str | Path | None = None,
+        unsupported_extensions: frozenset[str] = frozenset(),
+    ) -> dict:
+>       profiles = list(dict.fromkeys(profiles or ["model"]))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'int' object is not iterable
+
+gdd_validator/validator.py:162: TypeError
+______ test_malformed_profile_type_raises_controlled_value_error[value2] _______
+
+value = {}
+
+    @pytest.mark.parametrize("value", ["model", 1, {}, [1], [["model"]], [None]])
+    def test_malformed_profile_type_raises_controlled_value_error(value):
+>       with pytest.raises(ValueError, match="Profiles must be a list of strings"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:308: Failed
+______ test_malformed_profile_type_raises_controlled_value_error[value3] _______
+
+value = [1]
+
+    @pytest.mark.parametrize("value", ["model", 1, {}, [1], [["model"]], [None]])
+    def test_malformed_profile_type_raises_controlled_value_error(value):
+>       with pytest.raises(ValueError, match="Profiles must be a list of strings"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'Profiles must be a list of strings'
+E         Actual message: 'Unknown requested profile.'
+
+tests/test_review_protocol.py:308: AssertionError
+______ test_malformed_profile_type_raises_controlled_value_error[value4] _______
+
+value = [['model']]
+
+    @pytest.mark.parametrize("value", ["model", 1, {}, [1], [["model"]], [None]])
+    def test_malformed_profile_type_raises_controlled_value_error(value):
+        with pytest.raises(ValueError, match="Profiles must be a list of strings"):
+>           validate(MODEL, profiles=value)
+
+tests/test_review_protocol.py:309: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/concert.gdd.yaml')
+profiles = [['model']], scope = None, model_path = None, host_context = None
+activity = None, package = None, parallel_plan = None, import_audit = None
+graphify_path = None, graphify_profile = None, graphify_producer_version = None
+view_path = None, unsupported_extensions = frozenset()
+
+    def validate(
+        path: str | Path,
+        *,
+        profiles: list[str] | None = None,
+        scope: list[str] | None = None,
+        model_path: str | Path | None = None,
+        host_context: dict | None = None,
+        activity: str | None = None,
+        package: dict | None = None,
+        parallel_plan: dict | None = None,
+        import_audit: dict | None = None,
+        graphify_path: str | Path | None = None,
+        graphify_profile: str | None = None,
+        graphify_producer_version: str | None = None,
+        view_path: str | Path | None = None,
+        unsupported_extensions: frozenset[str] = frozenset(),
+    ) -> dict:
+>       profiles = list(dict.fromkeys(profiles or ["model"]))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: unhashable type: 'list'
+
+gdd_validator/validator.py:162: TypeError
+______ test_malformed_profile_type_raises_controlled_value_error[value5] _______
+
+value = [None]
+
+    @pytest.mark.parametrize("value", ["model", 1, {}, [1], [["model"]], [None]])
+    def test_malformed_profile_type_raises_controlled_value_error(value):
+>       with pytest.raises(ValueError, match="Profiles must be a list of strings"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'Profiles must be a list of strings'
+E         Actual message: 'Unknown requested profile.'
+
+tests/test_review_protocol.py:308: AssertionError
+____ test_malformed_activity_type_raises_controlled_value_error[activity0] _____
+
+activity = []
+
+    @pytest.mark.parametrize("activity", [[], {}])
+    def test_malformed_activity_type_raises_controlled_value_error(activity):
+        with pytest.raises(ValueError, match="Unknown activity"):
+>           validate(MODEL, activity=activity)
+
+tests/test_review_protocol.py:315: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/concert.gdd.yaml')
+profiles = ['model'], scope = [], model_path = None, host_context = None
+activity = [], package = None, parallel_plan = None, import_audit = None
+graphify_path = None, graphify_profile = None, graphify_producer_version = None
+view_path = None, unsupported_extensions = frozenset()
+
+    def validate(
+        path: str | Path,
+        *,
+        profiles: list[str] | None = None,
+        scope: list[str] | None = None,
+        model_path: str | Path | None = None,
+        host_context: dict | None = None,
+        activity: str | None = None,
+        package: dict | None = None,
+        parallel_plan: dict | None = None,
+        import_audit: dict | None = None,
+        graphify_path: str | Path | None = None,
+        graphify_profile: str | None = None,
+        graphify_producer_version: str | None = None,
+        view_path: str | Path | None = None,
+        unsupported_extensions: frozenset[str] = frozenset(),
+    ) -> dict:
+        profiles = list(dict.fromkeys(profiles or ["model"]))
+        scope = list(dict.fromkeys(scope or []))
+        if not set(profiles) <= PROFILES:
+            raise ValueError("Unknown requested profile.")
+>       if activity is not None and activity not in {
+            "model_changes",
+            "implementation",
+            "acceptance",
+        }:
+E       TypeError: unhashable type: 'list'
+
+gdd_validator/validator.py:166: TypeError
+____ test_malformed_activity_type_raises_controlled_value_error[activity1] _____
+
+activity = {}
+
+    @pytest.mark.parametrize("activity", [[], {}])
+    def test_malformed_activity_type_raises_controlled_value_error(activity):
+        with pytest.raises(ValueError, match="Unknown activity"):
+>           validate(MODEL, activity=activity)
+
+tests/test_review_protocol.py:315: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/mikkelfreltoftkrogsholm/Projekter/gdd/examples/concert.gdd.yaml')
+profiles = ['model'], scope = [], model_path = None, host_context = None
+activity = {}, package = None, parallel_plan = None, import_audit = None
+graphify_path = None, graphify_profile = None, graphify_producer_version = None
+view_path = None, unsupported_extensions = frozenset()
+
+    def validate(
+        path: str | Path,
+        *,
+        profiles: list[str] | None = None,
+        scope: list[str] | None = None,
+        model_path: str | Path | None = None,
+        host_context: dict | None = None,
+        activity: str | None = None,
+        package: dict | None = None,
+        parallel_plan: dict | None = None,
+        import_audit: dict | None = None,
+        graphify_path: str | Path | None = None,
+        graphify_profile: str | None = None,
+        graphify_producer_version: str | None = None,
+        view_path: str | Path | None = None,
+        unsupported_extensions: frozenset[str] = frozenset(),
+    ) -> dict:
+        profiles = list(dict.fromkeys(profiles or ["model"]))
+        scope = list(dict.fromkeys(scope or []))
+        if not set(profiles) <= PROFILES:
+            raise ValueError("Unknown requested profile.")
+>       if activity is not None and activity not in {
+            "model_changes",
+            "implementation",
+            "acceptance",
+        }:
+E       TypeError: unhashable type: 'dict'
+
+gdd_validator/validator.py:166: TypeError
+__ test_report_helpers_reject_malformed_or_dimension_invalid_results[checks0] __
+
+checks = [{'dimension': 'model', 'result': 'BROKEN'}]
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:344: Failed
+__ test_report_helpers_reject_malformed_or_dimension_invalid_results[checks1] __
+
+checks = [{'dimension': 'model', 'result': 'GRANTED'}]
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:344: Failed
+__ test_report_helpers_reject_malformed_or_dimension_invalid_results[checks2] __
+
+checks = [{'dimension': 'authorization', 'result': 'PASS'}]
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:344: Failed
+__ test_report_helpers_reject_malformed_or_dimension_invalid_results[checks3] __
+
+checks = [{'dimension': 'alien', 'result': 'PASS'}]
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:344: Failed
+__ test_report_helpers_reject_malformed_or_dimension_invalid_results[checks4] __
+
+checks = [{'dimension': [], 'result': 'PASS'}]
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:344: Failed
+__ test_report_helpers_reject_malformed_or_dimension_invalid_results[checks5] __
+
+checks = [{'dimension': 'model', 'result': []}]
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+        with pytest.raises(ValueError):
+>           aggregate(checks, "model")
+
+tests/test_review_protocol.py:345: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+checks = [{'dimension': 'model', 'result': []}], dimension = 'model'
+
+    def aggregate(checks: list[dict], dimension: str) -> str:
+>       results = {c["result"] for c in checks if c["dimension"] == dimension}
+                   ^^^^^^^^^^^
+E       TypeError: unhashable type: 'list'
+
+gdd_validator/report.py:50: TypeError
+__ test_report_helpers_reject_malformed_or_dimension_invalid_results[checks6] __
+
+checks = [{'dimension': 'model'}]
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+        with pytest.raises(ValueError):
+>           aggregate(checks, "model")
+
+tests/test_review_protocol.py:345: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+checks = [{'dimension': 'model'}], dimension = 'model'
+
+    def aggregate(checks: list[dict], dimension: str) -> str:
+>       results = {c["result"] for c in checks if c["dimension"] == dimension}
+                   ^^^^^^^^^^^
+E       KeyError: 'result'
+
+gdd_validator/report.py:50: KeyError
+__ test_report_helpers_reject_malformed_or_dimension_invalid_results[checks7] __
+
+checks = [None]
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+        with pytest.raises(ValueError):
+>           aggregate(checks, "model")
+
+tests/test_review_protocol.py:345: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+checks = [None], dimension = 'model'
+
+    def aggregate(checks: list[dict], dimension: str) -> str:
+>       results = {c["result"] for c in checks if c["dimension"] == dimension}
+                                                  ^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+gdd_validator/report.py:50: TypeError
+__ test_report_helpers_reject_malformed_or_dimension_invalid_results[checks8] __
+
+checks = {}
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:344: Failed
+___ test_report_helpers_reject_malformed_or_dimension_invalid_results[None] ____
+
+checks = None
+
+    @pytest.mark.parametrize(
+        "checks",
+        [
+            [{"dimension": "model", "result": "BROKEN"}],
+            [{"dimension": "model", "result": "GRANTED"}],
+            [{"dimension": "authorization", "result": "PASS"}],
+            [{"dimension": "alien", "result": "PASS"}],
+            [{"dimension": [], "result": "PASS"}],
+            [{"dimension": "model", "result": []}],
+            [{"dimension": "model"}],
+            [None],
+            {},
+            None,
+        ],
+    )
+    def test_report_helpers_reject_malformed_or_dimension_invalid_results(checks):
+        with pytest.raises(ValueError):
+>           aggregate(checks, "model")
+
+tests/test_review_protocol.py:345: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+checks = None, dimension = 'model'
+
+    def aggregate(checks: list[dict], dimension: str) -> str:
+>       results = {c["result"] for c in checks if c["dimension"] == dimension}
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not iterable
+
+gdd_validator/report.py:50: TypeError
+_________________ test_exit_code_requires_report_checks[None] __________________
+
+report = None
+
+    @pytest.mark.parametrize("report", [None, [], {}])
+    def test_exit_code_requires_report_checks(report):
+        with pytest.raises(ValueError):
+>           exit_code(report)
+
+tests/test_review_protocol.py:353: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+report = None
+
+    def exit_code(report: dict) -> int:
+>       results = {c["result"] for c in report["checks"]}
+                                        ^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+gdd_validator/report.py:65: TypeError
+________________ test_exit_code_requires_report_checks[report1] ________________
+
+report = []
+
+    @pytest.mark.parametrize("report", [None, [], {}])
+    def test_exit_code_requires_report_checks(report):
+        with pytest.raises(ValueError):
+>           exit_code(report)
+
+tests/test_review_protocol.py:353: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+report = []
+
+    def exit_code(report: dict) -> int:
+>       results = {c["result"] for c in report["checks"]}
+                                        ^^^^^^^^^^^^^^^^
+E       TypeError: list indices must be integers or slices, not str
+
+gdd_validator/report.py:65: TypeError
+________________ test_exit_code_requires_report_checks[report2] ________________
+
+report = {}
+
+    @pytest.mark.parametrize("report", [None, [], {}])
+    def test_exit_code_requires_report_checks(report):
+        with pytest.raises(ValueError):
+>           exit_code(report)
+
+tests/test_review_protocol.py:353: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+report = {}
+
+    def exit_code(report: dict) -> int:
+>       results = {c["result"] for c in report["checks"]}
+                                        ^^^^^^^^^^^^^^^^
+E       KeyError: 'checks'
+
+gdd_validator/report.py:65: KeyError
+___________ test_aggregate_rejects_unknown_requested_dimension[None] ___________
+
+dimension = None
+
+    @pytest.mark.parametrize("dimension", [None, [], "alien"])
+    def test_aggregate_rejects_unknown_requested_dimension(dimension):
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:358: Failed
+________ test_aggregate_rejects_unknown_requested_dimension[dimension1] ________
+
+dimension = []
+
+    @pytest.mark.parametrize("dimension", [None, [], "alien"])
+    def test_aggregate_rejects_unknown_requested_dimension(dimension):
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:358: Failed
+__________ test_aggregate_rejects_unknown_requested_dimension[alien] ___________
+
+dimension = 'alien'
+
+    @pytest.mark.parametrize("dimension", [None, [], "alien"])
+    def test_aggregate_rejects_unknown_requested_dimension(dimension):
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_protocol.py:358: Failed
+_______________________ test_empty_checks_are_unassessed _______________________
+
+    def test_empty_checks_are_unassessed():
+        assert aggregate([], "model") == "UNKNOWN"
+        assert aggregate([], "authorization") == "UNRESOLVED"
+>       assert exit_code({"checks": []}) == 2
+E       AssertionError: assert 0 == 2
+E        +  where 0 = exit_code({'checks': []})
+
+tests/test_review_protocol.py:365: AssertionError
+____________ test_declared_record_loop_preserves_loader_diagnostic _____________
+
+self = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_declared_record_loop_pres0/loop.yaml')
+strict = False
+
+    def resolve(self, strict=False):
+        """
+        Make the path absolute, resolving all symlinks on the way and also
+        normalizing it.
+        """
+    
+        def check_eloop(e):
+            winerror = getattr(e, 'winerror', 0)
+            if e.errno == ELOOP or winerror == _WINERROR_CANT_RESOLVE_FILENAME:
+                raise RuntimeError("Symlink loop from %r" % e.filename)
+    
+        try:
+            s = self._flavour.realpath(self, strict=strict)
+        except OSError as e:
+            check_eloop(e)
+            raise
+        p = self.with_segments(s)
+    
+        # In non-strict mode, realpath() doesn't raise on symlink loops.
+        # Ensure we get an exception by calling stat()
+        if not strict:
+            try:
+>               p.stat()
+
+/opt/miniconda3/lib/python3.12/pathlib.py:1250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_declared_record_loop_pres0/loop.yaml')
+follow_symlinks = True
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       OSError: [Errno 62] Too many levels of symbolic links: '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_declared_record_loop_pres0/loop.yaml'
+
+/opt/miniconda3/lib/python3.12/pathlib.py:840: OSError
+
+During handling of the above exception, another exception occurred:
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x107f02ba0>
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_declared_record_loop_pres0')
+
+    def test_declared_record_loop_preserves_loader_diagnostic(monkeypatch, tmp_path):
+        # Isolate orchestration after a loader has diagnosed a looping record_file.
+        import importlib
+    
+        validator_module = importlib.import_module("gdd_validator.validator")
+        bundle = load_bundle(MODEL)
+        bundle.path = tmp_path / "model.yaml"
+        loop = tmp_path / "loop.yaml"
+        loop.symlink_to(loop.name)
+        bundle.model["record_files"] = [loop.name]
+        bundle.issue("ASSET_PATH_INVALID", "Synthetic existing loader diagnosis.", loop.name)
+        monkeypatch.setattr(validator_module, "load_bundle", lambda *args: bundle)
+>       report = validate(bundle.path)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_protocol.py:406: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:219: in validate
+    (bundle.root / relative).resolve()
+/opt/miniconda3/lib/python3.12/pathlib.py:1252: in resolve
+    check_eloop(e)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+e = OSError(62, 'Too many levels of symbolic links')
+
+    def check_eloop(e):
+        winerror = getattr(e, 'winerror', 0)
+        if e.errno == ELOOP or winerror == _WINERROR_CANT_RESOLVE_FILENAME:
+>           raise RuntimeError("Symlink loop from %r" % e.filename)
+E           RuntimeError: Symlink loop from '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_declared_record_loop_pres0/loop.yaml'
+
+/opt/miniconda3/lib/python3.12/pathlib.py:1237: RuntimeError
+___________ test_secondary_record_loop_returns_controlled_diagnostic ___________
+
+self = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_secondary_record_loop_ret0/loop.yaml')
+strict = False
+
+    def resolve(self, strict=False):
+        """
+        Make the path absolute, resolving all symlinks on the way and also
+        normalizing it.
+        """
+    
+        def check_eloop(e):
+            winerror = getattr(e, 'winerror', 0)
+            if e.errno == ELOOP or winerror == _WINERROR_CANT_RESOLVE_FILENAME:
+                raise RuntimeError("Symlink loop from %r" % e.filename)
+    
+        try:
+            s = self._flavour.realpath(self, strict=strict)
+        except OSError as e:
+            check_eloop(e)
+            raise
+        p = self.with_segments(s)
+    
+        # In non-strict mode, realpath() doesn't raise on symlink loops.
+        # Ensure we get an exception by calling stat()
+        if not strict:
+            try:
+>               p.stat()
+
+/opt/miniconda3/lib/python3.12/pathlib.py:1250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_secondary_record_loop_ret0/loop.yaml')
+follow_symlinks = True
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       OSError: [Errno 62] Too many levels of symbolic links: '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_secondary_record_loop_ret0/loop.yaml'
+
+/opt/miniconda3/lib/python3.12/pathlib.py:840: OSError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_secondary_record_loop_ret0')
+
+    def test_secondary_record_loop_returns_controlled_diagnostic(tmp_path):
+        loop = tmp_path / "loop.yaml"
+        loop.symlink_to(loop.name)
+>       report = validate(loop, model_path=MODEL)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_protocol.py:419: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:222: in validate
+    if model_path and Path(path).resolve() not in declared_record_paths:
+                      ^^^^^^^^^^^^^^^^^^^^
+/opt/miniconda3/lib/python3.12/pathlib.py:1252: in resolve
+    check_eloop(e)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+e = OSError(62, 'Too many levels of symbolic links')
+
+    def check_eloop(e):
+        winerror = getattr(e, 'winerror', 0)
+        if e.errno == ELOOP or winerror == _WINERROR_CANT_RESOLVE_FILENAME:
+>           raise RuntimeError("Symlink loop from %r" % e.filename)
+E           RuntimeError: Symlink loop from '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-45/test_secondary_record_loop_ret0/loop.yaml'
+
+/opt/miniconda3/lib/python3.12/pathlib.py:1237: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/test_review_model.py::test_annotations_cannot_supply_type_references[metadata0]
+FAILED tests/test_review_model.py::test_annotations_cannot_supply_type_references[metadata1]
+FAILED tests/test_review_model.py::test_annotations_cannot_supply_type_references[metadata2]
+FAILED tests/test_review_model.py::test_type_reference_traversal_uses_only_type_positions
+FAILED tests/test_review_model.py::test_support_refinement_descendants_remain_read_context[rule.capacity]
+FAILED tests/test_review_model.py::test_support_refinement_descendants_remain_read_context[scenario.reserve]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[src/[ab].py-src/a.py-UNKNOWN]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[src/-src/a.py-FAIL]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[src/a/-src/a/nested/file.py-FAIL]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[./-src/a.py-FAIL]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[src/a.py::symbol-src/a.py-UNKNOWN]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[src\\a.py-src/a.py-UNKNOWN]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[../outside.py-src/a.py-UNKNOWN]
+FAILED tests/test_review_model.py::test_parallel_workspace_aliases_conflict[workspace.shared/.]
+FAILED tests/test_review_model.py::test_parallel_workspace_aliases_conflict[temp/../workspace.shared]
+FAILED tests/test_review_model.py::test_parallel_absolute_and_relative_workspace_aliases_conflict
+FAILED tests/test_review_model.py::test_contract_source_format_and_encoding[requirements: do X\n-application/json-selector0-UNKNOWN]
+FAILED tests/test_review_model.py::test_contract_source_format_and_encoding[{-json-selector1-UNKNOWN]
+FAILED tests/test_review_model.py::test_contract_source_format_and_encoding[\xff\xfe\x80-text/plain-selector2-UNKNOWN]
+FAILED tests/test_review_model.py::test_integer_interval_respects_null_and_omission[extra0-FAIL]
+FAILED tests/test_review_protocol.py::test_partial_rejection_denies_overlapping_and_whole_project_scope[scope1-explicit]
+FAILED tests/test_review_protocol.py::test_partial_rejection_denies_overlapping_and_whole_project_scope[scope1-standing]
+FAILED tests/test_review_protocol.py::test_partial_rejection_denies_overlapping_and_whole_project_scope[scope1-none]
+FAILED tests/test_review_protocol.py::test_partial_rejection_denies_overlapping_and_whole_project_scope[scope2-explicit]
+FAILED tests/test_review_protocol.py::test_partial_rejection_denies_overlapping_and_whole_project_scope[scope2-standing]
+FAILED tests/test_review_protocol.py::test_partial_rejection_denies_overlapping_and_whole_project_scope[scope2-none]
+FAILED tests/test_review_protocol.py::test_incompatible_check_supersession_preserves_selected_failed_plan[spec_revision]
+FAILED tests/test_review_protocol.py::test_incompatible_check_supersession_preserves_selected_failed_plan[method]
+FAILED tests/test_review_protocol.py::test_incompatible_check_supersession_preserves_selected_failed_plan[scope]
+FAILED tests/test_review_protocol.py::test_historical_unrelated_check_cannot_turn_ambiguous_plans_into_pass
+FAILED tests/test_review_protocol.py::test_package_effective_scope_drives_readiness_authority_and_report[None]
+FAILED tests/test_review_protocol.py::test_package_effective_scope_drives_readiness_authority_and_report[explicit_scope1]
+FAILED tests/test_review_protocol.py::test_package_conflicting_explicit_scope_is_rejected
+FAILED tests/test_review_protocol.py::test_parallel_effective_union_drives_authority_and_report[None]
+FAILED tests/test_review_protocol.py::test_parallel_effective_union_drives_authority_and_report[explicit_scope1]
+FAILED tests/test_review_protocol.py::test_parallel_effective_union_drives_authority_and_report[explicit_scope2]
+FAILED tests/test_review_protocol.py::test_parallel_conflicting_explicit_scope_is_rejected
+FAILED tests/test_review_protocol.py::test_both_scope_envelopes_are_rejected
+FAILED tests/test_review_protocol.py::test_malformed_scope_type_raises_controlled_value_error[action.reserve]
+FAILED tests/test_review_protocol.py::test_malformed_scope_type_raises_controlled_value_error[1]
+FAILED tests/test_review_protocol.py::test_malformed_scope_type_raises_controlled_value_error[value2]
+FAILED tests/test_review_protocol.py::test_malformed_scope_type_raises_controlled_value_error[value3]
+FAILED tests/test_review_protocol.py::test_malformed_scope_type_raises_controlled_value_error[value4]
+FAILED tests/test_review_protocol.py::test_malformed_scope_type_raises_controlled_value_error[value5]
+FAILED tests/test_review_protocol.py::test_malformed_profile_type_raises_controlled_value_error[model]
+FAILED tests/test_review_protocol.py::test_malformed_profile_type_raises_controlled_value_error[1]
+FAILED tests/test_review_protocol.py::test_malformed_profile_type_raises_controlled_value_error[value2]
+FAILED tests/test_review_protocol.py::test_malformed_profile_type_raises_controlled_value_error[value3]
+FAILED tests/test_review_protocol.py::test_malformed_profile_type_raises_controlled_value_error[value4]
+FAILED tests/test_review_protocol.py::test_malformed_profile_type_raises_controlled_value_error[value5]
+FAILED tests/test_review_protocol.py::test_malformed_activity_type_raises_controlled_value_error[activity0]
+FAILED tests/test_review_protocol.py::test_malformed_activity_type_raises_controlled_value_error[activity1]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[checks0]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[checks1]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[checks2]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[checks3]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[checks4]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[checks5]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[checks6]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[checks7]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[checks8]
+FAILED tests/test_review_protocol.py::test_report_helpers_reject_malformed_or_dimension_invalid_results[None]
+FAILED tests/test_review_protocol.py::test_exit_code_requires_report_checks[None]
+FAILED tests/test_review_protocol.py::test_exit_code_requires_report_checks[report1]
+FAILED tests/test_review_protocol.py::test_exit_code_requires_report_checks[report2]
+FAILED tests/test_review_protocol.py::test_aggregate_rejects_unknown_requested_dimension[None]
+FAILED tests/test_review_protocol.py::test_aggregate_rejects_unknown_requested_dimension[dimension1]
+FAILED tests/test_review_protocol.py::test_aggregate_rejects_unknown_requested_dimension[alien]
+FAILED tests/test_review_protocol.py::test_empty_checks_are_unassessed - Asse...
+FAILED tests/test_review_protocol.py::test_declared_record_loop_preserves_loader_diagnostic
+FAILED tests/test_review_protocol.py::test_secondary_record_loop_returns_controlled_diagnostic
+71 failed, 28 passed in 8.40s

@@ -1,0 +1,40 @@
+test_boundaries (test_discount.LeafTests.test_boundaries)
+scenario.discount.floor: endpoints and exact large-integer control. ... ok
+test_floor_fraction (test_discount.LeafTests.test_floor_fraction) ... ok
+test_floor_half (test_discount.LeafTests.test_floor_half)
+scenario.discount.floor: accepted floor value, old half-up must fail. ... ok
+test_invalid (test_discount.LeafTests.test_invalid)
+scenario.discount.invalid: integers and inclusive rates are mandatory. ... ok
+test_normal (test_discount.LeafTests.test_normal)
+scenario.discount.normal: exactly divisible positive control. ... ok
+test_cli_floor (test_quote.QuoteTests.test_cli_floor)
+scenario.quote.cli: the defect must be visible through the real CLI. ... ok
+test_cli_invalid (test_quote.QuoteTests.test_cli_invalid)
+scenario.quote.invalid: stderr and exit status are observable contract. ... ok
+test_cli_large_integer_floor_composition (test_quote.QuoteTests.test_cli_large_integer_floor_composition)
+Exact CLI integers and stepwise floor must survive beyond float precision. ... ok
+test_cli_normal (test_quote.QuoteTests.test_cli_normal)
+scenario.quote.cli: actual process, exactly divisible control. ... ok
+test_floor_after_discount (test_quote.QuoteTests.test_floor_after_discount)
+scenario.quote.floor: composition must preserve each floor boundary. ... ok
+test_invalid (test_quote.QuoteTests.test_invalid)
+scenario.quote.invalid: reject before calling leaf functions. ... ok
+test_normal (test_quote.QuoteTests.test_normal)
+scenario.quote.normal: exactly divisible positive control. ... ok
+test_tax_floor_without_discount (test_quote.QuoteTests.test_tax_floor_without_discount) ... ok
+test_zero_and_full_discount (test_quote.QuoteTests.test_zero_and_full_discount)
+scenario.quote.floor: endpoint controls. ... ok
+test_boundaries (test_tax.LeafTests.test_boundaries)
+scenario.tax.floor: endpoints and exact large-integer control. ... ok
+test_floor_fraction (test_tax.LeafTests.test_floor_fraction) ... ok
+test_floor_half (test_tax.LeafTests.test_floor_half)
+scenario.tax.floor: accepted floor value, old half-up must fail. ... ok
+test_invalid (test_tax.LeafTests.test_invalid)
+scenario.tax.invalid: integers and inclusive rates are mandatory. ... ok
+test_normal (test_tax.LeafTests.test_normal)
+scenario.tax.normal: exactly divisible positive control. ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.211s
+
+OK

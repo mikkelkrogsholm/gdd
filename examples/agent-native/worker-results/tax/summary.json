@@ -1,0 +1,67 @@
+{
+  "format": "demo-native-worker-result/0.1",
+  "attempt": "native.tax.1",
+  "package": "package.tax",
+  "plan_revision": "sha256:bf29646cebc577f8238377a8405d51bea98d7af3906ad6d66a726a4a893206f5",
+  "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+  "base_code_revision": "sha256:36574c16bae72b18e3439a476d0d23426da46c2ca1e0f0f71d2dfcb6e1579055",
+  "workspace": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b",
+  "changed_resources": [
+    "quote_demo/tax.py"
+  ],
+  "deliverable_files": {
+    "quote_demo/tax.py": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b/quote_demo/tax.py",
+    "tests/test_tax.py": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b/tests/test_tax.py"
+  },
+  "summary": "Replaced half-up offset with exact floor integer division. Strict input checks and all existing test assertions are unchanged. Tax-specific tests now pass; full demo integration remains for the lead.",
+  "argv": [
+    "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python",
+    "-m",
+    "unittest",
+    "tests.test_tax",
+    "-v"
+  ],
+  "cwd": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b",
+  "executed_at": "2026-10-13T22:14:38.858373+00:00",
+  "before_exit_code": 1,
+  "after_exit_code": 0,
+  "before_tests": {
+    "run": 5,
+    "failures": 2,
+    "errors": 0
+  },
+  "after_tests": {
+    "run": 5,
+    "failures": 0,
+    "errors": 0
+  },
+  "source_hashes_before": {
+    "quote_demo/__init__.py": "a96ca849f4ea2fecb861018aca029f1d111ae68c66631560168ade12dd42bfc1",
+    "quote_demo/__main__.py": "d422b4e4f9a09e7b391b2e31086eff902f3ab18989a68a3d1f118e7e38f4de40",
+    "quote_demo/discount.py": "31ab6a1f43b53ae48acb4d9fbb2e093982f53f061e91a019e7f13b7a1aa76746",
+    "quote_demo/quote.py": "04b954920697085e7495e2c0459f6c88ddc2d0898c874eae6c6f67ec930ad1f0",
+    "quote_demo/tax.py": "c838575b405b4966106c825e9ac94c963df4839ff1a788162bf4b7f755a9883f",
+    "tests/__init__.py": "7747c278e4a219176cbcceaab501053362c7b6b78bd6c3a9e53f1fe5e5a83fba",
+    "tests/test_discount.py": "f8f6061652572e9040f534cc6cf227a62b5b1ec78cf0438557465a3b3191b82f",
+    "tests/test_quote.py": "de46ecbe94b85e5e547f94b45afc1574dd942e5ea93523f826c122874af60340",
+    "tests/test_tax.py": "55ba20d490465c8bb04189e2e97c3b71dde0b50e76c9bc1cc514723a7b4b76df"
+  },
+  "source_hashes_after": {
+    "quote_demo/__init__.py": "a96ca849f4ea2fecb861018aca029f1d111ae68c66631560168ade12dd42bfc1",
+    "quote_demo/__main__.py": "d422b4e4f9a09e7b391b2e31086eff902f3ab18989a68a3d1f118e7e38f4de40",
+    "quote_demo/discount.py": "31ab6a1f43b53ae48acb4d9fbb2e093982f53f061e91a019e7f13b7a1aa76746",
+    "quote_demo/quote.py": "04b954920697085e7495e2c0459f6c88ddc2d0898c874eae6c6f67ec930ad1f0",
+    "quote_demo/tax.py": "35229a5dad001f6be243634176fb8f27013e850e8c4887d1f2f78185e6d266c7",
+    "tests/__init__.py": "7747c278e4a219176cbcceaab501053362c7b6b78bd6c3a9e53f1fe5e5a83fba",
+    "tests/test_discount.py": "f8f6061652572e9040f534cc6cf227a62b5b1ec78cf0438557465a3b3191b82f",
+    "tests/test_quote.py": "de46ecbe94b85e5e547f94b45afc1574dd942e5ea93523f826c122874af60340",
+    "tests/test_tax.py": "55ba20d490465c8bb04189e2e97c3b71dde0b50e76c9bc1cc514723a7b4b76df"
+  },
+  "raw_outputs": {
+    "before_stdout": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b/evidence/tax.before.stdout.txt",
+    "before_stderr": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b/evidence/tax.before.stderr.txt",
+    "after_stdout": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b/evidence/tax.after.stdout.txt",
+    "after_stderr": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b/evidence/tax.after.stderr.txt"
+  },
+  "authority_notice": "Worker output and scoped test execution only; not integrated acceptance or host-trusted evidence."
+}

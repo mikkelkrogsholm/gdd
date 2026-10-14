@@ -1,0 +1,16 @@
+{
+  "format": "gdd-native-demo/0.1",
+  "native_workers": [
+    "/root/model_review:discount",
+    "/root/integration_review:tax",
+    "/root/model_review:quote"
+  ],
+  "baseline_tests": 18,
+  "baseline_failures": 7,
+  "final_tests": 19,
+  "final_failures": 0,
+  "events": 10,
+  "acceptance_current": true,
+  "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+  "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874"
+}

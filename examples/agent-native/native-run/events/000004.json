@@ -1,0 +1,22 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:4b7c7a0ab635c6f802f2d9e27410be76fa93fc27c9cd55b2cc6bba0fc2bd7659",
+  "event": {
+    "type": "integrate",
+    "expected_revision": "sha256:4b7c7a0ab635c6f802f2d9e27410be76fa93fc27c9cd55b2cc6bba0fc2bd7659",
+    "idempotency_key": "integrate.package.discount",
+    "package": "package.discount",
+    "attempt": "native.discount.1",
+    "base_code_revision": "sha256:36574c16bae72b18e3439a476d0d23426da46c2ca1e0f0f71d2dfcb6e1579055",
+    "code_revision": "sha256:4f11ee83d684d71c945ef14538fe753fcaee15ae9381c24d8e5629671be98a5d",
+    "review": {
+      "reviewer": "actor.demo_lead",
+      "verdict": "PASS",
+      "evidence_uri": "evidence/discount.review.json"
+    },
+    "verified_resources": [
+      "quote_demo/discount.py"
+    ]
+  },
+  "revision": "sha256:a986343c372cbb192a0f39e5b6529cb44d59e04931d5a6efaac63303fed2d5a1"
+}

@@ -1,0 +1,472 @@
+...FFF...FFFFFFFFFFFFFFF.....F                                           [100%]
+=================================== FAILURES ===================================
+_ test_unrelated_evidence_hash_is_checked_across_profiles[True-False-profiles0] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+profiles = ['model'], matching = False, trusted = True
+
+    @pytest.mark.parametrize("profiles", [["model"], ["readiness"], ["records"]])
+    @pytest.mark.parametrize("matching", [True, False])
+    @pytest.mark.parametrize("trusted", [True, False])
+    def test_unrelated_evidence_hash_is_checked_across_profiles(
+        proof_case, profiles, matching, trusted
+    ):
+        path, records, host = proof_case
+        if not matching:
+            records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        if not trusted:
+            host["trusted_evidence"].remove("evidence.y")
+        write(path, records)
+        report = validate(path, profiles=profiles, scope=["entity.x"], host_context=host)
+>       assert aggregate(report["checks"], "model") == ("PASS" if matching else "FAIL")
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:24: AssertionError
+_ test_unrelated_evidence_hash_is_checked_across_profiles[True-False-profiles1] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+profiles = ['readiness'], matching = False, trusted = True
+
+    @pytest.mark.parametrize("profiles", [["model"], ["readiness"], ["records"]])
+    @pytest.mark.parametrize("matching", [True, False])
+    @pytest.mark.parametrize("trusted", [True, False])
+    def test_unrelated_evidence_hash_is_checked_across_profiles(
+        proof_case, profiles, matching, trusted
+    ):
+        path, records, host = proof_case
+        if not matching:
+            records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        if not trusted:
+            host["trusted_evidence"].remove("evidence.y")
+        write(path, records)
+        report = validate(path, profiles=profiles, scope=["entity.x"], host_context=host)
+>       assert aggregate(report["checks"], "model") == ("PASS" if matching else "FAIL")
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:24: AssertionError
+_ test_unrelated_evidence_hash_is_checked_across_profiles[True-False-profiles2] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+profiles = ['records'], matching = False, trusted = True
+
+    @pytest.mark.parametrize("profiles", [["model"], ["readiness"], ["records"]])
+    @pytest.mark.parametrize("matching", [True, False])
+    @pytest.mark.parametrize("trusted", [True, False])
+    def test_unrelated_evidence_hash_is_checked_across_profiles(
+        proof_case, profiles, matching, trusted
+    ):
+        path, records, host = proof_case
+        if not matching:
+            records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        if not trusted:
+            host["trusted_evidence"].remove("evidence.y")
+        write(path, records)
+        report = validate(path, profiles=profiles, scope=["entity.x"], host_context=host)
+>       assert aggregate(report["checks"], "model") == ("PASS" if matching else "FAIL")
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:24: AssertionError
+_ test_unrelated_evidence_hash_is_checked_across_profiles[False-False-profiles0] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test...implementation.x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x'], ...})
+profiles = ['model'], matching = False, trusted = False
+
+    @pytest.mark.parametrize("profiles", [["model"], ["readiness"], ["records"]])
+    @pytest.mark.parametrize("matching", [True, False])
+    @pytest.mark.parametrize("trusted", [True, False])
+    def test_unrelated_evidence_hash_is_checked_across_profiles(
+        proof_case, profiles, matching, trusted
+    ):
+        path, records, host = proof_case
+        if not matching:
+            records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        if not trusted:
+            host["trusted_evidence"].remove("evidence.y")
+        write(path, records)
+        report = validate(path, profiles=profiles, scope=["entity.x"], host_context=host)
+>       assert aggregate(report["checks"], "model") == ("PASS" if matching else "FAIL")
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:24: AssertionError
+_ test_unrelated_evidence_hash_is_checked_across_profiles[False-False-profiles1] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test...implementation.x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x'], ...})
+profiles = ['readiness'], matching = False, trusted = False
+
+    @pytest.mark.parametrize("profiles", [["model"], ["readiness"], ["records"]])
+    @pytest.mark.parametrize("matching", [True, False])
+    @pytest.mark.parametrize("trusted", [True, False])
+    def test_unrelated_evidence_hash_is_checked_across_profiles(
+        proof_case, profiles, matching, trusted
+    ):
+        path, records, host = proof_case
+        if not matching:
+            records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        if not trusted:
+            host["trusted_evidence"].remove("evidence.y")
+        write(path, records)
+        report = validate(path, profiles=profiles, scope=["entity.x"], host_context=host)
+>       assert aggregate(report["checks"], "model") == ("PASS" if matching else "FAIL")
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:24: AssertionError
+_ test_unrelated_evidence_hash_is_checked_across_profiles[False-False-profiles2] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test...implementation.x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x'], ...})
+profiles = ['records'], matching = False, trusted = False
+
+    @pytest.mark.parametrize("profiles", [["model"], ["readiness"], ["records"]])
+    @pytest.mark.parametrize("matching", [True, False])
+    @pytest.mark.parametrize("trusted", [True, False])
+    def test_unrelated_evidence_hash_is_checked_across_profiles(
+        proof_case, profiles, matching, trusted
+    ):
+        path, records, host = proof_case
+        if not matching:
+            records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        if not trusted:
+            host["trusted_evidence"].remove("evidence.y")
+        write(path, records)
+        report = validate(path, profiles=profiles, scope=["entity.x"], host_context=host)
+>       assert aggregate(report["checks"], "model") == ("PASS" if matching else "FAIL")
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:24: AssertionError
+_ test_unrelated_hash_violation_preserves_independent_implementation_result[PASS-PASS] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+independent_result = 'PASS', evidence_result = 'PASS'
+
+    @pytest.mark.parametrize("independent_result", ["PASS", "FAIL"])
+    @pytest.mark.parametrize("evidence_result", ["PASS", "FAIL", "UNKNOWN"])
+    def test_unrelated_hash_violation_preserves_independent_implementation_result(
+        proof_case, independent_result, evidence_result
+    ):
+        _, records, _ = proof_case
+        records["evidence.x"]["result"] = independent_result
+        records["evidence.y"].update(
+            check_revision="sha256:" + "a" * 64, result=evidence_result
+        )
+        report = run(proof_case)
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:48: AssertionError
+_ test_unrelated_hash_violation_preserves_independent_implementation_result[PASS-FAIL] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+independent_result = 'FAIL', evidence_result = 'PASS'
+
+    @pytest.mark.parametrize("independent_result", ["PASS", "FAIL"])
+    @pytest.mark.parametrize("evidence_result", ["PASS", "FAIL", "UNKNOWN"])
+    def test_unrelated_hash_violation_preserves_independent_implementation_result(
+        proof_case, independent_result, evidence_result
+    ):
+        _, records, _ = proof_case
+        records["evidence.x"]["result"] = independent_result
+        records["evidence.y"].update(
+            check_revision="sha256:" + "a" * 64, result=evidence_result
+        )
+        report = run(proof_case)
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:48: AssertionError
+_ test_unrelated_hash_violation_preserves_independent_implementation_result[FAIL-PASS] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+independent_result = 'PASS', evidence_result = 'FAIL'
+
+    @pytest.mark.parametrize("independent_result", ["PASS", "FAIL"])
+    @pytest.mark.parametrize("evidence_result", ["PASS", "FAIL", "UNKNOWN"])
+    def test_unrelated_hash_violation_preserves_independent_implementation_result(
+        proof_case, independent_result, evidence_result
+    ):
+        _, records, _ = proof_case
+        records["evidence.x"]["result"] = independent_result
+        records["evidence.y"].update(
+            check_revision="sha256:" + "a" * 64, result=evidence_result
+        )
+        report = run(proof_case)
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:48: AssertionError
+_ test_unrelated_hash_violation_preserves_independent_implementation_result[FAIL-FAIL] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+independent_result = 'FAIL', evidence_result = 'FAIL'
+
+    @pytest.mark.parametrize("independent_result", ["PASS", "FAIL"])
+    @pytest.mark.parametrize("evidence_result", ["PASS", "FAIL", "UNKNOWN"])
+    def test_unrelated_hash_violation_preserves_independent_implementation_result(
+        proof_case, independent_result, evidence_result
+    ):
+        _, records, _ = proof_case
+        records["evidence.x"]["result"] = independent_result
+        records["evidence.y"].update(
+            check_revision="sha256:" + "a" * 64, result=evidence_result
+        )
+        report = run(proof_case)
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:48: AssertionError
+_ test_unrelated_hash_violation_preserves_independent_implementation_result[UNKNOWN-PASS] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+independent_result = 'PASS', evidence_result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("independent_result", ["PASS", "FAIL"])
+    @pytest.mark.parametrize("evidence_result", ["PASS", "FAIL", "UNKNOWN"])
+    def test_unrelated_hash_violation_preserves_independent_implementation_result(
+        proof_case, independent_result, evidence_result
+    ):
+        _, records, _ = proof_case
+        records["evidence.x"]["result"] = independent_result
+        records["evidence.y"].update(
+            check_revision="sha256:" + "a" * 64, result=evidence_result
+        )
+        report = run(proof_case)
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:48: AssertionError
+_ test_unrelated_hash_violation_preserves_independent_implementation_result[UNKNOWN-FAIL] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+independent_result = 'FAIL', evidence_result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("independent_result", ["PASS", "FAIL"])
+    @pytest.mark.parametrize("evidence_result", ["PASS", "FAIL", "UNKNOWN"])
+    def test_unrelated_hash_violation_preserves_independent_implementation_result(
+        proof_case, independent_result, evidence_result
+    ):
+        _, records, _ = proof_case
+        records["evidence.x"]["result"] = independent_result
+        records["evidence.y"].update(
+            check_revision="sha256:" + "a" * 64, result=evidence_result
+        )
+        report = run(proof_case)
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:48: AssertionError
+_ test_unrelated_hash_violation_preserves_applicable_authorization[True-explicit] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+requirement = 'explicit', denied = True
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("denied", [True, False])
+    def test_unrelated_hash_violation_preserves_applicable_authorization(
+        proof_case, requirement, denied
+    ):
+        _, records, host = proof_case
+        records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        host["policy"]["requirement"] = requirement
+        if denied:
+            records["decision.x"]["outcome"] = "rejected"
+        report = run(proof_case, activity="implementation")
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:64: AssertionError
+_ test_unrelated_hash_violation_preserves_applicable_authorization[True-standing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+requirement = 'standing', denied = True
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("denied", [True, False])
+    def test_unrelated_hash_violation_preserves_applicable_authorization(
+        proof_case, requirement, denied
+    ):
+        _, records, host = proof_case
+        records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        host["policy"]["requirement"] = requirement
+        if denied:
+            records["decision.x"]["outcome"] = "rejected"
+        report = run(proof_case, activity="implementation")
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:64: AssertionError
+_ test_unrelated_hash_violation_preserves_applicable_authorization[True-none] __
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+requirement = 'none', denied = True
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("denied", [True, False])
+    def test_unrelated_hash_violation_preserves_applicable_authorization(
+        proof_case, requirement, denied
+    ):
+        _, records, host = proof_case
+        records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        host["policy"]["requirement"] = requirement
+        if denied:
+            records["decision.x"]["outcome"] = "rejected"
+        report = run(proof_case, activity="implementation")
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:64: AssertionError
+_ test_unrelated_hash_violation_preserves_applicable_authorization[False-explicit] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+requirement = 'explicit', denied = False
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("denied", [True, False])
+    def test_unrelated_hash_violation_preserves_applicable_authorization(
+        proof_case, requirement, denied
+    ):
+        _, records, host = proof_case
+        records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        host["policy"]["requirement"] = requirement
+        if denied:
+            records["decision.x"]["outcome"] = "rejected"
+        report = run(proof_case, activity="implementation")
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:64: AssertionError
+_ test_unrelated_hash_violation_preserves_applicable_authorization[False-standing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+requirement = 'standing', denied = False
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("denied", [True, False])
+    def test_unrelated_hash_violation_preserves_applicable_authorization(
+        proof_case, requirement, denied
+    ):
+        _, records, host = proof_case
+        records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        host["policy"]["requirement"] = requirement
+        if denied:
+            records["decision.x"]["outcome"] = "rejected"
+        report = run(proof_case, activity="implementation")
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:64: AssertionError
+_ test_unrelated_hash_violation_preserves_applicable_authorization[False-none] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+requirement = 'none', denied = False
+
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    @pytest.mark.parametrize("denied", [True, False])
+    def test_unrelated_hash_violation_preserves_applicable_authorization(
+        proof_case, requirement, denied
+    ):
+        _, records, host = proof_case
+        records["evidence.y"]["check_revision"] = "sha256:" + "a" * 64
+        host["policy"]["requirement"] = requirement
+        if denied:
+            records["decision.x"]["outcome"] = "rejected"
+        report = run(proof_case, activity="implementation")
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_protocol_loop7.py:64: AssertionError
+_______ test_historical_evidence_digest_remains_locally_decidable[False] _______
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-136/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+matching = False
+
+    @pytest.mark.parametrize("matching", [True, False])
+    def test_historical_evidence_digest_remains_locally_decidable(proof_case, matching):
+        path, records, host = proof_case
+        old = "sha256:" + "b" * 64
+        records["check.y"].update(spec_revision=old, scope=["rule.deleted"])
+        records["evidence.y"].update(
+            spec_revision=old, scope=["rule.deleted"],
+            check_revision=digest(records["check.y"]) if matching else "sha256:" + "a" * 64,
+        )
+        write(path, records)
+        report = validate(path, profiles=["model"], host_context=host)
+>       assert aggregate(report["checks"], "model") == ("UNKNOWN" if matching else "FAIL")
+E       AssertionError: assert 'UNKNOWN' == 'FAIL'
+E         
+E         - FAIL
+E         + UNKNOWN
+
+tests/test_review_protocol_loop7.py:116: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_evidence_hash_is_checked_across_profiles[True-False-profiles0]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_evidence_hash_is_checked_across_profiles[True-False-profiles1]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_evidence_hash_is_checked_across_profiles[True-False-profiles2]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_evidence_hash_is_checked_across_profiles[False-False-profiles0]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_evidence_hash_is_checked_across_profiles[False-False-profiles1]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_evidence_hash_is_checked_across_profiles[False-False-profiles2]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_independent_implementation_result[PASS-PASS]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_independent_implementation_result[PASS-FAIL]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_independent_implementation_result[FAIL-PASS]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_independent_implementation_result[FAIL-FAIL]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_independent_implementation_result[UNKNOWN-PASS]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_independent_implementation_result[UNKNOWN-FAIL]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_applicable_authorization[True-explicit]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_applicable_authorization[True-standing]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_applicable_authorization[True-none]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_applicable_authorization[False-explicit]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_applicable_authorization[False-standing]
+FAILED tests/test_review_protocol_loop7.py::test_unrelated_hash_violation_preserves_applicable_authorization[False-none]
+FAILED tests/test_review_protocol_loop7.py::test_historical_evidence_digest_remains_locally_decidable[False]
+19 failed, 11 passed in 0.50s

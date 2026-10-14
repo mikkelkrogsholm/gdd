@@ -1,0 +1,13 @@
+{
+  "scope": "GDD 0.2 standard draft authoring",
+  "result": "PASS",
+  "asset_count": 31,
+  "asset_manifest_sha256": "eb5b6261b35715501bc76948cabeea7978bae9fc5024b908a5e4f95e61b72fc4",
+  "requirements_mapped": 20,
+  "local_links_checked_before_final_report_links": 47,
+  "representation_cases_executed": 16,
+  "parser_negative_controls_executed": 2,
+  "conformance_cases_total": 58,
+  "remaining_cases": "40 normative expectations; not executed by a GDD validator",
+  "runtime_or_application_verification": "UNKNOWN / outside this phase"
+}

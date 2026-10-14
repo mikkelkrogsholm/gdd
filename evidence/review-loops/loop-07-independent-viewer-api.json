@@ -1,0 +1,89 @@
+{
+  "total": 13,
+  "passed": 13,
+  "results": [
+    {
+      "id": "offline-tool-schemas",
+      "result": "PASS",
+      "detail": "7 generated payloads + downloaded browser state validate offline"
+    },
+    {
+      "id": "scope-list-selection",
+      "result": "PASS",
+      "detail": "exact duplicate normalization, isolated artifact, known whole model, unknown lists rejected"
+    },
+    {
+      "id": "unknown-renderer",
+      "result": "PASS",
+      "detail": {
+        "integration.visualization": "UNKNOWN"
+      }
+    },
+    {
+      "id": "stale-revision",
+      "result": "PASS",
+      "detail": {
+        "integration.visualization": "FAIL"
+      }
+    },
+    {
+      "id": "known-model-tamper",
+      "result": "PASS",
+      "detail": {
+        "integration.visualization": "FAIL"
+      }
+    },
+    {
+      "id": "known-exact-text-tamper",
+      "result": "PASS",
+      "detail": {
+        "integration.visualization": "FAIL"
+      }
+    },
+    {
+      "id": "known-location-tamper",
+      "result": "PASS",
+      "detail": {
+        "integration.visualization": "FAIL"
+      }
+    },
+    {
+      "id": "known-manifest-tamper",
+      "result": "PASS",
+      "detail": {
+        "integration.visualization": "FAIL"
+      }
+    },
+    {
+      "id": "unknown-format-known-renderer",
+      "result": "PASS",
+      "detail": {
+        "integration.visualization": "FAIL"
+      }
+    },
+    {
+      "id": "exact-artifact-integrity",
+      "result": "PASS",
+      "detail": "CSP, extra bytes and duplicate payload rejected"
+    },
+    {
+      "id": "missing-view-unknown",
+      "result": "PASS",
+      "detail": {
+        "integration.visualization": "UNKNOWN"
+      }
+    },
+    {
+      "id": "no-view-unknown",
+      "result": "PASS",
+      "detail": {
+        "integration.visualization": "UNKNOWN"
+      }
+    },
+    {
+      "id": "exclusive-output",
+      "result": "PASS",
+      "detail": "existing symlink and artifact bytes preserved"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+TEMP COPY focused regression command:
+python -B -m pytest -q -p no:cacheprovider tests/test_review_protocol_loop9.py tests/test_review_protocol.py tests/test_review_protocol_loop2.py tests/test_review_protocol_loop4.py tests/test_review_protocol_loop5.py tests/test_review_protocol_loop6.py tests/test_review_protocol_loop7.py tests/test_review_readiness_integrity.py tests/test_review_parser_loop8.py
+
+Verified pytest output:
+447 passed in 41.68s
+
+New regression cases: 100 (all passed); existing focused cases: 347 (all passed).

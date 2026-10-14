@@ -1,0 +1,17 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:a986343c372cbb192a0f39e5b6529cb44d59e04931d5a6efaac63303fed2d5a1",
+  "event": {
+    "type": "submit",
+    "expected_revision": "sha256:a986343c372cbb192a0f39e5b6529cb44d59e04931d5a6efaac63303fed2d5a1",
+    "idempotency_key": "submit.package.tax",
+    "package": "package.tax",
+    "attempt": "native.tax.1",
+    "summary": "Native agent repairs exact floor division; existing tests unchanged.",
+    "artifact_uri": "worker-results/tax/tax.py",
+    "changed_resources": [
+      "quote_demo/tax.py"
+    ]
+  },
+  "revision": "sha256:7654a567caf105ff015b8561983962ea7512b7b623f37b51502b17cd5c59504a"
+}

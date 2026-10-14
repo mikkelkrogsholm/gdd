@@ -1,0 +1,11 @@
+{
+  "format": "gdd-workflow-distribution/0.1",
+  "source_files_checked": 124,
+  "wheel_runtime_files_checked": 38,
+  "archives_match_reviewed_sources": true,
+  "archives": {
+    "gdd_validator-0.5.0-py3-none-any.whl": "73363622a9ff834881cb16dd2d9f263b24670b4b1fbb184819878d51379747b2",
+    "gdd_validator-0.5.0.tar.gz": "59a0e48ceb10500f7e533f04aeeba87b598f98c96672e1055db3cafa5faca694"
+  },
+  "passed": true
+}

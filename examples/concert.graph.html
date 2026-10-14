@@ -1,0 +1,1879 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'sha256-lGFlAWsoSwFYlpwFyYG7xfH/3hl9e87uaDEtUNtqda8='; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; object-src 'none'; form-action 'none'"
+    />
+    <title>GDD · Grafvisning</title>
+    <style>
+      :root {
+  color-scheme: light;
+  --bg: #f5f6f2;
+  --panel: #fff;
+  --ink: #202b2c;
+  --muted: #657171;
+  --line: #dfe4df;
+  --accent: #17695a;
+  --soft: #e8f2ec;
+  --canvas: #f1f4ef;
+  --node: #fff;
+  --edge: #a8b8b1;
+  --action: #1c7869;
+  --rule: #a57832;
+  --entity: #5277a4;
+  --screen: #8d699d;
+  --community: #56645e;
+  --scenario: #768b71;
+  --focus: #156bba;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(min-content, 1fr) auto;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    14px/1.5 ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 10px;
+}
+button:hover {
+  background: var(--soft);
+  border-color: var(--accent);
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+button[aria-pressed="true"] {
+  background: var(--soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+header {
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+.brand {
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -2px;
+}
+.brand-dot {
+  color: var(--accent);
+  font-size: 12px;
+  vertical-align: top;
+  letter-spacing: 0;
+  padding-left: 3px;
+}
+.heading {
+  min-width: 0;
+  flex: 1;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  color: var(--muted);
+  font-weight: 650;
+}
+h1 {
+  font-size: 19px;
+  line-height: 1.2;
+  margin: 3px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.mode {
+  color: var(--accent);
+  background: var(--soft);
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+h2 {
+  font-size: 15px;
+  font-weight: 650;
+  margin: 0;
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 20px;
+}
+.quiet,
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+.hint {
+  margin: 8px 0 18px;
+}
+.explorer {
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  min-height: min-content;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+}
+main {
+  min-height: 550px;
+  display: grid;
+  grid-template-columns: 265px minmax(280px, 1fr) 340px;
+}
+label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 550;
+  margin: 0 0 6px;
+}
+input[type="search"],
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 9px 8px;
+  min-width: 0;
+}
+input[type="search"] {
+  margin-bottom: 16px;
+}
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.switch-row label {
+  margin: 0;
+  color: var(--ink);
+}
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+.list-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  gap: 6px;
+  padding-bottom: 10px;
+}
+.list-tabs button {
+  flex: 1;
+  font-size: 12px;
+}
+.object-list {
+  overflow: auto;
+  min-height: 70px;
+  flex: 1 1 70px;
+  margin: 10px -8px;
+}
+.object-row {
+  display: block;
+  border: 0;
+  border-radius: 5px;
+  width: 100%;
+  text-align: left;
+  padding: 9px 8px;
+  background: transparent;
+  margin: 0 0 2px;
+  overflow-wrap: anywhere;
+}
+.object-row .row-title {
+  font-size: 12px;
+  display: block;
+  font-weight: 550;
+}
+.row-meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+.type-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--community);
+  margin-right: 6px;
+}
+.reset {
+  margin-top: 10px;
+  font-size: 12px;
+}
+.stage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0)
+    0 0/20px 20px;
+  background-color: var(--canvas);
+}
+.stage-toolbar {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 1;
+  pointer-events: none;
+  align-items: center;
+}
+.stage-toolbar > * {
+  pointer-events: auto;
+}
+.stage-toolbar > div {
+  background: var(--panel);
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.stage-toolbar button {
+  font-size: 11px;
+}
+.live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 7px;
+}
+svg#graph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  user-select: none;
+}
+#arrow path {
+  fill: var(--edge);
+}
+.edge-path {
+  fill: none;
+  stroke: var(--edge);
+  stroke-width: 1.5;
+  marker-end: url(#arrow);
+}
+.edge-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 16;
+  cursor: pointer;
+}
+.edge-label {
+  font-size: 10px;
+  fill: var(--muted);
+  paint-order: stroke;
+  stroke: var(--canvas);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  cursor: pointer;
+}
+.edge-group.selected .edge-path,
+.edge-group.connected .edge-path {
+  stroke: var(--accent);
+  stroke-width: 2.2;
+}
+.edge-group.selected .edge-label {
+  fill: var(--accent);
+}
+.node-glyph {
+  fill: var(--node);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+.node-group {
+  cursor: grab;
+}
+.node-group.selected .node-glyph {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.node-group.connected .node-glyph {
+  stroke: var(--accent);
+}
+.node-group.dim {
+  opacity: 0.22;
+}
+.edge-group.dim {
+  opacity: 0.12;
+}
+.node-label {
+  font-size: 11px;
+  fill: var(--ink);
+  font-weight: 550;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--canvas);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+.node-kind {
+  font-size: 9px;
+  fill: var(--muted);
+  text-anchor: middle;
+}
+.node-symbol {
+  font-size: 13px;
+  fill: var(--ink);
+  text-anchor: middle;
+  font-weight: 650;
+}
+.node-group.folded .node-glyph {
+  fill: var(--soft);
+  stroke-dasharray: 4 3;
+}
+.node-group.sketch .node-glyph {
+  stroke-dasharray: 3 3;
+}
+.canvas-note {
+  position: absolute;
+  bottom: 20px;
+  left: 18px;
+  color: var(--muted);
+  font-size: 11px;
+  max-width: 50%;
+}
+.zoom-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.zoom-controls button {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.zoom-controls span {
+  font:
+    11px ui-monospace,
+    monospace;
+  min-width: 40px;
+  text-align: center;
+}
+#empty {
+  position: absolute;
+  top: 45%;
+  left: 15%;
+  right: 15%;
+  text-align: center;
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 8px;
+}
+.inspector {
+  padding: 22px;
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+  /* Details scroll without setting the graph row's intrinsic minimum height. */
+  contain: size;
+  border-left: 1px solid var(--line);
+  background: var(--panel);
+}
+.detail-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  color: var(--accent);
+  font-weight: 650;
+}
+.detail-title {
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 10px 0 9px;
+  overflow-wrap: anywhere;
+  letter-spacing: -0.4px;
+}
+.canonical-id {
+  font:
+    11px/1.6 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  margin: 0 0 15px;
+}
+.detail-description {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.badge {
+  display: inline-block;
+  border: 1px solid var(--line);
+  font-size: 11px;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 0 5px 8px 0;
+}
+.detail-section {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.detail-section h3 {
+  font-size: 12px;
+  margin: 0 0 10px;
+  font-weight: 650;
+}
+.detail-section p {
+  font-size: 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.kv {
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 12px;
+}
+.kv dt {
+  color: var(--muted);
+}
+.kv dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+pre {
+  font:
+    11px/1.75 ui-monospace,
+    SFMono-Regular,
+    monospace;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 12px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 380px;
+  overflow: auto;
+}
+details {
+  margin: 12px 0;
+}
+summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 550;
+}
+.detail-link {
+  width: 100%;
+  text-align: left;
+  font-size: 11px;
+  padding: 8px;
+  margin-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+.notice {
+  border-left: 3px solid var(--rule);
+  padding: 8px 10px;
+  background: var(--bg);
+  font-size: 12px;
+  color: var(--muted);
+}
+footer {
+  height: 35px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  font:
+    10px ui-monospace,
+    monospace;
+  color: var(--muted);
+}
+footer span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#revision {
+  max-width: 40%;
+}
+.type-action {
+  --type: var(--action);
+}
+.type-entity {
+  --type: var(--entity);
+}
+.type-rule {
+  --type: var(--rule);
+}
+.type-screen {
+  --type: var(--screen);
+}
+.type-community {
+  --type: var(--community);
+}
+.type-scenario {
+  --type: var(--scenario);
+}
+.type-component,
+.type-machine {
+  --type: var(--community);
+}
+.type-dot,
+.node-accent {
+  fill: var(--type, var(--community));
+  background: var(--type, var(--community));
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #1d2524;
+    --panel: #222d2b;
+    --ink: #e4eae5;
+    --muted: #acb9b1;
+    --line: #3c4c46;
+    --accent: #8aceb3;
+    --soft: #2e433a;
+    --canvas: #1a2320;
+    --node: #2a3932;
+    --edge: #72867a;
+    --action: #71bda6;
+    --rule: #d0ab6e;
+    --entity: #96b6db;
+    --screen: #be9fd0;
+    --community: #a9b9b0;
+    --scenario: #b0c7a3;
+    --focus: #93c4ff;
+  }
+}
+@media (max-width: 1150px) {
+  main {
+    grid-template-columns: 235px minmax(280px, 1fr) 290px;
+  }
+  .inspector {
+    padding: 18px;
+  }
+  .stage-toolbar {
+    flex-wrap: wrap;
+  }
+  .mode {
+    display: none;
+  }
+}
+@media (max-width: 850px) {
+  body {
+    display: block;
+  }
+  header {
+    padding: 12px 16px;
+    gap: 14px;
+    min-height: 78px;
+  }
+  h1 {
+    font-size: 16px;
+  }
+  .eyebrow {
+    font-size: 9px;
+  }
+  header button {
+    font-size: 11px;
+  }
+  main {
+    height: auto;
+    min-height: 0;
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-rows: minmax(min-content, 65dvh) auto;
+  }
+  .stage {
+    min-height: 400px;
+  }
+  .explorer {
+    grid-row: 1;
+    padding: 18px 12px;
+  }
+  .inspector {
+    contain: none;
+    grid-column: 1/-1;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    max-height: none;
+  }
+  footer {
+    position: static;
+    height: auto;
+    min-height: 35px;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+  .canvas-note {
+    display: none;
+  }
+  .stage-toolbar {
+    left: 10px;
+    right: 10px;
+  }
+  .stage-toolbar button {
+    font-size: 10px;
+  }
+}
+@media (max-width: 520px) {
+  header {
+    height: auto;
+    min-height: 78px;
+  }
+  .brand {
+    font-size: 25px;
+  }
+  .heading {
+    flex: 1;
+  }
+  .eyebrow {
+    letter-spacing: 0.6px;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  .stage {
+    height: 60dvh;
+    min-height: 380px;
+    order: 0;
+  }
+  .explorer {
+    order: 1;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+  }
+  .inspector {
+    order: 2;
+  }
+  .object-list {
+    flex-basis: auto;
+    max-height: 230px;
+    min-height: 80px;
+  }
+  .panel-heading {
+    margin-bottom: 12px;
+  }
+  .filter-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hint {
+    margin-bottom: 10px;
+  }
+  header > button {
+    max-width: 80px;
+  }
+  #revision {
+    max-width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+.edge-label {
+  opacity: 0;
+}
+.edge-group:hover .edge-label,
+.edge-group.connected .edge-label,
+.edge-group.selected .edge-label {
+  opacity: 1;
+}
+.node-symbol,
+.node-accent {
+  pointer-events: none;
+}
+.node-group:hover .node-glyph {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+;
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand" aria-label="Graph Driven Development">
+        gdd<span class="brand-dot">●</span>
+      </div>
+      <div class="heading">
+        <span class="eyebrow">GRAPH DRIVEN DEVELOPMENT</span>
+        <h1 id="project-title"></h1>
+      </div>
+      <span class="mode">Læsevisning · GDD 0.2</span>
+      <button id="overview">Om modellen</button>
+    </header>
+    <p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+    <main>
+      <aside class="explorer" aria-label="Udforsk grafen">
+        <div class="panel-heading">
+          <h2>Udforsk</h2>
+          <span id="total-count" class="quiet"></span>
+        </div>
+        <label for="search">Søg i noder og relationer</label>
+        <input
+          id="search"
+          type="search"
+          placeholder="ID, beskrivelse eller pseudokode…"
+          autocomplete="off"
+        />
+        <div class="filter-row">
+          <div>
+            <label for="kind">Nodetype</label
+            ><select id="kind">
+              <option value="">Alle typer</option>
+            </select>
+          </div>
+          <div>
+            <label for="relation">Relation</label
+            ><select id="relation">
+              <option value="">Alle relationer</option>
+            </select>
+          </div>
+        </div>
+        <label for="community">Community</label
+        ><select id="community">
+          <option value="">Hele grafen</option>
+        </select>
+        <div class="switch-row">
+          <label for="scenarios"
+            >Vis scenarier <span id="scenario-count"></span></label
+          ><input id="scenarios" type="checkbox" />
+        </div>
+        <div class="switch-row">
+          <label for="fold">Fold communities</label
+          ><input id="fold" type="checkbox" />
+        </div>
+        <p class="hint" id="fold-hint">
+          Medlemskab er gruppering, ikke ejerskab.
+        </p>
+        <div class="list-tabs" role="group" aria-label="Objektliste">
+          <button id="tab-nodes" aria-pressed="true">Noder</button
+          ><button id="tab-edges" aria-pressed="false">Relationer</button>
+        </div>
+        <div
+          id="object-list"
+          class="object-list"
+          aria-label="Synlige objekter"
+        ></div>
+        <button id="reset" class="reset">Nulstil filtre og foldning</button>
+      </aside>
+      <section class="stage" aria-label="Interaktiv graf">
+        <div class="stage-toolbar">
+          <div>
+            <span class="live-dot"></span
+            ><span id="view-count" role="status" aria-live="polite"></span>
+          </div>
+          <button id="manifest-download">Hent visningsmanifest</button>
+        </div>
+        <svg
+          id="graph"
+          role="img"
+          aria-label="GDD-graf. Brug objektlisten til tastaturinspektion."
+        >
+          <defs>
+            <marker
+              id="arrow"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+          </defs>
+          <g id="viewport">
+            <g id="edge-layer"></g>
+            <g id="node-layer"></g>
+          </g>
+        </svg>
+        <div id="empty" hidden>
+          Ingen noder matcher filtrene. Nulstil filtrene for at se grafen igen.
+        </div>
+        <div class="canvas-note">
+          Træk for at flytte · Rul for at zoome · Vælg en node eller forbindelse
+        </div>
+        <div class="zoom-controls" role="group" aria-label="Grafnavigation">
+          <button id="zoom-out" aria-label="Zoom ud">−</button
+          ><span id="zoom-level">100%</span
+          ><button id="zoom-in" aria-label="Zoom ind">+</button
+          ><button id="fit">Tilpas</button>
+        </div>
+      </section>
+      <aside id="inspector" class="inspector" aria-label="Detaljer">
+        <div id="detail"></div>
+      </aside>
+    </main>
+    <footer>
+      <span id="revision"></span><span id="projection-status"></span
+      ><span id="renderer-meta"></span>
+    </footer>
+    <script id="gdd-data" type="application/json">{"format": "gdd-view/0.2", "generator": {"name": "gdd-viewer", "profile": "gdd-viewer-html/0.1", "version": "0.1.3"}, "locations": {"action.cancel": ["concert.gdd.yaml", "/nodes/action.cancel"], "action.reserve": ["concert.gdd.yaml", "/nodes/action.reserve"], "community.backend": ["concert.gdd.yaml", "/nodes/community.backend"], "community.frontend": ["concert.gdd.yaml", "/nodes/community.frontend"], "component.api": ["concert.gdd.yaml", "/nodes/component.api"], "component.frontend": ["concert.gdd.yaml", "/nodes/component.frontend"], "component.reservations": ["concert.gdd.yaml", "/nodes/component.reservations"], "component.storage": ["concert.gdd.yaml", "/nodes/component.storage"], "edge.api_calls_cancel": ["concert.gdd.yaml", "/edges/9"], "edge.api_calls_reserve": ["concert.gdd.yaml", "/edges/8"], "edge.api_imports_reservations": ["concert.gdd.yaml", "/edges/6"], "edge.community.action.cancel": ["concert.gdd.yaml", "/edges/81"], "edge.community.action.reserve": ["concert.gdd.yaml", "/edges/80"], "edge.community.component.api": ["concert.gdd.yaml", "/edges/75"], "edge.community.component.frontend": ["concert.gdd.yaml", "/edges/83"], "edge.community.component.reservations": ["concert.gdd.yaml", "/edges/76"], "edge.community.component.storage": ["concert.gdd.yaml", "/edges/77"], "edge.community.entity.concert": ["concert.gdd.yaml", "/edges/78"], "edge.community.entity.reservation": ["concert.gdd.yaml", "/edges/79"], "edge.community.machine.reservation": ["concert.gdd.yaml", "/edges/82"], "edge.community.screen.reserve": ["concert.gdd.yaml", "/edges/84"], "edge.constraint.rule.api_boundary.component.api": ["concert.gdd.yaml", "/edges/18"], "edge.constraint.rule.api_boundary.component.storage": ["concert.gdd.yaml", "/edges/19"], "edge.constraint.rule.atomicity.action.cancel": ["concert.gdd.yaml", "/edges/16"], "edge.constraint.rule.atomicity.action.reserve": ["concert.gdd.yaml", "/edges/15"], "edge.constraint.rule.authorization.action.cancel": ["concert.gdd.yaml", "/edges/14"], "edge.constraint.rule.capacity.entity.concert": ["concert.gdd.yaml", "/edges/10"], "edge.constraint.rule.capacity.entity.reservation": ["concert.gdd.yaml", "/edges/11"], "edge.constraint.rule.idempotency.action.cancel": ["concert.gdd.yaml", "/edges/13"], "edge.constraint.rule.idempotency.action.reserve": ["concert.gdd.yaml", "/edges/12"], "edge.constraint.rule.state_machine.machine.reservation": ["concert.gdd.yaml", "/edges/17"], "edge.effect.action.cancel.changes.entity.reservation": ["concert.gdd.yaml", "/edges/72"], "edge.effect.action.cancel.reads.entity.reservation": ["concert.gdd.yaml", "/edges/71"], "edge.effect.action.reserve.creates.entity.reservation": ["concert.gdd.yaml", "/edges/70"], "edge.effect.action.reserve.reads.entity.concert": ["concert.gdd.yaml", "/edges/68"], "edge.effect.action.reserve.reads.entity.reservation": ["concert.gdd.yaml", "/edges/69"], "edge.exercise.scenario.atomic_failure.action.cancel": ["concert.gdd.yaml", "/edges/43"], "edge.exercise.scenario.atomic_failure.action.reserve": ["concert.gdd.yaml", "/edges/42"], "edge.exercise.scenario.cancel.action.cancel": ["concert.gdd.yaml", "/edges/36"], "edge.exercise.scenario.cancel.action.reserve": ["concert.gdd.yaml", "/edges/35"], "edge.exercise.scenario.cancel_concurrent.action.cancel": ["concert.gdd.yaml", "/edges/61"], "edge.exercise.scenario.cancel_invalid.action.cancel": ["concert.gdd.yaml", "/edges/65"], "edge.exercise.scenario.cancel_once.action.cancel": ["concert.gdd.yaml", "/edges/58"], "edge.exercise.scenario.cancel_unauthenticated.action.cancel": ["concert.gdd.yaml", "/edges/64"], "edge.exercise.scenario.concert_missing.action.reserve": ["concert.gdd.yaml", "/edges/53"], "edge.exercise.scenario.concurrent_same_key.action.reserve": ["concert.gdd.yaml", "/edges/30"], "edge.exercise.scenario.foreign_cancel.action.cancel": ["concert.gdd.yaml", "/edges/40"], "edge.exercise.scenario.key_conflict.action.reserve": ["concert.gdd.yaml", "/edges/33"], "edge.exercise.scenario.last_seat.action.reserve": ["concert.gdd.yaml", "/edges/25"], "edge.exercise.scenario.replay.action.reserve": ["concert.gdd.yaml", "/edges/27"], "edge.exercise.scenario.replay_after_cancel.action.cancel": ["concert.gdd.yaml", "/edges/46"], "edge.exercise.scenario.replay_after_cancel.action.reserve": ["concert.gdd.yaml", "/edges/45"], "edge.exercise.scenario.reservation_missing.action.cancel": ["concert.gdd.yaml", "/edges/66"], "edge.exercise.scenario.reserve.action.reserve": ["concert.gdd.yaml", "/edges/22"], "edge.exercise.scenario.reserve_invalid.action.reserve": ["concert.gdd.yaml", "/edges/52"], "edge.exercise.scenario.reserve_unauthenticated.action.reserve": ["concert.gdd.yaml", "/edges/51"], "edge.exercise.scenario.sold_out.action.reserve": ["concert.gdd.yaml", "/edges/54"], "edge.exercise.scenario.zero_capacity.action.reserve": ["concert.gdd.yaml", "/edges/56"], "edge.owner.action.cancel": ["concert.gdd.yaml", "/edges/5"], "edge.owner.action.reserve": ["concert.gdd.yaml", "/edges/4"], "edge.owner.entity.concert": ["concert.gdd.yaml", "/edges/0"], "edge.owner.entity.reservation": ["concert.gdd.yaml", "/edges/2"], "edge.owner.machine.reservation": ["concert.gdd.yaml", "/edges/21"], "edge.owner.screen.reserve": ["concert.gdd.yaml", "/edges/73"], "edge.reservations_imports_storage": ["concert.gdd.yaml", "/edges/7"], "edge.screen.reserve.calls": ["concert.gdd.yaml", "/edges/74"], "edge.state.machine.reservation": ["concert.gdd.yaml", "/edges/20"], "edge.storage.entity.concert": ["concert.gdd.yaml", "/edges/1"], "edge.storage.entity.reservation": ["concert.gdd.yaml", "/edges/3"], "edge.verify.scenario.api_boundary.rule.api_boundary": ["concert.gdd.yaml", "/edges/50"], "edge.verify.scenario.atomic_failure.rule.atomicity": ["concert.gdd.yaml", "/edges/44"], "edge.verify.scenario.cancel.rule.capacity": ["concert.gdd.yaml", "/edges/38"], "edge.verify.scenario.cancel.rule.idempotency": ["concert.gdd.yaml", "/edges/37"], "edge.verify.scenario.cancel.rule.state_machine": ["concert.gdd.yaml", "/edges/39"], "edge.verify.scenario.cancel_concurrent.rule.capacity": ["concert.gdd.yaml", "/edges/62"], "edge.verify.scenario.cancel_concurrent.rule.idempotency": ["concert.gdd.yaml", "/edges/63"], "edge.verify.scenario.cancel_once.rule.capacity": ["concert.gdd.yaml", "/edges/59"], "edge.verify.scenario.cancel_once.rule.state_machine": ["concert.gdd.yaml", "/edges/60"], "edge.verify.scenario.concurrent_same_key.rule.capacity": ["concert.gdd.yaml", "/edges/32"], "edge.verify.scenario.concurrent_same_key.rule.idempotency": ["concert.gdd.yaml", "/edges/31"], "edge.verify.scenario.foreign_cancel.rule.authorization": ["concert.gdd.yaml", "/edges/41"], "edge.verify.scenario.key_conflict.rule.idempotency": ["concert.gdd.yaml", "/edges/34"], "edge.verify.scenario.last_seat.rule.capacity": ["concert.gdd.yaml", "/edges/26"], "edge.verify.scenario.replay.rule.capacity": ["concert.gdd.yaml", "/edges/29"], "edge.verify.scenario.replay.rule.idempotency": ["concert.gdd.yaml", "/edges/28"], "edge.verify.scenario.replay_after_cancel.rule.capacity": ["concert.gdd.yaml", "/edges/49"], "edge.verify.scenario.replay_after_cancel.rule.idempotency": ["concert.gdd.yaml", "/edges/47"], "edge.verify.scenario.replay_after_cancel.rule.state_machine": ["concert.gdd.yaml", "/edges/48"], "edge.verify.scenario.reservation_missing.rule.authorization": ["concert.gdd.yaml", "/edges/67"], "edge.verify.scenario.reserve.rule.capacity": ["concert.gdd.yaml", "/edges/23"], "edge.verify.scenario.reserve.rule.state_machine": ["concert.gdd.yaml", "/edges/24"], "edge.verify.scenario.sold_out.rule.capacity": ["concert.gdd.yaml", "/edges/55"], "edge.verify.scenario.zero_capacity.rule.capacity": ["concert.gdd.yaml", "/edges/57"], "entity.concert": ["concert.gdd.yaml", "/nodes/entity.concert"], "entity.reservation": ["concert.gdd.yaml", "/nodes/entity.reservation"], "machine.reservation": ["concert.gdd.yaml", "/nodes/machine.reservation"], "rule.api_boundary": ["concert.gdd.yaml", "/nodes/rule.api_boundary"], "rule.atomicity": ["concert.gdd.yaml", "/nodes/rule.atomicity"], "rule.authorization": ["concert.gdd.yaml", "/nodes/rule.authorization"], "rule.capacity": ["concert.gdd.yaml", "/nodes/rule.capacity"], "rule.idempotency": ["concert.gdd.yaml", "/nodes/rule.idempotency"], "rule.state_machine": ["concert.gdd.yaml", "/nodes/rule.state_machine"], "scenario.api_boundary": ["concert.gdd.yaml", "/nodes/scenario.api_boundary"], "scenario.atomic_failure": ["concert.gdd.yaml", "/nodes/scenario.atomic_failure"], "scenario.cancel": ["concert.gdd.yaml", "/nodes/scenario.cancel"], "scenario.cancel_concurrent": ["concert.gdd.yaml", "/nodes/scenario.cancel_concurrent"], "scenario.cancel_invalid": ["concert.gdd.yaml", "/nodes/scenario.cancel_invalid"], "scenario.cancel_once": ["concert.gdd.yaml", "/nodes/scenario.cancel_once"], "scenario.cancel_unauthenticated": ["concert.gdd.yaml", "/nodes/scenario.cancel_unauthenticated"], "scenario.concert_missing": ["concert.gdd.yaml", "/nodes/scenario.concert_missing"], "scenario.concurrent_same_key": ["concert.gdd.yaml", "/nodes/scenario.concurrent_same_key"], "scenario.foreign_cancel": ["concert.gdd.yaml", "/nodes/scenario.foreign_cancel"], "scenario.key_conflict": ["concert.gdd.yaml", "/nodes/scenario.key_conflict"], "scenario.last_seat": ["concert.gdd.yaml", "/nodes/scenario.last_seat"], "scenario.replay": ["concert.gdd.yaml", "/nodes/scenario.replay"], "scenario.replay_after_cancel": ["concert.gdd.yaml", "/nodes/scenario.replay_after_cancel"], "scenario.reservation_missing": ["concert.gdd.yaml", "/nodes/scenario.reservation_missing"], "scenario.reserve": ["concert.gdd.yaml", "/nodes/scenario.reserve"], "scenario.reserve_invalid": ["concert.gdd.yaml", "/nodes/scenario.reserve_invalid"], "scenario.reserve_unauthenticated": ["concert.gdd.yaml", "/nodes/scenario.reserve_unauthenticated"], "scenario.sold_out": ["concert.gdd.yaml", "/nodes/scenario.sold_out"], "scenario.zero_capacity": ["concert.gdd.yaml", "/nodes/scenario.zero_capacity"], "screen.reserve": ["concert.gdd.yaml", "/nodes/screen.reserve"], "source.design": ["concert.gdd.yaml", "/sources/source.design"], "source.legacy": ["concert.gdd.yaml", "/sources/source.legacy"]}, "manifest": {"omitted_edges": [], "omitted_nodes": [], "shown_edges": ["edge.api_calls_cancel", "edge.api_calls_reserve", "edge.api_imports_reservations", "edge.community.action.cancel", "edge.community.action.reserve", "edge.community.component.api", "edge.community.component.frontend", "edge.community.component.reservations", "edge.community.component.storage", "edge.community.entity.concert", "edge.community.entity.reservation", "edge.community.machine.reservation", "edge.community.screen.reserve", "edge.constraint.rule.api_boundary.component.api", "edge.constraint.rule.api_boundary.component.storage", "edge.constraint.rule.atomicity.action.cancel", "edge.constraint.rule.atomicity.action.reserve", "edge.constraint.rule.authorization.action.cancel", "edge.constraint.rule.capacity.entity.concert", "edge.constraint.rule.capacity.entity.reservation", "edge.constraint.rule.idempotency.action.cancel", "edge.constraint.rule.idempotency.action.reserve", "edge.constraint.rule.state_machine.machine.reservation", "edge.effect.action.cancel.changes.entity.reservation", "edge.effect.action.cancel.reads.entity.reservation", "edge.effect.action.reserve.creates.entity.reservation", "edge.effect.action.reserve.reads.entity.concert", "edge.effect.action.reserve.reads.entity.reservation", "edge.exercise.scenario.atomic_failure.action.cancel", "edge.exercise.scenario.atomic_failure.action.reserve", "edge.exercise.scenario.cancel.action.cancel", "edge.exercise.scenario.cancel.action.reserve", "edge.exercise.scenario.cancel_concurrent.action.cancel", "edge.exercise.scenario.cancel_invalid.action.cancel", "edge.exercise.scenario.cancel_once.action.cancel", "edge.exercise.scenario.cancel_unauthenticated.action.cancel", "edge.exercise.scenario.concert_missing.action.reserve", "edge.exercise.scenario.concurrent_same_key.action.reserve", "edge.exercise.scenario.foreign_cancel.action.cancel", "edge.exercise.scenario.key_conflict.action.reserve", "edge.exercise.scenario.last_seat.action.reserve", "edge.exercise.scenario.replay.action.reserve", "edge.exercise.scenario.replay_after_cancel.action.cancel", "edge.exercise.scenario.replay_after_cancel.action.reserve", "edge.exercise.scenario.reservation_missing.action.cancel", "edge.exercise.scenario.reserve.action.reserve", "edge.exercise.scenario.reserve_invalid.action.reserve", "edge.exercise.scenario.reserve_unauthenticated.action.reserve", "edge.exercise.scenario.sold_out.action.reserve", "edge.exercise.scenario.zero_capacity.action.reserve", "edge.owner.action.cancel", "edge.owner.action.reserve", "edge.owner.entity.concert", "edge.owner.entity.reservation", "edge.owner.machine.reservation", "edge.owner.screen.reserve", "edge.reservations_imports_storage", "edge.screen.reserve.calls", "edge.state.machine.reservation", "edge.storage.entity.concert", "edge.storage.entity.reservation", "edge.verify.scenario.api_boundary.rule.api_boundary", "edge.verify.scenario.atomic_failure.rule.atomicity", "edge.verify.scenario.cancel.rule.capacity", "edge.verify.scenario.cancel.rule.idempotency", "edge.verify.scenario.cancel.rule.state_machine", "edge.verify.scenario.cancel_concurrent.rule.capacity", "edge.verify.scenario.cancel_concurrent.rule.idempotency", "edge.verify.scenario.cancel_once.rule.capacity", "edge.verify.scenario.cancel_once.rule.state_machine", "edge.verify.scenario.concurrent_same_key.rule.capacity", "edge.verify.scenario.concurrent_same_key.rule.idempotency", "edge.verify.scenario.foreign_cancel.rule.authorization", "edge.verify.scenario.key_conflict.rule.idempotency", "edge.verify.scenario.last_seat.rule.capacity", "edge.verify.scenario.replay.rule.capacity", "edge.verify.scenario.replay.rule.idempotency", "edge.verify.scenario.replay_after_cancel.rule.capacity", "edge.verify.scenario.replay_after_cancel.rule.idempotency", "edge.verify.scenario.replay_after_cancel.rule.state_machine", "edge.verify.scenario.reservation_missing.rule.authorization", "edge.verify.scenario.reserve.rule.capacity", "edge.verify.scenario.reserve.rule.state_machine", "edge.verify.scenario.sold_out.rule.capacity", "edge.verify.scenario.zero_capacity.rule.capacity"], "shown_nodes": ["action.cancel", "action.reserve", "community.backend", "community.frontend", "component.api", "component.frontend", "component.reservations", "component.storage", "entity.concert", "entity.reservation", "machine.reservation", "rule.api_boundary", "rule.atomicity", "rule.authorization", "rule.capacity", "rule.idempotency", "rule.state_machine", "scenario.api_boundary", "scenario.atomic_failure", "scenario.cancel", "scenario.cancel_concurrent", "scenario.cancel_invalid", "scenario.cancel_once", "scenario.cancel_unauthenticated", "scenario.concert_missing", "scenario.concurrent_same_key", "scenario.foreign_cancel", "scenario.key_conflict", "scenario.last_seat", "scenario.replay", "scenario.replay_after_cancel", "scenario.reservation_missing", "scenario.reserve", "scenario.reserve_invalid", "scenario.reserve_unauthenticated", "scenario.sold_out", "scenario.zero_capacity", "screen.reserve"]}, "model": {"edges": [{"from": "entity.concert", "id": "edge.owner.entity.concert", "relation": "owned_by", "to": "component.reservations"}, {"from": "entity.concert", "id": "edge.storage.entity.concert", "relation": "stored_in", "to": "component.storage"}, {"from": "entity.reservation", "id": "edge.owner.entity.reservation", "relation": "owned_by", "to": "component.reservations"}, {"from": "entity.reservation", "id": "edge.storage.entity.reservation", "relation": "stored_in", "to": "component.storage"}, {"from": "action.reserve", "id": "edge.owner.action.reserve", "relation": "owned_by", "to": "component.reservations"}, {"from": "action.cancel", "id": "edge.owner.action.cancel", "relation": "owned_by", "to": "component.reservations"}, {"from": "component.api", "id": "edge.api_imports_reservations", "relation": "imports", "to": "component.reservations"}, {"from": "component.reservations", "id": "edge.reservations_imports_storage", "relation": "imports", "to": "component.storage"}, {"from": "component.api", "id": "edge.api_calls_reserve", "relation": "calls", "to": "action.reserve"}, {"from": "component.api", "id": "edge.api_calls_cancel", "relation": "calls", "to": "action.cancel"}, {"from": "rule.capacity", "id": "edge.constraint.rule.capacity.entity.concert", "relation": "constrains", "to": "entity.concert"}, {"from": "rule.capacity", "id": "edge.constraint.rule.capacity.entity.reservation", "relation": "constrains", "to": "entity.reservation"}, {"from": "rule.idempotency", "id": "edge.constraint.rule.idempotency.action.reserve", "relation": "constrains", "to": "action.reserve"}, {"from": "rule.idempotency", "id": "edge.constraint.rule.idempotency.action.cancel", "relation": "constrains", "to": "action.cancel"}, {"from": "rule.authorization", "id": "edge.constraint.rule.authorization.action.cancel", "relation": "constrains", "to": "action.cancel"}, {"from": "rule.atomicity", "id": "edge.constraint.rule.atomicity.action.reserve", "relation": "constrains", "to": "action.reserve"}, {"from": "rule.atomicity", "id": "edge.constraint.rule.atomicity.action.cancel", "relation": "constrains", "to": "action.cancel"}, {"from": "rule.state_machine", "id": "edge.constraint.rule.state_machine.machine.reservation", "relation": "constrains", "to": "machine.reservation"}, {"from": "rule.api_boundary", "id": "edge.constraint.rule.api_boundary.component.api", "relation": "constrains", "to": "component.api"}, {"from": "rule.api_boundary", "id": "edge.constraint.rule.api_boundary.component.storage", "relation": "constrains", "to": "component.storage"}, {"from": "machine.reservation", "id": "edge.state.machine.reservation", "relation": "state_of", "to": "entity.reservation"}, {"from": "machine.reservation", "id": "edge.owner.machine.reservation", "relation": "owned_by", "to": "component.reservations"}, {"from": "scenario.reserve", "id": "edge.exercise.scenario.reserve.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.reserve", "id": "edge.verify.scenario.reserve.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.reserve", "id": "edge.verify.scenario.reserve.rule.state_machine", "relation": "verifies", "to": "rule.state_machine"}, {"from": "scenario.last_seat", "id": "edge.exercise.scenario.last_seat.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.last_seat", "id": "edge.verify.scenario.last_seat.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.replay", "id": "edge.exercise.scenario.replay.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.replay", "id": "edge.verify.scenario.replay.rule.idempotency", "relation": "verifies", "to": "rule.idempotency"}, {"from": "scenario.replay", "id": "edge.verify.scenario.replay.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.concurrent_same_key", "id": "edge.exercise.scenario.concurrent_same_key.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.concurrent_same_key", "id": "edge.verify.scenario.concurrent_same_key.rule.idempotency", "relation": "verifies", "to": "rule.idempotency"}, {"from": "scenario.concurrent_same_key", "id": "edge.verify.scenario.concurrent_same_key.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.key_conflict", "id": "edge.exercise.scenario.key_conflict.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.key_conflict", "id": "edge.verify.scenario.key_conflict.rule.idempotency", "relation": "verifies", "to": "rule.idempotency"}, {"from": "scenario.cancel", "id": "edge.exercise.scenario.cancel.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.cancel", "id": "edge.exercise.scenario.cancel.action.cancel", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.cancel", "id": "edge.verify.scenario.cancel.rule.idempotency", "relation": "verifies", "to": "rule.idempotency"}, {"from": "scenario.cancel", "id": "edge.verify.scenario.cancel.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.cancel", "id": "edge.verify.scenario.cancel.rule.state_machine", "relation": "verifies", "to": "rule.state_machine"}, {"from": "scenario.foreign_cancel", "id": "edge.exercise.scenario.foreign_cancel.action.cancel", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.foreign_cancel", "id": "edge.verify.scenario.foreign_cancel.rule.authorization", "relation": "verifies", "to": "rule.authorization"}, {"from": "scenario.atomic_failure", "id": "edge.exercise.scenario.atomic_failure.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.atomic_failure", "id": "edge.exercise.scenario.atomic_failure.action.cancel", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.atomic_failure", "id": "edge.verify.scenario.atomic_failure.rule.atomicity", "relation": "verifies", "to": "rule.atomicity"}, {"from": "scenario.replay_after_cancel", "id": "edge.exercise.scenario.replay_after_cancel.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.replay_after_cancel", "id": "edge.exercise.scenario.replay_after_cancel.action.cancel", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.replay_after_cancel", "id": "edge.verify.scenario.replay_after_cancel.rule.idempotency", "relation": "verifies", "to": "rule.idempotency"}, {"from": "scenario.replay_after_cancel", "id": "edge.verify.scenario.replay_after_cancel.rule.state_machine", "relation": "verifies", "to": "rule.state_machine"}, {"from": "scenario.replay_after_cancel", "id": "edge.verify.scenario.replay_after_cancel.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.api_boundary", "id": "edge.verify.scenario.api_boundary.rule.api_boundary", "relation": "verifies", "to": "rule.api_boundary"}, {"from": "scenario.reserve_unauthenticated", "id": "edge.exercise.scenario.reserve_unauthenticated.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.reserve_invalid", "id": "edge.exercise.scenario.reserve_invalid.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.concert_missing", "id": "edge.exercise.scenario.concert_missing.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.sold_out", "id": "edge.exercise.scenario.sold_out.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.sold_out", "id": "edge.verify.scenario.sold_out.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.zero_capacity", "id": "edge.exercise.scenario.zero_capacity.action.reserve", "relation": "exercises", "to": "action.reserve"}, {"from": "scenario.zero_capacity", "id": "edge.verify.scenario.zero_capacity.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.cancel_once", "id": "edge.exercise.scenario.cancel_once.action.cancel", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.cancel_once", "id": "edge.verify.scenario.cancel_once.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.cancel_once", "id": "edge.verify.scenario.cancel_once.rule.state_machine", "relation": "verifies", "to": "rule.state_machine"}, {"from": "scenario.cancel_concurrent", "id": "edge.exercise.scenario.cancel_concurrent.action.cancel", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.cancel_concurrent", "id": "edge.verify.scenario.cancel_concurrent.rule.capacity", "relation": "verifies", "to": "rule.capacity"}, {"from": "scenario.cancel_concurrent", "id": "edge.verify.scenario.cancel_concurrent.rule.idempotency", "relation": "verifies", "to": "rule.idempotency"}, {"from": "scenario.cancel_unauthenticated", "id": "edge.exercise.scenario.cancel_unauthenticated.action.cancel", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.cancel_invalid", "id": "edge.exercise.scenario.cancel_invalid.action.cancel", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.reservation_missing", "id": "edge.exercise.scenario.reservation_missing.action.cancel", "relation": "exercises", "to": "action.cancel"}, {"from": "scenario.reservation_missing", "id": "edge.verify.scenario.reservation_missing.rule.authorization", "relation": "verifies", "to": "rule.authorization"}, {"from": "action.reserve", "id": "edge.effect.action.reserve.reads.entity.concert", "relation": "reads", "to": "entity.concert"}, {"from": "action.reserve", "id": "edge.effect.action.reserve.reads.entity.reservation", "relation": "reads", "to": "entity.reservation"}, {"from": "action.reserve", "id": "edge.effect.action.reserve.creates.entity.reservation", "relation": "creates", "to": "entity.reservation"}, {"from": "action.cancel", "id": "edge.effect.action.cancel.reads.entity.reservation", "relation": "reads", "to": "entity.reservation"}, {"from": "action.cancel", "id": "edge.effect.action.cancel.changes.entity.reservation", "relation": "changes", "to": "entity.reservation"}, {"from": "screen.reserve", "id": "edge.owner.screen.reserve", "relation": "owned_by", "to": "component.frontend"}, {"from": "screen.reserve", "id": "edge.screen.reserve.calls", "relation": "calls", "to": "action.reserve"}, {"from": "component.api", "id": "edge.community.component.api", "relation": "member_of", "to": "community.backend"}, {"from": "component.reservations", "id": "edge.community.component.reservations", "relation": "member_of", "to": "community.backend"}, {"from": "component.storage", "id": "edge.community.component.storage", "relation": "member_of", "to": "community.backend"}, {"from": "entity.concert", "id": "edge.community.entity.concert", "relation": "member_of", "to": "community.backend"}, {"from": "entity.reservation", "id": "edge.community.entity.reservation", "relation": "member_of", "to": "community.backend"}, {"from": "action.reserve", "id": "edge.community.action.reserve", "relation": "member_of", "to": "community.backend"}, {"from": "action.cancel", "id": "edge.community.action.cancel", "relation": "member_of", "to": "community.backend"}, {"from": "machine.reservation", "id": "edge.community.machine.reservation", "relation": "member_of", "to": "community.backend"}, {"from": "component.frontend", "id": "edge.community.component.frontend", "relation": "member_of", "to": "community.frontend"}, {"from": "screen.reserve", "id": "edge.community.screen.reserve", "relation": "member_of", "to": "community.frontend"}], "format": "gdd/0.2", "nodes": {"action.cancel": {"behavior": "Valider identitet og input f\u00f8rst.\nManglende reservation og en anden ejers reservation giver begge ReservationNotFound.\nKontroll\u00e9r ejerskab f\u00f8r retur af data, ogs\u00e5 ved gentagelse p\u00e5 en allerede annulleret reservation.\nreserved \u00e6ndres atomart til cancelled, s\u00e5 reservationen ikke l\u00e6ngere optager en plads.\ncancelled returneres u\u00e6ndret; frigiv ikke en plads igen.\nDen gamle request-n\u00f8gle bevares, s\u00e5 en gentaget reserve-request ikke genopretter reservationen.", "contract": {"context": {"principal_id": {"min_length": 1, "origin": "authenticated_context", "type": "string"}}, "dependencies_complete": true, "effects_complete": true, "error_cases": {"InvalidInput": ["scenario.cancel_invalid"], "ReservationNotFound": ["scenario.reservation_missing", "scenario.foreign_cancel"], "Unauthenticated": ["scenario.cancel_unauthenticated"]}, "errors": {"InvalidInput": "InvalidInput", "ReservationNotFound": "ReservationNotFound", "Unauthenticated": "Unauthenticated"}, "external_effects": [], "input": {"reservation_id": {"min_length": 1, "type": "string"}}, "output": {"properties": {"id": {"min_length": 1, "type": "string"}, "state": {"type": "enum", "values": ["cancelled"]}}, "required": ["id", "state"], "type": "object"}, "preconditions": ["Valider autentificeret identitet og input f\u00f8r opslag eller mutation."], "risks": {"atomicity": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.atomic_failure"]}, "authorization": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.foreign_cancel"]}, "boundaries": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.reservation_missing"]}, "concurrency": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.cancel_concurrent"]}, "idempotency": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.cancel", "scenario.replay_after_cancel"]}}}, "description": "Ejeren kan annullere sin reservation; gentagelse er uden ekstra effekt.", "kind": "action", "maturity": "specified", "source_refs": [{"purpose": "provenance", "source": "source.legacy"}]}, "action.reserve": {"behavior": "Valider identitet og input f\u00f8r opslag eller mutation.\nRequest-n\u00f8glen er scoped til principal_id og action.reserve.\nBind en succesfuld n\u00f8gle til concert_id og reservations-id; samme n\u00f8gle med andet concert_id giver IdempotencyConflict.\nEn identisk gentagelse returnerer samme reservations-id og AKTUEL tilstand, ogs\u00e5 efter annullering, uden nye sideeffekter.\nSl\u00e5 en tidligere succes op F\u00d8R en ny kapacitetskontrol; et fuldt spillested m\u00e5 ikke g\u00f8re en succesfuld gentagelse til SoldOut.\nKun en ny n\u00f8gle fors\u00f8ger at oprette en ny reservation.\nAfvis en ny reservation med SoldOut, n\u00e5r antallet af reservationer i reserved er lig kapaciteten.\nN\u00f8gleunikhed, kapacitetsbeskyttelse, oprettelse og n\u00f8glebinding skal indg\u00e5 i samme atomare databaseoperation eller transaktion.\nSamtidige transaktioner skal give et resultat svarende til en gyldig sekventiel r\u00e6kkef\u00f8lge for disse regler; en check-then-insert uden beskyttelse er ikke nok.\nEn mislykket oprettelse binder ikke request-n\u00f8glen og efterlader ingen reservation.", "contract": {"context": {"principal_id": {"min_length": 1, "origin": "authenticated_context", "type": "string"}}, "dependencies_complete": true, "effects_complete": true, "error_cases": {"ConcertNotFound": ["scenario.concert_missing"], "IdempotencyConflict": ["scenario.key_conflict"], "InvalidInput": ["scenario.reserve_invalid"], "SoldOut": ["scenario.sold_out"], "Unauthenticated": ["scenario.reserve_unauthenticated"]}, "errors": {"ConcertNotFound": "ConcertNotFound", "IdempotencyConflict": "IdempotencyConflict", "InvalidInput": "InvalidInput", "SoldOut": "SoldOut", "Unauthenticated": "Unauthenticated"}, "external_effects": [], "input": {"concert_id": {"min_length": 1, "type": "string"}, "request_key": {"min_length": 1, "type": "string"}}, "output": {"properties": {"id": {"min_length": 1, "type": "string"}, "state": {"type": "enum", "values": ["reserved", "cancelled"]}}, "required": ["id", "state"], "type": "object"}, "preconditions": ["Valider autentificeret identitet og input f\u00f8r opslag eller mutation."], "risks": {"atomicity": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.atomic_failure"]}, "authorization": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.reserve_unauthenticated"]}, "boundaries": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.zero_capacity", "scenario.sold_out"]}, "concurrency": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.last_seat", "scenario.concurrent_same_key"]}, "idempotency": {"rationale": "Kontrakten omfatter denne risiko; scenarierne er planlagte checks.", "relevant": true, "scenarios": ["scenario.replay", "scenario.key_conflict"]}}}, "description": "Reserv\u00e9r pr\u00e6cis \u00e9n plads eller genfind resultatet af en tidligere succes.", "kind": "action", "maturity": "specified", "source_refs": [{"purpose": "provenance", "source": "source.legacy"}]}, "community.backend": {"description": "Backend-visning af den f\u00e6lles model.", "kind": "community"}, "community.frontend": {"description": "Frontend-visning af den f\u00e6lles model.", "kind": "community"}, "component.api": {"description": "Validerer transportinput og videresender autentificeret kontekst.", "interfaces": ["action.reserve", "action.cancel"], "kind": "component", "maturity": "specified", "source_refs": [{"purpose": "provenance", "source": "source.legacy"}]}, "component.frontend": {"description": "Planlagt brugerflade; skitse uden teknologistak.", "kind": "component", "maturity": "sketch"}, "component.reservations": {"description": "Ejer reservationsregler, adgangskontrol og transaktionsgr\u00e6nser.", "interfaces": ["action.reserve", "action.cancel"], "kind": "component", "maturity": "specified", "source_refs": [{"purpose": "provenance", "source": "source.legacy"}]}, "component.storage": {"description": "Persistence-adapter til databasen; indeholder ikke beslutninger om adgangsrettigheder.", "interfaces": [], "kind": "component", "maturity": "specified", "source_refs": [{"purpose": "provenance", "source": "source.legacy"}]}, "entity.concert": {"description": "En koncert med en fast, ikke-negativ heltalskapacitet.", "fields": {"capacity": {"minimum": 0, "type": "integer"}, "id": {"min_length": 1, "type": "string"}}, "kind": "entity", "maturity": "specified", "source_refs": [{"purpose": "provenance", "source": "source.legacy"}]}, "entity.reservation": {"description": "\u00c9n reserveret plads med ejer og permanent request-n\u00f8gle.", "fields": {"concert_id": {"min_length": 1, "type": "string"}, "id": {"min_length": 1, "type": "string"}, "owner_id": {"min_length": 1, "type": "string"}, "request_key": {"min_length": 1, "type": "string"}, "state": {"type": "enum", "values": ["reserved", "cancelled"]}}, "kind": "entity", "maturity": "specified", "source_refs": [{"purpose": "provenance", "source": "source.legacy"}]}, "machine.reservation": {"annotations": {"gdd.notes": ["absent er en modelleringsmark\u00f8r for en reservation, der endnu ikke eksisterer; den lagres aldrig.", "Tilstandsmaskinen beskriver mutationer. Validering, fejl og idempotente returveje er defineret i action-kontrakterne.", "cancelled er terminal for mutationer, men m\u00e5 fortsat l\u00e6ses og returneres ved en autoriseret gentagelse."]}, "description": "Reservations mutationslivscyklus; retries og fejl f\u00f8lger action-kontrakterne.", "kind": "machine", "machine": {"initial": "absent", "states": ["absent", "reserved", "cancelled"], "terminal": ["cancelled"], "transitions": [{"effects": "Opret reservation med state=reserved og bind request-n\u00f8glen atomart under kapacitetsbeskyttelsen.", "from": "absent", "guard": "Autentificeret bruger; eksisterende koncert; ny request-n\u00f8gle; mindst \u00e9n ledig plads.", "id": "transition.reserve", "to": "reserved", "trigger": "action.reserve"}, {"effects": "Skift atomart til cancelled; en eventuel materialiseret pladst\u00e6ller opdateres i samme transaktion.", "from": "reserved", "guard": "Den autentificerede bruger ejer reservationen.", "id": "transition.cancel", "to": "cancelled", "trigger": "action.cancel"}]}, "maturity": "specified"}, "rule.api_boundary": {"description": "API-modulet m\u00e5 ikke importere persistence-modulet direkte.", "kind": "rule", "maturity": "specified", "rule": {"blocking": true, "category": "architecture", "constraint": {"from": "component.api", "policy": "forbid", "reach": "direct", "relation": "imports", "to": "component.storage"}, "scope": "targeted", "statement": "API-modulet m\u00e5 ikke importere persistence-modulet direkte.", "verification": ["static_import_analysis"]}}, "rule.atomicity": {"description": "Fejl f\u00f8r commit efterlader ingen delvist gennemf\u00f8rt mutation eller request-n\u00f8glebinding.", "kind": "rule", "maturity": "specified", "rule": {"blocking": true, "category": "behavior", "scope": "targeted", "statement": "Fejl f\u00f8r commit efterlader ingen delvist gennemf\u00f8rt mutation eller request-n\u00f8glebinding.", "verification": ["database_fault_injection_tests"]}}, "rule.authorization": {"description": "Kun ejeren m\u00e5 annullere eller f\u00e5 reservationsdata retur; en request-body m\u00e5 ikke fastl\u00e6gge identiteten.", "kind": "rule", "maturity": "specified", "rule": {"blocking": true, "category": "behavior", "scope": "targeted", "statement": "Kun ejeren m\u00e5 annullere eller f\u00e5 reservationsdata retur; en request-body m\u00e5 ikke fastl\u00e6gge identiteten.", "verification": ["authorization_tests"]}}, "rule.capacity": {"description": "For hver koncert er 0 \u003c= count(reservationer med state=reserved) \u003c= capacity efter hver committed mutation.", "kind": "rule", "maturity": "specified", "rule": {"blocking": true, "category": "invariant", "scope": "targeted", "statement": "For hver koncert er 0 \u003c= count(reservationer med state=reserved) \u003c= capacity efter hver committed mutation.", "verification": ["database_concurrency_and_integration_tests"]}}, "rule.idempotency": {"description": "Gentagelser m\u00e5 ikke oprette ekstra reservationer, genaktivere annullerede reservationer eller frigive ekstra pladser.", "kind": "rule", "maturity": "specified", "rule": {"blocking": true, "category": "behavior", "scope": "targeted", "statement": "Gentagelser m\u00e5 ikke oprette ekstra reservationer, genaktivere annullerede reservationer eller frigive ekstra pladser.", "verification": ["integration_tests"]}}, "rule.state_machine": {"description": "Muterende forl\u00f8b f\u00f8lger tilstandsmaskinen; annullerede reservations-id'er kan ikke genaktiveres.", "kind": "rule", "maturity": "specified", "rule": {"blocking": true, "category": "behavior", "scope": "targeted", "statement": "Muterende forl\u00f8b f\u00f8lger tilstandsmaskinen; annullerede reservations-id'er kan ikke genaktiveres.", "verification": ["model_based_and_integration_tests"]}}, "scenario.api_boundary": {"description": "Den forbudte import skal give FAIL. En manglende scanning eller uafklaret mapping giver UNKNOWN, ikke PASS.", "kind": "scenario", "scenario": {"category": "architecture", "given": "Komponenternes bindings peger p\u00e5 det implementerede projekts moduler.", "then": "Den forbudte import skal give FAIL. En manglende scanning eller uafklaret mapping giver UNKNOWN, ikke PASS.", "when": "Importgrafen udtr\u00e6kkes; inds\u00e6t desuden en midlertidig direkte API-til-storage-import som negativ kontrol."}}, "scenario.atomic_failure": {"description": "Efter fejlen er vedvarende tilstand u\u00e6ndret; efter vellykket genfors\u00f8g er effekten udf\u00f8rt \u00e9n gang. Kontroll\u00e9r ogs\u00e5 evt. t\u00e6ller og n\u00f8glebinding.", "kind": "scenario", "scenario": {"category": "negative", "given": "Et gyldigt reserve- eller cancel-forl\u00f8b er klar til mutation.", "then": "Efter fejlen er vedvarende tilstand u\u00e6ndret; efter vellykket genfors\u00f8g er effekten udf\u00f8rt \u00e9n gang. Kontroll\u00e9r ogs\u00e5 evt. t\u00e6ller og n\u00f8glebinding.", "when": "Testadapteren injicerer fejl ved relevante persistensgr\u00e6nser f\u00f8r commit og lader klienten genfors\u00f8ge."}}, "scenario.cancel": {"description": "Samme id i cancelled; nul aktive reservationer; aldrig flere ledige pladser end capacity.", "kind": "scenario", "scenario": {"category": "boundary", "given": "A ejer en reserved reservation i en koncert med capacity=1.", "then": "Samme id i cancelled; nul aktive reservationer; aldrig flere ledige pladser end capacity.", "when": "A annullerer to gange, ogs\u00e5 med samtidige requests."}}, "scenario.cancel_concurrent": {"description": "Begge returnerer samme cancelled id; pladsen frigives kun \u00e9n gang.", "kind": "scenario", "scenario": {"category": "concurrency", "given": "A ejer \u00e9n reserved reservation.", "then": "Begge returnerer samme cancelled id; pladsen frigives kun \u00e9n gang.", "when": "To forbindelser annullerer samtidigt."}}, "scenario.cancel_invalid": {"description": "InvalidInput; ingen mutation.", "kind": "scenario", "scenario": {"category": "negative", "given": "Autentificeret bruger; tomt reservation_id.", "then": "InvalidInput; ingen mutation.", "when": "Cancel kaldes."}}, "scenario.cancel_once": {"description": "Samme id returneres cancelled; \u00e9n plads frigives.", "kind": "scenario", "scenario": {"category": "normal", "given": "A ejer en reserved reservation.", "then": "Samme id returneres cancelled; \u00e9n plads frigives.", "when": "A annullerer \u00e9n gang."}}, "scenario.cancel_unauthenticated": {"description": "Unauthenticated; ingen opslag eller mutation.", "kind": "scenario", "scenario": {"category": "negative", "given": "Ingen serverautentificeret principal.", "then": "Unauthenticated; ingen opslag eller mutation.", "when": "Cancel kaldes."}}, "scenario.concert_missing": {"description": "ConcertNotFound; n\u00f8glen bindes ikke.", "kind": "scenario", "scenario": {"category": "negative", "given": "Autentificeret bruger; ny n\u00f8gle; koncert findes ikke.", "then": "ConcertNotFound; n\u00f8glen bindes ikke.", "when": "Reserve kaldes."}}, "scenario.concurrent_same_key": {"description": "Begge returnerer samme reservations-id; pr\u00e6cis \u00e9n reservation oprettes.", "kind": "scenario", "scenario": {"category": "concurrency", "given": "C har capacity=2; K1 er endnu ikke brugt af A.", "then": "Begge returnerer samme reservations-id; pr\u00e6cis \u00e9n reservation oprettes.", "when": "A sender to identiske reserve-requests med K1 samtidigt."}}, "scenario.foreign_cancel": {"description": "ReservationNotFound; ingen \u00e6ndring og ingen reservationsdata returneres.", "kind": "scenario", "scenario": {"category": "negative", "given": "A ejer reservation R; B er autentificeret som B.", "then": "ReservationNotFound; ingen \u00e6ndring og ingen reservationsdata returneres.", "when": "B fors\u00f8ger at annullere R, ogs\u00e5 med et forfalsket owner_id i request-body. Gentag b\u00e5de n\u00e5r R er reserved og cancelled."}}, "scenario.key_conflict": {"description": "IdempotencyConflict; ingen ny reservation eller kapacitets\u00e6ndring i nogen koncert.", "kind": "scenario", "scenario": {"category": "negative", "given": "A har med K1 reserveret koncert C1.", "then": "IdempotencyConflict; ingen ny reservation eller kapacitets\u00e6ndring i nogen koncert.", "when": "A bruger K1 til koncert C2."}}, "scenario.last_seat": {"description": "Pr\u00e6cis \u00e9n reservation lykkes; den anden giver SoldOut; h\u00f8jst \u00e9n plads er optaget. K\u00f8r mod den valgte databases reelle transaktionsadf\u00e6rd.", "kind": "scenario", "scenario": {"category": "concurrency", "given": "Koncert C har \u00e9n ledig plads; A og B har hver sin nye request-n\u00f8gle.", "then": "Pr\u00e6cis \u00e9n reservation lykkes; den anden giver SoldOut; h\u00f8jst \u00e9n plads er optaget. K\u00f8r mod den valgte databases reelle transaktionsadf\u00e6rd.", "when": "To separate databaseforbindelser fors\u00f8ger at reservere samtidigt med kontrolleret overlap."}}, "scenario.replay": {"description": "Samme reservations-id returneres hver gang; ingen ekstra plads optages; ingen SoldOut p\u00e5 gentagelsen.", "kind": "scenario", "scenario": {"category": "boundary", "given": "C har capacity=1; A's reserve med K1 er lykkedes og har optaget den sidste plads.", "then": "Samme reservations-id returneres hver gang; ingen ekstra plads optages; ingen SoldOut p\u00e5 gentagelsen.", "when": "A gentager samme request flere gange, ogs\u00e5 samtidigt."}}, "scenario.replay_after_cancel": {"description": "K1 returnerer R i cancelled uden mutation. K2 kan oprette et nyt id, hvis der er plads; R forbliver cancelled.", "kind": "scenario", "scenario": {"category": "boundary", "given": "A har reserveret med K1 og derefter annulleret reservation R.", "then": "K1 returnerer R i cancelled uden mutation. K2 kan oprette et nyt id, hvis der er plads; R forbliver cancelled.", "when": "A gentager den oprindelige reserve-request med K1 og opretter derefter en ny med K2."}}, "scenario.reservation_missing": {"description": "ReservationNotFound uden reservationsdata.", "kind": "scenario", "scenario": {"category": "negative", "given": "Autentificeret bruger; reservation findes ikke.", "then": "ReservationNotFound uden reservationsdata.", "when": "Cancel kaldes."}}, "scenario.reserve": {"description": "\u00c9t reservations-id i reserved til A, og pr\u00e6cis \u00e9n plads optaget.", "kind": "scenario", "scenario": {"category": "normal", "given": "Koncert C har capacity=1 og ingen reservationer; bruger A er autentificeret.", "then": "\u00c9t reservations-id i reserved til A, og pr\u00e6cis \u00e9n plads optaget.", "when": "A reserverer C med n\u00f8gle K1."}}, "scenario.reserve_invalid": {"description": "InvalidInput; ingen mutation.", "kind": "scenario", "scenario": {"category": "negative", "given": "Autentificeret bruger; tomt concert_id eller request_key.", "then": "InvalidInput; ingen mutation.", "when": "Reserve kaldes."}}, "scenario.reserve_unauthenticated": {"description": "Unauthenticated; ingen opslag eller mutation.", "kind": "scenario", "scenario": {"category": "negative", "given": "Ingen serverautentificeret principal.", "then": "Unauthenticated; ingen opslag eller mutation.", "when": "Reserve kaldes med ellers gyldigt input."}}, "scenario.sold_out": {"description": "SoldOut; ingen mutation eller n\u00f8glebinding.", "kind": "scenario", "scenario": {"category": "negative", "given": "Koncerten er fuld; bruger har en ny n\u00f8gle.", "then": "SoldOut; ingen mutation eller n\u00f8glebinding.", "when": "Reserve kaldes."}}, "scenario.zero_capacity": {"description": "SoldOut; nul aktive reservationer.", "kind": "scenario", "scenario": {"category": "boundary", "given": "Koncert har capacity=0.", "then": "SoldOut; nul aktive reservationer.", "when": "En gyldig ny reservation fors\u00f8ges."}}, "screen.reserve": {"description": "Planlagt reservationssk\u00e6rm; interaktion og design mangler stadig.", "design_refs": [{"purpose": "contract", "selector": {"kind": "whole-document"}, "source": "source.design"}], "kind": "screen", "maturity": "sketch"}}, "project": {"assumptions": ["\u00c9n plads pr. reservation. Flere reservationer med forskellige request-n\u00f8gler er tilladt.", "Koncerter findes p\u00e5 forh\u00e5nd, og kapaciteten \u00e6ndres ikke i dette eksempel.", "Identitet leveres af serverens autentificeringslag, ikke af et user_id i request-body.", "Reservationer udl\u00f8ber ikke automatisk i denne f\u00f8rste model.", "Betaling, billetudstedelse, venteliste og eksterne events er uden for dette eksempel.", "Reservationshistorik og succesfulde request-n\u00f8gler bevares; sletning er uden for eksemplet."], "goal": "En bruger kan reservere og annullere en plads uden overbooking.", "id": "concert-reservations", "scope": "En modul\u00e6r applikation og \u00e9n transaktionel database; ikke mikroservices.", "title": "Reservation af koncertpladser"}, "record_files": ["concert.records.yaml"], "sources": {"source.design": {"format": "design-md/alpha", "normative": false, "role": "design", "title": "Planlagt DESIGN.md til frontend; ikke skrevet eller verified", "uri": "DESIGN.md"}, "source.legacy": {"format": "gdd/0.1", "normative": false, "revision": {"sha256": "8dfcf87613d59edce97d911e57ce1314c9d17356b53d48029d8eebe3b24bbc88"}, "role": "input", "title": "Bevaret gdd/0.1-intent til eksplicit migration", "uri": "sources/legacy-concert.gdd.yaml"}}}, "observation_inputs": [], "scope": [], "snapshot": {"assets": [{"path": "concert.gdd.yaml", "sha256": "826d52effcc6b30b1585341d201cc03ef0a89501fffaf3b404fb1a339564239e"}], "format": "gdd-snapshot/0.2", "revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210"}, "spec_revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210", "text": {"edges": {"edge.api_calls_cancel": "{\n  \"id\": \"edge.api_calls_cancel\",\n  \"from\": \"component.api\",\n  \"relation\": \"calls\",\n  \"to\": \"action.cancel\"\n}", "edge.api_calls_reserve": "{\n  \"id\": \"edge.api_calls_reserve\",\n  \"from\": \"component.api\",\n  \"relation\": \"calls\",\n  \"to\": \"action.reserve\"\n}", "edge.api_imports_reservations": "{\n  \"id\": \"edge.api_imports_reservations\",\n  \"from\": \"component.api\",\n  \"relation\": \"imports\",\n  \"to\": \"component.reservations\"\n}", "edge.community.action.cancel": "{\n  \"id\": \"edge.community.action.cancel\",\n  \"from\": \"action.cancel\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.backend\"\n}", "edge.community.action.reserve": "{\n  \"id\": \"edge.community.action.reserve\",\n  \"from\": \"action.reserve\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.backend\"\n}", "edge.community.component.api": "{\n  \"id\": \"edge.community.component.api\",\n  \"from\": \"component.api\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.backend\"\n}", "edge.community.component.frontend": "{\n  \"id\": \"edge.community.component.frontend\",\n  \"from\": \"component.frontend\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.frontend\"\n}", "edge.community.component.reservations": "{\n  \"id\": \"edge.community.component.reservations\",\n  \"from\": \"component.reservations\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.backend\"\n}", "edge.community.component.storage": "{\n  \"id\": \"edge.community.component.storage\",\n  \"from\": \"component.storage\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.backend\"\n}", "edge.community.entity.concert": "{\n  \"id\": \"edge.community.entity.concert\",\n  \"from\": \"entity.concert\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.backend\"\n}", "edge.community.entity.reservation": "{\n  \"id\": \"edge.community.entity.reservation\",\n  \"from\": \"entity.reservation\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.backend\"\n}", "edge.community.machine.reservation": "{\n  \"id\": \"edge.community.machine.reservation\",\n  \"from\": \"machine.reservation\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.backend\"\n}", "edge.community.screen.reserve": "{\n  \"id\": \"edge.community.screen.reserve\",\n  \"from\": \"screen.reserve\",\n  \"relation\": \"member_of\",\n  \"to\": \"community.frontend\"\n}", "edge.constraint.rule.api_boundary.component.api": "{\n  \"id\": \"edge.constraint.rule.api_boundary.component.api\",\n  \"from\": \"rule.api_boundary\",\n  \"relation\": \"constrains\",\n  \"to\": \"component.api\"\n}", "edge.constraint.rule.api_boundary.component.storage": "{\n  \"id\": \"edge.constraint.rule.api_boundary.component.storage\",\n  \"from\": \"rule.api_boundary\",\n  \"relation\": \"constrains\",\n  \"to\": \"component.storage\"\n}", "edge.constraint.rule.atomicity.action.cancel": "{\n  \"id\": \"edge.constraint.rule.atomicity.action.cancel\",\n  \"from\": \"rule.atomicity\",\n  \"relation\": \"constrains\",\n  \"to\": \"action.cancel\"\n}", "edge.constraint.rule.atomicity.action.reserve": "{\n  \"id\": \"edge.constraint.rule.atomicity.action.reserve\",\n  \"from\": \"rule.atomicity\",\n  \"relation\": \"constrains\",\n  \"to\": \"action.reserve\"\n}", "edge.constraint.rule.authorization.action.cancel": "{\n  \"id\": \"edge.constraint.rule.authorization.action.cancel\",\n  \"from\": \"rule.authorization\",\n  \"relation\": \"constrains\",\n  \"to\": \"action.cancel\"\n}", "edge.constraint.rule.capacity.entity.concert": "{\n  \"id\": \"edge.constraint.rule.capacity.entity.concert\",\n  \"from\": \"rule.capacity\",\n  \"relation\": \"constrains\",\n  \"to\": \"entity.concert\"\n}", "edge.constraint.rule.capacity.entity.reservation": "{\n  \"id\": \"edge.constraint.rule.capacity.entity.reservation\",\n  \"from\": \"rule.capacity\",\n  \"relation\": \"constrains\",\n  \"to\": \"entity.reservation\"\n}", "edge.constraint.rule.idempotency.action.cancel": "{\n  \"id\": \"edge.constraint.rule.idempotency.action.cancel\",\n  \"from\": \"rule.idempotency\",\n  \"relation\": \"constrains\",\n  \"to\": \"action.cancel\"\n}", "edge.constraint.rule.idempotency.action.reserve": "{\n  \"id\": \"edge.constraint.rule.idempotency.action.reserve\",\n  \"from\": \"rule.idempotency\",\n  \"relation\": \"constrains\",\n  \"to\": \"action.reserve\"\n}", "edge.constraint.rule.state_machine.machine.reservation": "{\n  \"id\": \"edge.constraint.rule.state_machine.machine.reservation\",\n  \"from\": \"rule.state_machine\",\n  \"relation\": \"constrains\",\n  \"to\": \"machine.reservation\"\n}", "edge.effect.action.cancel.changes.entity.reservation": "{\n  \"id\": \"edge.effect.action.cancel.changes.entity.reservation\",\n  \"from\": \"action.cancel\",\n  \"relation\": \"changes\",\n  \"to\": \"entity.reservation\"\n}", "edge.effect.action.cancel.reads.entity.reservation": "{\n  \"id\": \"edge.effect.action.cancel.reads.entity.reservation\",\n  \"from\": \"action.cancel\",\n  \"relation\": \"reads\",\n  \"to\": \"entity.reservation\"\n}", "edge.effect.action.reserve.creates.entity.reservation": "{\n  \"id\": \"edge.effect.action.reserve.creates.entity.reservation\",\n  \"from\": \"action.reserve\",\n  \"relation\": \"creates\",\n  \"to\": \"entity.reservation\"\n}", "edge.effect.action.reserve.reads.entity.concert": "{\n  \"id\": \"edge.effect.action.reserve.reads.entity.concert\",\n  \"from\": \"action.reserve\",\n  \"relation\": \"reads\",\n  \"to\": \"entity.concert\"\n}", "edge.effect.action.reserve.reads.entity.reservation": "{\n  \"id\": \"edge.effect.action.reserve.reads.entity.reservation\",\n  \"from\": \"action.reserve\",\n  \"relation\": \"reads\",\n  \"to\": \"entity.reservation\"\n}", "edge.exercise.scenario.atomic_failure.action.cancel": "{\n  \"id\": \"edge.exercise.scenario.atomic_failure.action.cancel\",\n  \"from\": \"scenario.atomic_failure\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.cancel\"\n}", "edge.exercise.scenario.atomic_failure.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.atomic_failure.action.reserve\",\n  \"from\": \"scenario.atomic_failure\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.cancel.action.cancel": "{\n  \"id\": \"edge.exercise.scenario.cancel.action.cancel\",\n  \"from\": \"scenario.cancel\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.cancel\"\n}", "edge.exercise.scenario.cancel.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.cancel.action.reserve\",\n  \"from\": \"scenario.cancel\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.cancel_concurrent.action.cancel": "{\n  \"id\": \"edge.exercise.scenario.cancel_concurrent.action.cancel\",\n  \"from\": \"scenario.cancel_concurrent\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.cancel\"\n}", "edge.exercise.scenario.cancel_invalid.action.cancel": "{\n  \"id\": \"edge.exercise.scenario.cancel_invalid.action.cancel\",\n  \"from\": \"scenario.cancel_invalid\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.cancel\"\n}", "edge.exercise.scenario.cancel_once.action.cancel": "{\n  \"id\": \"edge.exercise.scenario.cancel_once.action.cancel\",\n  \"from\": \"scenario.cancel_once\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.cancel\"\n}", "edge.exercise.scenario.cancel_unauthenticated.action.cancel": "{\n  \"id\": \"edge.exercise.scenario.cancel_unauthenticated.action.cancel\",\n  \"from\": \"scenario.cancel_unauthenticated\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.cancel\"\n}", "edge.exercise.scenario.concert_missing.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.concert_missing.action.reserve\",\n  \"from\": \"scenario.concert_missing\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.concurrent_same_key.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.concurrent_same_key.action.reserve\",\n  \"from\": \"scenario.concurrent_same_key\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.foreign_cancel.action.cancel": "{\n  \"id\": \"edge.exercise.scenario.foreign_cancel.action.cancel\",\n  \"from\": \"scenario.foreign_cancel\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.cancel\"\n}", "edge.exercise.scenario.key_conflict.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.key_conflict.action.reserve\",\n  \"from\": \"scenario.key_conflict\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.last_seat.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.last_seat.action.reserve\",\n  \"from\": \"scenario.last_seat\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.replay.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.replay.action.reserve\",\n  \"from\": \"scenario.replay\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.replay_after_cancel.action.cancel": "{\n  \"id\": \"edge.exercise.scenario.replay_after_cancel.action.cancel\",\n  \"from\": \"scenario.replay_after_cancel\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.cancel\"\n}", "edge.exercise.scenario.replay_after_cancel.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.replay_after_cancel.action.reserve\",\n  \"from\": \"scenario.replay_after_cancel\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.reservation_missing.action.cancel": "{\n  \"id\": \"edge.exercise.scenario.reservation_missing.action.cancel\",\n  \"from\": \"scenario.reservation_missing\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.cancel\"\n}", "edge.exercise.scenario.reserve.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.reserve.action.reserve\",\n  \"from\": \"scenario.reserve\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.reserve_invalid.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.reserve_invalid.action.reserve\",\n  \"from\": \"scenario.reserve_invalid\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.reserve_unauthenticated.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.reserve_unauthenticated.action.reserve\",\n  \"from\": \"scenario.reserve_unauthenticated\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.sold_out.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.sold_out.action.reserve\",\n  \"from\": \"scenario.sold_out\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.exercise.scenario.zero_capacity.action.reserve": "{\n  \"id\": \"edge.exercise.scenario.zero_capacity.action.reserve\",\n  \"from\": \"scenario.zero_capacity\",\n  \"relation\": \"exercises\",\n  \"to\": \"action.reserve\"\n}", "edge.owner.action.cancel": "{\n  \"id\": \"edge.owner.action.cancel\",\n  \"from\": \"action.cancel\",\n  \"relation\": \"owned_by\",\n  \"to\": \"component.reservations\"\n}", "edge.owner.action.reserve": "{\n  \"id\": \"edge.owner.action.reserve\",\n  \"from\": \"action.reserve\",\n  \"relation\": \"owned_by\",\n  \"to\": \"component.reservations\"\n}", "edge.owner.entity.concert": "{\n  \"id\": \"edge.owner.entity.concert\",\n  \"from\": \"entity.concert\",\n  \"relation\": \"owned_by\",\n  \"to\": \"component.reservations\"\n}", "edge.owner.entity.reservation": "{\n  \"id\": \"edge.owner.entity.reservation\",\n  \"from\": \"entity.reservation\",\n  \"relation\": \"owned_by\",\n  \"to\": \"component.reservations\"\n}", "edge.owner.machine.reservation": "{\n  \"id\": \"edge.owner.machine.reservation\",\n  \"from\": \"machine.reservation\",\n  \"relation\": \"owned_by\",\n  \"to\": \"component.reservations\"\n}", "edge.owner.screen.reserve": "{\n  \"id\": \"edge.owner.screen.reserve\",\n  \"from\": \"screen.reserve\",\n  \"relation\": \"owned_by\",\n  \"to\": \"component.frontend\"\n}", "edge.reservations_imports_storage": "{\n  \"id\": \"edge.reservations_imports_storage\",\n  \"from\": \"component.reservations\",\n  \"relation\": \"imports\",\n  \"to\": \"component.storage\"\n}", "edge.screen.reserve.calls": "{\n  \"id\": \"edge.screen.reserve.calls\",\n  \"from\": \"screen.reserve\",\n  \"relation\": \"calls\",\n  \"to\": \"action.reserve\"\n}", "edge.state.machine.reservation": "{\n  \"id\": \"edge.state.machine.reservation\",\n  \"from\": \"machine.reservation\",\n  \"relation\": \"state_of\",\n  \"to\": \"entity.reservation\"\n}", "edge.storage.entity.concert": "{\n  \"id\": \"edge.storage.entity.concert\",\n  \"from\": \"entity.concert\",\n  \"relation\": \"stored_in\",\n  \"to\": \"component.storage\"\n}", "edge.storage.entity.reservation": "{\n  \"id\": \"edge.storage.entity.reservation\",\n  \"from\": \"entity.reservation\",\n  \"relation\": \"stored_in\",\n  \"to\": \"component.storage\"\n}", "edge.verify.scenario.api_boundary.rule.api_boundary": "{\n  \"id\": \"edge.verify.scenario.api_boundary.rule.api_boundary\",\n  \"from\": \"scenario.api_boundary\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.api_boundary\"\n}", "edge.verify.scenario.atomic_failure.rule.atomicity": "{\n  \"id\": \"edge.verify.scenario.atomic_failure.rule.atomicity\",\n  \"from\": \"scenario.atomic_failure\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.atomicity\"\n}", "edge.verify.scenario.cancel.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.cancel.rule.capacity\",\n  \"from\": \"scenario.cancel\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}", "edge.verify.scenario.cancel.rule.idempotency": "{\n  \"id\": \"edge.verify.scenario.cancel.rule.idempotency\",\n  \"from\": \"scenario.cancel\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.idempotency\"\n}", "edge.verify.scenario.cancel.rule.state_machine": "{\n  \"id\": \"edge.verify.scenario.cancel.rule.state_machine\",\n  \"from\": \"scenario.cancel\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.state_machine\"\n}", "edge.verify.scenario.cancel_concurrent.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.cancel_concurrent.rule.capacity\",\n  \"from\": \"scenario.cancel_concurrent\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}", "edge.verify.scenario.cancel_concurrent.rule.idempotency": "{\n  \"id\": \"edge.verify.scenario.cancel_concurrent.rule.idempotency\",\n  \"from\": \"scenario.cancel_concurrent\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.idempotency\"\n}", "edge.verify.scenario.cancel_once.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.cancel_once.rule.capacity\",\n  \"from\": \"scenario.cancel_once\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}", "edge.verify.scenario.cancel_once.rule.state_machine": "{\n  \"id\": \"edge.verify.scenario.cancel_once.rule.state_machine\",\n  \"from\": \"scenario.cancel_once\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.state_machine\"\n}", "edge.verify.scenario.concurrent_same_key.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.concurrent_same_key.rule.capacity\",\n  \"from\": \"scenario.concurrent_same_key\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}", "edge.verify.scenario.concurrent_same_key.rule.idempotency": "{\n  \"id\": \"edge.verify.scenario.concurrent_same_key.rule.idempotency\",\n  \"from\": \"scenario.concurrent_same_key\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.idempotency\"\n}", "edge.verify.scenario.foreign_cancel.rule.authorization": "{\n  \"id\": \"edge.verify.scenario.foreign_cancel.rule.authorization\",\n  \"from\": \"scenario.foreign_cancel\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.authorization\"\n}", "edge.verify.scenario.key_conflict.rule.idempotency": "{\n  \"id\": \"edge.verify.scenario.key_conflict.rule.idempotency\",\n  \"from\": \"scenario.key_conflict\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.idempotency\"\n}", "edge.verify.scenario.last_seat.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.last_seat.rule.capacity\",\n  \"from\": \"scenario.last_seat\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}", "edge.verify.scenario.replay.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.replay.rule.capacity\",\n  \"from\": \"scenario.replay\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}", "edge.verify.scenario.replay.rule.idempotency": "{\n  \"id\": \"edge.verify.scenario.replay.rule.idempotency\",\n  \"from\": \"scenario.replay\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.idempotency\"\n}", "edge.verify.scenario.replay_after_cancel.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.replay_after_cancel.rule.capacity\",\n  \"from\": \"scenario.replay_after_cancel\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}", "edge.verify.scenario.replay_after_cancel.rule.idempotency": "{\n  \"id\": \"edge.verify.scenario.replay_after_cancel.rule.idempotency\",\n  \"from\": \"scenario.replay_after_cancel\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.idempotency\"\n}", "edge.verify.scenario.replay_after_cancel.rule.state_machine": "{\n  \"id\": \"edge.verify.scenario.replay_after_cancel.rule.state_machine\",\n  \"from\": \"scenario.replay_after_cancel\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.state_machine\"\n}", "edge.verify.scenario.reservation_missing.rule.authorization": "{\n  \"id\": \"edge.verify.scenario.reservation_missing.rule.authorization\",\n  \"from\": \"scenario.reservation_missing\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.authorization\"\n}", "edge.verify.scenario.reserve.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.reserve.rule.capacity\",\n  \"from\": \"scenario.reserve\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}", "edge.verify.scenario.reserve.rule.state_machine": "{\n  \"id\": \"edge.verify.scenario.reserve.rule.state_machine\",\n  \"from\": \"scenario.reserve\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.state_machine\"\n}", "edge.verify.scenario.sold_out.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.sold_out.rule.capacity\",\n  \"from\": \"scenario.sold_out\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}", "edge.verify.scenario.zero_capacity.rule.capacity": "{\n  \"id\": \"edge.verify.scenario.zero_capacity.rule.capacity\",\n  \"from\": \"scenario.zero_capacity\",\n  \"relation\": \"verifies\",\n  \"to\": \"rule.capacity\"\n}"}, "nodes": {"action.cancel": {"fields": {"behavior": "Valider identitet og input f\u00f8rst.\nManglende reservation og en anden ejers reservation giver begge ReservationNotFound.\nKontroll\u00e9r ejerskab f\u00f8r retur af data, ogs\u00e5 ved gentagelse p\u00e5 en allerede annulleret reservation.\nreserved \u00e6ndres atomart til cancelled, s\u00e5 reservationen ikke l\u00e6ngere optager en plads.\ncancelled returneres u\u00e6ndret; frigiv ikke en plads igen.\nDen gamle request-n\u00f8gle bevares, s\u00e5 en gentaget reserve-request ikke genopretter reservationen.", "contract": "{\n  \"input\": {\n    \"reservation_id\": {\n      \"type\": \"string\",\n      \"min_length\": 1\n    }\n  },\n  \"context\": {\n    \"principal_id\": {\n      \"type\": \"string\",\n      \"min_length\": 1,\n      \"origin\": \"authenticated_context\"\n    }\n  },\n  \"output\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"id\": {\n        \"type\": \"string\",\n        \"min_length\": 1\n      },\n      \"state\": {\n        \"type\": \"enum\",\n        \"values\": [\n          \"cancelled\"\n        ]\n      }\n    },\n    \"required\": [\n      \"id\",\n      \"state\"\n    ]\n  },\n  \"errors\": {\n    \"Unauthenticated\": \"Unauthenticated\",\n    \"InvalidInput\": \"InvalidInput\",\n    \"ReservationNotFound\": \"ReservationNotFound\"\n  },\n  \"preconditions\": [\n    \"Valider autentificeret identitet og input f\u00f8r opslag eller mutation.\"\n  ],\n  \"external_effects\": [],\n  \"effects_complete\": true,\n  \"dependencies_complete\": true,\n  \"risks\": {\n    \"authorization\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.foreign_cancel\"\n      ]\n    },\n    \"idempotency\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.cancel\",\n        \"scenario.replay_after_cancel\"\n      ]\n    },\n    \"boundaries\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.reservation_missing\"\n      ]\n    },\n    \"concurrency\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.cancel_concurrent\"\n      ]\n    },\n    \"atomicity\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.atomic_failure\"\n      ]\n    }\n  },\n  \"error_cases\": {\n    \"Unauthenticated\": [\n      \"scenario.cancel_unauthenticated\"\n    ],\n    \"InvalidInput\": [\n      \"scenario.cancel_invalid\"\n    ],\n    \"ReservationNotFound\": [\n      \"scenario.reservation_missing\",\n      \"scenario.foreign_cancel\"\n    ]\n  }\n}", "description": "Ejeren kan annullere sin reservation; gentagelse er uden ekstra effekt.", "kind": "action", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.legacy\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"action\",\n  \"description\": \"Ejeren kan annullere sin reservation; gentagelse er uden ekstra effekt.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.legacy\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"contract\": {\n    \"input\": {\n      \"reservation_id\": {\n        \"type\": \"string\",\n        \"min_length\": 1\n      }\n    },\n    \"context\": {\n      \"principal_id\": {\n        \"type\": \"string\",\n        \"min_length\": 1,\n        \"origin\": \"authenticated_context\"\n      }\n    },\n    \"output\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"id\": {\n          \"type\": \"string\",\n          \"min_length\": 1\n        },\n        \"state\": {\n          \"type\": \"enum\",\n          \"values\": [\n            \"cancelled\"\n          ]\n        }\n      },\n      \"required\": [\n        \"id\",\n        \"state\"\n      ]\n    },\n    \"errors\": {\n      \"Unauthenticated\": \"Unauthenticated\",\n      \"InvalidInput\": \"InvalidInput\",\n      \"ReservationNotFound\": \"ReservationNotFound\"\n    },\n    \"preconditions\": [\n      \"Valider autentificeret identitet og input f\u00f8r opslag eller mutation.\"\n    ],\n    \"external_effects\": [],\n    \"effects_complete\": true,\n    \"dependencies_complete\": true,\n    \"risks\": {\n      \"authorization\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.foreign_cancel\"\n        ]\n      },\n      \"idempotency\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.cancel\",\n          \"scenario.replay_after_cancel\"\n        ]\n      },\n      \"boundaries\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.reservation_missing\"\n        ]\n      },\n      \"concurrency\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.cancel_concurrent\"\n        ]\n      },\n      \"atomicity\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.atomic_failure\"\n        ]\n      }\n    },\n    \"error_cases\": {\n      \"Unauthenticated\": [\n        \"scenario.cancel_unauthenticated\"\n      ],\n      \"InvalidInput\": [\n        \"scenario.cancel_invalid\"\n      ],\n      \"ReservationNotFound\": [\n        \"scenario.reservation_missing\",\n        \"scenario.foreign_cancel\"\n      ]\n    }\n  },\n  \"behavior\": \"Valider identitet og input f\u00f8rst.\\nManglende reservation og en anden ejers reservation giver begge ReservationNotFound.\\nKontroll\u00e9r ejerskab f\u00f8r retur af data, ogs\u00e5 ved gentagelse p\u00e5 en allerede annulleret reservation.\\nreserved \u00e6ndres atomart til cancelled, s\u00e5 reservationen ikke l\u00e6ngere optager en plads.\\ncancelled returneres u\u00e6ndret; frigiv ikke en plads igen.\\nDen gamle request-n\u00f8gle bevares, s\u00e5 en gentaget reserve-request ikke genopretter reservationen.\"\n}"}, "action.reserve": {"fields": {"behavior": "Valider identitet og input f\u00f8r opslag eller mutation.\nRequest-n\u00f8glen er scoped til principal_id og action.reserve.\nBind en succesfuld n\u00f8gle til concert_id og reservations-id; samme n\u00f8gle med andet concert_id giver IdempotencyConflict.\nEn identisk gentagelse returnerer samme reservations-id og AKTUEL tilstand, ogs\u00e5 efter annullering, uden nye sideeffekter.\nSl\u00e5 en tidligere succes op F\u00d8R en ny kapacitetskontrol; et fuldt spillested m\u00e5 ikke g\u00f8re en succesfuld gentagelse til SoldOut.\nKun en ny n\u00f8gle fors\u00f8ger at oprette en ny reservation.\nAfvis en ny reservation med SoldOut, n\u00e5r antallet af reservationer i reserved er lig kapaciteten.\nN\u00f8gleunikhed, kapacitetsbeskyttelse, oprettelse og n\u00f8glebinding skal indg\u00e5 i samme atomare databaseoperation eller transaktion.\nSamtidige transaktioner skal give et resultat svarende til en gyldig sekventiel r\u00e6kkef\u00f8lge for disse regler; en check-then-insert uden beskyttelse er ikke nok.\nEn mislykket oprettelse binder ikke request-n\u00f8glen og efterlader ingen reservation.", "contract": "{\n  \"input\": {\n    \"concert_id\": {\n      \"type\": \"string\",\n      \"min_length\": 1\n    },\n    \"request_key\": {\n      \"type\": \"string\",\n      \"min_length\": 1\n    }\n  },\n  \"context\": {\n    \"principal_id\": {\n      \"type\": \"string\",\n      \"min_length\": 1,\n      \"origin\": \"authenticated_context\"\n    }\n  },\n  \"output\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"id\": {\n        \"type\": \"string\",\n        \"min_length\": 1\n      },\n      \"state\": {\n        \"type\": \"enum\",\n        \"values\": [\n          \"reserved\",\n          \"cancelled\"\n        ]\n      }\n    },\n    \"required\": [\n      \"id\",\n      \"state\"\n    ]\n  },\n  \"errors\": {\n    \"Unauthenticated\": \"Unauthenticated\",\n    \"InvalidInput\": \"InvalidInput\",\n    \"ConcertNotFound\": \"ConcertNotFound\",\n    \"SoldOut\": \"SoldOut\",\n    \"IdempotencyConflict\": \"IdempotencyConflict\"\n  },\n  \"preconditions\": [\n    \"Valider autentificeret identitet og input f\u00f8r opslag eller mutation.\"\n  ],\n  \"external_effects\": [],\n  \"effects_complete\": true,\n  \"dependencies_complete\": true,\n  \"risks\": {\n    \"authorization\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.reserve_unauthenticated\"\n      ]\n    },\n    \"idempotency\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.replay\",\n        \"scenario.key_conflict\"\n      ]\n    },\n    \"boundaries\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.zero_capacity\",\n        \"scenario.sold_out\"\n      ]\n    },\n    \"concurrency\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.last_seat\",\n        \"scenario.concurrent_same_key\"\n      ]\n    },\n    \"atomicity\": {\n      \"relevant\": true,\n      \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n      \"scenarios\": [\n        \"scenario.atomic_failure\"\n      ]\n    }\n  },\n  \"error_cases\": {\n    \"Unauthenticated\": [\n      \"scenario.reserve_unauthenticated\"\n    ],\n    \"InvalidInput\": [\n      \"scenario.reserve_invalid\"\n    ],\n    \"ConcertNotFound\": [\n      \"scenario.concert_missing\"\n    ],\n    \"SoldOut\": [\n      \"scenario.sold_out\"\n    ],\n    \"IdempotencyConflict\": [\n      \"scenario.key_conflict\"\n    ]\n  }\n}", "description": "Reserv\u00e9r pr\u00e6cis \u00e9n plads eller genfind resultatet af en tidligere succes.", "kind": "action", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.legacy\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"action\",\n  \"description\": \"Reserv\u00e9r pr\u00e6cis \u00e9n plads eller genfind resultatet af en tidligere succes.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.legacy\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"contract\": {\n    \"input\": {\n      \"concert_id\": {\n        \"type\": \"string\",\n        \"min_length\": 1\n      },\n      \"request_key\": {\n        \"type\": \"string\",\n        \"min_length\": 1\n      }\n    },\n    \"context\": {\n      \"principal_id\": {\n        \"type\": \"string\",\n        \"min_length\": 1,\n        \"origin\": \"authenticated_context\"\n      }\n    },\n    \"output\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"id\": {\n          \"type\": \"string\",\n          \"min_length\": 1\n        },\n        \"state\": {\n          \"type\": \"enum\",\n          \"values\": [\n            \"reserved\",\n            \"cancelled\"\n          ]\n        }\n      },\n      \"required\": [\n        \"id\",\n        \"state\"\n      ]\n    },\n    \"errors\": {\n      \"Unauthenticated\": \"Unauthenticated\",\n      \"InvalidInput\": \"InvalidInput\",\n      \"ConcertNotFound\": \"ConcertNotFound\",\n      \"SoldOut\": \"SoldOut\",\n      \"IdempotencyConflict\": \"IdempotencyConflict\"\n    },\n    \"preconditions\": [\n      \"Valider autentificeret identitet og input f\u00f8r opslag eller mutation.\"\n    ],\n    \"external_effects\": [],\n    \"effects_complete\": true,\n    \"dependencies_complete\": true,\n    \"risks\": {\n      \"authorization\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.reserve_unauthenticated\"\n        ]\n      },\n      \"idempotency\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.replay\",\n          \"scenario.key_conflict\"\n        ]\n      },\n      \"boundaries\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.zero_capacity\",\n          \"scenario.sold_out\"\n        ]\n      },\n      \"concurrency\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.last_seat\",\n          \"scenario.concurrent_same_key\"\n        ]\n      },\n      \"atomicity\": {\n        \"relevant\": true,\n        \"rationale\": \"Kontrakten omfatter denne risiko; scenarierne er planlagte checks.\",\n        \"scenarios\": [\n          \"scenario.atomic_failure\"\n        ]\n      }\n    },\n    \"error_cases\": {\n      \"Unauthenticated\": [\n        \"scenario.reserve_unauthenticated\"\n      ],\n      \"InvalidInput\": [\n        \"scenario.reserve_invalid\"\n      ],\n      \"ConcertNotFound\": [\n        \"scenario.concert_missing\"\n      ],\n      \"SoldOut\": [\n        \"scenario.sold_out\"\n      ],\n      \"IdempotencyConflict\": [\n        \"scenario.key_conflict\"\n      ]\n    }\n  },\n  \"behavior\": \"Valider identitet og input f\u00f8r opslag eller mutation.\\nRequest-n\u00f8glen er scoped til principal_id og action.reserve.\\nBind en succesfuld n\u00f8gle til concert_id og reservations-id; samme n\u00f8gle med andet concert_id giver IdempotencyConflict.\\nEn identisk gentagelse returnerer samme reservations-id og AKTUEL tilstand, ogs\u00e5 efter annullering, uden nye sideeffekter.\\nSl\u00e5 en tidligere succes op F\u00d8R en ny kapacitetskontrol; et fuldt spillested m\u00e5 ikke g\u00f8re en succesfuld gentagelse til SoldOut.\\nKun en ny n\u00f8gle fors\u00f8ger at oprette en ny reservation.\\nAfvis en ny reservation med SoldOut, n\u00e5r antallet af reservationer i reserved er lig kapaciteten.\\nN\u00f8gleunikhed, kapacitetsbeskyttelse, oprettelse og n\u00f8glebinding skal indg\u00e5 i samme atomare databaseoperation eller transaktion.\\nSamtidige transaktioner skal give et resultat svarende til en gyldig sekventiel r\u00e6kkef\u00f8lge for disse regler; en check-then-insert uden beskyttelse er ikke nok.\\nEn mislykket oprettelse binder ikke request-n\u00f8glen og efterlader ingen reservation.\"\n}"}, "community.backend": {"fields": {"description": "Backend-visning af den f\u00e6lles model.", "kind": "community"}, "full": "{\n  \"kind\": \"community\",\n  \"description\": \"Backend-visning af den f\u00e6lles model.\"\n}"}, "community.frontend": {"fields": {"description": "Frontend-visning af den f\u00e6lles model.", "kind": "community"}, "full": "{\n  \"kind\": \"community\",\n  \"description\": \"Frontend-visning af den f\u00e6lles model.\"\n}"}, "component.api": {"fields": {"description": "Validerer transportinput og videresender autentificeret kontekst.", "interfaces": "[\n  \"action.reserve\",\n  \"action.cancel\"\n]", "kind": "component", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.legacy\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"component\",\n  \"description\": \"Validerer transportinput og videresender autentificeret kontekst.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.legacy\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"interfaces\": [\n    \"action.reserve\",\n    \"action.cancel\"\n  ]\n}"}, "component.frontend": {"fields": {"description": "Planlagt brugerflade; skitse uden teknologistak.", "kind": "component", "maturity": "sketch"}, "full": "{\n  \"kind\": \"component\",\n  \"description\": \"Planlagt brugerflade; skitse uden teknologistak.\",\n  \"maturity\": \"sketch\"\n}"}, "component.reservations": {"fields": {"description": "Ejer reservationsregler, adgangskontrol og transaktionsgr\u00e6nser.", "interfaces": "[\n  \"action.reserve\",\n  \"action.cancel\"\n]", "kind": "component", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.legacy\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"component\",\n  \"description\": \"Ejer reservationsregler, adgangskontrol og transaktionsgr\u00e6nser.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.legacy\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"interfaces\": [\n    \"action.reserve\",\n    \"action.cancel\"\n  ]\n}"}, "component.storage": {"fields": {"description": "Persistence-adapter til databasen; indeholder ikke beslutninger om adgangsrettigheder.", "interfaces": "[]", "kind": "component", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.legacy\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"component\",\n  \"description\": \"Persistence-adapter til databasen; indeholder ikke beslutninger om adgangsrettigheder.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.legacy\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"interfaces\": []\n}"}, "entity.concert": {"fields": {"description": "En koncert med en fast, ikke-negativ heltalskapacitet.", "fields": "{\n  \"id\": {\n    \"type\": \"string\",\n    \"min_length\": 1\n  },\n  \"capacity\": {\n    \"type\": \"integer\",\n    \"minimum\": 0\n  }\n}", "kind": "entity", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.legacy\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"entity\",\n  \"description\": \"En koncert med en fast, ikke-negativ heltalskapacitet.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.legacy\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"fields\": {\n    \"id\": {\n      \"type\": \"string\",\n      \"min_length\": 1\n    },\n    \"capacity\": {\n      \"type\": \"integer\",\n      \"minimum\": 0\n    }\n  }\n}"}, "entity.reservation": {"fields": {"description": "\u00c9n reserveret plads med ejer og permanent request-n\u00f8gle.", "fields": "{\n  \"id\": {\n    \"type\": \"string\",\n    \"min_length\": 1\n  },\n  \"concert_id\": {\n    \"type\": \"string\",\n    \"min_length\": 1\n  },\n  \"owner_id\": {\n    \"type\": \"string\",\n    \"min_length\": 1\n  },\n  \"request_key\": {\n    \"type\": \"string\",\n    \"min_length\": 1\n  },\n  \"state\": {\n    \"type\": \"enum\",\n    \"values\": [\n      \"reserved\",\n      \"cancelled\"\n    ]\n  }\n}", "kind": "entity", "maturity": "specified", "source_refs": "[\n  {\n    \"source\": \"source.legacy\",\n    \"purpose\": \"provenance\"\n  }\n]"}, "full": "{\n  \"kind\": \"entity\",\n  \"description\": \"\u00c9n reserveret plads med ejer og permanent request-n\u00f8gle.\",\n  \"maturity\": \"specified\",\n  \"source_refs\": [\n    {\n      \"source\": \"source.legacy\",\n      \"purpose\": \"provenance\"\n    }\n  ],\n  \"fields\": {\n    \"id\": {\n      \"type\": \"string\",\n      \"min_length\": 1\n    },\n    \"concert_id\": {\n      \"type\": \"string\",\n      \"min_length\": 1\n    },\n    \"owner_id\": {\n      \"type\": \"string\",\n      \"min_length\": 1\n    },\n    \"request_key\": {\n      \"type\": \"string\",\n      \"min_length\": 1\n    },\n    \"state\": {\n      \"type\": \"enum\",\n      \"values\": [\n        \"reserved\",\n        \"cancelled\"\n      ]\n    }\n  }\n}"}, "machine.reservation": {"fields": {"annotations": "{\n  \"gdd.notes\": [\n    \"absent er en modelleringsmark\u00f8r for en reservation, der endnu ikke eksisterer; den lagres aldrig.\",\n    \"Tilstandsmaskinen beskriver mutationer. Validering, fejl og idempotente returveje er defineret i action-kontrakterne.\",\n    \"cancelled er terminal for mutationer, men m\u00e5 fortsat l\u00e6ses og returneres ved en autoriseret gentagelse.\"\n  ]\n}", "description": "Reservations mutationslivscyklus; retries og fejl f\u00f8lger action-kontrakterne.", "kind": "machine", "machine": "{\n  \"states\": [\n    \"absent\",\n    \"reserved\",\n    \"cancelled\"\n  ],\n  \"initial\": \"absent\",\n  \"terminal\": [\n    \"cancelled\"\n  ],\n  \"transitions\": [\n    {\n      \"id\": \"transition.reserve\",\n      \"from\": \"absent\",\n      \"to\": \"reserved\",\n      \"trigger\": \"action.reserve\",\n      \"guard\": \"Autentificeret bruger; eksisterende koncert; ny request-n\u00f8gle; mindst \u00e9n ledig plads.\",\n      \"effects\": \"Opret reservation med state=reserved og bind request-n\u00f8glen atomart under kapacitetsbeskyttelsen.\"\n    },\n    {\n      \"id\": \"transition.cancel\",\n      \"from\": \"reserved\",\n      \"to\": \"cancelled\",\n      \"trigger\": \"action.cancel\",\n      \"guard\": \"Den autentificerede bruger ejer reservationen.\",\n      \"effects\": \"Skift atomart til cancelled; en eventuel materialiseret pladst\u00e6ller opdateres i samme transaktion.\"\n    }\n  ]\n}", "maturity": "specified"}, "full": "{\n  \"kind\": \"machine\",\n  \"description\": \"Reservations mutationslivscyklus; retries og fejl f\u00f8lger action-kontrakterne.\",\n  \"maturity\": \"specified\",\n  \"machine\": {\n    \"states\": [\n      \"absent\",\n      \"reserved\",\n      \"cancelled\"\n    ],\n    \"initial\": \"absent\",\n    \"terminal\": [\n      \"cancelled\"\n    ],\n    \"transitions\": [\n      {\n        \"id\": \"transition.reserve\",\n        \"from\": \"absent\",\n        \"to\": \"reserved\",\n        \"trigger\": \"action.reserve\",\n        \"guard\": \"Autentificeret bruger; eksisterende koncert; ny request-n\u00f8gle; mindst \u00e9n ledig plads.\",\n        \"effects\": \"Opret reservation med state=reserved og bind request-n\u00f8glen atomart under kapacitetsbeskyttelsen.\"\n      },\n      {\n        \"id\": \"transition.cancel\",\n        \"from\": \"reserved\",\n        \"to\": \"cancelled\",\n        \"trigger\": \"action.cancel\",\n        \"guard\": \"Den autentificerede bruger ejer reservationen.\",\n        \"effects\": \"Skift atomart til cancelled; en eventuel materialiseret pladst\u00e6ller opdateres i samme transaktion.\"\n      }\n    ]\n  },\n  \"annotations\": {\n    \"gdd.notes\": [\n      \"absent er en modelleringsmark\u00f8r for en reservation, der endnu ikke eksisterer; den lagres aldrig.\",\n      \"Tilstandsmaskinen beskriver mutationer. Validering, fejl og idempotente returveje er defineret i action-kontrakterne.\",\n      \"cancelled er terminal for mutationer, men m\u00e5 fortsat l\u00e6ses og returneres ved en autoriseret gentagelse.\"\n    ]\n  }\n}"}, "rule.api_boundary": {"fields": {"description": "API-modulet m\u00e5 ikke importere persistence-modulet direkte.", "kind": "rule", "maturity": "specified", "rule": "{\n  \"category\": \"architecture\",\n  \"statement\": \"API-modulet m\u00e5 ikke importere persistence-modulet direkte.\",\n  \"scope\": \"targeted\",\n  \"blocking\": true,\n  \"verification\": [\n    \"static_import_analysis\"\n  ],\n  \"constraint\": {\n    \"relation\": \"imports\",\n    \"from\": \"component.api\",\n    \"to\": \"component.storage\",\n    \"reach\": \"direct\",\n    \"policy\": \"forbid\"\n  }\n}"}, "full": "{\n  \"kind\": \"rule\",\n  \"description\": \"API-modulet m\u00e5 ikke importere persistence-modulet direkte.\",\n  \"maturity\": \"specified\",\n  \"rule\": {\n    \"category\": \"architecture\",\n    \"statement\": \"API-modulet m\u00e5 ikke importere persistence-modulet direkte.\",\n    \"scope\": \"targeted\",\n    \"blocking\": true,\n    \"verification\": [\n      \"static_import_analysis\"\n    ],\n    \"constraint\": {\n      \"relation\": \"imports\",\n      \"from\": \"component.api\",\n      \"to\": \"component.storage\",\n      \"reach\": \"direct\",\n      \"policy\": \"forbid\"\n    }\n  }\n}"}, "rule.atomicity": {"fields": {"description": "Fejl f\u00f8r commit efterlader ingen delvist gennemf\u00f8rt mutation eller request-n\u00f8glebinding.", "kind": "rule", "maturity": "specified", "rule": "{\n  \"category\": \"behavior\",\n  \"statement\": \"Fejl f\u00f8r commit efterlader ingen delvist gennemf\u00f8rt mutation eller request-n\u00f8glebinding.\",\n  \"scope\": \"targeted\",\n  \"blocking\": true,\n  \"verification\": [\n    \"database_fault_injection_tests\"\n  ]\n}"}, "full": "{\n  \"kind\": \"rule\",\n  \"description\": \"Fejl f\u00f8r commit efterlader ingen delvist gennemf\u00f8rt mutation eller request-n\u00f8glebinding.\",\n  \"maturity\": \"specified\",\n  \"rule\": {\n    \"category\": \"behavior\",\n    \"statement\": \"Fejl f\u00f8r commit efterlader ingen delvist gennemf\u00f8rt mutation eller request-n\u00f8glebinding.\",\n    \"scope\": \"targeted\",\n    \"blocking\": true,\n    \"verification\": [\n      \"database_fault_injection_tests\"\n    ]\n  }\n}"}, "rule.authorization": {"fields": {"description": "Kun ejeren m\u00e5 annullere eller f\u00e5 reservationsdata retur; en request-body m\u00e5 ikke fastl\u00e6gge identiteten.", "kind": "rule", "maturity": "specified", "rule": "{\n  \"category\": \"behavior\",\n  \"statement\": \"Kun ejeren m\u00e5 annullere eller f\u00e5 reservationsdata retur; en request-body m\u00e5 ikke fastl\u00e6gge identiteten.\",\n  \"scope\": \"targeted\",\n  \"blocking\": true,\n  \"verification\": [\n    \"authorization_tests\"\n  ]\n}"}, "full": "{\n  \"kind\": \"rule\",\n  \"description\": \"Kun ejeren m\u00e5 annullere eller f\u00e5 reservationsdata retur; en request-body m\u00e5 ikke fastl\u00e6gge identiteten.\",\n  \"maturity\": \"specified\",\n  \"rule\": {\n    \"category\": \"behavior\",\n    \"statement\": \"Kun ejeren m\u00e5 annullere eller f\u00e5 reservationsdata retur; en request-body m\u00e5 ikke fastl\u00e6gge identiteten.\",\n    \"scope\": \"targeted\",\n    \"blocking\": true,\n    \"verification\": [\n      \"authorization_tests\"\n    ]\n  }\n}"}, "rule.capacity": {"fields": {"description": "For hver koncert er 0 \u003c= count(reservationer med state=reserved) \u003c= capacity efter hver committed mutation.", "kind": "rule", "maturity": "specified", "rule": "{\n  \"category\": \"invariant\",\n  \"statement\": \"For hver koncert er 0 \u003c= count(reservationer med state=reserved) \u003c= capacity efter hver committed mutation.\",\n  \"scope\": \"targeted\",\n  \"blocking\": true,\n  \"verification\": [\n    \"database_concurrency_and_integration_tests\"\n  ]\n}"}, "full": "{\n  \"kind\": \"rule\",\n  \"description\": \"For hver koncert er 0 \u003c= count(reservationer med state=reserved) \u003c= capacity efter hver committed mutation.\",\n  \"maturity\": \"specified\",\n  \"rule\": {\n    \"category\": \"invariant\",\n    \"statement\": \"For hver koncert er 0 \u003c= count(reservationer med state=reserved) \u003c= capacity efter hver committed mutation.\",\n    \"scope\": \"targeted\",\n    \"blocking\": true,\n    \"verification\": [\n      \"database_concurrency_and_integration_tests\"\n    ]\n  }\n}"}, "rule.idempotency": {"fields": {"description": "Gentagelser m\u00e5 ikke oprette ekstra reservationer, genaktivere annullerede reservationer eller frigive ekstra pladser.", "kind": "rule", "maturity": "specified", "rule": "{\n  \"category\": \"behavior\",\n  \"statement\": \"Gentagelser m\u00e5 ikke oprette ekstra reservationer, genaktivere annullerede reservationer eller frigive ekstra pladser.\",\n  \"scope\": \"targeted\",\n  \"blocking\": true,\n  \"verification\": [\n    \"integration_tests\"\n  ]\n}"}, "full": "{\n  \"kind\": \"rule\",\n  \"description\": \"Gentagelser m\u00e5 ikke oprette ekstra reservationer, genaktivere annullerede reservationer eller frigive ekstra pladser.\",\n  \"maturity\": \"specified\",\n  \"rule\": {\n    \"category\": \"behavior\",\n    \"statement\": \"Gentagelser m\u00e5 ikke oprette ekstra reservationer, genaktivere annullerede reservationer eller frigive ekstra pladser.\",\n    \"scope\": \"targeted\",\n    \"blocking\": true,\n    \"verification\": [\n      \"integration_tests\"\n    ]\n  }\n}"}, "rule.state_machine": {"fields": {"description": "Muterende forl\u00f8b f\u00f8lger tilstandsmaskinen; annullerede reservations-id'er kan ikke genaktiveres.", "kind": "rule", "maturity": "specified", "rule": "{\n  \"category\": \"behavior\",\n  \"statement\": \"Muterende forl\u00f8b f\u00f8lger tilstandsmaskinen; annullerede reservations-id'er kan ikke genaktiveres.\",\n  \"scope\": \"targeted\",\n  \"blocking\": true,\n  \"verification\": [\n    \"model_based_and_integration_tests\"\n  ]\n}"}, "full": "{\n  \"kind\": \"rule\",\n  \"description\": \"Muterende forl\u00f8b f\u00f8lger tilstandsmaskinen; annullerede reservations-id'er kan ikke genaktiveres.\",\n  \"maturity\": \"specified\",\n  \"rule\": {\n    \"category\": \"behavior\",\n    \"statement\": \"Muterende forl\u00f8b f\u00f8lger tilstandsmaskinen; annullerede reservations-id'er kan ikke genaktiveres.\",\n    \"scope\": \"targeted\",\n    \"blocking\": true,\n    \"verification\": [\n      \"model_based_and_integration_tests\"\n    ]\n  }\n}"}, "scenario.api_boundary": {"fields": {"description": "Den forbudte import skal give FAIL. En manglende scanning eller uafklaret mapping giver UNKNOWN, ikke PASS.", "kind": "scenario", "scenario": "{\n  \"category\": \"architecture\",\n  \"given\": \"Komponenternes bindings peger p\u00e5 det implementerede projekts moduler.\",\n  \"when\": \"Importgrafen udtr\u00e6kkes; inds\u00e6t desuden en midlertidig direkte API-til-storage-import som negativ kontrol.\",\n  \"then\": \"Den forbudte import skal give FAIL. En manglende scanning eller uafklaret mapping giver UNKNOWN, ikke PASS.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Den forbudte import skal give FAIL. En manglende scanning eller uafklaret mapping giver UNKNOWN, ikke PASS.\",\n  \"scenario\": {\n    \"category\": \"architecture\",\n    \"given\": \"Komponenternes bindings peger p\u00e5 det implementerede projekts moduler.\",\n    \"when\": \"Importgrafen udtr\u00e6kkes; inds\u00e6t desuden en midlertidig direkte API-til-storage-import som negativ kontrol.\",\n    \"then\": \"Den forbudte import skal give FAIL. En manglende scanning eller uafklaret mapping giver UNKNOWN, ikke PASS.\"\n  }\n}"}, "scenario.atomic_failure": {"fields": {"description": "Efter fejlen er vedvarende tilstand u\u00e6ndret; efter vellykket genfors\u00f8g er effekten udf\u00f8rt \u00e9n gang. Kontroll\u00e9r ogs\u00e5 evt. t\u00e6ller og n\u00f8glebinding.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Et gyldigt reserve- eller cancel-forl\u00f8b er klar til mutation.\",\n  \"when\": \"Testadapteren injicerer fejl ved relevante persistensgr\u00e6nser f\u00f8r commit og lader klienten genfors\u00f8ge.\",\n  \"then\": \"Efter fejlen er vedvarende tilstand u\u00e6ndret; efter vellykket genfors\u00f8g er effekten udf\u00f8rt \u00e9n gang. Kontroll\u00e9r ogs\u00e5 evt. t\u00e6ller og n\u00f8glebinding.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Efter fejlen er vedvarende tilstand u\u00e6ndret; efter vellykket genfors\u00f8g er effekten udf\u00f8rt \u00e9n gang. Kontroll\u00e9r ogs\u00e5 evt. t\u00e6ller og n\u00f8glebinding.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Et gyldigt reserve- eller cancel-forl\u00f8b er klar til mutation.\",\n    \"when\": \"Testadapteren injicerer fejl ved relevante persistensgr\u00e6nser f\u00f8r commit og lader klienten genfors\u00f8ge.\",\n    \"then\": \"Efter fejlen er vedvarende tilstand u\u00e6ndret; efter vellykket genfors\u00f8g er effekten udf\u00f8rt \u00e9n gang. Kontroll\u00e9r ogs\u00e5 evt. t\u00e6ller og n\u00f8glebinding.\"\n  }\n}"}, "scenario.cancel": {"fields": {"description": "Samme id i cancelled; nul aktive reservationer; aldrig flere ledige pladser end capacity.", "kind": "scenario", "scenario": "{\n  \"category\": \"boundary\",\n  \"given\": \"A ejer en reserved reservation i en koncert med capacity=1.\",\n  \"when\": \"A annullerer to gange, ogs\u00e5 med samtidige requests.\",\n  \"then\": \"Samme id i cancelled; nul aktive reservationer; aldrig flere ledige pladser end capacity.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Samme id i cancelled; nul aktive reservationer; aldrig flere ledige pladser end capacity.\",\n  \"scenario\": {\n    \"category\": \"boundary\",\n    \"given\": \"A ejer en reserved reservation i en koncert med capacity=1.\",\n    \"when\": \"A annullerer to gange, ogs\u00e5 med samtidige requests.\",\n    \"then\": \"Samme id i cancelled; nul aktive reservationer; aldrig flere ledige pladser end capacity.\"\n  }\n}"}, "scenario.cancel_concurrent": {"fields": {"description": "Begge returnerer samme cancelled id; pladsen frigives kun \u00e9n gang.", "kind": "scenario", "scenario": "{\n  \"category\": \"concurrency\",\n  \"given\": \"A ejer \u00e9n reserved reservation.\",\n  \"when\": \"To forbindelser annullerer samtidigt.\",\n  \"then\": \"Begge returnerer samme cancelled id; pladsen frigives kun \u00e9n gang.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Begge returnerer samme cancelled id; pladsen frigives kun \u00e9n gang.\",\n  \"scenario\": {\n    \"category\": \"concurrency\",\n    \"given\": \"A ejer \u00e9n reserved reservation.\",\n    \"when\": \"To forbindelser annullerer samtidigt.\",\n    \"then\": \"Begge returnerer samme cancelled id; pladsen frigives kun \u00e9n gang.\"\n  }\n}"}, "scenario.cancel_invalid": {"fields": {"description": "InvalidInput; ingen mutation.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Autentificeret bruger; tomt reservation_id.\",\n  \"when\": \"Cancel kaldes.\",\n  \"then\": \"InvalidInput; ingen mutation.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"InvalidInput; ingen mutation.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Autentificeret bruger; tomt reservation_id.\",\n    \"when\": \"Cancel kaldes.\",\n    \"then\": \"InvalidInput; ingen mutation.\"\n  }\n}"}, "scenario.cancel_once": {"fields": {"description": "Samme id returneres cancelled; \u00e9n plads frigives.", "kind": "scenario", "scenario": "{\n  \"category\": \"normal\",\n  \"given\": \"A ejer en reserved reservation.\",\n  \"when\": \"A annullerer \u00e9n gang.\",\n  \"then\": \"Samme id returneres cancelled; \u00e9n plads frigives.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Samme id returneres cancelled; \u00e9n plads frigives.\",\n  \"scenario\": {\n    \"category\": \"normal\",\n    \"given\": \"A ejer en reserved reservation.\",\n    \"when\": \"A annullerer \u00e9n gang.\",\n    \"then\": \"Samme id returneres cancelled; \u00e9n plads frigives.\"\n  }\n}"}, "scenario.cancel_unauthenticated": {"fields": {"description": "Unauthenticated; ingen opslag eller mutation.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Ingen serverautentificeret principal.\",\n  \"when\": \"Cancel kaldes.\",\n  \"then\": \"Unauthenticated; ingen opslag eller mutation.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Unauthenticated; ingen opslag eller mutation.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Ingen serverautentificeret principal.\",\n    \"when\": \"Cancel kaldes.\",\n    \"then\": \"Unauthenticated; ingen opslag eller mutation.\"\n  }\n}"}, "scenario.concert_missing": {"fields": {"description": "ConcertNotFound; n\u00f8glen bindes ikke.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Autentificeret bruger; ny n\u00f8gle; koncert findes ikke.\",\n  \"when\": \"Reserve kaldes.\",\n  \"then\": \"ConcertNotFound; n\u00f8glen bindes ikke.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"ConcertNotFound; n\u00f8glen bindes ikke.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Autentificeret bruger; ny n\u00f8gle; koncert findes ikke.\",\n    \"when\": \"Reserve kaldes.\",\n    \"then\": \"ConcertNotFound; n\u00f8glen bindes ikke.\"\n  }\n}"}, "scenario.concurrent_same_key": {"fields": {"description": "Begge returnerer samme reservations-id; pr\u00e6cis \u00e9n reservation oprettes.", "kind": "scenario", "scenario": "{\n  \"category\": \"concurrency\",\n  \"given\": \"C har capacity=2; K1 er endnu ikke brugt af A.\",\n  \"when\": \"A sender to identiske reserve-requests med K1 samtidigt.\",\n  \"then\": \"Begge returnerer samme reservations-id; pr\u00e6cis \u00e9n reservation oprettes.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Begge returnerer samme reservations-id; pr\u00e6cis \u00e9n reservation oprettes.\",\n  \"scenario\": {\n    \"category\": \"concurrency\",\n    \"given\": \"C har capacity=2; K1 er endnu ikke brugt af A.\",\n    \"when\": \"A sender to identiske reserve-requests med K1 samtidigt.\",\n    \"then\": \"Begge returnerer samme reservations-id; pr\u00e6cis \u00e9n reservation oprettes.\"\n  }\n}"}, "scenario.foreign_cancel": {"fields": {"description": "ReservationNotFound; ingen \u00e6ndring og ingen reservationsdata returneres.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"A ejer reservation R; B er autentificeret som B.\",\n  \"when\": \"B fors\u00f8ger at annullere R, ogs\u00e5 med et forfalsket owner_id i request-body. Gentag b\u00e5de n\u00e5r R er reserved og cancelled.\",\n  \"then\": \"ReservationNotFound; ingen \u00e6ndring og ingen reservationsdata returneres.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"ReservationNotFound; ingen \u00e6ndring og ingen reservationsdata returneres.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"A ejer reservation R; B er autentificeret som B.\",\n    \"when\": \"B fors\u00f8ger at annullere R, ogs\u00e5 med et forfalsket owner_id i request-body. Gentag b\u00e5de n\u00e5r R er reserved og cancelled.\",\n    \"then\": \"ReservationNotFound; ingen \u00e6ndring og ingen reservationsdata returneres.\"\n  }\n}"}, "scenario.key_conflict": {"fields": {"description": "IdempotencyConflict; ingen ny reservation eller kapacitets\u00e6ndring i nogen koncert.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"A har med K1 reserveret koncert C1.\",\n  \"when\": \"A bruger K1 til koncert C2.\",\n  \"then\": \"IdempotencyConflict; ingen ny reservation eller kapacitets\u00e6ndring i nogen koncert.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"IdempotencyConflict; ingen ny reservation eller kapacitets\u00e6ndring i nogen koncert.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"A har med K1 reserveret koncert C1.\",\n    \"when\": \"A bruger K1 til koncert C2.\",\n    \"then\": \"IdempotencyConflict; ingen ny reservation eller kapacitets\u00e6ndring i nogen koncert.\"\n  }\n}"}, "scenario.last_seat": {"fields": {"description": "Pr\u00e6cis \u00e9n reservation lykkes; den anden giver SoldOut; h\u00f8jst \u00e9n plads er optaget. K\u00f8r mod den valgte databases reelle transaktionsadf\u00e6rd.", "kind": "scenario", "scenario": "{\n  \"category\": \"concurrency\",\n  \"given\": \"Koncert C har \u00e9n ledig plads; A og B har hver sin nye request-n\u00f8gle.\",\n  \"when\": \"To separate databaseforbindelser fors\u00f8ger at reservere samtidigt med kontrolleret overlap.\",\n  \"then\": \"Pr\u00e6cis \u00e9n reservation lykkes; den anden giver SoldOut; h\u00f8jst \u00e9n plads er optaget. K\u00f8r mod den valgte databases reelle transaktionsadf\u00e6rd.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Pr\u00e6cis \u00e9n reservation lykkes; den anden giver SoldOut; h\u00f8jst \u00e9n plads er optaget. K\u00f8r mod den valgte databases reelle transaktionsadf\u00e6rd.\",\n  \"scenario\": {\n    \"category\": \"concurrency\",\n    \"given\": \"Koncert C har \u00e9n ledig plads; A og B har hver sin nye request-n\u00f8gle.\",\n    \"when\": \"To separate databaseforbindelser fors\u00f8ger at reservere samtidigt med kontrolleret overlap.\",\n    \"then\": \"Pr\u00e6cis \u00e9n reservation lykkes; den anden giver SoldOut; h\u00f8jst \u00e9n plads er optaget. K\u00f8r mod den valgte databases reelle transaktionsadf\u00e6rd.\"\n  }\n}"}, "scenario.replay": {"fields": {"description": "Samme reservations-id returneres hver gang; ingen ekstra plads optages; ingen SoldOut p\u00e5 gentagelsen.", "kind": "scenario", "scenario": "{\n  \"category\": \"boundary\",\n  \"given\": \"C har capacity=1; A's reserve med K1 er lykkedes og har optaget den sidste plads.\",\n  \"when\": \"A gentager samme request flere gange, ogs\u00e5 samtidigt.\",\n  \"then\": \"Samme reservations-id returneres hver gang; ingen ekstra plads optages; ingen SoldOut p\u00e5 gentagelsen.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Samme reservations-id returneres hver gang; ingen ekstra plads optages; ingen SoldOut p\u00e5 gentagelsen.\",\n  \"scenario\": {\n    \"category\": \"boundary\",\n    \"given\": \"C har capacity=1; A's reserve med K1 er lykkedes og har optaget den sidste plads.\",\n    \"when\": \"A gentager samme request flere gange, ogs\u00e5 samtidigt.\",\n    \"then\": \"Samme reservations-id returneres hver gang; ingen ekstra plads optages; ingen SoldOut p\u00e5 gentagelsen.\"\n  }\n}"}, "scenario.replay_after_cancel": {"fields": {"description": "K1 returnerer R i cancelled uden mutation. K2 kan oprette et nyt id, hvis der er plads; R forbliver cancelled.", "kind": "scenario", "scenario": "{\n  \"category\": \"boundary\",\n  \"given\": \"A har reserveret med K1 og derefter annulleret reservation R.\",\n  \"when\": \"A gentager den oprindelige reserve-request med K1 og opretter derefter en ny med K2.\",\n  \"then\": \"K1 returnerer R i cancelled uden mutation. K2 kan oprette et nyt id, hvis der er plads; R forbliver cancelled.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"K1 returnerer R i cancelled uden mutation. K2 kan oprette et nyt id, hvis der er plads; R forbliver cancelled.\",\n  \"scenario\": {\n    \"category\": \"boundary\",\n    \"given\": \"A har reserveret med K1 og derefter annulleret reservation R.\",\n    \"when\": \"A gentager den oprindelige reserve-request med K1 og opretter derefter en ny med K2.\",\n    \"then\": \"K1 returnerer R i cancelled uden mutation. K2 kan oprette et nyt id, hvis der er plads; R forbliver cancelled.\"\n  }\n}"}, "scenario.reservation_missing": {"fields": {"description": "ReservationNotFound uden reservationsdata.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Autentificeret bruger; reservation findes ikke.\",\n  \"when\": \"Cancel kaldes.\",\n  \"then\": \"ReservationNotFound uden reservationsdata.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"ReservationNotFound uden reservationsdata.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Autentificeret bruger; reservation findes ikke.\",\n    \"when\": \"Cancel kaldes.\",\n    \"then\": \"ReservationNotFound uden reservationsdata.\"\n  }\n}"}, "scenario.reserve": {"fields": {"description": "\u00c9t reservations-id i reserved til A, og pr\u00e6cis \u00e9n plads optaget.", "kind": "scenario", "scenario": "{\n  \"category\": \"normal\",\n  \"given\": \"Koncert C har capacity=1 og ingen reservationer; bruger A er autentificeret.\",\n  \"when\": \"A reserverer C med n\u00f8gle K1.\",\n  \"then\": \"\u00c9t reservations-id i reserved til A, og pr\u00e6cis \u00e9n plads optaget.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"\u00c9t reservations-id i reserved til A, og pr\u00e6cis \u00e9n plads optaget.\",\n  \"scenario\": {\n    \"category\": \"normal\",\n    \"given\": \"Koncert C har capacity=1 og ingen reservationer; bruger A er autentificeret.\",\n    \"when\": \"A reserverer C med n\u00f8gle K1.\",\n    \"then\": \"\u00c9t reservations-id i reserved til A, og pr\u00e6cis \u00e9n plads optaget.\"\n  }\n}"}, "scenario.reserve_invalid": {"fields": {"description": "InvalidInput; ingen mutation.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Autentificeret bruger; tomt concert_id eller request_key.\",\n  \"when\": \"Reserve kaldes.\",\n  \"then\": \"InvalidInput; ingen mutation.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"InvalidInput; ingen mutation.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Autentificeret bruger; tomt concert_id eller request_key.\",\n    \"when\": \"Reserve kaldes.\",\n    \"then\": \"InvalidInput; ingen mutation.\"\n  }\n}"}, "scenario.reserve_unauthenticated": {"fields": {"description": "Unauthenticated; ingen opslag eller mutation.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Ingen serverautentificeret principal.\",\n  \"when\": \"Reserve kaldes med ellers gyldigt input.\",\n  \"then\": \"Unauthenticated; ingen opslag eller mutation.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"Unauthenticated; ingen opslag eller mutation.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Ingen serverautentificeret principal.\",\n    \"when\": \"Reserve kaldes med ellers gyldigt input.\",\n    \"then\": \"Unauthenticated; ingen opslag eller mutation.\"\n  }\n}"}, "scenario.sold_out": {"fields": {"description": "SoldOut; ingen mutation eller n\u00f8glebinding.", "kind": "scenario", "scenario": "{\n  \"category\": \"negative\",\n  \"given\": \"Koncerten er fuld; bruger har en ny n\u00f8gle.\",\n  \"when\": \"Reserve kaldes.\",\n  \"then\": \"SoldOut; ingen mutation eller n\u00f8glebinding.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"SoldOut; ingen mutation eller n\u00f8glebinding.\",\n  \"scenario\": {\n    \"category\": \"negative\",\n    \"given\": \"Koncerten er fuld; bruger har en ny n\u00f8gle.\",\n    \"when\": \"Reserve kaldes.\",\n    \"then\": \"SoldOut; ingen mutation eller n\u00f8glebinding.\"\n  }\n}"}, "scenario.zero_capacity": {"fields": {"description": "SoldOut; nul aktive reservationer.", "kind": "scenario", "scenario": "{\n  \"category\": \"boundary\",\n  \"given\": \"Koncert har capacity=0.\",\n  \"when\": \"En gyldig ny reservation fors\u00f8ges.\",\n  \"then\": \"SoldOut; nul aktive reservationer.\"\n}"}, "full": "{\n  \"kind\": \"scenario\",\n  \"description\": \"SoldOut; nul aktive reservationer.\",\n  \"scenario\": {\n    \"category\": \"boundary\",\n    \"given\": \"Koncert har capacity=0.\",\n    \"when\": \"En gyldig ny reservation fors\u00f8ges.\",\n    \"then\": \"SoldOut; nul aktive reservationer.\"\n  }\n}"}, "screen.reserve": {"fields": {"description": "Planlagt reservationssk\u00e6rm; interaktion og design mangler stadig.", "design_refs": "[\n  {\n    \"source\": \"source.design\",\n    \"purpose\": \"contract\",\n    \"selector\": {\n      \"kind\": \"whole-document\"\n    }\n  }\n]", "kind": "screen", "maturity": "sketch"}, "full": "{\n  \"kind\": \"screen\",\n  \"description\": \"Planlagt reservationssk\u00e6rm; interaktion og design mangler stadig.\",\n  \"maturity\": \"sketch\",\n  \"design_refs\": [\n    {\n      \"source\": \"source.design\",\n      \"purpose\": \"contract\",\n      \"selector\": {\n        \"kind\": \"whole-document\"\n      }\n    }\n  ]\n}"}}, "project": "{\n  \"id\": \"concert-reservations\",\n  \"title\": \"Reservation af koncertpladser\",\n  \"goal\": \"En bruger kan reservere og annullere en plads uden overbooking.\",\n  \"scope\": \"En modul\u00e6r applikation og \u00e9n transaktionel database; ikke mikroservices.\",\n  \"assumptions\": [\n    \"\u00c9n plads pr. reservation. Flere reservationer med forskellige request-n\u00f8gler er tilladt.\",\n    \"Koncerter findes p\u00e5 forh\u00e5nd, og kapaciteten \u00e6ndres ikke i dette eksempel.\",\n    \"Identitet leveres af serverens autentificeringslag, ikke af et user_id i request-body.\",\n    \"Reservationer udl\u00f8ber ikke automatisk i denne f\u00f8rste model.\",\n    \"Betaling, billetudstedelse, venteliste og eksterne events er uden for dette eksempel.\",\n    \"Reservationshistorik og succesfulde request-n\u00f8gler bevares; sletning er uden for eksemplet.\"\n  ]\n}", "questions": {}, "references": {"action.cancel": ["{\n  \"source\": \"source.legacy\",\n  \"purpose\": \"provenance\"\n}"], "action.reserve": ["{\n  \"source\": \"source.legacy\",\n  \"purpose\": \"provenance\"\n}"], "community.backend": [], "community.frontend": [], "component.api": ["{\n  \"source\": \"source.legacy\",\n  \"purpose\": \"provenance\"\n}"], "component.frontend": [], "component.reservations": ["{\n  \"source\": \"source.legacy\",\n  \"purpose\": \"provenance\"\n}"], "component.storage": ["{\n  \"source\": \"source.legacy\",\n  \"purpose\": \"provenance\"\n}"], "edge.api_calls_cancel": [], "edge.api_calls_reserve": [], "edge.api_imports_reservations": [], "edge.community.action.cancel": [], "edge.community.action.reserve": [], "edge.community.component.api": [], "edge.community.component.frontend": [], "edge.community.component.reservations": [], "edge.community.component.storage": [], "edge.community.entity.concert": [], "edge.community.entity.reservation": [], "edge.community.machine.reservation": [], "edge.community.screen.reserve": [], "edge.constraint.rule.api_boundary.component.api": [], "edge.constraint.rule.api_boundary.component.storage": [], "edge.constraint.rule.atomicity.action.cancel": [], "edge.constraint.rule.atomicity.action.reserve": [], "edge.constraint.rule.authorization.action.cancel": [], "edge.constraint.rule.capacity.entity.concert": [], "edge.constraint.rule.capacity.entity.reservation": [], "edge.constraint.rule.idempotency.action.cancel": [], "edge.constraint.rule.idempotency.action.reserve": [], "edge.constraint.rule.state_machine.machine.reservation": [], "edge.effect.action.cancel.changes.entity.reservation": [], "edge.effect.action.cancel.reads.entity.reservation": [], "edge.effect.action.reserve.creates.entity.reservation": [], "edge.effect.action.reserve.reads.entity.concert": [], "edge.effect.action.reserve.reads.entity.reservation": [], "edge.exercise.scenario.atomic_failure.action.cancel": [], "edge.exercise.scenario.atomic_failure.action.reserve": [], "edge.exercise.scenario.cancel.action.cancel": [], "edge.exercise.scenario.cancel.action.reserve": [], "edge.exercise.scenario.cancel_concurrent.action.cancel": [], "edge.exercise.scenario.cancel_invalid.action.cancel": [], "edge.exercise.scenario.cancel_once.action.cancel": [], "edge.exercise.scenario.cancel_unauthenticated.action.cancel": [], "edge.exercise.scenario.concert_missing.action.reserve": [], "edge.exercise.scenario.concurrent_same_key.action.reserve": [], "edge.exercise.scenario.foreign_cancel.action.cancel": [], "edge.exercise.scenario.key_conflict.action.reserve": [], "edge.exercise.scenario.last_seat.action.reserve": [], "edge.exercise.scenario.replay.action.reserve": [], "edge.exercise.scenario.replay_after_cancel.action.cancel": [], "edge.exercise.scenario.replay_after_cancel.action.reserve": [], "edge.exercise.scenario.reservation_missing.action.cancel": [], "edge.exercise.scenario.reserve.action.reserve": [], "edge.exercise.scenario.reserve_invalid.action.reserve": [], "edge.exercise.scenario.reserve_unauthenticated.action.reserve": [], "edge.exercise.scenario.sold_out.action.reserve": [], "edge.exercise.scenario.zero_capacity.action.reserve": [], "edge.owner.action.cancel": [], "edge.owner.action.reserve": [], "edge.owner.entity.concert": [], "edge.owner.entity.reservation": [], "edge.owner.machine.reservation": [], "edge.owner.screen.reserve": [], "edge.reservations_imports_storage": [], "edge.screen.reserve.calls": [], "edge.state.machine.reservation": [], "edge.storage.entity.concert": [], "edge.storage.entity.reservation": [], "edge.verify.scenario.api_boundary.rule.api_boundary": [], "edge.verify.scenario.atomic_failure.rule.atomicity": [], "edge.verify.scenario.cancel.rule.capacity": [], "edge.verify.scenario.cancel.rule.idempotency": [], "edge.verify.scenario.cancel.rule.state_machine": [], "edge.verify.scenario.cancel_concurrent.rule.capacity": [], "edge.verify.scenario.cancel_concurrent.rule.idempotency": [], "edge.verify.scenario.cancel_once.rule.capacity": [], "edge.verify.scenario.cancel_once.rule.state_machine": [], "edge.verify.scenario.concurrent_same_key.rule.capacity": [], "edge.verify.scenario.concurrent_same_key.rule.idempotency": [], "edge.verify.scenario.foreign_cancel.rule.authorization": [], "edge.verify.scenario.key_conflict.rule.idempotency": [], "edge.verify.scenario.last_seat.rule.capacity": [], "edge.verify.scenario.replay.rule.capacity": [], "edge.verify.scenario.replay.rule.idempotency": [], "edge.verify.scenario.replay_after_cancel.rule.capacity": [], "edge.verify.scenario.replay_after_cancel.rule.idempotency": [], "edge.verify.scenario.replay_after_cancel.rule.state_machine": [], "edge.verify.scenario.reservation_missing.rule.authorization": [], "edge.verify.scenario.reserve.rule.capacity": [], "edge.verify.scenario.reserve.rule.state_machine": [], "edge.verify.scenario.sold_out.rule.capacity": [], "edge.verify.scenario.zero_capacity.rule.capacity": [], "entity.concert": ["{\n  \"source\": \"source.legacy\",\n  \"purpose\": \"provenance\"\n}"], "entity.reservation": ["{\n  \"source\": \"source.legacy\",\n  \"purpose\": \"provenance\"\n}"], "machine.reservation": [], "rule.api_boundary": [], "rule.atomicity": [], "rule.authorization": [], "rule.capacity": [], "rule.idempotency": [], "rule.state_machine": [], "scenario.api_boundary": [], "scenario.atomic_failure": [], "scenario.cancel": [], "scenario.cancel_concurrent": [], "scenario.cancel_invalid": [], "scenario.cancel_once": [], "scenario.cancel_unauthenticated": [], "scenario.concert_missing": [], "scenario.concurrent_same_key": [], "scenario.foreign_cancel": [], "scenario.key_conflict": [], "scenario.last_seat": [], "scenario.replay": [], "scenario.replay_after_cancel": [], "scenario.reservation_missing": [], "scenario.reserve": [], "scenario.reserve_invalid": [], "scenario.reserve_unauthenticated": [], "scenario.sold_out": [], "scenario.zero_capacity": [], "screen.reserve": ["{\n  \"source\": \"source.design\",\n  \"purpose\": \"contract\",\n  \"selector\": {\n    \"kind\": \"whole-document\"\n  }\n}"]}, "snapshot": "{\n  \"format\": \"gdd-snapshot/0.2\",\n  \"revision\": \"sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210\",\n  \"assets\": [\n    {\n      \"path\": \"concert.gdd.yaml\",\n      \"sha256\": \"826d52effcc6b30b1585341d201cc03ef0a89501fffaf3b404fb1a339564239e\"\n    }\n  ]\n}", "sources": {"source.design": {"fields": {"format": "design-md/alpha", "normative": "false", "role": "design", "title": "Planlagt DESIGN.md til frontend; ikke skrevet eller verified", "uri": "DESIGN.md"}, "full": "{\n  \"role\": \"design\",\n  \"title\": \"Planlagt DESIGN.md til frontend; ikke skrevet eller verified\",\n  \"uri\": \"DESIGN.md\",\n  \"format\": \"design-md/alpha\",\n  \"normative\": false\n}"}, "source.legacy": {"fields": {"format": "gdd/0.1", "normative": "false", "revision": "{\n  \"sha256\": \"8dfcf87613d59edce97d911e57ce1314c9d17356b53d48029d8eebe3b24bbc88\"\n}", "role": "input", "title": "Bevaret gdd/0.1-intent til eksplicit migration", "uri": "sources/legacy-concert.gdd.yaml"}, "full": "{\n  \"role\": \"input\",\n  \"title\": \"Bevaret gdd/0.1-intent til eksplicit migration\",\n  \"uri\": \"sources/legacy-concert.gdd.yaml\",\n  \"format\": \"gdd/0.1\",\n  \"normative\": false,\n  \"revision\": {\n    \"sha256\": \"8dfcf87613d59edce97d911e57ce1314c9d17356b53d48029d8eebe3b24bbc88\"\n  }\n}"}}}}</script>
+    <script>/* GDD viewer: projection and deterministic SVG layout. No model mutations. */
+"use strict";
+const GDD = (() => {
+  const data = JSON.parse(document.getElementById("gdd-data").textContent);
+  const model = data.model;
+  const $ = (id) => document.getElementById(id);
+  const state = {
+    search: "",
+    kind: "",
+    relation: "",
+    community: "",
+    scenarios: false,
+    fold: false,
+    tab: "nodes",
+    selected: null,
+  };
+  const positions = new Map();
+  let projection = {
+    nodes: [],
+    edges: [],
+    glyphs: [],
+    bundles: [],
+    internal: [],
+    representatives: new Map(),
+  };
+  let camera = { x: 0, y: 0, k: 1 };
+  const communities = Object.keys(model.nodes)
+    .filter((id) => model.nodes[id].kind === "community")
+    .sort();
+  const memberships = new Map(Object.keys(model.nodes).map((id) => [id, []]));
+  for (const edge of model.edges) {
+    if (edge.relation === "member_of") memberships.get(edge.from).push(edge.to);
+  }
+  for (const [id, list] of memberships)
+    memberships.set(id, [...new Set(list)].sort());
+  const kinds = [
+    "component",
+    "action",
+    "entity",
+    "rule",
+    "scenario",
+    "machine",
+    "screen",
+    "community",
+  ];
+  const symbols = new Map([
+    ["component", "C"],
+    ["action", "A"],
+    ["entity", "E"],
+    ["rule", "R"],
+    ["scenario", "S"],
+    ["machine", "M"],
+    ["screen", "UI"],
+    ["community", "◉"],
+  ]);
+  function el(tag, text, className) {
+    const item = document.createElement(tag);
+    if (text !== undefined) item.textContent = text;
+    if (className) item.className = className;
+    return item;
+  }
+  function svg(tag, attrs = {}, text) {
+    const item = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [key, value] of Object.entries(attrs))
+      item.setAttribute(key, value);
+    if (text !== undefined) item.textContent = text;
+    return item;
+  }
+  const label = (id) => model.nodes[id].label || id;
+  const short = (text) => (text.length > 27 ? text.slice(0, 24) + "…" : text);
+  function project() {
+    const available = new Set(data.manifest.shown_nodes);
+    const query = state.search.trim().toLocaleLowerCase();
+    const matchingEdges = new Set(
+      model.edges
+        .filter((e) =>
+          data.text.edges[e.id].toLocaleLowerCase().includes(query),
+        )
+        .flatMap((e) => [e.from, e.to]),
+    );
+    const nodes = [...available].filter((id) => {
+      const node = model.nodes[id];
+      return (
+        (!state.kind || node.kind === state.kind) &&
+        (state.scenarios ||
+          node.kind !== "scenario" ||
+          state.kind === "scenario" ||
+          Boolean(query)) &&
+        (!state.community ||
+          id === state.community ||
+          memberships.get(id).includes(state.community)) &&
+        (!query ||
+          id.toLocaleLowerCase().includes(query) ||
+          data.text.nodes[id].full.toLocaleLowerCase().includes(query) ||
+          matchingEdges.has(id))
+      );
+    });
+    const included = new Set(nodes);
+    const edges = model.edges.filter(
+      (e) =>
+        included.has(e.from) &&
+        included.has(e.to) &&
+        (!state.relation || e.relation === state.relation),
+    );
+    const representatives = new Map(nodes.map((id) => [id, id]));
+    if (state.fold) {
+      // Overlap stays explicit in data/inspector. One deterministic visual representative per member.
+      for (const id of nodes) {
+        const candidates = memberships.get(id).filter((c) => included.has(c));
+        if (model.nodes[id].kind !== "community" && candidates.length)
+          representatives.set(id, candidates[0]);
+      }
+    }
+    const glyphMap = new Map();
+    for (const id of nodes) {
+      const rep = representatives.get(id);
+      if (!glyphMap.has(rep)) glyphMap.set(rep, { id: rep, members: [] });
+      glyphMap.get(rep).members.push(id);
+    }
+    const bundleMap = new Map(),
+      internal = [];
+    for (const edge of edges) {
+      const from = representatives.get(edge.from),
+        to = representatives.get(edge.to);
+      if (from === to && (from !== edge.from || to !== edge.to)) {
+        internal.push(edge.id);
+        continue;
+      }
+      const key = JSON.stringify([from, to]);
+      if (!bundleMap.has(key)) bundleMap.set(key, { key, from, to, edges: [] });
+      bundleMap.get(key).edges.push(edge);
+    }
+    projection = {
+      nodes,
+      edges,
+      glyphs: [...glyphMap.values()],
+      bundles: [...bundleMap.values()],
+      internal,
+      representatives,
+    };
+    updateManifest();
+    return projection;
+  }
+  function manifest() {
+    return {
+      format: "gdd-view-state/0.2",
+      generator: data.generator,
+      spec_revision: data.spec_revision,
+      observation_inputs: data.observation_inputs,
+      scope: data.scope,
+      artifact_scope: data.manifest,
+      filters: {
+        search: state.search,
+        kind: state.kind,
+        relation: state.relation,
+        community: state.community,
+        scenarios: state.scenarios,
+      },
+      folding: {
+        enabled: state.fold,
+        overlap_policy:
+          "first visible community by canonical ID; all memberships retained",
+      },
+      shown_nodes: [...projection.nodes].sort(),
+      shown_edges: projection.edges.map((e) => e.id).sort(),
+      omitted_nodes: Object.keys(model.nodes)
+        .filter((id) => !projection.nodes.includes(id))
+        .sort(),
+      omitted_edges: model.edges
+        .filter((e) => !projection.edges.includes(e))
+        .map((e) => e.id)
+        .sort(),
+      glyphs: projection.glyphs.map((g) => ({ id: g.id, node_ids: g.members })),
+      bundles: projection.bundles.map((b) => ({
+        from: b.from,
+        to: b.to,
+        edge_ids: b.edges.map((e) => e.id),
+      })),
+      folded_internal_edges: [...projection.internal].sort(),
+    };
+  }
+  function updateManifest() {
+    let item = $("gdd-view-manifest");
+    if (!item) {
+      item = el("script");
+      item.id = "gdd-view-manifest";
+      item.type = "application/json";
+      document.body.append(item);
+    }
+    item.textContent = JSON.stringify(manifest());
+  }
+  function layout(reflow = true) {
+    const glyphs = projection.glyphs;
+    glyphs.forEach((g, i) => {
+      if (positions.has(g.id)) return;
+      const node = model.nodes[g.id],
+        typeIndex = Math.max(0, kinds.indexOf(node.kind));
+      const community = memberships.get(g.id)[0];
+      const sector = community ? communities.indexOf(community) : typeIndex;
+      const angle = i * 2.399963229728653,
+        radius = 65 + 26 * Math.sqrt(i + 1);
+      const base = (sector * 2 * Math.PI) / Math.max(communities.length, 8);
+      positions.set(g.id, {
+        x: 600 + Math.cos(base) * 170 + Math.cos(angle) * radius,
+        y: 400 + Math.sin(base) * 140 + Math.sin(angle) * radius,
+      });
+    });
+    if (!reflow || glyphs.length > 200) return; // Bounded layout work; larger graphs keep a deterministic seeded layout.
+    for (let iteration = 0; iteration < 160; iteration++) {
+      const forces = new Map(glyphs.map((g) => [g.id, { x: 0, y: 0 }]));
+      for (let i = 0; i < glyphs.length; i++)
+        for (let j = i + 1; j < glyphs.length; j++) {
+          const a = positions.get(glyphs[i].id),
+            b = positions.get(glyphs[j].id);
+          const dx = a.x - b.x,
+            dy = a.y - b.y,
+            d2 = Math.max(dx * dx + dy * dy, 1),
+            d = Math.sqrt(d2),
+            force = Math.min(2400 / d2, 9);
+          forces.get(glyphs[i].id).x += (dx / d) * force;
+          forces.get(glyphs[i].id).y += (dy / d) * force;
+          forces.get(glyphs[j].id).x -= (dx / d) * force;
+          forces.get(glyphs[j].id).y -= (dy / d) * force;
+        }
+      for (const b of projection.bundles) {
+        if (b.from === b.to) continue;
+        const a = positions.get(b.from),
+          z = positions.get(b.to),
+          dx = z.x - a.x,
+          dy = z.y - a.y,
+          d = Math.max(Math.hypot(dx, dy), 1),
+          force = (d - 135) * 0.012;
+        forces.get(b.from).x += (dx / d) * force;
+        forces.get(b.from).y += (dy / d) * force;
+        forces.get(b.to).x -= (dx / d) * force;
+        forces.get(b.to).y -= (dy / d) * force;
+      }
+      for (const g of glyphs) {
+        const p = positions.get(g.id),
+          f = forces.get(g.id),
+          cool = 1 - iteration / 190;
+        p.x += (f.x + (600 - p.x) * 0.004) * cool;
+        p.y += (f.y + (400 - p.y) * 0.004) * cool;
+      }
+    }
+  }
+  function edgeGeometry(bundle) {
+    const a = positions.get(bundle.from),
+      b = positions.get(bundle.to);
+    if (bundle.from === bundle.to)
+      return {
+        d: `M ${a.x - 12} ${a.y - 14} C ${a.x - 75} ${a.y - 95}, ${a.x + 75} ${a.y - 95}, ${a.x + 13} ${a.y - 16}`,
+        x: a.x,
+        y: a.y - 62,
+      };
+    const dx = b.x - a.x,
+      dy = b.y - a.y,
+      d = Math.max(Math.hypot(dx, dy), 1),
+      ux = dx / d,
+      uy = dy / d;
+    const reverse = projection.bundles.some(
+      (other) => other.from === bundle.to && other.to === bundle.from,
+    );
+    const offset = reverse ? 25 : 0,
+      cx = (a.x + b.x) / 2 - uy * offset,
+      cy = (a.y + b.y) / 2 + ux * offset;
+    return {
+      d: `M ${a.x + ux * 21} ${a.y + uy * 21} Q ${cx} ${cy} ${b.x - ux * 23} ${b.y - uy * 23}`,
+      x: (a.x + b.x) / 2 - (uy * offset) / 2,
+      y: (a.y + b.y) / 2 + (ux * offset) / 2 - 7,
+    };
+  }
+  function draw() {
+    $("edge-layer").replaceChildren();
+    $("node-layer").replaceChildren();
+    for (const bundle of projection.bundles) {
+      const geometry = edgeGeometry(bundle),
+        group = svg("g", {
+          class: "edge-group",
+          "data-edge-ids": JSON.stringify(bundle.edges.map((e) => e.id)),
+        });
+      group.append(
+        svg("path", { class: "edge-path", d: geometry.d }),
+        svg("path", { class: "edge-hit", d: geometry.d }),
+      );
+      const names = [...new Set(bundle.edges.map((e) => e.relation))];
+      const text =
+        names.length === 1 ? names[0] : `${names[0]} +${names.length - 1}`;
+      group.append(
+        svg(
+          "text",
+          { class: "edge-label", x: geometry.x, y: geometry.y },
+          text + (bundle.edges.length > 1 ? ` ×${bundle.edges.length}` : ""),
+        ),
+      );
+      group.append(
+        svg(
+          "title",
+          {},
+          bundle.edges
+            .map((e) => `${e.id}: ${e.from} → ${e.to} · ${e.relation}`)
+            .join("\n"),
+        ),
+      );
+      group.addEventListener("click", () => GDD.select("bundle", bundle.key));
+      $("edge-layer").append(group);
+    }
+    for (const glyph of projection.glyphs) {
+      const node = model.nodes[glyph.id],
+        p = positions.get(glyph.id),
+        type = kinds.includes(node.kind) ? node.kind : "component";
+      const folded = glyph.members.length > 1;
+      const group = svg("g", {
+        class: `node-group type-${type}${folded ? " folded" : ""}${node.maturity === "specified" ? "" : " sketch"}`,
+        "data-node-id": glyph.id,
+        "data-member-ids": JSON.stringify(glyph.members),
+        transform: `translate(${p.x},${p.y})`,
+      });
+      group.append(
+        svg("circle", { class: "node-glyph", r: folded ? 22 : 18 }),
+        svg("circle", { class: "node-accent", r: 3, cx: 14, cy: -13 }),
+      );
+      group.append(
+        svg(
+          "text",
+          { class: "node-symbol", y: 5 },
+          folded ? String(glyph.members.length) : symbols.get(node.kind) || "?",
+        ),
+      );
+      group.append(
+        svg(
+          "text",
+          { class: "node-label", y: 40 },
+          short(
+            model.nodes[glyph.id].label ||
+              glyph.id.split(".").slice(1).join(".") ||
+              glyph.id,
+          ),
+        ),
+      );
+      group.append(
+        svg(
+          "text",
+          { class: "node-kind", y: 54 },
+          folded ? "foldet community" : node.kind,
+        ),
+      );
+      group.append(svg("title", {}, `${glyph.id}\n${node.description}`));
+      group.addEventListener("click", () => {
+        if (!dragged) GDD.select("node", glyph.id);
+      });
+      group.addEventListener("pointerdown", (event) =>
+        startDrag(event, glyph.id),
+      );
+      $("node-layer").append(group);
+    }
+    highlight();
+    applyCamera();
+  }
+  function highlight() {
+    const selection = state.selected,
+      selectedNodes = new Set(),
+      selectedEdges = new Set();
+    if (selection?.type === "node") {
+      selectedNodes.add(projection.representatives.get(selection.id));
+      for (const e of projection.edges)
+        if (e.from === selection.id || e.to === selection.id) {
+          selectedNodes.add(projection.representatives.get(e.from));
+          selectedNodes.add(projection.representatives.get(e.to));
+          selectedEdges.add(e.id);
+        }
+    } else if (selection?.type === "edge") selectedEdges.add(selection.id);
+    else if (selection?.type === "bundle")
+      for (const b of projection.bundles)
+        if (b.key === selection.id)
+          b.edges.forEach((e) => selectedEdges.add(e.id));
+    for (const b of projection.bundles)
+      if (b.edges.some((e) => selectedEdges.has(e.id))) {
+        selectedNodes.add(b.from);
+        selectedNodes.add(b.to);
+      }
+    for (const item of $("node-layer").children) {
+      const id = item.getAttribute("data-node-id");
+      item.classList.toggle(
+        "selected",
+        selection?.type === "node" &&
+          projection.representatives.get(selection.id) === id,
+      );
+      item.classList.toggle("connected", selectedNodes.has(id));
+      item.classList.toggle(
+        "dim",
+        selectedNodes.size > 0 && !selectedNodes.has(id),
+      );
+    }
+    for (const item of $("edge-layer").children) {
+      const active = JSON.parse(item.getAttribute("data-edge-ids")).some((id) =>
+        selectedEdges.has(id),
+      );
+      item.classList.toggle("connected", active);
+      item.classList.toggle("dim", selectedNodes.size > 0 && !active);
+    }
+  }
+  function applyCamera() {
+    $("viewport").setAttribute(
+      "transform",
+      `translate(${camera.x},${camera.y}) scale(${camera.k})`,
+    );
+    $("zoom-level").textContent = Math.round(camera.k * 100) + "%";
+  }
+  function fit() {
+    const bounds = $("graph").getBoundingClientRect(),
+      all = projection.glyphs.map((g) => positions.get(g.id));
+    if (!all.length) return;
+    const minX = Math.min(...all.map((p) => p.x)) - 100,
+      maxX = Math.max(...all.map((p) => p.x)) + 100;
+    const minY = Math.min(...all.map((p) => p.y)) - 90,
+      maxY = Math.max(...all.map((p) => p.y)) + 100;
+    const k = Math.min(
+      (bounds.width - 30) / (maxX - minX),
+      (bounds.height - 120) / (maxY - minY),
+      1.6,
+    );
+    camera = {
+      k: Math.max(0.08, k),
+      x: bounds.width / 2 - ((minX + maxX) / 2) * k,
+      y: bounds.height / 2 - ((minY + maxY) / 2) * k + 10,
+    };
+    applyCamera();
+  }
+  function zoom(factor, x, y) {
+    const bounds = $("graph").getBoundingClientRect();
+    x ??= bounds.width / 2;
+    y ??= bounds.height / 2;
+    const next = Math.max(0.05, Math.min(4, camera.k * factor)),
+      ratio = next / camera.k;
+    camera = {
+      x: x - (x - camera.x) * ratio,
+      y: y - (y - camera.y) * ratio,
+      k: next,
+    };
+    applyCamera();
+  }
+  let drag = null,
+    dragged = false;
+  function startDrag(event, id = null) {
+    if (event.button !== 0) return;
+    event.stopPropagation();
+    dragged = false;
+    drag = {
+      id,
+      x: event.clientX,
+      y: event.clientY,
+      startX: event.clientX,
+      startY: event.clientY,
+    };
+    $("graph").setPointerCapture(event.pointerId);
+  }
+  $("graph").addEventListener("pointerdown", (event) => {
+    if (!event.target.closest(".edge-group")) startDrag(event);
+  });
+  $("graph").addEventListener("pointermove", (event) => {
+    if (!drag) return;
+    const dx = event.clientX - drag.x,
+      dy = event.clientY - drag.y;
+    if (
+      Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 3
+    )
+      dragged = true;
+    if (drag.id) {
+      const p = positions.get(drag.id);
+      p.x += dx / camera.k;
+      p.y += dy / camera.k;
+      draw();
+    } else {
+      camera.x += dx;
+      camera.y += dy;
+      applyCamera();
+    }
+    drag.x = event.clientX;
+    drag.y = event.clientY;
+  });
+  function endDrag() {
+    if (drag?.id && !dragged) GDD.select("node", drag.id);
+    drag = null;
+    setTimeout(() => {
+      dragged = false;
+    }, 0);
+  }
+  $("graph").addEventListener("pointerup", endDrag);
+  $("graph").addEventListener("pointercancel", () => {
+    drag = null;
+    dragged = false;
+  });
+  $("graph").addEventListener(
+    "wheel",
+    (event) => {
+      event.preventDefault();
+      const r = $("graph").getBoundingClientRect();
+      zoom(
+        Math.exp(-event.deltaY * 0.0015),
+        event.clientX - r.left,
+        event.clientY - r.top,
+      );
+    },
+    { passive: false },
+  );
+  $("zoom-in").onclick = () => zoom(1.2);
+  $("zoom-out").onclick = () => zoom(1 / 1.2);
+  $("fit").onclick = fit;
+  return {
+    data,
+    model,
+    $,
+    state,
+    el,
+    label,
+    memberships,
+    communities,
+    kinds,
+    project,
+    layout,
+    draw,
+    fit,
+    highlight,
+    manifest,
+    get projection() {
+      return projection;
+    },
+  };
+})();
+
+/* Canonical model records are always rendered as text. */
+(() => {
+  const { data, model, $, state, el, label, memberships } = GDD;
+  const detail = $("detail");
+  function section(title) {
+    const box = el("section", undefined, "detail-section");
+    box.append(el("h3", title));
+    detail.append(box);
+    return box;
+  }
+  function raw(parent, title, value, open = false, exact = null) {
+    const box = el("details"),
+      summary = el("summary", title);
+    box.open = open;
+    box.append(
+      summary,
+      el(
+        "pre",
+        exact ??
+          (typeof value === "string" ? value : JSON.stringify(value, null, 2)),
+      ),
+    );
+    parent.append(box);
+  }
+  function button(parent, text, type, id) {
+    const item = el("button", text, "detail-link");
+    item.onclick = () => GDD.select(type, id);
+    parent.append(item);
+    return item;
+  }
+  function heading(tag, title, id, description) {
+    detail.replaceChildren(
+      el("span", tag, "detail-tag"),
+      el("h2", title, "detail-title"),
+    );
+    if (id) detail.append(el("p", id, "canonical-id"));
+    if (description) detail.append(el("p", description, "detail-description"));
+  }
+  function kv(parent, key, value) {
+    const row = el("dl", undefined, "kv");
+    row.append(el("dt", key), el("dd", String(value)));
+    parent.append(row);
+  }
+  function location(id) {
+    const box = section("Kanonisk placering");
+    const loc = data.locations[id];
+    if (loc) kv(box, "Fil / pointer", `${loc[0]}${loc[1]}`);
+    kv(box, "Modelrevision", data.spec_revision);
+  }
+  function sourceReferences(node, id) {
+    const references = [
+      ...(node.source_refs || []),
+      ...(node.design_refs || []),
+    ];
+    if (!references.length) return;
+    const box = section("Kilder og designreferencer");
+    references.forEach((ref, index) => {
+      button(box, ref.source, "source", ref.source);
+      raw(box, "Reference", ref, false, data.text.references[id][index]);
+    });
+  }
+  function edgeDetails(edge) {
+    heading("Kanonisk relation", edge.relation, edge.id, edge.description);
+    const box = section("Retning");
+    button(box, `${edge.from} →`, "node", edge.from);
+    button(box, `→ ${edge.to}`, "node", edge.to);
+    const peers = model.edges.filter(
+      (e) => e.from === edge.from && e.to === edge.to,
+    );
+    if (peers.length > 1) {
+      const group = section(`${peers.length} parallelle relationer`);
+      peers.forEach((e) =>
+        button(group, `${e.id} · ${e.relation}`, "edge", e.id),
+      );
+    }
+    sourceReferences(edge, edge.id);
+    location(edge.id);
+    raw(detail, "Alle relationsfelter", edge, true, data.text.edges[edge.id]);
+  }
+  function nodeDetails(id) {
+    const node = model.nodes[id];
+    heading(node.kind, label(id), id, node.description);
+    detail.append(
+      el(
+        "span",
+        node.maturity === "specified" ? "Specified" : "Sketch (standardværdi)",
+        "badge",
+      ),
+    );
+    detail.append(
+      el(
+        "p",
+        "Maturity beskriver modellens detaljering. Parathed og implementation vurderes separat.",
+        "notice",
+      ),
+    );
+    const memberOf = memberships.get(id);
+    if (memberOf.length) {
+      const box = section("Medlem af communities");
+      memberOf.forEach((c) => button(box, label(c), "node", c));
+    }
+    if (node.behavior !== undefined) {
+      const box = section("Pseudokode / adfærd");
+      raw(
+        box,
+        "Vis adfærd",
+        node.behavior,
+        true,
+        data.text.nodes[id].fields.behavior,
+      );
+    }
+    if (node.contract) {
+      const box = section("Kontrakt");
+      raw(
+        box,
+        "Input, output, fejl og effekter",
+        node.contract,
+        true,
+        data.text.nodes[id].fields.contract,
+      );
+    }
+    for (const key of [
+      "fields",
+      "rule",
+      "scenario",
+      "machine",
+      "interaction",
+      "realization",
+    ])
+      if (node[key] !== undefined)
+        raw(
+          section(key),
+          `Vis ${key}`,
+          node[key],
+          true,
+          data.text.nodes[id].fields[key],
+        );
+    if (node.kind === "community") {
+      const members = [...memberships]
+        .filter(([, groups]) => groups.includes(id))
+        .map(([member]) => member);
+      const box = section(`${members.length} medlemmer`);
+      members.forEach((member) =>
+        button(
+          box,
+          `${label(member)}${memberships.get(member).length > 1 ? " · overlap" : ""}`,
+          "node",
+          member,
+        ),
+      );
+      const internals = GDD.projection.edges.filter(
+        (e) =>
+          GDD.projection.internal.includes(e.id) &&
+          GDD.projection.representatives.get(e.from) === id,
+      );
+      if (internals.length) {
+        const internalBox = section(
+          `${internals.length} foldede interne relationer`,
+        );
+        internals.forEach((e) =>
+          button(internalBox, `${e.id} · ${e.relation}`, "edge", e.id),
+        );
+      }
+    }
+    const related = model.edges.filter((e) => e.from === id || e.to === id);
+    if (related.length) {
+      const box = section(`Relationer · ${related.length}`);
+      related.forEach((e) =>
+        button(
+          box,
+          `${e.from === id ? "→" : "←"} ${e.relation} · ${e.from === id ? e.to : e.from}\n${e.id}`,
+          "edge",
+          e.id,
+        ),
+      );
+    }
+    const questions = Object.entries(model.questions || {}).filter(([, q]) =>
+      q.targets.includes(id),
+    );
+    if (questions.length) {
+      const box = section("Åbne spørgsmål / modeldata");
+      questions.forEach(([qid, q]) =>
+        raw(box, qid, q, true, data.text.questions[qid].full),
+      );
+    }
+    sourceReferences(node, id);
+    location(id);
+    raw(detail, "Alle nodefelter", node, false, data.text.nodes[id].full);
+  }
+  function overview() {
+    heading(
+      "Modeloversigt",
+      model.project.title,
+      model.project.id,
+      model.project.goal,
+    );
+    detail.append(
+      el(
+        "p",
+        "Udforsk intention, kontrakter og pseudokode. Denne visning skriver aldrig tilbage til modellen.",
+        "notice",
+      ),
+    );
+    const counts = section("Grafen");
+    kv(counts, "Noder", Object.keys(model.nodes).length);
+    kv(counts, "Relationer", model.edges.length);
+    kv(
+      counts,
+      "Scope",
+      data.scope.length ? data.scope.join(", ") : "Hele modellen",
+    );
+    const legend = section("Nodetyper");
+    for (const kind of [
+      ...new Set(Object.values(model.nodes).map((n) => n.kind)),
+    ].sort()) {
+      const row = el("p"),
+        dot = el(
+          "span",
+          undefined,
+          `type-dot type-${GDD.kinds.includes(kind) ? kind : "component"}`,
+        );
+      row.append(dot, document.createTextNode(kind));
+      legend.append(row);
+    }
+    legend.append(
+      el(
+        "p",
+        "Stiplet node: sketch eller foldet community. Pile viser relationens retning. ×N er et inspecterbart relationsbundt.",
+      ),
+    );
+    const sources = Object.keys(model.sources || {});
+    if (sources.length) {
+      const box = section("Kilder · separat fra intention");
+      sources.forEach((id) => button(box, id, "source", id));
+    }
+    const questions = Object.entries(model.questions || {});
+    if (questions.length) {
+      const box = section("Spørgsmål");
+      questions.forEach(([id, q]) =>
+        raw(box, id, q, false, data.text.questions[id].full),
+      );
+    }
+    const revisions = section("Sporbarhed");
+    kv(revisions, "Revision", data.spec_revision);
+    kv(
+      revisions,
+      "Generator",
+      `${data.generator.name} ${data.generator.version}`,
+    );
+    kv(
+      revisions,
+      "Observationer",
+      "Ingen observationsinputs i denne projektion",
+    );
+    revisions.append(
+      el(
+        "p",
+        "Visningen viser modeldata. Den beregner ingen parathed eller implementeringsevidens.",
+      ),
+    );
+    raw(detail, "Modelsnapshot", data.snapshot, false, data.text.snapshot);
+    raw(detail, "Aktuelt visningsmanifest", GDD.manifest());
+    raw(detail, "Projektfelter", model.project, false, data.text.project);
+  }
+  GDD.select = (type, id) => {
+    state.selected = type ? { type, id } : null;
+    $("selection-status").textContent = type
+      ? `Valgt ${type}: ${id}`
+      : "Modeloversigt";
+    for (const item of $("object-list").children) {
+      if (item.tagName === "BUTTON")
+        item.setAttribute(
+          "aria-pressed",
+          (type === "node" || type === "edge") &&
+            item.getAttribute(
+              type === "node" ? "data-list-node" : "data-list-edge",
+            ) === id,
+        );
+    }
+    if (type === "node") nodeDetails(id);
+    else if (type === "edge") edgeDetails(model.edges.find((e) => e.id === id));
+    else if (type === "bundle") {
+      const bundle = GDD.projection.bundles.find((b) => b.key === id);
+      heading(
+        "Rettet relationsbundt",
+        `${bundle.edges.length} relationer`,
+        `${bundle.from} → ${bundle.to}`,
+      );
+      detail.append(
+        el(
+          "p",
+          "Hvert ID er en selvstændig kanonisk relation. Bundtet ændrer kun tegningen.",
+          "notice",
+        ),
+      );
+      const box = section("Alle relationer");
+      bundle.edges.forEach((e) =>
+        button(
+          box,
+          `${e.id}\n${e.from} → ${e.to} · ${e.relation}`,
+          "edge",
+          e.id,
+        ),
+      );
+    } else if (type === "source") {
+      heading("Kilde · separat fra intention", id, id);
+      detail.append(
+        el(
+          "p",
+          "Kildepåstande og planlagte referencer er ikke verificeret implementeringsevidens.",
+          "notice",
+        ),
+      );
+      raw(
+        detail,
+        "Kildedata",
+        model.sources[id],
+        true,
+        data.text.sources[id].full,
+      );
+      location(id);
+    } else overview();
+    $("inspector").scrollTop = 0;
+    if (type && window.matchMedia("(max-width: 850px)").matches)
+      $("inspector").scrollIntoView({ block: "start", behavior: "instant" });
+    GDD.highlight();
+  };
+  GDD.showOverview = () => GDD.select(null, null);
+})();
+
+/* Browser controls operate only on local view state. */
+(() => {
+  const { data, model, $, state, el, label } = GDD;
+  $("project-title").textContent = model.project.title;
+  $("renderer-meta").textContent = `${data.generator.name} ${data.generator.version} · Offline`;
+  document.title = `${model.project.title} · GDD`;
+  $("total-count").textContent = `${Object.keys(model.nodes).length} noder`;
+  $("revision").textContent = `Model ${data.spec_revision}`;
+  $("revision").title = data.spec_revision;
+  function option(select, value, title) {
+    const item = el("option", title);
+    item.value = value;
+    $(select).append(item);
+  }
+  [...new Set(Object.values(model.nodes).map((n) => n.kind))]
+    .sort()
+    .forEach((kind) => option("kind", kind, kind));
+  [...new Set(model.edges.map((e) => e.relation))]
+    .sort()
+    .forEach((relation) => option("relation", relation, relation));
+  GDD.communities.forEach((id) => option("community", id, label(id)));
+  $("scenario-count").textContent =
+    `(${Object.values(model.nodes).filter((n) => n.kind === "scenario").length})`;
+  state.scenarios = data.scope.some(
+    (id) => model.nodes[id].kind === "scenario",
+  );
+  $("scenarios").checked = state.scenarios;
+  function list() {
+    const box = $("object-list");
+    box.replaceChildren();
+    const objects =
+      state.tab === "nodes"
+        ? GDD.projection.nodes
+        : GDD.projection.edges.map((e) => e.id);
+    for (const id of objects) {
+      const node = state.tab === "nodes" ? model.nodes[id] : null;
+      const edge = node ? null : model.edges.find((e) => e.id === id);
+      const item = el("button", undefined, "object-row");
+      item.setAttribute("aria-controls", "detail");
+      item.setAttribute(
+        "aria-pressed",
+        state.selected?.type === (node ? "node" : "edge") &&
+          state.selected.id === id,
+      );
+      item.setAttribute(node ? "data-list-node" : "data-list-edge", id);
+      const title = el("span", undefined, "row-title"),
+        dot = el(
+          "span",
+          undefined,
+          `type-dot type-${node && GDD.kinds.includes(node.kind) ? node.kind : "component"}`,
+        );
+      title.append(dot, document.createTextNode(node ? label(id) : id));
+      const hidden = node && GDD.projection.representatives.get(id) !== id;
+      item.append(
+        title,
+        el(
+          "span",
+          node
+            ? `${node.kind}${hidden ? " · foldet medlem" : ""}`
+            : `${edge.from} → ${edge.to} · ${edge.relation}`,
+          "row-meta",
+        ),
+      );
+      item.onclick = () => GDD.select(node ? "node" : "edge", id);
+      box.append(item);
+    }
+    if (!objects.length) box.append(el("p", "Ingen match.", "hint"));
+    $("tab-nodes").setAttribute("aria-pressed", state.tab === "nodes");
+    $("tab-edges").setAttribute("aria-pressed", state.tab === "edges");
+  }
+  function refresh(reflow = true) {
+    GDD.project();
+    GDD.layout(reflow);
+    GDD.draw();
+    list();
+    const p = GDD.projection,
+      totalNodes = Object.keys(model.nodes).length,
+      totalEdges = model.edges.length;
+    $("view-count").textContent =
+      `${p.nodes.length}/${totalNodes} noder · ${p.edges.length}/${totalEdges} relationer`;
+    $("projection-status").textContent = state.fold
+      ? `${p.glyphs.length} figurer · ${p.internal.length} foldede interne relationer`
+      : `${totalNodes - p.nodes.length} noder og ${totalEdges - p.edges.length} relationer udeladt`;
+    $("fold-hint").textContent = state.fold
+      ? "Overlap repræsenteres i første synlige community efter ID. Alle medlemskaber kan inspiceres."
+      : "Medlemskab er gruppering, ikke ejerskab.";
+    $("empty").hidden = Boolean(p.nodes.length);
+    GDD.showOverview();
+    GDD.fit();
+  }
+  for (const key of ["search", "kind", "relation", "community"])
+    $(key).addEventListener(key === "search" ? "input" : "change", () => {
+      state[key] = $(key).value;
+      refresh(false);
+    });
+  $("fold").onchange = () => {
+    state.fold = $("fold").checked;
+    refresh();
+  };
+  $("scenarios").onchange = () => {
+    state.scenarios = $("scenarios").checked;
+    refresh(false);
+  };
+  $("tab-nodes").onclick = () => {
+    state.tab = "nodes";
+    list();
+  };
+  $("tab-edges").onclick = () => {
+    state.tab = "edges";
+    list();
+  };
+  $("reset").onclick = () => {
+    for (const key of ["search", "kind", "relation", "community"]) {
+      state[key] = "";
+      $(key).value = "";
+    }
+    state.fold = false;
+    $("fold").checked = false;
+    state.scenarios = true;
+    $("scenarios").checked = true;
+    state.tab = "nodes";
+    refresh();
+  };
+  $("overview").onclick = GDD.showOverview;
+  $("manifest-download").onclick = () => {
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(GDD.manifest(), null, 2) + "\n"], {
+        type: "application/json",
+      }),
+    );
+    const link = el("a");
+    link.href = url;
+    link.download = "gdd-view-state.json";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  window.addEventListener("resize", GDD.fit);
+  refresh();
+})();
+</script>
+  </body>
+</html>

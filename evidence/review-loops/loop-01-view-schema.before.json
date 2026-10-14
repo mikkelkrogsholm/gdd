@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/schemas/0.2/view.schema.json",
+  "title": "Informative gdd-viewer 0.1 view envelope",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-view/0.2"
+    },
+    "generator": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "const": "gdd-viewer"
+        },
+        "version": {
+          "const": "0.1.1"
+        },
+        "profile": {
+          "const": "gdd-viewer-html/0.1"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "spec_revision": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "observation_inputs": {
+      "const": []
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*$"
+      },
+      "uniqueItems": true
+    },
+    "model": {
+      "$ref": "gdd.schema.json"
+    },
+    "locations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "snapshot": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "text": {
+      "type": "object",
+      "properties": {
+        "nodes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "full": {
+                "type": "string"
+              },
+              "fields": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "full",
+              "fields"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "sources": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "full": {
+                "type": "string"
+              },
+              "fields": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "full",
+              "fields"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "questions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "full": {
+                "type": "string"
+              },
+              "fields": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "full",
+              "fields"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "edges": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "project": {
+          "type": "string"
+        },
+        "snapshot": {
+          "type": "string"
+        },
+        "references": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "nodes",
+        "sources",
+        "questions",
+        "edges",
+        "project",
+        "snapshot",
+        "references"
+      ],
+      "additionalProperties": false
+    },
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "shown_nodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*$"
+          },
+          "uniqueItems": true
+        },
+        "shown_edges": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*$"
+          },
+          "uniqueItems": true
+        },
+        "omitted_nodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*$"
+          },
+          "uniqueItems": true
+        },
+        "omitted_edges": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*$"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "shown_nodes",
+        "shown_edges",
+        "omitted_nodes",
+        "omitted_edges"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "format",
+    "generator",
+    "spec_revision",
+    "observation_inputs",
+    "scope",
+    "model",
+    "locations",
+    "snapshot",
+    "text",
+    "manifest"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,10 @@
+WARN `--no-project` was provided, but no project was found
+warning: Ignoring dangling temporary directory: `/opt/miniconda3/lib/python3.12/site-packages/~ransformers-4.57.1.dist-info`
+PASS schemas.metaschema 6 schemas valid against Draft 2020-12
+PASS examples.schema 10 example artifacts passed their representation schema
+PASS examples.reference_consistency 5 models: IDs, basic references, state transitions, decomposition and pinned assets checked (not full GDD conformance)
+PASS migration.preservation Original IDs, original edges, action requirements, rule statements and scenario expectations preserved; legacy YAML bytes match
+PASS snapshot.records Example snapshot recomputed; planned records point to it; no executed application evidence
+PASS schema.negative_controls 16 positive/negative representation cases matched expected outcomes
+PASS parsing.negative_controls Duplicate YAML keys and anchor/alias rejected by temporary authoring-check loader
+PASS documents.links 34 local links resolve; 0 evidence-report link pending creation

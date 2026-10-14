@@ -1,0 +1,22 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:fca1c98eba87d0e9fe9161234d722e958634e3cd39b8f9d3203d2304bdd26bae",
+  "event": {
+    "type": "integrate",
+    "expected_revision": "sha256:fca1c98eba87d0e9fe9161234d722e958634e3cd39b8f9d3203d2304bdd26bae",
+    "idempotency_key": "integrate.package.quote",
+    "package": "package.quote",
+    "attempt": "native.quote.1",
+    "base_code_revision": "sha256:e9c32589894dc4b697fb2187257835e044684497c981860812e3f82bf10a6d34",
+    "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874",
+    "review": {
+      "reviewer": "actor.demo_lead",
+      "verdict": "PASS",
+      "evidence_uri": "evidence/quote.review.json"
+    },
+    "verified_resources": [
+      "tests/test_quote.py"
+    ]
+  },
+  "revision": "sha256:23f67127eaccf02926a407267b0903a04f683323b7fbcb28a35e69b8fbcfa22c"
+}

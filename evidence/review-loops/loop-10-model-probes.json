@@ -1,0 +1,17 @@
+{
+  "loop": 10,
+  "owner": "model_review",
+  "result": "CLEAN",
+  "independent_probe_counts": {
+    "independent_decimal_core_oracle": 128,
+    "dynamic_ref_composite_exact_assertions_and_nonmutation": 8,
+    "scoped_closure_readiness_parallel_multiedges": 5,
+    "independent_parallel_required_pair_oracle": 16,
+    "json_yaml_capacity_and_forbidden_controls": 7,
+    "independent_refinement_cycle_and_parent_oracle": 512,
+    "valid_refinement_readiness_controls": 16,
+    "local_schema_metaschema_controls": 11,
+    "manifest_fragment_shared_definition_consistency": 6
+  },
+  "independent_probe_total": 709
+}

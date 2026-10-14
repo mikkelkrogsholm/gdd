@@ -1,0 +1,4 @@
+{
+  "exception": "RuntimeError",
+  "message": "Symlink loop from '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/tmpcxamp3if/model.gdd.yaml'"
+}

@@ -1,0 +1,43 @@
+code,description
+SCHEMA_INVALID,Angivne felter følger ikke formatets schema.
+FORMAT_UNSUPPORTED,Consumeren understøtter ikke format/layoutversionen.
+YAML_DUPLICATE_KEY,Samme mappingkey forekommer flere gange.
+YAML_FEATURE_FORBIDDEN,YAML-konstruktion uden for den sikre JSON-kompatible profil.
+REFERENCE_UNRESOLVED,Intern reference mangler eller er tvetydig.
+ENDPOINT_KIND_INVALID,Relationens endpoint har forkert type.
+ID_COLLISION,ID forekommer flere steder i samme identitetsdomæne.
+REFINEMENT_PARENT_AMBIGUOUS,Barn har flere dekompositionsparents.
+REFINEMENT_CYCLE,Refines indeholder selvloop eller cyklus.
+STATE_UNDECLARED,Maskinen henviser til ikke-deklareret state.
+TRANSITION_AMBIGUOUS,Flere muterende transitions har samme from/trigger.
+TERMINAL_MUTATION,Terminal state har udgående mutation.
+READINESS_CONTRACT_MISSING,Valgt target mangler krævede kontraktfelter.
+SCENARIO_CATEGORY_MISSING,"Krævet normal-, risk- eller fejlscenario mangler."
+EFFECTS_INCOMPLETE,Effekt-/afhængighedsfuldstændighed er ikke erklæret.
+QUESTION_BLOCKS_SCOPE,Et åbent spørgsmål blokkerer valgt aktivitet.
+AUTHORIZATION_UNRESOLVED,Mandat eller godkendelse kan ikke afgøres.
+EXTENSION_UNDECLARED,Custom type/relation har ingen deklareret extension.
+EXTENSION_UNSUPPORTED,Deklareret extension kan ikke fortolkes af consumeren.
+EXTENSION_OVERRIDE,Extension forsøger at omdefinere kernen.
+EXTENSION_DATA_INVALID,Custom data følger ikke extensionens schema.
+EVIDENCE_STALE,Evidens gælder et andet revisionsgrundlag.
+REQUIRED_ENVIRONMENT_MISSING,Checkets nødvendige miljø mangler.
+IMPORT_LOSS_DETECTED,Import/transform har mistet records eller retning.
+WRITE_OWNERSHIP_CONFLICT,Parallelplan har ukoordineret skriveoverlap.
+INDEPENDENCE_UNRESOLVED,Uafhængighed kan ikke fastslås med de kendte kontrakter.
+APPLICABLE_RULE_OMITTED,Arbejdspakken mangler en gældende regel.
+ASSET_PATH_INVALID,Lokalt modelasset undslipper bundle-root eller er cyklisk/duplikeret.
+SOURCE_UNAVAILABLE,Ekstern kilde/selector kan ikke opløses.
+REVISION_UNRESOLVED,Snapshot eller relevant revision kan ikke identificeres.
+OWNERSHIP_AMBIGUOUS,Modelansvar er ikke entydigt.
+CONSTRAINT_INVALID,Rule-constraint har ugyldige typer eller semantik.
+REALIZATION_INVALID,Realization peger ikke på en descendant.
+RECORD_INVALID,Operational record har ugyldig reference/scope eller autoritet.
+TYPE_CONSTRAINT_INVALID,Abstrakt type har modstridende constraints.
+SOURCE_DERIVATION_CYCLE,Source-derivation er cyklisk.
+AUTHORIZATION_DENIED,Aktiviteten er eksplicit afvist eller uden for mandatet.
+CONTRACT_SOURCE_UNPINNED,En anvendt kontraktkilde er ikke normativt snapshotbundet.
+CHECK_PLAN_MISSING,En krævet metode mangler entydig aktiv checkplan.
+CHECK_REVISION_MISMATCH,Evidens matcher ikke checkplanens immutable digest.
+EXTENSION_IDENTITY_MISMATCH,Extensionassetets namespace/version matcher ikke deklarationen.
+BINDING_REVISION_MISSING,En kendt mapping mangler præcis ressource- eller koderevision.

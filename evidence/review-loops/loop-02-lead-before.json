@@ -1,0 +1,48 @@
+[
+  {
+    "scope": [
+      "action.reserve"
+    ],
+    "actual": "GRANTED",
+    "expected": "GRANTED",
+    "reason": "Compatible trusted approval replaced the narrow rejection; current standing policy covers the rest."
+  },
+  {
+    "scope": [
+      "action.reserve",
+      "action.cancel"
+    ],
+    "actual": "DENIED",
+    "expected": "GRANTED",
+    "reason": "Compatible trusted approval replaced the narrow rejection; current standing policy covers the rest."
+  },
+  {
+    "scope": [],
+    "actual": "DENIED",
+    "expected": "GRANTED",
+    "reason": "Compatible trusted approval replaced the narrow rejection; current standing policy covers the rest."
+  },
+  {
+    "case": "directory_terminal_alias",
+    "resource": "src/.",
+    "actual": "PASS",
+    "expected": "FAIL or UNKNOWN"
+  },
+  {
+    "case": "directory_terminal_alias",
+    "resource": "src/dir/..",
+    "actual": "PASS",
+    "expected": "FAIL or UNKNOWN"
+  },
+  {
+    "case": "directory_terminal_alias",
+    "resource": "src//.",
+    "actual": "PASS",
+    "expected": "FAIL or UNKNOWN"
+  },
+  {
+    "case": "unicode_version",
+    "schema_errors": [],
+    "ecmascript_expected": "ASCII decimal digits required"
+  }
+]

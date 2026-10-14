@@ -1,0 +1,26 @@
+.....F.                                                                  [100%]
+=================================== FAILURES ===================================
+____________ test_import_refuses_destination_created_at_publication ____________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-35/test_import_refuses_destinatio0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1033f37d0>
+
+    def test_import_refuses_destination_created_at_publication(tmp_path, monkeypatch):
+        from gdd_validator import graphify_io
+        from gdd_validator.graphify_io import import_graphify
+    
+        actual = rename_exclusive
+        inode = []
+    
+        def competing_destination(source, target):
+            target.mkdir()
+            inode.append(target.stat().st_ino)
+            actual(source, target)
+    
+>       monkeypatch.setattr(graphify_io, "rename_exclusive", competing_destination)
+E       AttributeError: <module 'gdd_validator.graphify_io' from '/Users/mikkelfreltoftkrogsholm/Projekter/gdd/gdd_validator/graphify_io.py'> has no attribute 'rename_exclusive'
+
+tests/test_review_cli.py:80: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_review_cli.py::test_import_refuses_destination_created_at_publication
+1 failed, 6 passed in 0.39s

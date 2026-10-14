@@ -1,0 +1,219 @@
+[
+  {
+    "input": "evidence/review-loops/loop-07-numeric-before-core/integer-2.json",
+    "model": "PASS",
+    "exit_code": 0,
+    "report": {
+      "format": "gdd-report/0.2",
+      "tool": {
+        "name": "gdd-validator",
+        "version": "0.4.1"
+      },
+      "spec_revision": "sha256:8b534d5ceab24b2aabd554d61a4589088660fe9cdbe322543700ffbc97fd87c1",
+      "profiles": [
+        "model"
+      ],
+      "scope": [],
+      "checks": [
+        {
+          "check_id": "representation.schema",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Local JSON Schema validation.",
+          "diagnostics": []
+        },
+        {
+          "check_id": "model.semantics",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+          "diagnostics": []
+        }
+      ]
+    }
+  },
+  {
+    "input": "evidence/review-loops/loop-07-numeric-before-core/number-0.json",
+    "model": "PASS",
+    "exit_code": 0,
+    "report": {
+      "format": "gdd-report/0.2",
+      "tool": {
+        "name": "gdd-validator",
+        "version": "0.4.1"
+      },
+      "spec_revision": "sha256:164a5aa9b6be2bedad5ff7bc3c48364fb534411f06a19347418f983217b0c28d",
+      "profiles": [
+        "model"
+      ],
+      "scope": [],
+      "checks": [
+        {
+          "check_id": "representation.schema",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Local JSON Schema validation.",
+          "diagnostics": []
+        },
+        {
+          "check_id": "model.semantics",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+          "diagnostics": []
+        }
+      ]
+    }
+  },
+  {
+    "input": "evidence/review-loops/loop-07-numeric-before-core/number-1.json",
+    "model": "FAIL",
+    "exit_code": 1,
+    "report": {
+      "format": "gdd-report/0.2",
+      "tool": {
+        "name": "gdd-validator",
+        "version": "0.4.1"
+      },
+      "spec_revision": "sha256:6fe58f18671e22de795e7813637b9a78d231ad5a4e8caf0954539091d652897f",
+      "profiles": [
+        "model"
+      ],
+      "scope": [],
+      "checks": [
+        {
+          "check_id": "representation.schema",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Local JSON Schema validation.",
+          "diagnostics": []
+        },
+        {
+          "check_id": "check.type_constraint_invalid",
+          "dimension": "model",
+          "result": "FAIL",
+          "scope": [],
+          "reason": "minimum exceeds maximum.",
+          "diagnostics": [
+            {
+              "code": "TYPE_CONSTRAINT_INVALID",
+              "severity": "error",
+              "message": "minimum exceeds maximum.",
+              "location": {
+                "file": "number-1.json",
+                "pointer": "/nodes/entity.x/fields/v"
+              },
+              "related_ids": [
+                "entity.x"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "input": "evidence/review-loops/loop-07-numeric-before-extension/maximum/model.json",
+    "model": "FAIL",
+    "exit_code": 1,
+    "report": {
+      "format": "gdd-report/0.2",
+      "tool": {
+        "name": "gdd-validator",
+        "version": "0.4.1"
+      },
+      "spec_revision": "sha256:8555f506b593e1ac3314c5ced4d81fb09a95625c938cdcaf2926763a90297646",
+      "profiles": [
+        "model"
+      ],
+      "scope": [],
+      "checks": [
+        {
+          "check_id": "representation.schema",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Local JSON Schema validation.",
+          "diagnostics": []
+        },
+        {
+          "check_id": "representation.schema",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Local JSON Schema validation.",
+          "diagnostics": []
+        },
+        {
+          "check_id": "check.extension_data_invalid",
+          "dimension": "model",
+          "result": "FAIL",
+          "scope": [],
+          "reason": "100000000000000000000000 is greater than the maximum of 1e+23",
+          "diagnostics": [
+            {
+              "code": "EXTENSION_DATA_INVALID",
+              "severity": "error",
+              "message": "100000000000000000000000 is greater than the maximum of 1e+23",
+              "location": {
+                "file": "model.json",
+                "pointer": "/nodes/value.x/data/value"
+              },
+              "related_ids": [
+                "value.x"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "input": "evidence/review-loops/loop-07-numeric-before-extension/minimum/model.json",
+    "model": "PASS",
+    "exit_code": 0,
+    "report": {
+      "format": "gdd-report/0.2",
+      "tool": {
+        "name": "gdd-validator",
+        "version": "0.4.1"
+      },
+      "spec_revision": "sha256:7ac5a04534bd6f4bcd51d006df3d0c2a8e93b1b23de026c0f68027b0b63b28c9",
+      "profiles": [
+        "model"
+      ],
+      "scope": [],
+      "checks": [
+        {
+          "check_id": "representation.schema",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Local JSON Schema validation.",
+          "diagnostics": []
+        },
+        {
+          "check_id": "representation.schema",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Local JSON Schema validation.",
+          "diagnostics": []
+        },
+        {
+          "check_id": "model.semantics",
+          "dimension": "model",
+          "result": "PASS",
+          "scope": [],
+          "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+          "diagnostics": []
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,13 @@
+# Loop 7 — matematisk talsemantik og fuldstændige recorddiagnoser
+
+Status: verificeret efter rettelser af R053–R054.
+
+R053: Tabsfri decimal round-trip i parseren beskytter ikke efterfølgende binære float-/heltals-sammenligninger. minimum=1e23/maximum=99999999999999995000000 kan derfor give en falsk model-PASS, mens det matematisk lige interval minimum=100000000000000000000000/maximum=1e23 kan blive afvist. Samme årsag rammer faktisk understøttede extension-assertions (minimum/maximum/exclusive bounds, multipleOf, const/enum/uniqueItems) og core-enumunicitet. Reproduktionen er fælles for to uafhængige reviewers; rettelsen skal dække den brugte talsemantik uden at lagre ikke-JSON-objekter i modellen, hashes eller artefakter.
+
+R054: invalid_record_ids kendte allerede en evidence.check_revision-modstrid, men validate_records diagnosticerede den ikke. Ved uvedkommende evidens kunne modeldimensionen og hele CLI-kørslen derfor være PASS/exit0 uden nogen diagnose. Hashen kan kontrolleres lokalt, også ved historisk spec-revision; det rebinder ikke historiske targets. Der skal rapporteres CHECK_REVISION_MISMATCH globalt, mens uafhængige implementation- og authorization-resultater bevares.
+
+Friske read-only reviews: viewerområdet bestod 23 browserchecks, 35 uafhængige browserkontroller, 41 pytest, 13 API-/schemakontroller, 16 renderer-cases og 16 yderligere numeriske grænsekontroller. Graphify/CLI/filesystem bestod 281 målrettede regressioner og kontroller af matematisk numerisk identitet, CLI-exits, stringmapping og ikke-accepterede proposals; det uafhængige numericfund er R053. Recordsområdet bestod 173 nye kontroller og 283 regressioner ud over R054-reproduktionen. Modelområdet bestod 442 relevante eksisterende tests; de numeriske modbeviser er registreret særskilt.
+
+R053 bruger en lille fælles numerisk helper: midlertidige valideringskopier normaliserer finite floats til eksakte rationale tal efter decimalrepræsentationen, med matematisk hele værdier som int. Den eksisterende Draft-validator kan dermed sammenligne og anvende modulo præcist, også gennem lokale refs og nested Draft-deklarationer. Gemte modeller, extensions, snapshots, assets og oprindelige float/int-typer er kontrolleret uændrede. 102 regressioner dækker årsagen; baseline havde 62 FAIL og 40 PASS. R054 tilføjede 30 regressioner; baseline havde 19 FAIL og 11 PASS.
+
+Integreret resultat: **1.072 pytest-tests**, **58/58** standard-, **18/18** adapter-, **16/16** renderer-cases og **23/23** offline browserchecks består. Ingen browserfejl eller eksterne requests. De samme konkrete talinputs er kørt før/efter og viser de forventede ændringer. En frisk loop 8 starter efter sidste rettelse.

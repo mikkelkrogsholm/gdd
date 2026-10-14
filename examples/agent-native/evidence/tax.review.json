@@ -1,0 +1,12 @@
+{
+  "package": "package.tax",
+  "artifact_sha256": "35229a5dad001f6be243634176fb8f27013e850e8c4887d1f2f78185e6d266c7",
+  "changed_resources": [
+    "quote_demo/tax.py"
+  ],
+  "verified_code_revision": "sha256:e9c32589894dc4b697fb2187257835e044684497c981860812e3f82bf10a6d34",
+  "test_exit_code": 0,
+  "stdout": "",
+  "stderr": "test_boundaries (tests.test_tax.LeafTests.test_boundaries)\nscenario.tax.floor: endpoints and exact large-integer control. ... ok\ntest_floor_fraction (tests.test_tax.LeafTests.test_floor_fraction) ... ok\ntest_floor_half (tests.test_tax.LeafTests.test_floor_half)\nscenario.tax.floor: accepted floor value, old half-up must fail. ... ok\ntest_invalid (tests.test_tax.LeafTests.test_invalid)\nscenario.tax.invalid: integers and inclusive rates are mandatory. ... ok\ntest_normal (tests.test_tax.LeafTests.test_normal)\nscenario.tax.normal: exactly divisible positive control. ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.000s\n\nOK\n",
+  "review": "Exact integer floor division matches action contract; strict type/range guards preserved; existing test bytes unchanged."
+}

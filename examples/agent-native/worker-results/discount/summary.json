@@ -1,0 +1,13 @@
+{
+  "package": "package.discount",
+  "attempt": "native.discount.1",
+  "changed_files": [
+    "quote_demo/discount.py"
+  ],
+  "file_sha256": {
+    "quote_demo/discount.py": "6c0a876bfad1f796c2cb5dad37e576d2fd8822a3656bf3052fb42f82d2fb95ca"
+  },
+  "tests_unchanged": true,
+  "baseline": "5 tests, 2 failures",
+  "result": "5 tests, OK"
+}

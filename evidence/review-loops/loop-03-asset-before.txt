@@ -1,0 +1,277 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+________ test_model_embedded_nul_asset_path_returns_diagnostic[include] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_model_embedded_nul_asset_0')
+asset = 'include'
+
+    @pytest.mark.parametrize("asset", ["include", "records", "source", "extension"])
+    def test_model_embedded_nul_asset_path_returns_diagnostic(tmp_path, asset):
+        model = {
+            "format": "gdd/0.2",
+            "project": {"id": "project.nul", "title": "NUL", "goal": "Reject invalid paths"},
+            "nodes": {}, "edges": [],
+        }
+        if asset == "include":
+            model["includes"] = ["fragment\x00.json"]
+        elif asset == "records":
+            model["record_files"] = ["records\x00.json"]
+        elif asset == "source":
+            model["sources"] = {"source.test": {
+                "role": "input", "title": "Invalid asset path", "format": "text/plain",
+                "uri": "source\x00.txt", "normative": True,
+                "revision": {"sha256": "a" * 64},
+            }}
+        else:
+            model["extensions"] = {"extension.test": {
+                "namespace": "org.test", "version": "1.0.0", "path": "extension\x00.json",
+                "sha256": "a" * 64,
+            }}
+        assert schema_checks(model, "model.json")[0]["result"] == "PASS"
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(model))
+>       report = validate(path)
+                 ^^^^^^^^^^^^^^
+
+tests/test_review_cli_loop3.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:239: in validate
+    bundle = load_bundle(Path(model_path or path), unsupported_extensions)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:434: in load_bundle
+    fragment = read(relative, "gdd-fragment/0.2", asset=True)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:393: in read
+    local = resolve_asset(bundle.root, relative)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:326: in resolve_asset
+    resolved = (root / relative).resolve()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/miniconda3/lib/python3.12/pathlib.py:1240: in resolve
+    s = self._flavour.realpath(self, strict=strict)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen posixpath>:435: in realpath
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_model_embedded_nul_asset_0'
+rest = '', strict = False, seen = {}
+
+>   ???
+E   ValueError: embedded null byte
+
+<frozen posixpath>:470: ValueError
+________ test_model_embedded_nul_asset_path_returns_diagnostic[records] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_model_embedded_nul_asset_1')
+asset = 'records'
+
+    @pytest.mark.parametrize("asset", ["include", "records", "source", "extension"])
+    def test_model_embedded_nul_asset_path_returns_diagnostic(tmp_path, asset):
+        model = {
+            "format": "gdd/0.2",
+            "project": {"id": "project.nul", "title": "NUL", "goal": "Reject invalid paths"},
+            "nodes": {}, "edges": [],
+        }
+        if asset == "include":
+            model["includes"] = ["fragment\x00.json"]
+        elif asset == "records":
+            model["record_files"] = ["records\x00.json"]
+        elif asset == "source":
+            model["sources"] = {"source.test": {
+                "role": "input", "title": "Invalid asset path", "format": "text/plain",
+                "uri": "source\x00.txt", "normative": True,
+                "revision": {"sha256": "a" * 64},
+            }}
+        else:
+            model["extensions"] = {"extension.test": {
+                "namespace": "org.test", "version": "1.0.0", "path": "extension\x00.json",
+                "sha256": "a" * 64,
+            }}
+        assert schema_checks(model, "model.json")[0]["result"] == "PASS"
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(model))
+>       report = validate(path)
+                 ^^^^^^^^^^^^^^
+
+tests/test_review_cli_loop3.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:239: in validate
+    bundle = load_bundle(Path(model_path or path), unsupported_extensions)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:529: in load_bundle
+    record_file = read(relative, "gdd-records/0.2")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:393: in read
+    local = resolve_asset(bundle.root, relative)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:326: in resolve_asset
+    resolved = (root / relative).resolve()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/miniconda3/lib/python3.12/pathlib.py:1240: in resolve
+    s = self._flavour.realpath(self, strict=strict)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen posixpath>:435: in realpath
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_model_embedded_nul_asset_1'
+rest = '', strict = False, seen = {}
+
+>   ???
+E   ValueError: embedded null byte
+
+<frozen posixpath>:470: ValueError
+________ test_model_embedded_nul_asset_path_returns_diagnostic[source] _________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_model_embedded_nul_asset_2')
+asset = 'source'
+
+    @pytest.mark.parametrize("asset", ["include", "records", "source", "extension"])
+    def test_model_embedded_nul_asset_path_returns_diagnostic(tmp_path, asset):
+        model = {
+            "format": "gdd/0.2",
+            "project": {"id": "project.nul", "title": "NUL", "goal": "Reject invalid paths"},
+            "nodes": {}, "edges": [],
+        }
+        if asset == "include":
+            model["includes"] = ["fragment\x00.json"]
+        elif asset == "records":
+            model["record_files"] = ["records\x00.json"]
+        elif asset == "source":
+            model["sources"] = {"source.test": {
+                "role": "input", "title": "Invalid asset path", "format": "text/plain",
+                "uri": "source\x00.txt", "normative": True,
+                "revision": {"sha256": "a" * 64},
+            }}
+        else:
+            model["extensions"] = {"extension.test": {
+                "namespace": "org.test", "version": "1.0.0", "path": "extension\x00.json",
+                "sha256": "a" * 64,
+            }}
+        assert schema_checks(model, "model.json")[0]["result"] == "PASS"
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(model))
+>       report = validate(path)
+                 ^^^^^^^^^^^^^^
+
+tests/test_review_cli_loop3.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:239: in validate
+    bundle = load_bundle(Path(model_path or path), unsupported_extensions)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:493: in load_bundle
+    local = resolve_asset(bundle.root, source["uri"])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:326: in resolve_asset
+    resolved = (root / relative).resolve()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/miniconda3/lib/python3.12/pathlib.py:1240: in resolve
+    s = self._flavour.realpath(self, strict=strict)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen posixpath>:435: in realpath
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_model_embedded_nul_asset_2'
+rest = '', strict = False, seen = {}
+
+>   ???
+E   ValueError: embedded null byte
+
+<frozen posixpath>:470: ValueError
+_______ test_model_embedded_nul_asset_path_returns_diagnostic[extension] _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_model_embedded_nul_asset_3')
+asset = 'extension'
+
+    @pytest.mark.parametrize("asset", ["include", "records", "source", "extension"])
+    def test_model_embedded_nul_asset_path_returns_diagnostic(tmp_path, asset):
+        model = {
+            "format": "gdd/0.2",
+            "project": {"id": "project.nul", "title": "NUL", "goal": "Reject invalid paths"},
+            "nodes": {}, "edges": [],
+        }
+        if asset == "include":
+            model["includes"] = ["fragment\x00.json"]
+        elif asset == "records":
+            model["record_files"] = ["records\x00.json"]
+        elif asset == "source":
+            model["sources"] = {"source.test": {
+                "role": "input", "title": "Invalid asset path", "format": "text/plain",
+                "uri": "source\x00.txt", "normative": True,
+                "revision": {"sha256": "a" * 64},
+            }}
+        else:
+            model["extensions"] = {"extension.test": {
+                "namespace": "org.test", "version": "1.0.0", "path": "extension\x00.json",
+                "sha256": "a" * 64,
+            }}
+        assert schema_checks(model, "model.json")[0]["result"] == "PASS"
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(model))
+>       report = validate(path)
+                 ^^^^^^^^^^^^^^
+
+tests/test_review_cli_loop3.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/validator.py:239: in validate
+    bundle = load_bundle(Path(model_path or path), unsupported_extensions)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:454: in load_bundle
+    extension = read(relative, "gdd-extension/0.2", asset=True)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:393: in read
+    local = resolve_asset(bundle.root, relative)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/loading.py:326: in resolve_asset
+    resolved = (root / relative).resolve()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/miniconda3/lib/python3.12/pathlib.py:1240: in resolve
+    s = self._flavour.realpath(self, strict=strict)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen posixpath>:435: in realpath
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_model_embedded_nul_asset_3'
+rest = '', strict = False, seen = {}
+
+>   ???
+E   ValueError: embedded null byte
+
+<frozen posixpath>:470: ValueError
+__________________ test_asset_path_rejects_nul_as_input_error __________________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_asset_path_rejects_nul_as0')
+
+    def test_asset_path_rejects_nul_as_input_error(tmp_path):
+        with pytest.raises(InputError) as error:
+>           resolve_asset(tmp_path, "file\x00.txt")
+
+tests/test_review_cli_loop3.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/loading.py:326: in resolve_asset
+    resolved = (root / relative).resolve()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/miniconda3/lib/python3.12/pathlib.py:1240: in resolve
+    s = self._flavour.realpath(self, strict=strict)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen posixpath>:435: in realpath
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-69/test_asset_path_rejects_nul_as0'
+rest = '', strict = False, seen = {}
+
+>   ???
+E   ValueError: embedded null byte
+
+<frozen posixpath>:470: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_review_cli_loop3.py::test_model_embedded_nul_asset_path_returns_diagnostic[include]
+FAILED tests/test_review_cli_loop3.py::test_model_embedded_nul_asset_path_returns_diagnostic[records]
+FAILED tests/test_review_cli_loop3.py::test_model_embedded_nul_asset_path_returns_diagnostic[source]
+FAILED tests/test_review_cli_loop3.py::test_model_embedded_nul_asset_path_returns_diagnostic[extension]
+FAILED tests/test_review_cli_loop3.py::test_asset_path_rejects_nul_as_input_error
+5 failed in 0.41s

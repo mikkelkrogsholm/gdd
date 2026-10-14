@@ -1,0 +1,16 @@
+format: gdd/0.2
+project:
+  id: example.fragment
+  title: Fragmenteret model
+  goal: Illustrér én logisk model over flere filer.
+nodes:
+  component.notes:
+    kind: component
+    description: Ansvarlig komponent.
+edges:
+- id: edge.note.owner
+  from: entity.note
+  relation: owned_by
+  to: component.notes
+includes:
+- note.fragment.yaml

@@ -1,0 +1,4 @@
+{'profile': ['model'], 'activity': None, 'model': 'FAIL', 'implementation': 'UNKNOWN', 'authorization': 'UNRESOLVED', 'exit': 1, 'invalid_record_ids': ['evidence.y'], 'diagnostics': ['CHECK_REVISION_MISMATCH']}
+{'profile': ['records'], 'activity': None, 'model': 'FAIL', 'implementation': 'PASS', 'authorization': 'UNRESOLVED', 'exit': 1, 'invalid_record_ids': ['evidence.y'], 'diagnostics': ['CHECK_REVISION_MISMATCH']}
+{'profile': ['records'], 'activity': 'implementation', 'model': 'FAIL', 'implementation': 'UNKNOWN', 'authorization': 'GRANTED', 'exit': 1, 'invalid_record_ids': ['evidence.y'], 'diagnostics': ['CHECK_REVISION_MISMATCH']}
+Directory: /var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-loop6-protocol-09fhcsvt

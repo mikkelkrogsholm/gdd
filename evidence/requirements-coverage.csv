@@ -1,0 +1,21 @@
+requirement_id,agreed_requirement,locations,status
+req.method_first,Standard og koncept før runtime/app,README.md;SPEC.md;standard/DECISIONS.md,specified
+req.agent_neutral,Fælles standard for alle agentleverandører,SPEC.md;GDD.md;standard/AGENT-PROTOCOL.md,specified
+req.agent_edits,Agenten redigerer; mennesket ser resultatet,SPEC.md;standard/INTEGRATIONS.md,specified_renderer_deferred
+req.new_project,Input til nyt projekt,standard/AGENT-PROTOCOL.md;standard/INTEGRATIONS.md,specified
+req.existing_project,Eksisterende Graphify-observationer til videre modellering,standard/INTEGRATIONS.md,specified_importer_deferred
+req.knowledge,Vedligeholdt wiki/OKF med kildeproveniens,standard/INTEGRATIONS.md;standard/FORMAT.md,specified_adapter_deferred
+req.architecture_behavior,Struktur og adfærd i samme graf,SPEC.md;schemas/gdd.schema.json,specified
+req.communities,Overlappende communities,SPEC.md;examples/concert.gdd.yaml,specified
+req.parallel,Afklarede grænser og koordineret parallelitet,standard/AGENT-PROTOCOL.md,specified_scheduler_deferred
+req.design,Brugeroplevelse og DESIGN.md,standard/INTEGRATIONS.md;schemas/gdd.schema.json,specified_design_asset_deferred
+req.project_policy,Projektet vælger modes og gates,standard/FORMAT.md;standard/AGENT-PROTOCOL.md,specified
+req.language_independent,Abstrakte kontrakter og separate kodebindings,SPEC.md;standard/FORMAT.md,specified
+req.validator,Valideringsværktøjets kontrakt og afgrænsning,standard/VALIDATION.md;schemas/report.schema.json,specified_program_deferred
+req.hierarchy,Heterogene undergrafer og parentkontrakter,SPEC.md;examples/refinement.gdd.yaml,specified
+req.hybrid,Faste kontraktfelter med fri pseudokode,standard/FORMAT.md;schemas/gdd.schema.json,specified
+req.extensions,Lille kerne med deklarerede udvidelser,SPEC.md;schemas/extension.schema.json;examples/extension.gdd.yaml,specified
+req.scenarios,Normalforløb og relevante fejl-/grænsetilfælde,standard/VALIDATION.md;examples/concert.gdd.yaml,specified
+req.revision_evidence,Særskilt modelsnapshot og immutable evidens/checkplan,standard/FORMAT.md;schemas/records.schema.json;schemas/snapshot.schema.json,specified
+req.preserve_legacy,Eksplicit migration og stabile IDs,standard/MIGRATION.md;archive/gdd-0.1/SPEC.md,checked
+req.existing_research,Synligt forhold til eksisterende arbejde,research/2026-10-13-existing-work.md;standard/DECISIONS.md,documented

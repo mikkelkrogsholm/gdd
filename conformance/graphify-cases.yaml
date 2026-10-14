@@ -1,0 +1,157 @@
+format: gdd-graphify-conformance-cases/0.2
+cases:
+- id: case.graphify.actual_ast
+  base: ../examples/graphify/raw.ast.json
+  profile: graphify-0.9.75-ast
+  expected:
+    result: PASS
+    diagnostic: null
+  assertions:
+    nodes: 3
+    edges: 5
+- id: case.graphify.actual_directed_export
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: PASS
+    diagnostic: null
+  assertions:
+    nodes: 3
+    edges: 5
+- id: case.graphify.undirected_bytes
+  base: ../examples/graphify/export.undirected.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: PASS
+    diagnostic: null
+    check_id: graphify.integrity
+  assertions:
+    nodes: 3
+    edges: 5
+- id: case.graphify.undirected_direction
+  base: ../examples/graphify/export.undirected.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: UNKNOWN
+    diagnostic: GRAPHIFY_DIRECTION_UNKNOWN
+    check_id: graphify.direction
+- id: case.graphify.identical_edge
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: PASS
+    diagnostic: null
+  condition: duplicate_edge
+  assertions:
+    edges: 6
+- id: case.graphify.dangling_endpoint
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: FAIL
+    diagnostic: REFERENCE_UNRESOLVED
+  patches:
+  - op: replace
+    path: /links/0/target
+    value: missing
+- id: case.graphify.bad_relation
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  patches:
+  - op: replace
+    path: /links/0/relation
+    value: []
+- id: case.graphify.ambiguous_collections
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: UNKNOWN
+    diagnostic: FORMAT_UNSUPPORTED
+  condition: both_arrays
+- id: case.graphify.unknown_schema
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: UNKNOWN
+    diagnostic: FORMAT_UNSUPPORTED
+  patches:
+  - op: add
+    path: /schema_version
+    value: '99'
+- id: case.graphify.unknown_profile
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-99
+  expected:
+    result: UNKNOWN
+    diagnostic: FORMAT_UNSUPPORTED
+- id: case.graphify.opaque_hyperedges
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: PASS
+    diagnostic: null
+  condition: hyperedges
+  assertions:
+    edges: 5
+- id: case.graphify.docs_not_code
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: UNKNOWN
+    diagnostic: GRAPHIFY_INPUT_PROVENANCE_UNKNOWN
+    check_id: graphify.code_candidates
+  condition: docs_only
+- id: case.graphify.precision
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: UNKNOWN
+    diagnostic: FORMAT_UNSUPPORTED
+  condition: precision
+- id: case.graphify.partial_markers
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  condition: partial_markers
+- id: case.graphify.conflicting_direction
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: FAIL
+    diagnostic: SCHEMA_INVALID
+  condition: conflicting_markers
+- id: case.graphify.nested_version
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: UNKNOWN
+    diagnostic: FORMAT_UNSUPPORTED
+  patches:
+  - op: add
+    path: /graph/graphify_version
+    value: '99'
+- id: case.graphify.nested_revision_conflict
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: UNKNOWN
+    diagnostic: REVISION_UNRESOLVED
+  patches:
+  - op: add
+    path: /built_at_commit
+    value: root
+  - op: add
+    path: /graph/built_at_commit
+    value: other
+- id: case.graphify.no_fabricated_version
+  base: ../examples/graphify/export.directed.json
+  profile: graphify-0.9.75-node-link
+  expected:
+    result: PASS
+    diagnostic: null
+    check_id: graphify.projection

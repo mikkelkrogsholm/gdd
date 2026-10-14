@@ -1,0 +1,10 @@
+format: gdd/0.2
+project:
+  id: example.sketch
+  title: Gyldig skitse
+  goal: Illustrér en model uden implementeringsparathed.
+nodes:
+  action.hello:
+    kind: action
+    description: En endnu ikke specificeret handling.
+edges: []

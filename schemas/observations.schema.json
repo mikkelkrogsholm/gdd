@@ -1,0 +1,319 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GDD observations: Graphify adapter 0.1.0 (tool profile, outside GDD core)",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-observations/0.2"
+    },
+    "source_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+    },
+    "artifact": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "const": "graphify.raw.json"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "path",
+        "revision",
+        "byte_count"
+      ],
+      "additionalProperties": false
+    },
+    "importer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "profile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "input_claims": {
+      "type": "object",
+      "properties": {
+        "locator": {
+          "type": "string"
+        },
+        "producer_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "code_revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trust": {
+          "const": "unverified"
+        }
+      },
+      "required": [
+        "locator",
+        "producer_version",
+        "code_revision",
+        "trust"
+      ],
+      "additionalProperties": false
+    },
+    "producer_claims": {
+      "type": "object"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "identity": {
+            "type": "object",
+            "properties": {
+              "artifact_revision": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+              },
+              "pointer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifact_revision",
+              "pointer"
+            ],
+            "additionalProperties": false
+          },
+          "raw": {},
+          "producer_id": {},
+          "classification": {
+            "enum": [
+              "code_candidate",
+              "noncode",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "identity",
+          "raw",
+          "producer_id",
+          "classification"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "identity": {
+            "type": "object",
+            "properties": {
+              "artifact_revision": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+              },
+              "pointer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifact_revision",
+              "pointer"
+            ],
+            "additionalProperties": false
+          },
+          "raw": {},
+          "producer_id": {},
+          "source_observation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "target_observation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "direction": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "enum": [
+                  "unknown",
+                  "source_to_target"
+                ]
+              },
+              "basis": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "value",
+              "basis"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "identity",
+          "raw",
+          "producer_id",
+          "source_observation",
+          "target_observation",
+          "direction"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "opaque": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "identity": {
+            "type": "object",
+            "properties": {
+              "artifact_revision": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+              },
+              "pointer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifact_revision",
+              "pointer"
+            ],
+            "additionalProperties": false
+          },
+          "raw": {}
+        },
+        "required": [
+          "id",
+          "identity",
+          "raw"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "binding_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "observation": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "resource_claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "selector_claim": {},
+          "status": {
+            "const": "unverified"
+          },
+          "classification": {
+            "enum": [
+              "code_candidate",
+              "noncode",
+              "unknown"
+            ]
+          },
+          "code_revision_claims": {
+            "type": "object",
+            "properties": {
+              "caller": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "producer": {}
+            },
+            "required": [
+              "caller",
+              "producer"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "observation",
+          "resource_claim",
+          "selector_claim",
+          "status",
+          "classification",
+          "code_revision_claims"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "format",
+    "source_id",
+    "artifact",
+    "importer",
+    "input_claims",
+    "producer_claims",
+    "nodes",
+    "edges",
+    "opaque",
+    "binding_candidates"
+  ],
+  "additionalProperties": false
+}

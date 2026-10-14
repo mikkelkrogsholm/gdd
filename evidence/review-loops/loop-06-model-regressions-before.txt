@@ -1,0 +1,975 @@
+FFFFFFFFFFFFFFFFFFFFFFFF..........................FFFFFFFFF...FFF....FFF [ 72%]
+FFF..FFFFFFF.F.F.....F.....                                              [100%]
+=================================== FAILURES ===================================
+________ test_unsupported_finite_precision_is_not_rounded[json-1e-4000] ________
+
+token = '1e-4000', form = 'json'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+__ test_unsupported_finite_precision_is_not_rounded[json-0.10000000000000001] __
+
+token = '0.10000000000000001', form = 'json'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+__ test_unsupported_finite_precision_is_not_rounded[json-1.0000000000000001] ___
+
+token = '1.0000000000000001', form = 'json'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+________ test_unsupported_finite_precision_is_not_rounded[json-1e4000] _________
+
+token = '1e4000', form = 'json'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+        with pytest.raises(InputError) as error:
+            parse(encoded(token, form))
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:51: AssertionError
+_ test_unsupported_finite_precision_is_not_rounded[json-1e999999999999999999999999] _
+
+token = '1e999999999999999999999999', form = 'json'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+        with pytest.raises(InputError) as error:
+            parse(encoded(token, form))
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:51: AssertionError
+_ test_unsupported_finite_precision_is_not_rounded[json-1e-999999999999999999999999] _
+
+token = '1e-999999999999999999999999', form = 'json'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+________ test_unsupported_finite_precision_is_not_rounded[yaml-1e-4000] ________
+
+token = '1e-4000', form = 'yaml'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+__ test_unsupported_finite_precision_is_not_rounded[yaml-0.10000000000000001] __
+
+token = '0.10000000000000001', form = 'yaml'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+__ test_unsupported_finite_precision_is_not_rounded[yaml-1.0000000000000001] ___
+
+token = '1.0000000000000001', form = 'yaml'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+________ test_unsupported_finite_precision_is_not_rounded[yaml-1e4000] _________
+
+token = '1e4000', form = 'yaml'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+        with pytest.raises(InputError) as error:
+            parse(encoded(token, form))
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:51: AssertionError
+_ test_unsupported_finite_precision_is_not_rounded[yaml-1e999999999999999999999999] _
+
+token = '1e999999999999999999999999', form = 'yaml'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+        with pytest.raises(InputError) as error:
+            parse(encoded(token, form))
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:51: AssertionError
+_ test_unsupported_finite_precision_is_not_rounded[yaml-1e-999999999999999999999999] _
+
+token = '1e-999999999999999999999999', form = 'yaml'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+________ test_unsupported_finite_precision_is_not_rounded[tag-1e-4000] _________
+
+token = '1e-4000', form = 'tag'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+__ test_unsupported_finite_precision_is_not_rounded[tag-0.10000000000000001] ___
+
+token = '0.10000000000000001', form = 'tag'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+___ test_unsupported_finite_precision_is_not_rounded[tag-1.0000000000000001] ___
+
+token = '1.0000000000000001', form = 'tag'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+_________ test_unsupported_finite_precision_is_not_rounded[tag-1e4000] _________
+
+token = '1e4000', form = 'tag'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+        with pytest.raises(InputError) as error:
+            parse(encoded(token, form))
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:51: AssertionError
+_ test_unsupported_finite_precision_is_not_rounded[tag-1e999999999999999999999999] _
+
+token = '1e999999999999999999999999', form = 'tag'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+        with pytest.raises(InputError) as error:
+            parse(encoded(token, form))
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:51: AssertionError
+_ test_unsupported_finite_precision_is_not_rounded[tag-1e-999999999999999999999999] _
+
+token = '1e-999999999999999999999999', form = 'tag'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+_______ test_unsupported_finite_precision_is_not_rounded[handle-1e-4000] _______
+
+token = '1e-4000', form = 'handle'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+_ test_unsupported_finite_precision_is_not_rounded[handle-0.10000000000000001] _
+
+token = '0.10000000000000001', form = 'handle'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+_ test_unsupported_finite_precision_is_not_rounded[handle-1.0000000000000001] __
+
+token = '1.0000000000000001', form = 'handle'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+_______ test_unsupported_finite_precision_is_not_rounded[handle-1e4000] ________
+
+token = '1e4000', form = 'handle'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+        with pytest.raises(InputError) as error:
+            parse(encoded(token, form))
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:51: AssertionError
+_ test_unsupported_finite_precision_is_not_rounded[handle-1e999999999999999999999999] _
+
+token = '1e999999999999999999999999', form = 'handle'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+        with pytest.raises(InputError) as error:
+            parse(encoded(token, form))
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:51: AssertionError
+_ test_unsupported_finite_precision_is_not_rounded[handle-1e-999999999999999999999999] _
+
+token = '1e-999999999999999999999999', form = 'handle'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag", "handle"])
+    def test_unsupported_finite_precision_is_not_rounded(token, form):
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_numbers_loop6.py:49: Failed
+________________ test_runtime_integer_capacity_is_unknown[json] ________________
+
+form = 'json'
+
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag"])
+    def test_runtime_integer_capacity_is_unknown(form):
+        limit = sys.get_int_max_str_digits()
+        if not limit:
+            pytest.skip("This runtime has no integer conversion limit")
+        token = "1" * (limit + 1)
+        text = encoded(token, form) if form != "tag" else 'value: !!int ' + token
+        with pytest.raises(InputError) as error:
+            parse(text)
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:86: AssertionError
+________________ test_runtime_integer_capacity_is_unknown[yaml] ________________
+
+form = 'yaml'
+
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag"])
+    def test_runtime_integer_capacity_is_unknown(form):
+        limit = sys.get_int_max_str_digits()
+        if not limit:
+            pytest.skip("This runtime has no integer conversion limit")
+        token = "1" * (limit + 1)
+        text = encoded(token, form) if form != "tag" else 'value: !!int ' + token
+        with pytest.raises(InputError) as error:
+            parse(text)
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:86: AssertionError
+________________ test_runtime_integer_capacity_is_unknown[tag] _________________
+
+form = 'tag'
+
+    @pytest.mark.parametrize("form", ["json", "yaml", "tag"])
+    def test_runtime_integer_capacity_is_unknown(form):
+        limit = sys.get_int_max_str_digits()
+        if not limit:
+            pytest.skip("This runtime has no integer conversion limit")
+        token = "1" * (limit + 1)
+        text = encoded(token, form) if form != "tag" else 'value: !!int ' + token
+        with pytest.raises(InputError) as error:
+            parse(text)
+>       assert error.value.code == "FORMAT_UNSUPPORTED"
+E       AssertionError: assert 'YAML_FEATURE_FORBIDDEN' == 'FORMAT_UNSUPPORTED'
+E         
+E         - FORMAT_UNSUPPORTED
+E         + YAML_FEATURE_FORBIDDEN
+
+tests/test_review_numbers_loop6.py:86: AssertionError
+______ test_primary_unsupported_number_has_valid_unknown_report[1e-4000] _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_primary_unsupported_numbe0')
+token = '1e-4000'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    def test_primary_unsupported_number_has_valid_unknown_report(tmp_path, token):
+        data = model()
+        data["nodes"]["entity.x"]["fields"] = {"v": {"type": "number", "minimum": "TOKEN", "maximum": 0}}
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(data).replace('"TOKEN"', token))
+        value = validate(path)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_numbers_loop6.py:96: AssertionError
+_ test_primary_unsupported_number_has_valid_unknown_report[0.10000000000000001] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_primary_unsupported_numbe1')
+token = '0.10000000000000001'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    def test_primary_unsupported_number_has_valid_unknown_report(tmp_path, token):
+        data = model()
+        data["nodes"]["entity.x"]["fields"] = {"v": {"type": "number", "minimum": "TOKEN", "maximum": 0}}
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(data).replace('"TOKEN"', token))
+        value = validate(path)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_numbers_loop6.py:96: AssertionError
+_ test_primary_unsupported_number_has_valid_unknown_report[1.0000000000000001] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_primary_unsupported_numbe2')
+token = '1.0000000000000001'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    def test_primary_unsupported_number_has_valid_unknown_report(tmp_path, token):
+        data = model()
+        data["nodes"]["entity.x"]["fields"] = {"v": {"type": "number", "minimum": "TOKEN", "maximum": 0}}
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(data).replace('"TOKEN"', token))
+        value = validate(path)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_numbers_loop6.py:96: AssertionError
+_______ test_primary_unsupported_number_has_valid_unknown_report[1e4000] _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_primary_unsupported_numbe3')
+token = '1e4000'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    def test_primary_unsupported_number_has_valid_unknown_report(tmp_path, token):
+        data = model()
+        data["nodes"]["entity.x"]["fields"] = {"v": {"type": "number", "minimum": "TOKEN", "maximum": 0}}
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(data).replace('"TOKEN"', token))
+        value = validate(path)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_numbers_loop6.py:96: AssertionError
+_ test_primary_unsupported_number_has_valid_unknown_report[1e999999999999999999999999] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_primary_unsupported_numbe4')
+token = '1e999999999999999999999999'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    def test_primary_unsupported_number_has_valid_unknown_report(tmp_path, token):
+        data = model()
+        data["nodes"]["entity.x"]["fields"] = {"v": {"type": "number", "minimum": "TOKEN", "maximum": 0}}
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(data).replace('"TOKEN"', token))
+        value = validate(path)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_numbers_loop6.py:96: AssertionError
+_ test_primary_unsupported_number_has_valid_unknown_report[1e-999999999999999999999999] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_primary_unsupported_numbe5')
+token = '1e-999999999999999999999999'
+
+    @pytest.mark.parametrize("token", UNSUPPORTED)
+    def test_primary_unsupported_number_has_valid_unknown_report(tmp_path, token):
+        data = model()
+        data["nodes"]["entity.x"]["fields"] = {"v": {"type": "number", "minimum": "TOKEN", "maximum": 0}}
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(data).replace('"TOKEN"', token))
+        value = validate(path)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_numbers_loop6.py:96: AssertionError
+_______ test_unsupported_secondary_bundle_asset_stays_unknown[fragment] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_unsupported_secondary_bun0')
+kind = 'fragment'
+
+    @pytest.mark.parametrize("kind", ["fragment", "records", "extension"])
+    def test_unsupported_secondary_bundle_asset_stays_unknown(tmp_path, kind):
+        data = model()
+        if kind == "fragment":
+            data["includes"] = ["fragment.json"]
+            asset = {"format": "gdd-fragment/0.2", "nodes": {"entity.y": {"kind": "entity", "description": "Value", "annotations": {"example.number": "TOKEN"}}}, "edges": []}
+        elif kind == "records":
+            data["record_files"] = ["records.json"]
+            # Parsing fails before structural record schema can be established.
+            asset = {"format": "gdd-records/0.2", "project_id": "review", "records": {}, "unknown": "TOKEN"}
+        else:
+            asset = {"format": "gdd-extension/0.2", "namespace": "example.test", "version": "1.0.0", "node_kinds": {}, "relations": {}, "unknown": "TOKEN"}
+        raw = json.dumps(asset).replace('"TOKEN"', "1e-4000").encode()
+        (tmp_path / (kind + ".json")).write_bytes(raw)
+        if kind == "extension":
+            data["extensions"] = {"extension.test": {"namespace": "example.test", "version": "1.0.0", "path": "extension.json", "sha256": sha256(raw).hexdigest()}}
+        path = tmp_path / "model.json"
+        write(path, data)
+        value = validate(path)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_numbers_loop6.py:131: AssertionError
+________ test_unsupported_secondary_bundle_asset_stays_unknown[records] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_unsupported_secondary_bun1')
+kind = 'records'
+
+    @pytest.mark.parametrize("kind", ["fragment", "records", "extension"])
+    def test_unsupported_secondary_bundle_asset_stays_unknown(tmp_path, kind):
+        data = model()
+        if kind == "fragment":
+            data["includes"] = ["fragment.json"]
+            asset = {"format": "gdd-fragment/0.2", "nodes": {"entity.y": {"kind": "entity", "description": "Value", "annotations": {"example.number": "TOKEN"}}}, "edges": []}
+        elif kind == "records":
+            data["record_files"] = ["records.json"]
+            # Parsing fails before structural record schema can be established.
+            asset = {"format": "gdd-records/0.2", "project_id": "review", "records": {}, "unknown": "TOKEN"}
+        else:
+            asset = {"format": "gdd-extension/0.2", "namespace": "example.test", "version": "1.0.0", "node_kinds": {}, "relations": {}, "unknown": "TOKEN"}
+        raw = json.dumps(asset).replace('"TOKEN"', "1e-4000").encode()
+        (tmp_path / (kind + ".json")).write_bytes(raw)
+        if kind == "extension":
+            data["extensions"] = {"extension.test": {"namespace": "example.test", "version": "1.0.0", "path": "extension.json", "sha256": sha256(raw).hexdigest()}}
+        path = tmp_path / "model.json"
+        write(path, data)
+        value = validate(path)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_numbers_loop6.py:131: AssertionError
+_______ test_unsupported_secondary_bundle_asset_stays_unknown[extension] _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_unsupported_secondary_bun2')
+kind = 'extension'
+
+    @pytest.mark.parametrize("kind", ["fragment", "records", "extension"])
+    def test_unsupported_secondary_bundle_asset_stays_unknown(tmp_path, kind):
+        data = model()
+        if kind == "fragment":
+            data["includes"] = ["fragment.json"]
+            asset = {"format": "gdd-fragment/0.2", "nodes": {"entity.y": {"kind": "entity", "description": "Value", "annotations": {"example.number": "TOKEN"}}}, "edges": []}
+        elif kind == "records":
+            data["record_files"] = ["records.json"]
+            # Parsing fails before structural record schema can be established.
+            asset = {"format": "gdd-records/0.2", "project_id": "review", "records": {}, "unknown": "TOKEN"}
+        else:
+            asset = {"format": "gdd-extension/0.2", "namespace": "example.test", "version": "1.0.0", "node_kinds": {}, "relations": {}, "unknown": "TOKEN"}
+        raw = json.dumps(asset).replace('"TOKEN"', "1e-4000").encode()
+        (tmp_path / (kind + ".json")).write_bytes(raw)
+        if kind == "extension":
+            data["extensions"] = {"extension.test": {"namespace": "example.test", "version": "1.0.0", "path": "extension.json", "sha256": sha256(raw).hexdigest()}}
+        path = tmp_path / "model.json"
+        write(path, data)
+        value = validate(path)
+>       assert aggregate(value["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_numbers_loop6.py:131: AssertionError
+____ test_contract_source_precision_is_scoped_unknown[1e-4000-UNKNOWN-json] ____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_contract_source_precision4')
+format = 'json', token = '1e-4000', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("format", ["json", "yaml"])
+    @pytest.mark.parametrize("token,result", [("0.1", "PASS"), ("1e-300", "PASS"), ("1e-4000", "UNKNOWN"), ("0.10000000000000001", "UNKNOWN")])
+    def test_contract_source_precision_is_scoped_unknown(tmp_path, format, token, result):
+        raw = encoded(token, format).encode()
+        (tmp_path / "contract.txt").write_bytes(raw)
+        data = model()
+        data["sources"] = {"source.contract": {"role": "knowledge", "title": "Contract", "format": format, "uri": "contract.txt", "normative": True, "revision": {"sha256": sha256(raw).hexdigest()}}}
+        data["nodes"]["entity.x"]["source_refs"] = [{"source": "source.contract", "purpose": "contract"}]
+        path = tmp_path / "model.json"
+        write(path, data)
+        value = validate(path, profiles=["readiness"], scope=["entity.x"])
+        assert aggregate(value["checks"], "model") == "PASS"
+>       assert aggregate(value["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_numbers_loop6.py:148: AssertionError
+____ test_contract_source_precision_is_scoped_unknown[1e-4000-UNKNOWN-yaml] ____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_contract_source_precision5')
+format = 'yaml', token = '1e-4000', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("format", ["json", "yaml"])
+    @pytest.mark.parametrize("token,result", [("0.1", "PASS"), ("1e-300", "PASS"), ("1e-4000", "UNKNOWN"), ("0.10000000000000001", "UNKNOWN")])
+    def test_contract_source_precision_is_scoped_unknown(tmp_path, format, token, result):
+        raw = encoded(token, format).encode()
+        (tmp_path / "contract.txt").write_bytes(raw)
+        data = model()
+        data["sources"] = {"source.contract": {"role": "knowledge", "title": "Contract", "format": format, "uri": "contract.txt", "normative": True, "revision": {"sha256": sha256(raw).hexdigest()}}}
+        data["nodes"]["entity.x"]["source_refs"] = [{"source": "source.contract", "purpose": "contract"}]
+        path = tmp_path / "model.json"
+        write(path, data)
+        value = validate(path, profiles=["readiness"], scope=["entity.x"])
+        assert aggregate(value["checks"], "model") == "PASS"
+>       assert aggregate(value["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_numbers_loop6.py:148: AssertionError
+_ test_contract_source_precision_is_scoped_unknown[0.10000000000000001-UNKNOWN-json] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_contract_source_precision6')
+format = 'json', token = '0.10000000000000001', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("format", ["json", "yaml"])
+    @pytest.mark.parametrize("token,result", [("0.1", "PASS"), ("1e-300", "PASS"), ("1e-4000", "UNKNOWN"), ("0.10000000000000001", "UNKNOWN")])
+    def test_contract_source_precision_is_scoped_unknown(tmp_path, format, token, result):
+        raw = encoded(token, format).encode()
+        (tmp_path / "contract.txt").write_bytes(raw)
+        data = model()
+        data["sources"] = {"source.contract": {"role": "knowledge", "title": "Contract", "format": format, "uri": "contract.txt", "normative": True, "revision": {"sha256": sha256(raw).hexdigest()}}}
+        data["nodes"]["entity.x"]["source_refs"] = [{"source": "source.contract", "purpose": "contract"}]
+        path = tmp_path / "model.json"
+        write(path, data)
+        value = validate(path, profiles=["readiness"], scope=["entity.x"])
+        assert aggregate(value["checks"], "model") == "PASS"
+>       assert aggregate(value["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_numbers_loop6.py:148: AssertionError
+_ test_contract_source_precision_is_scoped_unknown[0.10000000000000001-UNKNOWN-yaml] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_contract_source_precision7')
+format = 'yaml', token = '0.10000000000000001', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("format", ["json", "yaml"])
+    @pytest.mark.parametrize("token,result", [("0.1", "PASS"), ("1e-300", "PASS"), ("1e-4000", "UNKNOWN"), ("0.10000000000000001", "UNKNOWN")])
+    def test_contract_source_precision_is_scoped_unknown(tmp_path, format, token, result):
+        raw = encoded(token, format).encode()
+        (tmp_path / "contract.txt").write_bytes(raw)
+        data = model()
+        data["sources"] = {"source.contract": {"role": "knowledge", "title": "Contract", "format": format, "uri": "contract.txt", "normative": True, "revision": {"sha256": sha256(raw).hexdigest()}}}
+        data["nodes"]["entity.x"]["source_refs"] = [{"source": "source.contract", "purpose": "contract"}]
+        path = tmp_path / "model.json"
+        write(path, data)
+        value = validate(path, profiles=["readiness"], scope=["entity.x"])
+        assert aggregate(value["checks"], "model") == "PASS"
+>       assert aggregate(value["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_numbers_loop6.py:148: AssertionError
+_ test_explicit_secondary_input_has_no_fabricated_format_failure[unsupported-UNKNOWN] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_explicit_secondary_input_0')
+kind = 'unsupported', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("kind,result", [("unsupported", "UNKNOWN"), ("missing", "UNKNOWN"), ("wrong", "FAIL"), ("valid", "PASS")])
+    def test_explicit_secondary_input_has_no_fabricated_format_failure(tmp_path, kind, result):
+        path = tmp_path / "model.json"
+        write(path, model())
+        secondary = tmp_path / "secondary.json"
+        if kind == "unsupported":
+            secondary.write_text(json.dumps(model()).replace('"fields": {}', '"fields": {"v": {"type": "number", "minimum": 1e-4000}}'))
+        elif kind == "wrong":
+            write(secondary, model())
+        elif kind == "valid":
+            write(secondary, {"format": "gdd-records/0.2", "project_id": "review", "records": {}})
+        value = validate(secondary, model_path=path, profiles=["representation"])
+>       assert aggregate(value["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_numbers_loop6.py:165: AssertionError
+_ test_explicit_secondary_input_has_no_fabricated_format_failure[missing-UNKNOWN] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_explicit_secondary_input_1')
+kind = 'missing', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("kind,result", [("unsupported", "UNKNOWN"), ("missing", "UNKNOWN"), ("wrong", "FAIL"), ("valid", "PASS")])
+    def test_explicit_secondary_input_has_no_fabricated_format_failure(tmp_path, kind, result):
+        path = tmp_path / "model.json"
+        write(path, model())
+        secondary = tmp_path / "secondary.json"
+        if kind == "unsupported":
+            secondary.write_text(json.dumps(model()).replace('"fields": {}', '"fields": {"v": {"type": "number", "minimum": 1e-4000}}'))
+        elif kind == "wrong":
+            write(secondary, model())
+        elif kind == "valid":
+            write(secondary, {"format": "gdd-records/0.2", "project_id": "review", "records": {}})
+        value = validate(secondary, model_path=path, profiles=["representation"])
+>       assert aggregate(value["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_numbers_loop6.py:165: AssertionError
+_____ test_cli_explicit_numeric_unsupported_input_exits_two[host-context] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_cli_explicit_numeric_unsu0')
+option = 'host-context'
+
+    @pytest.mark.parametrize("option", ["host-context", "package", "parallel-plan", "import-audit"])
+    def test_cli_explicit_numeric_unsupported_input_exits_two(tmp_path, option):
+        path = tmp_path / "model.json"
+        write(path, model())
+        supplied = tmp_path / "option.json"
+        supplied.write_text('{"value": 1e-4000}')
+        output = tmp_path / "report.json"
+        process = subprocess.run([sys.executable, "-B", "-m", "gdd_validator", "validate", str(path), "--" + option, str(supplied), "--output", str(output)], cwd=ROOT, text=True, capture_output=True)
+>       assert process.returncode == 2
+E       assert 1 == 2
+E        +  where 1 = CompletedProcess(args=['/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python', '-B', '-m', 'gdd_validator', '...ncode=1, stdout='', stderr="gdd: Invalid host input: Additional properties are not allowed ('value' was unexpected)\n").returncode
+
+tests/test_review_numbers_loop6.py:178: AssertionError
+________ test_cli_explicit_numeric_unsupported_input_exits_two[package] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_cli_explicit_numeric_unsu1')
+option = 'package'
+
+    @pytest.mark.parametrize("option", ["host-context", "package", "parallel-plan", "import-audit"])
+    def test_cli_explicit_numeric_unsupported_input_exits_two(tmp_path, option):
+        path = tmp_path / "model.json"
+        write(path, model())
+        supplied = tmp_path / "option.json"
+        supplied.write_text('{"value": 1e-4000}')
+        output = tmp_path / "report.json"
+        process = subprocess.run([sys.executable, "-B", "-m", "gdd_validator", "validate", str(path), "--" + option, str(supplied), "--output", str(output)], cwd=ROOT, text=True, capture_output=True)
+>       assert process.returncode == 2
+E       assert 1 == 2
+E        +  where 1 = CompletedProcess(args=['/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python', '-B', '-m', 'gdd_validator', '...uired property; 'extensions' is a required property; Additional properties are not allowed ('value' was unexpected)\n").returncode
+
+tests/test_review_numbers_loop6.py:178: AssertionError
+_____ test_cli_explicit_numeric_unsupported_input_exits_two[parallel-plan] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_cli_explicit_numeric_unsu2')
+option = 'parallel-plan'
+
+    @pytest.mark.parametrize("option", ["host-context", "package", "parallel-plan", "import-audit"])
+    def test_cli_explicit_numeric_unsupported_input_exits_two(tmp_path, option):
+        path = tmp_path / "model.json"
+        write(path, model())
+        supplied = tmp_path / "option.json"
+        supplied.write_text('{"value": 1e-4000}')
+        output = tmp_path / "report.json"
+        process = subprocess.run([sys.executable, "-B", "-m", "gdd_validator", "validate", str(path), "--" + option, str(supplied), "--output", str(output)], cwd=ROOT, text=True, capture_output=True)
+>       assert process.returncode == 2
+E       assert 1 == 2
+E        +  where 1 = CompletedProcess(args=['/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python', '-B', '-m', 'gdd_validator', '...uired property; 'serialized' is a required property; Additional properties are not allowed ('value' was unexpected)\n").returncode
+
+tests/test_review_numbers_loop6.py:178: AssertionError
+_____ test_cli_explicit_numeric_unsupported_input_exits_two[import-audit] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_cli_explicit_numeric_unsu3')
+option = 'import-audit'
+
+    @pytest.mark.parametrize("option", ["host-context", "package", "parallel-plan", "import-audit"])
+    def test_cli_explicit_numeric_unsupported_input_exits_two(tmp_path, option):
+        path = tmp_path / "model.json"
+        write(path, model())
+        supplied = tmp_path / "option.json"
+        supplied.write_text('{"value": 1e-4000}')
+        output = tmp_path / "report.json"
+        process = subprocess.run([sys.executable, "-B", "-m", "gdd_validator", "validate", str(path), "--" + option, str(supplied), "--output", str(output)], cwd=ROOT, text=True, capture_output=True)
+>       assert process.returncode == 2
+E       assert 1 == 2
+E        +  where 1 = CompletedProcess(args=['/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python', '-B', '-m', 'gdd_validator', '...ed property; 'reconstructed' is a required property; Additional properties are not allowed ('value' was unexpected)\n").returncode
+
+tests/test_review_numbers_loop6.py:178: AssertionError
+______ test_cli_proposal_numeric_unsupported_mapping_creates_no_artifact _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test_cli_proposal_numeric_unsu0')
+
+    def test_cli_proposal_numeric_unsupported_mapping_creates_no_artifact(tmp_path):
+        mapping = tmp_path / "mapping.json"
+        mapping.write_text('{"value": 1e-4000}')
+        output = tmp_path / "proposal.json"
+        process = subprocess.run([sys.executable, "-B", "-m", "gdd_validator", "graphify", "propose", str(tmp_path / "observations"), "--mapping", str(mapping), "--output", str(output)], cwd=ROOT, text=True, capture_output=True)
+>       assert process.returncode == 2
+E       assert 1 == 2
+E        +  where 1 = CompletedProcess(args=['/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python', '-B', '-m', 'gdd_validator', '...a required property; 'edges' is a required property; Additional properties are not allowed ('value' was unexpected)\n").returncode
+
+tests/test_review_numbers_loop6.py:188: AssertionError
+__________ test_integration_covers_each_rule_method[checks0-UNKNOWN] ___________
+
+case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test...ources': [], ...}], 'serialized': [], 'integration': {'owner': 'actor.integration', 'checks': ['check.x', 'check.y']}})
+checks = ['check.x', 'check.y'], result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("checks,result", [(["check.x", "check.y"], "UNKNOWN"), (["check.two", "check.y"], "UNKNOWN"), (["check.x", "check.y", "check.two"], "PASS")])
+    def test_integration_covers_each_rule_method(case, checks, result):
+        case[2]["integration"]["checks"] = checks
+        value, observed = run(case)
+        assert aggregate(value["checks"], "model") == "PASS"
+>       assert observed == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_planning_loop6.py:48: AssertionError
+__________ test_integration_covers_each_rule_method[checks1-UNKNOWN] ___________
+
+case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test...rces': [], ...}], 'serialized': [], 'integration': {'owner': 'actor.integration', 'checks': ['check.two', 'check.y']}})
+checks = ['check.two', 'check.y'], result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("checks,result", [(["check.x", "check.y"], "UNKNOWN"), (["check.two", "check.y"], "UNKNOWN"), (["check.x", "check.y", "check.two"], "PASS")])
+    def test_integration_covers_each_rule_method(case, checks, result):
+        case[2]["integration"]["checks"] = checks
+        value, observed = run(case)
+        assert aggregate(value["checks"], "model") == "PASS"
+>       assert observed == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_planning_loop6.py:48: AssertionError
+__________ test_every_enumerated_check_must_be_valid_current[missing] __________
+
+case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test...d': [], 'integration': {'owner': 'actor.integration', 'checks': ['check.x', 'check.y', 'check.two', 'check.missing']}})
+variant = 'missing'
+
+    @pytest.mark.parametrize("variant", ["missing", "historical", "wrong_kind", "dangling_scope", "cycle", "dangling_supersedes", "collision"])
+    def test_every_enumerated_check_must_be_valid_current(case, variant):
+        _, records, plan = case
+        if variant == "missing":
+            plan["integration"]["checks"].append("check.missing")
+        else:
+            record = deepcopy(records["check.x"])
+            if variant == "historical":
+                record["spec_revision"] = "sha256:" + "a" * 64
+            elif variant == "wrong_kind":
+                record = {"kind": "binding", "spec_revision": record["spec_revision"], "targets": ["rule.x"], "implementation": "implementation.x", "role": "test", "resource": "test.py", "selector": {"kind": "whole-document"}, "status": "planned"}
+            elif variant == "dangling_scope":
+                record["scope"].append("rule.missing")
+            elif variant == "cycle":
+                record["supersedes"] = "check.extra"
+            elif variant == "dangling_supersedes":
+                record["supersedes"] = "check.missing"
+            ident = "rule.x" if variant == "collision" else "check.extra"
+            records[ident] = record
+            plan["integration"]["checks"].append(ident)
+        _, result = run(case)
+>       assert result == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_planning_loop6.py:72: AssertionError
+________ test_every_enumerated_check_must_be_valid_current[wrong_kind] _________
+
+case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test...zed': [], 'integration': {'owner': 'actor.integration', 'checks': ['check.x', 'check.y', 'check.two', 'check.extra']}})
+variant = 'wrong_kind'
+
+    @pytest.mark.parametrize("variant", ["missing", "historical", "wrong_kind", "dangling_scope", "cycle", "dangling_supersedes", "collision"])
+    def test_every_enumerated_check_must_be_valid_current(case, variant):
+        _, records, plan = case
+        if variant == "missing":
+            plan["integration"]["checks"].append("check.missing")
+        else:
+            record = deepcopy(records["check.x"])
+            if variant == "historical":
+                record["spec_revision"] = "sha256:" + "a" * 64
+            elif variant == "wrong_kind":
+                record = {"kind": "binding", "spec_revision": record["spec_revision"], "targets": ["rule.x"], "implementation": "implementation.x", "role": "test", "resource": "test.py", "selector": {"kind": "whole-document"}, "status": "planned"}
+            elif variant == "dangling_scope":
+                record["scope"].append("rule.missing")
+            elif variant == "cycle":
+                record["supersedes"] = "check.extra"
+            elif variant == "dangling_supersedes":
+                record["supersedes"] = "check.missing"
+            ident = "rule.x" if variant == "collision" else "check.extra"
+            records[ident] = record
+            plan["integration"]["checks"].append(ident)
+        _, result = run(case)
+>       assert result == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_planning_loop6.py:72: AssertionError
+___________ test_selected_check_must_not_be_retired[check.x-UNKNOWN] ___________
+
+case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-128/test......}], 'serialized': [], 'integration': {'owner': 'actor.integration', 'checks': ['check.x', 'check.y', 'check.two']}})
+selected = 'check.x', result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("selected,result", [("check.x", "UNKNOWN"), ("check.next", "PASS")])
+    def test_selected_check_must_not_be_retired(case, selected, result):
+        _, records, plan = case
+        records["check.next"] = {**deepcopy(records["check.x"]), "supersedes": "check.x"}
+        plan["integration"]["checks"] = [selected, "check.y", "check.two"]
+>       assert run(case)[1] == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_planning_loop6.py:90: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[json-1e-4000]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[json-0.10000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[json-1.0000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[json-1e4000]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[json-1e999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[json-1e-999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[yaml-1e-4000]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[yaml-0.10000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[yaml-1.0000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[yaml-1e4000]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[yaml-1e999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[yaml-1e-999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[tag-1e-4000]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[tag-0.10000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[tag-1.0000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[tag-1e4000]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[tag-1e999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[tag-1e-999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[handle-1e-4000]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[handle-0.10000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[handle-1.0000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[handle-1e4000]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[handle-1e999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_finite_precision_is_not_rounded[handle-1e-999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_runtime_integer_capacity_is_unknown[json]
+FAILED tests/test_review_numbers_loop6.py::test_runtime_integer_capacity_is_unknown[yaml]
+FAILED tests/test_review_numbers_loop6.py::test_runtime_integer_capacity_is_unknown[tag]
+FAILED tests/test_review_numbers_loop6.py::test_primary_unsupported_number_has_valid_unknown_report[1e-4000]
+FAILED tests/test_review_numbers_loop6.py::test_primary_unsupported_number_has_valid_unknown_report[0.10000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_primary_unsupported_number_has_valid_unknown_report[1.0000000000000001]
+FAILED tests/test_review_numbers_loop6.py::test_primary_unsupported_number_has_valid_unknown_report[1e4000]
+FAILED tests/test_review_numbers_loop6.py::test_primary_unsupported_number_has_valid_unknown_report[1e999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_primary_unsupported_number_has_valid_unknown_report[1e-999999999999999999999999]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_secondary_bundle_asset_stays_unknown[fragment]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_secondary_bundle_asset_stays_unknown[records]
+FAILED tests/test_review_numbers_loop6.py::test_unsupported_secondary_bundle_asset_stays_unknown[extension]
+FAILED tests/test_review_numbers_loop6.py::test_contract_source_precision_is_scoped_unknown[1e-4000-UNKNOWN-json]
+FAILED tests/test_review_numbers_loop6.py::test_contract_source_precision_is_scoped_unknown[1e-4000-UNKNOWN-yaml]
+FAILED tests/test_review_numbers_loop6.py::test_contract_source_precision_is_scoped_unknown[0.10000000000000001-UNKNOWN-json]
+FAILED tests/test_review_numbers_loop6.py::test_contract_source_precision_is_scoped_unknown[0.10000000000000001-UNKNOWN-yaml]
+FAILED tests/test_review_numbers_loop6.py::test_explicit_secondary_input_has_no_fabricated_format_failure[unsupported-UNKNOWN]
+FAILED tests/test_review_numbers_loop6.py::test_explicit_secondary_input_has_no_fabricated_format_failure[missing-UNKNOWN]
+FAILED tests/test_review_numbers_loop6.py::test_cli_explicit_numeric_unsupported_input_exits_two[host-context]
+FAILED tests/test_review_numbers_loop6.py::test_cli_explicit_numeric_unsupported_input_exits_two[package]
+FAILED tests/test_review_numbers_loop6.py::test_cli_explicit_numeric_unsupported_input_exits_two[parallel-plan]
+FAILED tests/test_review_numbers_loop6.py::test_cli_explicit_numeric_unsupported_input_exits_two[import-audit]
+FAILED tests/test_review_numbers_loop6.py::test_cli_proposal_numeric_unsupported_mapping_creates_no_artifact
+FAILED tests/test_review_planning_loop6.py::test_integration_covers_each_rule_method[checks0-UNKNOWN]
+FAILED tests/test_review_planning_loop6.py::test_integration_covers_each_rule_method[checks1-UNKNOWN]
+FAILED tests/test_review_planning_loop6.py::test_every_enumerated_check_must_be_valid_current[missing]
+FAILED tests/test_review_planning_loop6.py::test_every_enumerated_check_must_be_valid_current[wrong_kind]
+FAILED tests/test_review_planning_loop6.py::test_selected_check_must_not_be_retired[check.x-UNKNOWN]
+52 failed, 47 passed in 1.28s

@@ -1,0 +1,304 @@
+{
+  "format": "gdd-delivery-assets/0.1",
+  "recorded_at": "2026-10-13T19:29:44.995770+00:00",
+  "package_version": "0.4.0",
+  "renderer_profile": "gdd-viewer-html/0.1",
+  "standard_format": "gdd/0.2",
+  "assets": [
+    {
+      "path": "README.md",
+      "bytes": 3948,
+      "sha256": "799f95cf3b91f72a7cd5d51f52e9c861705a5a363fb3747403077b3bbafeccc3"
+    },
+    {
+      "path": "VALIDATOR.md",
+      "bytes": 10426,
+      "sha256": "edcbf4672e9365c990a6989d7deca5f1d66512ce0d478aafa7960c7a9cfc8206"
+    },
+    {
+      "path": "VIEWER.md",
+      "bytes": 8518,
+      "sha256": "b49efa23931fbe00c2ed44e60e7c7656885fa3b479f7b4c24d822ea02b5888cd"
+    },
+    {
+      "path": "WORKLOG.md",
+      "bytes": 6310,
+      "sha256": "f6c64ce507737e69799bb48f514f8f7d3ca88576277d9ae86fc9ffd9afb6b99d"
+    },
+    {
+      "path": "conformance/README.md",
+      "bytes": 2531,
+      "sha256": "555b42e95196cc117dab95397c366af64254598634875f9be7d2442f864d1554"
+    },
+    {
+      "path": "conformance/prepare_visualization.py",
+      "bytes": 1707,
+      "sha256": "baf7ec1691b7bc27877603231ed7d0618062674b6056f5a8add38d2882dac10f"
+    },
+    {
+      "path": "conformance/run.py",
+      "bytes": 13133,
+      "sha256": "c4437823580235e753daf8234f68fce2ba89d7a4cb0e7175f8ef18a7c8da7563"
+    },
+    {
+      "path": "conformance/run_browser.cjs",
+      "bytes": 14187,
+      "sha256": "461168e2536b73621bbae08130e8895332c8cd9cbc4090a8f7b135593bce5dad"
+    },
+    {
+      "path": "conformance/run_visualization.py",
+      "bytes": 3892,
+      "sha256": "ac9552c0f0abd4cc81eab96d83e60b1c9f107d3f63d1a7bf908ea09e0f6c6496"
+    },
+    {
+      "path": "conformance/viewer_fixture.py",
+      "bytes": 2635,
+      "sha256": "8dd3875fddc77e2afe1bc992ee3d525ce9847d1eb6a1090cb3f0e0d839c0f91f"
+    },
+    {
+      "path": "conformance/visualization-cases.yaml",
+      "bytes": 1372,
+      "sha256": "abbd667c9c324e18833d1d3a846ad46de7a58664e4ed6048ec93045e9355edde"
+    },
+    {
+      "path": "conformance/visualization-diagnostics.csv",
+      "bytes": 285,
+      "sha256": "4c2869fdeedeb25ef67bb42fbe9cf57315e5aff0b6abe51d7b90d068ed6b752c"
+    },
+    {
+      "path": "dist/gdd_validator-0.4.0-py3-none-any.whl",
+      "bytes": 77687,
+      "sha256": "799f8bfc12383ac81f4986a627cecb80ce6d90a540f5c95b3f322e9e021eb24d"
+    },
+    {
+      "path": "dist/gdd_validator-0.4.0.tar.gz",
+      "bytes": 1644747,
+      "sha256": "853df37032021ac7fbb98a341608eda478f5043cc2b4a366eaa20014c6f7e980"
+    },
+    {
+      "path": "evidence/visualization/adapter-conformance.json",
+      "bytes": 60922,
+      "sha256": "048a97c6b9cd063960d948d18c49b935979b16599107770c6af51e449c1dbf77"
+    },
+    {
+      "path": "evidence/visualization/agent-lint.json",
+      "bytes": 5533,
+      "sha256": "048c832a057581891041ce50f75314b75afed6c3f7006e42ca2cdbe783326410"
+    },
+    {
+      "path": "evidence/visualization/artifact-conformance.json",
+      "bytes": 16772,
+      "sha256": "73c044526ee589e345aa5391e0f5583c6d852695162d6f5a299451aac3c61dd8"
+    },
+    {
+      "path": "evidence/visualization/browser-conformance.json",
+      "bytes": 1581,
+      "sha256": "80745faa60bd863a6ca6f779fe22083721aec2081462cce6e5dde95613c6a0eb"
+    },
+    {
+      "path": "evidence/visualization/browser-run.txt",
+      "bytes": 1581,
+      "sha256": "80745faa60bd863a6ca6f779fe22083721aec2081462cce6e5dde95613c6a0eb"
+    },
+    {
+      "path": "evidence/visualization/browser.view-state.json",
+      "bytes": 3213,
+      "sha256": "5c3d9af4258e59ba6ed0cb45f0a76c3f77c5ea8b72ea9f8a9835515999a2510b"
+    },
+    {
+      "path": "evidence/visualization/build.txt",
+      "bytes": 187,
+      "sha256": "ad7aa1fa7a410f4c899987443dff41151c411529f9c6344eb12b9098c05fad86"
+    },
+    {
+      "path": "evidence/visualization/concert-dark.png",
+      "bytes": 278052,
+      "sha256": "2c06673808c8b782d284a6c1a4493171717c605ed705513a4325ab4a9184d65c"
+    },
+    {
+      "path": "evidence/visualization/concert-desktop.png",
+      "bytes": 276950,
+      "sha256": "51acfdd526d0086ae64c65858b768356287f4b80e0468db05b4a3defbff05183"
+    },
+    {
+      "path": "evidence/visualization/concert-mobile.png",
+      "bytes": 307170,
+      "sha256": "0f679864b99de92426da57fcb71fc33bc8fb703a6b39514ea27616c37186d419"
+    },
+    {
+      "path": "evidence/visualization/concert.report.json",
+      "bytes": 1471,
+      "sha256": "cb3b02509cb54c88892df1878d408b6194f5042b6585db5a769bce5430b7a756"
+    },
+    {
+      "path": "evidence/visualization/standard-conformance.json",
+      "bytes": 247199,
+      "sha256": "014772f403447d049c301d789a9d438072822faccee81d731249a13e128b67e9"
+    },
+    {
+      "path": "evidence/visualization/state-schema.json",
+      "bytes": 102,
+      "sha256": "e51242976f7908d2525ba5aa53151fc06960b3c868d6860e8ffa18f7257b75d2"
+    },
+    {
+      "path": "evidence/visualization/tests.txt",
+      "bytes": 261,
+      "sha256": "aaadc16bb374a8f5482de0791c34596dd1d8e791779952bebb5a1cf30a702d68"
+    },
+    {
+      "path": "evidence/visualization/wheel-smoke.json",
+      "bytes": 4930,
+      "sha256": "f8cd3fcd79abbc385eab63dd179c072b12a83f5cf95894c451101df52c719732"
+    },
+    {
+      "path": "evidence/visualization/wheel-smoke.source.py",
+      "bytes": 3603,
+      "sha256": "09bcc28441494956155dc9a7c76233809b13a6dcde7c7c33e525a937dc37b18f"
+    },
+    {
+      "path": "evidence/visualization-review.md",
+      "bytes": 5642,
+      "sha256": "de91db037d01fe9eaa67be429c1f781fabb441367d0fc3e0097a4289121b0326"
+    },
+    {
+      "path": "examples/README.md",
+      "bytes": 2288,
+      "sha256": "a22fe98b96dcb0194ecbc3403af297bd03ad5654050c9ec1829d5beb8ebdeca8"
+    },
+    {
+      "path": "examples/concert.graph.html",
+      "bytes": 167332,
+      "sha256": "ca68e7019a01364d1d52874997782fba5f603e5a1a5b746b1ab053ac08b3ad37"
+    },
+    {
+      "path": "gdd_validator/__init__.py",
+      "bytes": 512,
+      "sha256": "61fc134085ddb39c64e08393cc8590deea40ff8c98a5b5094149a23a86f7ba6d"
+    },
+    {
+      "path": "gdd_validator/__main__.py",
+      "bytes": 48,
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+    },
+    {
+      "path": "gdd_validator/cli.py",
+      "bytes": 8783,
+      "sha256": "02ec0ff6b74f187af6b66ff283ed36b69f0b8283ec4b9fd407aff3fed98c53cc"
+    },
+    {
+      "path": "gdd_validator/graphify.py",
+      "bytes": 21447,
+      "sha256": "25b3d5f5ed8ead7638dcd261b04845c9642834f5747dc2a383bf0a181b92b157"
+    },
+    {
+      "path": "gdd_validator/graphify_io.py",
+      "bytes": 10179,
+      "sha256": "528fba3b378048f2c048b7b01975aa183fb8264e93b1f6b4920d1fa5744f1d30"
+    },
+    {
+      "path": "gdd_validator/graphify_proposal.py",
+      "bytes": 6275,
+      "sha256": "c0486cf112f11d4f5753933d7b85e8121f96da0a6b7ebc24105f221a8750390a"
+    },
+    {
+      "path": "gdd_validator/loading.py",
+      "bytes": 18933,
+      "sha256": "5ce5f01645968c1ce84b4d825c18afa1afc3a1582565fe6ce8d9dbe48d4a78a4"
+    },
+    {
+      "path": "gdd_validator/model.py",
+      "bytes": 20197,
+      "sha256": "7253425e6e428e2b5a700f9091ac71e4ffdefac1809c0771a8070560c07169f8"
+    },
+    {
+      "path": "gdd_validator/planning.py",
+      "bytes": 10748,
+      "sha256": "2ad832ff4dd8502400cacb9fae8113f34898e10691ae14b40c4793f602b3d5f5"
+    },
+    {
+      "path": "gdd_validator/readiness.py",
+      "bytes": 19263,
+      "sha256": "1d279aef70c6d57cbe7acf62b2ea6dad4a7fe741ced7999510650912ce0f2fda"
+    },
+    {
+      "path": "gdd_validator/records.py",
+      "bytes": 19149,
+      "sha256": "71c23ea831c2f8ac70965b7f16a570bcf2e1134ab4db44b44c27ebf50ba327e2"
+    },
+    {
+      "path": "gdd_validator/report.py",
+      "bytes": 1792,
+      "sha256": "6048bf58fc5f7a3e94a37a694bb2cc81362c0cb55595993556b6f9a93fcede7f"
+    },
+    {
+      "path": "gdd_validator/validator.py",
+      "bytes": 14761,
+      "sha256": "e203c770e7d91c74d828d8a56dd222058c7150d1e0d91d48ce7c099c3f01f3fa"
+    },
+    {
+      "path": "gdd_validator/viewer/app.js",
+      "bytes": 5007,
+      "sha256": "935019a3c8521cd64d8342dcc4846afa2ea1691e8dc1247e16cd8b40f41a4de0"
+    },
+    {
+      "path": "gdd_validator/viewer/graph.js",
+      "bytes": 17261,
+      "sha256": "0227f9aad6eb648e25d56a2e5e7dd75c61e2509897f39c1c83cbbea65b5f1ccb"
+    },
+    {
+      "path": "gdd_validator/viewer/inspector.js",
+      "bytes": 9910,
+      "sha256": "da33aa9c5a94382747a1d995365a0432a091feb1f4bafd843c4343822a0c9473"
+    },
+    {
+      "path": "gdd_validator/viewer/shell.html",
+      "bytes": 4776,
+      "sha256": "dd55323958fbcd03d59c28941f3ac59e852036cfd97ec9305aaa55a7a5e198b9"
+    },
+    {
+      "path": "gdd_validator/viewer/style.css",
+      "bytes": 12468,
+      "sha256": "e10355f54992ed2cb7e64a561962ebec8548982b9e06046d5b1110bd2a062169"
+    },
+    {
+      "path": "gdd_validator/visualization.py",
+      "bytes": 7560,
+      "sha256": "038a95e8eea483afe59545a82bf828295d54061ee8c73bd0bc2a745bb2a32f49"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 580,
+      "sha256": "131cfe65907bd50c723b3a2e63ee4b0f3243fcc2e0b79c208363fa05b4882c20"
+    },
+    {
+      "path": "schemas/README.md",
+      "bytes": 2470,
+      "sha256": "6d4dadf8d91ad001362cfa0dd5bfbbf476d8f1bfd5123db2ca1b701d1b98d1f7"
+    },
+    {
+      "path": "schemas/view-state.schema.json",
+      "bytes": 5412,
+      "sha256": "9f1a2e02fdc8747cf44f4c9c2698d312b9bdcf631ae1fa77cab6ff8bc1f41d90"
+    },
+    {
+      "path": "schemas/view.schema.json",
+      "bytes": 4853,
+      "sha256": "5e07c9d441bc96caebcf348db52451312680527b554272eeac3ac0fc04f043bf"
+    },
+    {
+      "path": "standard/INTEGRATIONS.md",
+      "bytes": 7367,
+      "sha256": "217091fe8674a3dc85efcf18fe388c63cdd6bb53975ec3fd82ca02db3c666eca"
+    },
+    {
+      "path": "tests/test_visualization.py",
+      "bytes": 10260,
+      "sha256": "05716aa41843b1494a1c79e6826fb41b8de5f1e235328be2b743328c8bc765c9"
+    },
+    {
+      "path": "uv.lock",
+      "bytes": 66081,
+      "sha256": "f38bb859316cb94e89a65332756f0cde45be5b026d6f1c95f7f8538af0f3b78d"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "test_boundaries (test_discount.LeafTests.test_boundaries)\nscenario.discount.floor: endpoints and exact large-integer control. ... ok\ntest_floor_fraction (test_discount.LeafTests.test_floor_fraction) ... ok\ntest_floor_half (test_discount.LeafTests.test_floor_half)\nscenario.discount.floor: accepted floor value, old half-up must fail. ... ok\ntest_invalid (test_discount.LeafTests.test_invalid)\nscenario.discount.invalid: integers and inclusive rates are mandatory. ... ok\ntest_normal (test_discount.LeafTests.test_normal)\nscenario.discount.normal: exactly divisible positive control. ... ok\ntest_cli_floor (test_quote.QuoteTests.test_cli_floor)\nscenario.quote.cli: the defect must be visible through the real CLI. ... ok\ntest_cli_invalid (test_quote.QuoteTests.test_cli_invalid)\nscenario.quote.invalid: stderr and exit status are observable contract. ... ok\ntest_cli_large_integer_floor_composition (test_quote.QuoteTests.test_cli_large_integer_floor_composition)\nExact CLI integers and stepwise floor must survive beyond float precision. ... ok\ntest_cli_normal (test_quote.QuoteTests.test_cli_normal)\nscenario.quote.cli: actual process, exactly divisible control. ... ok\ntest_floor_after_discount (test_quote.QuoteTests.test_floor_after_discount)\nscenario.quote.floor: composition must preserve each floor boundary. ... ok\ntest_invalid (test_quote.QuoteTests.test_invalid)\nscenario.quote.invalid: reject before calling leaf functions. ... ok\ntest_normal (test_quote.QuoteTests.test_normal)\nscenario.quote.normal: exactly divisible positive control. ... ok\ntest_tax_floor_without_discount (test_quote.QuoteTests.test_tax_floor_without_discount) ... ok\ntest_zero_and_full_discount (test_quote.QuoteTests.test_zero_and_full_discount)\nscenario.quote.floor: endpoint controls. ... ok\ntest_boundaries (test_tax.LeafTests.test_boundaries)\nscenario.tax.floor: endpoints and exact large-integer control. ... ok\ntest_floor_fraction (test_tax.LeafTests.test_floor_fraction) ... ok\ntest_floor_half (test_tax.LeafTests.test_floor_half)\nscenario.tax.floor: accepted floor value, old half-up must fail. ... ok\ntest_invalid (test_tax.LeafTests.test_invalid)\nscenario.tax.invalid: integers and inclusive rates are mandatory. ... ok\ntest_normal (test_tax.LeafTests.test_normal)\nscenario.tax.normal: exactly divisible positive control. ... ok\n\n----------------------------------------------------------------------\nRan 19 tests in 0.213s\n\nOK\n",
+  "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+  "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874"
+}

@@ -1,0 +1,16 @@
+{
+  "package": "package.quote",
+  "attempt": "native.quote.1",
+  "changed_files": [
+    "tests/test_quote.py"
+  ],
+  "file_sha256": {
+    "tests/test_quote.py": "ff5510024503e28f8e30aa0da618b60b0debb910e0fb763b5cf382975b962715"
+  },
+  "existing_test_assertions_unchanged": true,
+  "product_files_unchanged": true,
+  "baseline": "18 tests, OK",
+  "result": "19 tests, OK",
+  "new_regression": "Actual CLI with subtotal=10**30+1, discount_bps=5000, tax_bps=5000; exact integer JSON fields and stepwise floor composition",
+  "negative_control": "Temporary CLI precision-loss mutation: exactly1 failure, the new regression; existing18 tests passed. Mutation restored byte-for-byte."
+}

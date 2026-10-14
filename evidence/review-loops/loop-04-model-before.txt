@@ -1,0 +1,1193 @@
+........FFFF....FFFF....FFFFFFFFFFFFFFFFFFFFFFF............FFFFFFF..FF.. [ 96%]
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_____ test_integer_domain_requires_an_unavoidable_value[spec2-PASS-fields] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a8')
+position = 'fields'
+spec = {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec2-PASS-input] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a9')
+position = 'input'
+spec = {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+____ test_integer_domain_requires_an_unavoidable_value[spec2-PASS-context] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a10')
+position = 'context'
+spec = {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec2-PASS-output] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a11')
+position = 'output'
+spec = {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec4-PASS-fields] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a16')
+position = 'fields'
+spec = {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value'], 'nullable': True}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec4-PASS-input] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a17')
+position = 'input'
+spec = {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value'], 'nullable': True}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+____ test_integer_domain_requires_an_unavoidable_value[spec4-PASS-context] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a18')
+position = 'context'
+spec = {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value'], 'nullable': True}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec4-PASS-output] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a19')
+position = 'output'
+spec = {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value'], 'nullable': True}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec6-PASS-fields] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a24')
+position = 'fields'
+spec = {'type': 'object', 'properties': {'value': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value']}}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec6-PASS-input] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a25')
+position = 'input'
+spec = {'type': 'object', 'properties': {'value': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value']}}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+____ test_integer_domain_requires_an_unavoidable_value[spec6-PASS-context] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a26')
+position = 'context'
+spec = {'type': 'object', 'properties': {'value': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value']}}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec6-PASS-output] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a27')
+position = 'output'
+spec = {'type': 'object', 'properties': {'value': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value']}}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec7-PASS-fields] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a28')
+position = 'fields'
+spec = {'type': 'object', 'properties': {'value': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}}, 'required': ['value']}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec7-PASS-input] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a29')
+position = 'input'
+spec = {'type': 'object', 'properties': {'value': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}}, 'required': ['value']}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+____ test_integer_domain_requires_an_unavoidable_value[spec7-PASS-context] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a30')
+position = 'context'
+spec = {'type': 'object', 'properties': {'value': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}}, 'required': ['value']}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec7-PASS-output] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a31')
+position = 'output'
+spec = {'type': 'object', 'properties': {'value': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}}, 'required': ['value']}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec8-PASS-fields] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a32')
+position = 'fields'
+spec = {'type': 'array', 'items': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec8-PASS-input] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a33')
+position = 'input'
+spec = {'type': 'array', 'items': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+____ test_integer_domain_requires_an_unavoidable_value[spec8-PASS-context] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a34')
+position = 'context'
+spec = {'type': 'array', 'items': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec8-PASS-output] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a35')
+position = 'output'
+spec = {'type': 'array', 'items': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec9-PASS-fields] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a36')
+position = 'fields'
+spec = {'type': 'array', 'items': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value']}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec9-PASS-input] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a37')
+position = 'input'
+spec = {'type': 'array', 'items': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value']}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+____ test_integer_domain_requires_an_unavoidable_value[spec9-PASS-context] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a38')
+position = 'context'
+spec = {'type': 'array', 'items': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value']}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec9-PASS-output] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a39')
+position = 'output'
+spec = {'type': 'array', 'items': {'type': 'object', 'properties': {'value': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}, 'required': ['value']}}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+____ test_integer_domain_requires_an_unavoidable_value[spec10-PASS-fields] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a40')
+position = 'fields'
+spec = {'type': 'object', 'properties': {'value': {'type': 'array', 'items': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}, 'required': ['value']}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_integer_domain_requires_an_unavoidable_value[spec10-PASS-input] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a41')
+position = 'input'
+spec = {'type': 'object', 'properties': {'value': {'type': 'array', 'items': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}, 'required': ['value']}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+____ test_integer_domain_requires_an_unavoidable_value[spec10-PASS-context] ____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a42')
+position = 'context'
+spec = {'type': 'object', 'properties': {'value': {'type': 'array', 'items': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}, 'required': ['value']}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+____ test_integer_domain_requires_an_unavoidable_value[spec10-PASS-output] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_integer_domain_requires_a43')
+position = 'output'
+spec = {'type': 'object', 'properties': {'value': {'type': 'array', 'items': {'type': 'integer', 'minimum': 0.2, 'maximum': 0.8}}}, 'required': ['value']}
+result = 'PASS'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context", "output"])
+    @pytest.mark.parametrize("spec,result", [
+        (EMPTY_INTEGER, "FAIL"),
+        ({**EMPTY_INTEGER, "nullable": True}, "PASS"),
+        (object_type(EMPTY_INTEGER, required=False), "PASS"),
+        (object_type(EMPTY_INTEGER), "FAIL"),
+        (object_type(EMPTY_INTEGER, nullable=True), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER)), "FAIL"),
+        (object_type(object_type(EMPTY_INTEGER), required=False), "PASS"),
+        (object_type(object_type(EMPTY_INTEGER, required=False)), "PASS"),
+        ({"type": "array", "items": EMPTY_INTEGER}, "PASS"),
+        ({"type": "array", "items": object_type(EMPTY_INTEGER)}, "PASS"),
+        (object_type({"type": "array", "items": EMPTY_INTEGER}), "PASS"),
+    ])
+    def test_integer_domain_requires_an_unavoidable_value(tmp_path, position, spec, result):
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:57: AssertionError
+_____ test_optional_field_can_omit_an_otherwise_uninhabited_object[fields] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_optional_field_can_omit_a0')
+position = 'fields'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context"])
+    def test_optional_field_can_omit_an_otherwise_uninhabited_object(tmp_path, position):
+        spec = object_type(EMPTY_INTEGER, optional=True)
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == "PASS"
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:63: AssertionError
+_____ test_optional_field_can_omit_an_otherwise_uninhabited_object[input] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_optional_field_can_omit_a1')
+position = 'input'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context"])
+    def test_optional_field_can_omit_an_otherwise_uninhabited_object(tmp_path, position):
+        spec = object_type(EMPTY_INTEGER, optional=True)
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == "PASS"
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:63: AssertionError
+____ test_optional_field_can_omit_an_otherwise_uninhabited_object[context] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_optional_field_can_omit_a2')
+position = 'context'
+
+    @pytest.mark.parametrize("position", ["fields", "input", "context"])
+    def test_optional_field_can_omit_an_otherwise_uninhabited_object(tmp_path, position):
+        spec = object_type(EMPTY_INTEGER, optional=True)
+>       assert aggregate(validate_model(tmp_path, spec, position)["checks"], "model") == "PASS"
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_model_loop4.py:63: AssertionError
+____ test_rebound_double_exclamation_is_not_necessarily_a_builtin[str-text] ____
+
+tag = 'str', value = 'text'
+
+    @pytest.mark.parametrize("tag,value", [
+        ("str", "text"), ("int", "2"), ("float", "2.5"), ("bool", "true"),
+        ("null", "null"), ("seq", "[one, two]"), ("map", "{key: value}"),
+    ])
+    def test_rebound_double_exclamation_is_not_necessarily_a_builtin(tag, value):
+        raw = f"%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!{tag} {value}\n"
+>       with pytest.raises(InputError, match="built-in tags"):
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_model_loop4.py:89: Failed
+_____ test_rebound_double_exclamation_is_not_necessarily_a_builtin[int-2] ______
+
+tag = 'int', value = '2'
+
+    @pytest.mark.parametrize("tag,value", [
+        ("str", "text"), ("int", "2"), ("float", "2.5"), ("bool", "true"),
+        ("null", "null"), ("seq", "[one, two]"), ("map", "{key: value}"),
+    ])
+    def test_rebound_double_exclamation_is_not_necessarily_a_builtin(tag, value):
+        raw = f"%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!{tag} {value}\n"
+>       with pytest.raises(InputError, match="built-in tags"):
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_model_loop4.py:89: Failed
+___ test_rebound_double_exclamation_is_not_necessarily_a_builtin[float-2.5] ____
+
+tag = 'float', value = '2.5'
+
+    @pytest.mark.parametrize("tag,value", [
+        ("str", "text"), ("int", "2"), ("float", "2.5"), ("bool", "true"),
+        ("null", "null"), ("seq", "[one, two]"), ("map", "{key: value}"),
+    ])
+    def test_rebound_double_exclamation_is_not_necessarily_a_builtin(tag, value):
+        raw = f"%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!{tag} {value}\n"
+>       with pytest.raises(InputError, match="built-in tags"):
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_model_loop4.py:89: Failed
+___ test_rebound_double_exclamation_is_not_necessarily_a_builtin[bool-true] ____
+
+tag = 'bool', value = 'true'
+
+    @pytest.mark.parametrize("tag,value", [
+        ("str", "text"), ("int", "2"), ("float", "2.5"), ("bool", "true"),
+        ("null", "null"), ("seq", "[one, two]"), ("map", "{key: value}"),
+    ])
+    def test_rebound_double_exclamation_is_not_necessarily_a_builtin(tag, value):
+        raw = f"%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!{tag} {value}\n"
+>       with pytest.raises(InputError, match="built-in tags"):
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_model_loop4.py:89: Failed
+___ test_rebound_double_exclamation_is_not_necessarily_a_builtin[null-null] ____
+
+tag = 'null', value = 'null'
+
+    @pytest.mark.parametrize("tag,value", [
+        ("str", "text"), ("int", "2"), ("float", "2.5"), ("bool", "true"),
+        ("null", "null"), ("seq", "[one, two]"), ("map", "{key: value}"),
+    ])
+    def test_rebound_double_exclamation_is_not_necessarily_a_builtin(tag, value):
+        raw = f"%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!{tag} {value}\n"
+>       with pytest.raises(InputError, match="built-in tags"):
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_model_loop4.py:89: Failed
+_ test_rebound_double_exclamation_is_not_necessarily_a_builtin[seq-[one, two]] _
+
+tag = 'seq', value = '[one, two]'
+
+    @pytest.mark.parametrize("tag,value", [
+        ("str", "text"), ("int", "2"), ("float", "2.5"), ("bool", "true"),
+        ("null", "null"), ("seq", "[one, two]"), ("map", "{key: value}"),
+    ])
+    def test_rebound_double_exclamation_is_not_necessarily_a_builtin(tag, value):
+        raw = f"%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!{tag} {value}\n"
+>       with pytest.raises(InputError, match="built-in tags"):
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_model_loop4.py:89: Failed
+_ test_rebound_double_exclamation_is_not_necessarily_a_builtin[map-{key: value}] _
+
+tag = 'map', value = '{key: value}'
+
+    @pytest.mark.parametrize("tag,value", [
+        ("str", "text"), ("int", "2"), ("float", "2.5"), ("bool", "true"),
+        ("null", "null"), ("seq", "[one, two]"), ("map", "{key: value}"),
+    ])
+    def test_rebound_double_exclamation_is_not_necessarily_a_builtin(tag, value):
+        raw = f"%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!{tag} {value}\n"
+>       with pytest.raises(InputError, match="built-in tags"):
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_model_loop4.py:89: Failed
+_ test_actual_builtin_tags_survive_handle_aliases[%TAG !b! tag:yaml.org,2002:\n-!b!] _
+
+directive = '%TAG !b! tag:yaml.org,2002:\n', tag = '!b!'
+
+    @pytest.mark.parametrize("directive,tag", [
+        ("", "!!"),
+        ("%TAG !! tag:yaml.org,2002:\n", "!!"),
+        ("%TAG !b! tag:yaml.org,2002:\n", "!b!"),
+        ("%TAG ! tag:yaml.org,2002:\n", "!"),
+    ])
+    def test_actual_builtin_tags_survive_handle_aliases(directive, tag):
+        raw = directive + "---\n" + "\n".join([
+            f"s: {tag}str 2", f"i: {tag}int 2", f"f: {tag}float 2.5",
+            f"b: {tag}bool true", f"n: {tag}null null", f"a: {tag}seq [one, two]",
+            f"o: {tag}map {{key: value}}",
+        ])
+>       assert parse(raw) == {"s": "2", "i": 2, "f": 2.5, "b": True, "n": None, "a": ["one", "two"], "o": {"key": "value"}}
+               ^^^^^^^^^^
+
+tests/test_review_model_loop4.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+raw = '%TAG !b! tag:yaml.org,2002:\n---\ns: !b!str 2\ni: !b!int 2\nf: !b!float 2.5\nb: !b!bool true\nn: !b!null null\na: !b!seq [one, two]\no: !b!map {key: value}'
+
+    def parse(raw: bytes | str) -> Any:
+        """YAML 1.2 JSON scalar resolution, without constructors or alias expansion."""
+        try:
+            text = raw.decode("utf-8") if isinstance(raw, bytes) else raw
+    
+            # JSON strings keep literal U+2028/U+2029; YAML may fold them.
+            try:
+                return parse_json(text)
+            except json.JSONDecodeError:
+                pass
+            explicit_tags = {}
+            for token in yaml.scan(text):
+                if isinstance(token, (yaml.tokens.AnchorToken, yaml.tokens.AliasToken)):
+                    raise InputError(
+                        "YAML_FEATURE_FORBIDDEN",
+                        "Anchors and aliases are forbidden.",
+                    )
+                if isinstance(token, yaml.tokens.TagToken):
+                    handle, suffix = token.value
+                    tag = "tag:yaml.org,2002:" + suffix if handle == "!!" else suffix
+                    if tag not in {
+                        "tag:yaml.org,2002:" + name
+                        for name in ("str", "int", "float", "bool", "null", "seq", "map")
+                    }:
+>                       raise InputError(
+                            "YAML_FEATURE_FORBIDDEN",
+                            "Only JSON-compatible built-in tags are supported.",
+                        )
+E                       gdd_validator.loading.InputError: Only JSON-compatible built-in tags are supported.
+
+gdd_validator/loading.py:126: InputError
+_ test_actual_builtin_tags_survive_handle_aliases[%TAG ! tag:yaml.org,2002:\n-!] _
+
+directive = '%TAG ! tag:yaml.org,2002:\n', tag = '!'
+
+    @pytest.mark.parametrize("directive,tag", [
+        ("", "!!"),
+        ("%TAG !! tag:yaml.org,2002:\n", "!!"),
+        ("%TAG !b! tag:yaml.org,2002:\n", "!b!"),
+        ("%TAG ! tag:yaml.org,2002:\n", "!"),
+    ])
+    def test_actual_builtin_tags_survive_handle_aliases(directive, tag):
+        raw = directive + "---\n" + "\n".join([
+            f"s: {tag}str 2", f"i: {tag}int 2", f"f: {tag}float 2.5",
+            f"b: {tag}bool true", f"n: {tag}null null", f"a: {tag}seq [one, two]",
+            f"o: {tag}map {{key: value}}",
+        ])
+>       assert parse(raw) == {"s": "2", "i": 2, "f": 2.5, "b": True, "n": None, "a": ["one", "two"], "o": {"key": "value"}}
+               ^^^^^^^^^^
+
+tests/test_review_model_loop4.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+raw = '%TAG ! tag:yaml.org,2002:\n---\ns: !str 2\ni: !int 2\nf: !float 2.5\nb: !bool true\nn: !null null\na: !seq [one, two]\no: !map {key: value}'
+
+    def parse(raw: bytes | str) -> Any:
+        """YAML 1.2 JSON scalar resolution, without constructors or alias expansion."""
+        try:
+            text = raw.decode("utf-8") if isinstance(raw, bytes) else raw
+    
+            # JSON strings keep literal U+2028/U+2029; YAML may fold them.
+            try:
+                return parse_json(text)
+            except json.JSONDecodeError:
+                pass
+            explicit_tags = {}
+            for token in yaml.scan(text):
+                if isinstance(token, (yaml.tokens.AnchorToken, yaml.tokens.AliasToken)):
+                    raise InputError(
+                        "YAML_FEATURE_FORBIDDEN",
+                        "Anchors and aliases are forbidden.",
+                    )
+                if isinstance(token, yaml.tokens.TagToken):
+                    handle, suffix = token.value
+                    tag = "tag:yaml.org,2002:" + suffix if handle == "!!" else suffix
+                    if tag not in {
+                        "tag:yaml.org,2002:" + name
+                        for name in ("str", "int", "float", "bool", "null", "seq", "map")
+                    }:
+>                       raise InputError(
+                            "YAML_FEATURE_FORBIDDEN",
+                            "Only JSON-compatible built-in tags are supported.",
+                        )
+E                       gdd_validator.loading.InputError: Only JSON-compatible built-in tags are supported.
+
+gdd_validator/loading.py:126: InputError
+___________ test_rebound_tag_cannot_make_a_model_representation_pass ___________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_rebound_tag_cannot_make_a0')
+
+    def test_rebound_tag_cannot_make_a_model_representation_pass(tmp_path):
+        raw = "%TAG !! tag:example.org,2026:custom-\n---\nformat: !!str gdd/0.2\nproject: {id: p, title: P, goal: P}\nnodes: {}\nedges: []\n"
+        path = tmp_path / "model.yaml"
+        path.write_text(raw, encoding="utf-8")
+        report = validate(path, profiles=["representation"])
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_model_loop4.py:122: AssertionError
+_ test_contract_yaml_uses_the_same_resolved_tag_policy[%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!str requirement\n-UNKNOWN] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_contract_yaml_uses_the_sa0')
+raw = b'%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!str requirement\n'
+result = 'UNKNOWN'
+
+    @pytest.mark.parametrize("raw,result", [
+        (b"%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!str requirement\n", "UNKNOWN"),
+        (b"%TAG !s! tag:yaml.org,2002:\n---\nvalue: !s!str requirement\n", "PASS"),
+    ])
+    def test_contract_yaml_uses_the_same_resolved_tag_policy(tmp_path, raw, result):
+        (tmp_path / "contract.yaml").write_bytes(raw)
+        model = model_with_type({"type": "string"})
+        model["sources"] = {"source.contract": {
+            "role": "knowledge", "title": "Contract", "uri": "contract.yaml", "format": "yaml",
+            "normative": True, "revision": {"sha256": sha256(raw).hexdigest()},
+        }}
+        model["nodes"]["entity.x"]["source_refs"] = [{
+            "source": "source.contract", "purpose": "contract",
+            "selector": {"kind": "json-pointer", "value": "/value"},
+        }]
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(model), encoding="utf-8")
+        report = validate(path, profiles=["readiness"], scope=["entity.x"])
+        assert aggregate(report["checks"], "model") == "PASS"
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_model_loop4.py:145: AssertionError
+_ test_contract_yaml_uses_the_same_resolved_tag_policy[%TAG !s! tag:yaml.org,2002:\n---\nvalue: !s!str requirement\n-PASS] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-87/test_contract_yaml_uses_the_sa1')
+raw = b'%TAG !s! tag:yaml.org,2002:\n---\nvalue: !s!str requirement\n'
+result = 'PASS'
+
+    @pytest.mark.parametrize("raw,result", [
+        (b"%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!str requirement\n", "UNKNOWN"),
+        (b"%TAG !s! tag:yaml.org,2002:\n---\nvalue: !s!str requirement\n", "PASS"),
+    ])
+    def test_contract_yaml_uses_the_same_resolved_tag_policy(tmp_path, raw, result):
+        (tmp_path / "contract.yaml").write_bytes(raw)
+        model = model_with_type({"type": "string"})
+        model["sources"] = {"source.contract": {
+            "role": "knowledge", "title": "Contract", "uri": "contract.yaml", "format": "yaml",
+            "normative": True, "revision": {"sha256": sha256(raw).hexdigest()},
+        }}
+        model["nodes"]["entity.x"]["source_refs"] = [{
+            "source": "source.contract", "purpose": "contract",
+            "selector": {"kind": "json-pointer", "value": "/value"},
+        }]
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(model), encoding="utf-8")
+        report = validate(path, profiles=["readiness"], scope=["entity.x"])
+        assert aggregate(report["checks"], "model") == "PASS"
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'UNKNOWN' == 'PASS'
+E         
+E         - PASS
+E         + UNKNOWN
+
+tests/test_review_model_loop4.py:145: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec2-PASS-fields]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec2-PASS-input]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec2-PASS-context]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec2-PASS-output]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec4-PASS-fields]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec4-PASS-input]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec4-PASS-context]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec4-PASS-output]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec6-PASS-fields]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec6-PASS-input]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec6-PASS-context]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec6-PASS-output]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec7-PASS-fields]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec7-PASS-input]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec7-PASS-context]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec7-PASS-output]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec8-PASS-fields]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec8-PASS-input]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec8-PASS-context]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec8-PASS-output]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec9-PASS-fields]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec9-PASS-input]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec9-PASS-context]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec9-PASS-output]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec10-PASS-fields]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec10-PASS-input]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec10-PASS-context]
+FAILED tests/test_review_model_loop4.py::test_integer_domain_requires_an_unavoidable_value[spec10-PASS-output]
+FAILED tests/test_review_model_loop4.py::test_optional_field_can_omit_an_otherwise_uninhabited_object[fields]
+FAILED tests/test_review_model_loop4.py::test_optional_field_can_omit_an_otherwise_uninhabited_object[input]
+FAILED tests/test_review_model_loop4.py::test_optional_field_can_omit_an_otherwise_uninhabited_object[context]
+FAILED tests/test_review_model_loop4.py::test_rebound_double_exclamation_is_not_necessarily_a_builtin[str-text]
+FAILED tests/test_review_model_loop4.py::test_rebound_double_exclamation_is_not_necessarily_a_builtin[int-2]
+FAILED tests/test_review_model_loop4.py::test_rebound_double_exclamation_is_not_necessarily_a_builtin[float-2.5]
+FAILED tests/test_review_model_loop4.py::test_rebound_double_exclamation_is_not_necessarily_a_builtin[bool-true]
+FAILED tests/test_review_model_loop4.py::test_rebound_double_exclamation_is_not_necessarily_a_builtin[null-null]
+FAILED tests/test_review_model_loop4.py::test_rebound_double_exclamation_is_not_necessarily_a_builtin[seq-[one, two]]
+FAILED tests/test_review_model_loop4.py::test_rebound_double_exclamation_is_not_necessarily_a_builtin[map-{key: value}]
+FAILED tests/test_review_model_loop4.py::test_actual_builtin_tags_survive_handle_aliases[%TAG !b! tag:yaml.org,2002:\n-!b!]
+FAILED tests/test_review_model_loop4.py::test_actual_builtin_tags_survive_handle_aliases[%TAG ! tag:yaml.org,2002:\n-!]
+FAILED tests/test_review_model_loop4.py::test_rebound_tag_cannot_make_a_model_representation_pass
+FAILED tests/test_review_model_loop4.py::test_contract_yaml_uses_the_same_resolved_tag_policy[%TAG !! tag:example.org,2026:custom-\n---\nvalue: !!str requirement\n-UNKNOWN]
+FAILED tests/test_review_model_loop4.py::test_contract_yaml_uses_the_same_resolved_tag_policy[%TAG !s! tag:yaml.org,2002:\n---\nvalue: !s!str requirement\n-PASS]
+43 failed, 32 passed in 0.39s

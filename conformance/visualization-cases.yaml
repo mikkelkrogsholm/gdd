@@ -1,0 +1,18 @@
+# Tool profile cases, not additions to the normative GDD core format.
+cases:
+- {id: viewer.concert, base: concert, operation: none, expected: PASS}
+- {id: viewer.fragments, base: fragmented, operation: none, expected: PASS}
+- {id: viewer.extension, base: extension, operation: none, expected: PASS}
+- {id: viewer.scope, base: concert, operation: scope, expected: PASS}
+- {id: viewer.hostile_multigraph, base: fixture, operation: none, expected: PASS}
+- {id: viewer.unknown_renderer, base: fixture, operation: renderer, expected: UNKNOWN}
+- {id: viewer.stale_revision, base: fixture, operation: revision, expected: FAIL}
+- {id: viewer.changed_direction, base: fixture, operation: direction, expected: FAIL}
+- {id: viewer.omitted_parallel_edge, base: fixture, operation: omit_edge, expected: FAIL}
+- {id: viewer.missing_manifest_ids, base: fixture, operation: manifest, expected: FAIL}
+- {id: viewer.changed_script, base: fixture, operation: script, expected: FAIL}
+- {id: viewer.blank_html, base: fixture, operation: blank, expected: FAIL}
+- {id: viewer.missing_input, base: fixture, operation: missing, expected: UNKNOWN}
+- {id: viewer.unavailable_artifact, base: fixture, operation: unavailable, expected: UNKNOWN}
+- {id: viewer.changed_newlines, base: fixture, operation: crlf, expected: FAIL}
+- {id: viewer.deep_payload, base: fixture, operation: deep, expected: UNKNOWN}

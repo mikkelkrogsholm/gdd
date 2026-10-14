@@ -1,0 +1,202 @@
+[
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/cli.py",
+    "line": 191,
+    "message": "near-duplicate block (lines 191-196) also at: planning.py:108-113",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify.py",
+    "line": 80,
+    "message": "near-duplicate block (lines 80-85) also at: graphify.py:257-262",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify.py",
+    "line": 257,
+    "message": "near-duplicate block (lines 257-262) also at: graphify.py:80-85",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 45,
+    "message": "near-duplicate block (lines 45-51) also at: graphify_io.py:69-75, graphify_io.py:86-92, graphify_io.py:101-107, graphify_io.py:117-123",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 69,
+    "message": "near-duplicate block (lines 69-75) also at: graphify_io.py:45-51, graphify_io.py:86-92, graphify_io.py:101-107, graphify_io.py:117-123",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 71,
+    "message": "near-duplicate block (lines 71-76) also at: graphify_io.py:88-93, graphify_io.py:119-124",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 86,
+    "message": "near-duplicate block (lines 86-92) also at: graphify_io.py:45-51, graphify_io.py:69-75, graphify_io.py:101-107, graphify_io.py:117-123",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 88,
+    "message": "near-duplicate block (lines 88-93) also at: graphify_io.py:71-76, graphify_io.py:119-124",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 101,
+    "message": "near-duplicate block (lines 101-107) also at: graphify_io.py:45-51, graphify_io.py:69-75, graphify_io.py:86-92, graphify_io.py:117-123",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 117,
+    "message": "near-duplicate block (lines 117-123) also at: graphify_io.py:45-51, graphify_io.py:69-75, graphify_io.py:86-92, graphify_io.py:101-107",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 119,
+    "message": "near-duplicate block (lines 119-124) also at: graphify_io.py:71-76, graphify_io.py:88-93",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 272,
+    "message": "near-duplicate block (lines 272-277) also at: graphify_io.py:303-308",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_io.py",
+    "line": 303,
+    "message": "near-duplicate block (lines 303-308) also at: graphify_io.py:272-277",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_proposal.py",
+    "line": 70,
+    "message": "near-duplicate block (lines 70-77) also at: graphify_proposal.py:110-117",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/graphify_proposal.py",
+    "line": 110,
+    "message": "near-duplicate block (lines 110-117) also at: graphify_proposal.py:70-77",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/model.py",
+    "line": 92,
+    "message": "near-duplicate block (lines 92-99) also at: readiness.py:126-133",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/planning.py",
+    "line": 363,
+    "message": "near-duplicate block (lines 363-368) also at: planning.py:375-380",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/planning.py",
+    "line": 375,
+    "message": "near-duplicate block (lines 375-380) also at: planning.py:363-368",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/readiness.py",
+    "line": 429,
+    "message": "near-duplicate block (lines 429-437) also at: readiness.py:507-515",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/readiness.py",
+    "line": 507,
+    "message": "near-duplicate block (lines 507-515) also at: readiness.py:429-437",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  }
+]

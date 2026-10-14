@@ -1,0 +1,40 @@
+{
+  "format": "gdd-graphify-wheel-smoke/0.2",
+  "wheel": "gdd_validator-0.3.0-py3-none-any.whl",
+  "wheel_sha256": "1424013a3647540a4812a81169546e0cfc00c5ce053d506bcdcb9b7ac9bbc9fd",
+  "outside_workspace": true,
+  "package": {
+    "version": "0.3.0",
+    "schemas": [
+      "extension.schema.json",
+      "fragment.schema.json",
+      "gdd.schema.json",
+      "graphify-mapping.schema.json",
+      "observations.schema.json",
+      "records.schema.json",
+      "report.schema.json",
+      "snapshot.schema.json",
+      "validator-inputs.schema.json"
+    ],
+    "graphify_dependency_installed": false
+  },
+  "steps": [
+    {
+      "step": "import",
+      "exit_code": 0
+    },
+    {
+      "step": "validate",
+      "exit_code": 0
+    },
+    {
+      "step": "export",
+      "exit_code": 0
+    },
+    {
+      "step": "propose",
+      "exit_code": 0
+    }
+  ],
+  "byte_roundtrip": "PASS"
+}

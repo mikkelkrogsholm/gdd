@@ -1,0 +1,38 @@
+{
+  "viewer_pytest_passed": 65,
+  "round": 10,
+  "findings": [],
+  "browser/browser-conformance.json": {
+    "total": 23,
+    "passed": 23,
+    "errors": [],
+    "externalRequests": []
+  },
+  "independent-browser.json": {
+    "total": 35,
+    "passed": 35,
+    "errors": [],
+    "requests": []
+  },
+  "independent-api.json": {
+    "total": 13,
+    "passed": 13
+  },
+  "numeric-boundary.json": {
+    "total": 16,
+    "passed": 16
+  },
+  "exact-numeric-review.json": {
+    "total": 4,
+    "passed": 4
+  },
+  "actual-capacity-controls.json": {
+    "total": 4,
+    "passed": 4
+  },
+  "renderer-conformance.json": {
+    "total": 16,
+    "matched": 16
+  },
+  "ordinary_byteidentical_artifacts": 5
+}

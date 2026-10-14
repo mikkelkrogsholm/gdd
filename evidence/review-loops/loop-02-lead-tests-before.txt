@@ -1,0 +1,236 @@
+FFFFF.........FFF........................                                [100%]
+=================================== FAILURES ===================================
+________ test_atomic_rename_rejects_nul_without_touching_paths[source] _________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-50/test_atomic_rename_rejects_nul0')
+argument = 'source'
+
+    @pytest.mark.parametrize("argument", ["source", "destination"])
+    def test_atomic_rename_rejects_nul_without_touching_paths(tmp_path, argument):
+        source = tmp_path / "source"
+        source.mkdir()
+        (source / "keep").write_text("intact")
+        destination = tmp_path / "destination"
+        arguments = {"source": source, "destination": destination}
+        arguments[argument] = Path(str(arguments[argument]) + "\x00ignored")
+>       with pytest.raises(ValueError, match="null|NUL"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_cli_loop2.py:25: Failed
+______ test_atomic_rename_rejects_nul_without_touching_paths[destination] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-50/test_atomic_rename_rejects_nul1')
+argument = 'destination'
+
+    @pytest.mark.parametrize("argument", ["source", "destination"])
+    def test_atomic_rename_rejects_nul_without_touching_paths(tmp_path, argument):
+        source = tmp_path / "source"
+        source.mkdir()
+        (source / "keep").write_text("intact")
+        destination = tmp_path / "destination"
+        arguments = {"source": source, "destination": destination}
+        arguments[argument] = Path(str(arguments[argument]) + "\x00ignored")
+>       with pytest.raises(ValueError, match="null|NUL"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_cli_loop2.py:25: Failed
+______________ test_import_rejects_nul_output_without_publishing _______________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-50/test_import_rejects_nul_output0')
+
+    def test_import_rejects_nul_output_without_publishing(tmp_path):
+        destination = tmp_path / "output"
+>       with pytest.raises(ValueError, match="null|NUL"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_cli_loop2.py:33: Failed
+_ test_cli_proposal_source_locator_follows_manifest_and_output_aliases[False] __
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-50/test_cli_proposal_source_locat0')
+output_alias = False
+
+    @pytest.mark.parametrize("output_alias", [False, True])
+    def test_cli_proposal_source_locator_follows_manifest_and_output_aliases(
+        tmp_path, output_alias
+    ):
+        folder, _, _, _, mapping = make_bundle(tmp_path)
+        aliases = tmp_path / "aliases"
+        aliases.mkdir()
+        manifest = aliases / "manifest.json"
+        manifest.symlink_to(folder / "observations.json")
+        actual_output = tmp_path / "actual-output"
+        actual_output.mkdir()
+        if output_alias:
+            output_parent = aliases / "output"
+            output_parent.symlink_to(actual_output, target_is_directory=True)
+        else:
+            output_parent = actual_output
+        mapping_path = tmp_path / "mapping.json"
+        mapping_path.write_text(json.dumps(mapping))
+        output = output_parent / "proposal.json"
+        run = subprocess.run(
+            [sys.executable, "-m", "gdd_validator", "graphify", "propose", str(manifest),
+             "--mapping", str(mapping_path), "--output", str(output)],
+            capture_output=True, text=True,
+        )
+        assert run.returncode == 0, run.stderr
+        proposal = json.loads(output.read_text())
+>       uri = next(iter(proposal["model"]["sources"].values()))["uri"]
+                        ^^^^^^^^^^^^^^^^^
+E       KeyError: 'model'
+
+tests/test_review_cli_loop2.py:69: KeyError
+__ test_cli_proposal_source_locator_follows_manifest_and_output_aliases[True] __
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-50/test_cli_proposal_source_locat1')
+output_alias = True
+
+    @pytest.mark.parametrize("output_alias", [False, True])
+    def test_cli_proposal_source_locator_follows_manifest_and_output_aliases(
+        tmp_path, output_alias
+    ):
+        folder, _, _, _, mapping = make_bundle(tmp_path)
+        aliases = tmp_path / "aliases"
+        aliases.mkdir()
+        manifest = aliases / "manifest.json"
+        manifest.symlink_to(folder / "observations.json")
+        actual_output = tmp_path / "actual-output"
+        actual_output.mkdir()
+        if output_alias:
+            output_parent = aliases / "output"
+            output_parent.symlink_to(actual_output, target_is_directory=True)
+        else:
+            output_parent = actual_output
+        mapping_path = tmp_path / "mapping.json"
+        mapping_path.write_text(json.dumps(mapping))
+        output = output_parent / "proposal.json"
+        run = subprocess.run(
+            [sys.executable, "-m", "gdd_validator", "graphify", "propose", str(manifest),
+             "--mapping", str(mapping_path), "--output", str(output)],
+            capture_output=True, text=True,
+        )
+        assert run.returncode == 0, run.stderr
+        proposal = json.loads(output.read_text())
+>       uri = next(iter(proposal["model"]["sources"].values()))["uri"]
+                        ^^^^^^^^^^^^^^^^^
+E       KeyError: 'model'
+
+tests/test_review_cli_loop2.py:69: KeyError
+_________ test_parallel_posix_resource_ownership[src/.-src/a.py-FAIL] __________
+
+left = 'src/.', right = 'src/a.py', result = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/.", "src/a.py", "FAIL"),
+            ("src/dir/..", "src/a.py", "FAIL"),
+            ("src//.", "src/a.py", "FAIL"),
+            ("src/dir/..", "src-other/a.py", "PASS"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_model.py:149: AssertionError
+_______ test_parallel_posix_resource_ownership[src/dir/..-src/a.py-FAIL] _______
+
+left = 'src/dir/..', right = 'src/a.py', result = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/.", "src/a.py", "FAIL"),
+            ("src/dir/..", "src/a.py", "FAIL"),
+            ("src//.", "src/a.py", "FAIL"),
+            ("src/dir/..", "src-other/a.py", "PASS"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_model.py:149: AssertionError
+_________ test_parallel_posix_resource_ownership[src//.-src/a.py-FAIL] _________
+
+left = 'src//.', right = 'src/a.py', result = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "left,right,result",
+        [
+            ("src/[ab].py", "src/a.py", "UNKNOWN"),
+            ("src/*.py", "src/a.py", "UNKNOWN"),
+            ("src/", "src/a.py", "FAIL"),
+            ("src/.", "src/a.py", "FAIL"),
+            ("src/dir/..", "src/a.py", "FAIL"),
+            ("src//.", "src/a.py", "FAIL"),
+            ("src/dir/..", "src-other/a.py", "PASS"),
+            ("src/a/", "src/a/nested/file.py", "FAIL"),
+            ("./", "src/a.py", "FAIL"),
+            ("src/a/", "src/ab.py", "PASS"),
+            ("src/a/", "src/b/", "PASS"),
+            ("src/a.py::symbol", "src/a.py", "UNKNOWN"),
+            ("src\\a.py", "src/a.py", "UNKNOWN"),
+            ("../outside.py", "src/a.py", "UNKNOWN"),
+        ],
+    )
+    def test_parallel_posix_resource_ownership(left, right, result):
+        path = ROOT / "examples/concert.gdd.yaml"
+        plan = parallel_plan(load_bundle(path))
+        plan["packages"][0]["write_resources"] = [left]
+        plan["packages"][1]["write_resources"] = [right]
+        report = validate(path, profiles=["readiness"], parallel_plan=plan)
+>       assert aggregate(report["checks"], "readiness") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_model.py:149: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_cli_loop2.py::test_atomic_rename_rejects_nul_without_touching_paths[source]
+FAILED tests/test_review_cli_loop2.py::test_atomic_rename_rejects_nul_without_touching_paths[destination]
+FAILED tests/test_review_cli_loop2.py::test_import_rejects_nul_output_without_publishing
+FAILED tests/test_review_cli_loop2.py::test_cli_proposal_source_locator_follows_manifest_and_output_aliases[False]
+FAILED tests/test_review_cli_loop2.py::test_cli_proposal_source_locator_follows_manifest_and_output_aliases[True]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[src/.-src/a.py-FAIL]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[src/dir/..-src/a.py-FAIL]
+FAILED tests/test_review_model.py::test_parallel_posix_resource_ownership[src//.-src/a.py-FAIL]
+8 failed, 33 passed in 5.69s

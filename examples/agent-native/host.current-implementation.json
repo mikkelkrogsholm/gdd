@@ -1,0 +1,21 @@
+{
+  "implementation": "implementation.quote_demo.python",
+  "code_revision": "sha256:e9c32589894dc4b697fb2187257835e044684497c981860812e3f82bf10a6d34",
+  "policy": {
+    "revision": "demo-policy-v1",
+    "actor": "actor.demo_lead",
+    "activity": "implementation",
+    "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+    "scope": [
+      "action.discount",
+      "action.tax",
+      "action.quote"
+    ],
+    "requirement": "none",
+    "authorities": [
+      "actor.demo_lead"
+    ],
+    "basis": "The human authorized this bounded local GDD development demo; the lead supplies this policy explicitly as host context. No additional GDD implementation approval gate."
+  },
+  "trusted_decisions": []
+}

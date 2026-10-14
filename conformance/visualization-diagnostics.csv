@@ -1,0 +1,4 @@
+code,dimension,meaning
+VIEW_INPUT_MISSING,integration,No artifact was supplied for visualization verification
+VIEW_REVISION_MISMATCH,integration,Artifact and current model revisions differ
+VIEW_ARTIFACT_MISMATCH,integration,Known renderer artifact bytes or canonical projection differ

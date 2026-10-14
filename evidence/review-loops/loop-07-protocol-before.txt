@@ -1,0 +1,4 @@
+{'profile': ['model'], 'activity': None, 'model': 'PASS', 'implementation': 'UNKNOWN', 'authorization': 'UNRESOLVED', 'exit': 0, 'invalid_record_ids': ['evidence.y'], 'diagnostics': []}
+{'profile': ['records'], 'activity': None, 'model': 'PASS', 'implementation': 'PASS', 'authorization': 'UNRESOLVED', 'exit': 0, 'invalid_record_ids': ['evidence.y'], 'diagnostics': []}
+{'profile': ['records'], 'activity': 'implementation', 'model': 'PASS', 'implementation': 'UNKNOWN', 'authorization': 'GRANTED', 'exit': 0, 'invalid_record_ids': ['evidence.y'], 'diagnostics': []}
+Directory: /var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-loop6-protocol-0teqyflx

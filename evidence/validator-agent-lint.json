@@ -1,0 +1,42 @@
+[
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/cli.py",
+    "line": 116,
+    "message": "near-duplicate block (lines 116-121) also at: planning.py:52-57",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/model.py",
+    "line": 85,
+    "message": "near-duplicate block (lines 85-92) also at: readiness.py:107-114",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/planning.py",
+    "line": 254,
+    "message": "near-duplicate block (lines 254-259) also at: planning.py:266-271",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  },
+  {
+    "rule": "AR002",
+    "file": "gdd_validator/planning.py",
+    "line": 266,
+    "message": "near-duplicate block (lines 266-271) also at: planning.py:254-259",
+    "why": "breaks exact-match str_replace edits",
+    "title": "near-duplicate block",
+    "evidence": "moderate",
+    "fix": "extract shared logic into a helper at the seam, not per call site"
+  }
+]

@@ -1,0 +1,651 @@
+/* Real Chromium tests. Install Playwright separately or use its bundled runtime. */
+const assert = require("node:assert/strict");
+const fs = require("node:fs/promises");
+const { existsSync } = require("node:fs");
+const os = require("node:os");
+const { execFileSync } = require("node:child_process");
+const path = require("node:path");
+const { pathToFileURL } = require("node:url");
+const { chromium } = require(process.env.GDD_PLAYWRIGHT_MODULE || "playwright");
+const root = path.resolve(__dirname, "..");
+const folder = process.env.GDD_BROWSER_OUTPUT
+  ? path.resolve(process.env.GDD_BROWSER_OUTPUT)
+  : path.join(root, "evidence/visualization");
+const results = [],
+  errors = [],
+  requests = [],
+  consoleErrors = [];
+
+(async () => {
+  const temporary = await fs.mkdtemp(path.join(os.tmpdir(), "gdd-browser-"));
+  const fixtures = path.join(temporary, "fixtures");
+  const localPython = path.join(root, ".venv/bin/python");
+  execFileSync(
+    process.env.GDD_PYTHON ||
+      (existsSync(localPython) ? localPython : "python3"),
+    [path.join(root, "conformance/prepare_visualization.py"), fixtures],
+  );
+  await fs.mkdir(folder, { recursive: true });
+  const browser = await chromium.launch({
+    headless: true,
+    ...(process.env.GDD_BROWSER_EXECUTABLE
+      ? { executablePath: process.env.GDD_BROWSER_EXECUTABLE }
+      : {}),
+  });
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 1000 },
+    acceptDownloads: true,
+  });
+  await context.setOffline(true);
+  const page = await context.newPage();
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
+  page.on("request", (request) => {
+    if (!request.url().startsWith("file:")) requests.push(request.url());
+  });
+  const navigate = (name) =>
+    page.goto(pathToFileURL(path.join(fixtures, name + ".html")).href);
+  const manifest = () =>
+    page
+      .locator("#gdd-view-manifest")
+      .evaluate((item) => JSON.parse(item.textContent));
+  const selectNode = (id) => page.locator(`[data-list-node="${id}"]`).click();
+  async function test(id, action) {
+    try {
+      await action();
+      results.push({ id, result: "PASS" });
+    } catch (error) {
+      results.push({ id, result: "FAIL", reason: error.message });
+    }
+  }
+  await test("offline-portable-file", async () => {
+    const portableDirectory = path.join(temporary, "portable");
+    await fs.mkdir(portableDirectory);
+    const portable = path.join(portableDirectory, "graph.html");
+    await fs.copyFile(path.join(fixtures, "fixture.html"), portable);
+    await page.goto(pathToFileURL(portable).href);
+    assert.equal(await page.title(), "Viewer fixture · GDD");
+    assert.equal((await manifest()).shown_nodes.length, 6);
+    assert.equal(await page.locator("[data-node-id]").count(), 6);
+  });
+  await test("hostile-text-and-canvas-selection", async () => {
+    await page.locator('[data-node-id="constructor"] .node-glyph').click();
+    const behavior = await page
+      .locator("#detail details[open] pre")
+      .first()
+      .textContent();
+    const expected = await page
+      .locator("#gdd-data")
+      .evaluate(
+        (item) => JSON.parse(item.textContent).model.nodes.constructor.behavior,
+      );
+    assert.equal(behavior, expected);
+    assert.equal(await page.evaluate(() => window.__gddPwned), undefined);
+    assert.equal(await page.locator("img").count(), 0);
+    assert.equal(await page.locator("script").count(), 3);
+  });
+  await test("keyboard-inspection", async () => {
+    await page.locator("#overview").click();
+    await page.locator('[data-list-node="constructor"]').focus();
+    await page.keyboard.press("Enter");
+    assert.equal(
+      await page.locator("#detail .canonical-id").textContent(),
+      "constructor",
+    );
+    assert.equal(
+      await page.locator('.object-row[aria-pressed="true"]').count(),
+      1,
+    );
+  });
+  await test("parallel-and-opposite-directed-edges", async () => {
+    const m = await manifest();
+    const forward = m.bundles.find(
+      (b) => b.from === "constructor" && b.to === "action.second",
+    );
+    assert.deepEqual(forward.edge_ids, [
+      "edge.call_one",
+      "edge.call_two",
+      "edge.depends",
+    ]);
+    assert.deepEqual(
+      m.bundles.find(
+        (b) => b.from === "action.second" && b.to === "constructor",
+      ).edge_ids,
+      ["edge.reverse"],
+    );
+    const group = page
+      .locator(".edge-group")
+      .filter({ has: page.locator("title", { hasText: "edge.call_one:" }) });
+    const point = await group.locator(".edge-hit").evaluate((item) => {
+      const p = item.getPointAtLength(item.getTotalLength() / 2),
+        matrix = item.getScreenCTM();
+      return {
+        x: p.x * matrix.a + p.y * matrix.c + matrix.e,
+        y: p.x * matrix.b + p.y * matrix.d + matrix.f,
+      };
+    });
+    await page.mouse.click(point.x, point.y);
+    const text = await page.locator("#detail").innerText();
+    assert.ok(text.includes("RETTET RELATIONSBUNDT"));
+    forward.edge_ids.forEach((id) => assert.ok(text.includes(id)));
+    assert.equal(
+      await group.locator(".edge-path").getAttribute("marker-end"),
+      null,
+    ); // Marker is supplied by stylesheet.
+    assert.ok(
+      (
+        await group
+          .locator(".edge-path")
+          .evaluate((item) => getComputedStyle(item).markerEnd)
+      ).includes("arrow"),
+    );
+  });
+  await test("self-loop-is-inspectable", async () => {
+    const group = page
+      .locator(".edge-group")
+      .filter({ has: page.locator("title", { hasText: "edge.loop:" }) });
+    assert.ok(
+      (await group.locator(".edge-path").getAttribute("d")).includes(" C "),
+    );
+    await page.locator("#tab-edges").click();
+    await page.locator('[data-list-edge="edge.loop"]').click();
+    assert.ok(
+      (await page.locator("#detail").innerText()).includes("constructor →"),
+    );
+  });
+  await test("numeric-contract-precision", async () => {
+    await page.locator("#tab-nodes").click();
+    await page.locator("#search").fill("9007199254740993");
+    assert.deepEqual((await manifest()).shown_nodes, ["entity.precision"]);
+    await page.locator("#search").fill("");
+    await selectNode("entity.precision");
+    const text = await page.locator("#detail").innerText();
+    assert.ok(text.includes("9007199254740993"));
+    assert.ok(!text.includes("9007199254740992"));
+  });
+  await test("scenario-reveal-as-first-action", async () => {
+    await navigate("fixture");
+    await page.locator("#scenarios").check();
+    assert.equal(await page.locator("[data-node-id]").count(), 7);
+    assert.equal((await manifest()).shown_nodes.length, 7);
+  });
+  await test("kind-search-and-empty-filter", async () => {
+    await navigate("fixture");
+    await page.locator("#kind").selectOption("scenario");
+    assert.deepEqual((await manifest()).shown_nodes, ["scenario.hidden"]);
+    await page.locator("#kind").selectOption("");
+    await page.locator("#search").fill("Toggle");
+    assert.deepEqual((await manifest()).shown_nodes, ["scenario.hidden"]);
+    await page.locator("#search").fill("no-match-at-all");
+    assert.equal((await manifest()).shown_nodes.length, 0);
+    assert.equal(await page.locator("#empty").isVisible(), true);
+  });
+  await test("relation-and-community-filters", async () => {
+    await page.locator("#reset").click();
+    await page.locator("#relation").selectOption("calls");
+    assert.deepEqual((await manifest()).shown_edges, [
+      "edge.call_one",
+      "edge.call_two",
+      "edge.loop",
+      "edge.reverse",
+    ]);
+    await page.locator("#relation").selectOption("");
+    await page.locator("#community").selectOption("community.frontend");
+    assert.deepEqual((await manifest()).shown_nodes, [
+      "action.second",
+      "community.frontend",
+      "constructor",
+    ]);
+  });
+  await test("overlapping-community-folding-is-lossless", async () => {
+    await page.locator("#reset").click();
+    await page.locator("#fold").check();
+    const m = await manifest();
+    assert.equal(m.shown_nodes.length, 7);
+    assert.equal(m.shown_edges.length, 9);
+    const represented = m.glyphs.flatMap((g) => g.node_ids);
+    assert.equal(new Set(represented).size, 7);
+    assert.equal(represented.length, 7);
+    const edges = m.bundles
+      .flatMap((b) => b.edge_ids)
+      .concat(m.folded_internal_edges);
+    assert.deepEqual([...edges].sort(), m.shown_edges);
+    assert.equal(new Set(edges).size, 9);
+    await selectNode("constructor");
+    const text = await page.locator("#detail").innerText();
+    assert.ok(text.includes("community.backend"));
+    assert.ok(text.includes("community.frontend"));
+    await selectNode("community.backend");
+    assert.ok(
+      (await page.locator("#detail").innerText()).includes("edge.loop"),
+    );
+  });
+  await test("zoom-pan-drag-and-reset", async () => {
+    await page.locator("#reset").click();
+    await page.locator("#overview").click();
+    assert.equal(
+      await page.locator('.object-row[aria-pressed="true"]').count(),
+      0,
+    );
+    const before = await page.locator("#viewport").getAttribute("transform");
+    await page.locator("#zoom-in").click();
+    assert.notEqual(
+      await page.locator("#viewport").getAttribute("transform"),
+      before,
+    );
+    const target = page.locator('[data-node-id="constructor"]'),
+      start = await target.getAttribute("transform");
+    const box = await target.locator(".node-glyph").boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 + 20, box.y + box.height / 2, {
+      steps: 20,
+    });
+    await page.mouse.up();
+    assert.notEqual(await target.getAttribute("transform"), start);
+    assert.equal(
+      await page.locator("#detail .detail-tag").textContent(),
+      "Modeloversigt",
+    );
+    const camera = await page.locator("#viewport").getAttribute("transform"),
+      svg = await page.locator("#graph").boundingBox();
+    await page.mouse.move(svg.x + 15, svg.y + svg.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(svg.x + 35, svg.y + svg.height / 2 + 30);
+    await page.mouse.up();
+    assert.notEqual(
+      await page.locator("#viewport").getAttribute("transform"),
+      camera,
+    );
+    await page.locator("#fit").click();
+    assert.equal((await manifest()).shown_nodes.length, 7);
+  });
+  await test("view-manifest-download", async () => {
+    const pending = page.waitForEvent("download");
+    await page.locator("#manifest-download").click();
+    const download = await pending;
+    const saved = JSON.parse(await fs.readFile(await download.path(), "utf8"));
+    assert.deepEqual(saved, await manifest());
+    await fs.writeFile(
+      path.join(folder, "browser.view-state.json"),
+      JSON.stringify(saved, null, 2) + "\n",
+    );
+  });
+  await test("parallel-membership-is-not-overlap", async () => {
+    await navigate("duplicate");
+    await page.locator("#reset").click();
+    await page.locator("#fold").check();
+    assert.equal((await manifest()).shown_edges.length, 10);
+    await selectNode("community.frontend");
+    assert.equal(
+      await page
+        .getByRole("button", { name: "action.second · overlap", exact: true })
+        .count(),
+      0,
+    );
+    assert.equal(
+      await page
+        .getByRole("button", { name: "action.second", exact: true })
+        .count(),
+      1,
+    );
+  });
+  await test("scoped-artifact-cannot-widen-on-reset", async () => {
+    await navigate("scoped");
+    await page.locator("#reset").click();
+    const m = await manifest();
+    assert.equal(m.shown_nodes.length, 34);
+    assert.equal(m.shown_edges.length, 73);
+    assert.equal(m.omitted_nodes.length, 4);
+  });
+  await test("extension-and-empty-model", async () => {
+    await navigate("extension");
+    await selectNode("sensor.room");
+    assert.ok(
+      (await page.locator("#detail").innerText()).includes(
+        "EXAMPLE.SENSORS.SENSOR",
+      ),
+    );
+    await navigate("empty");
+    assert.equal((await manifest()).shown_nodes.length, 0);
+    assert.equal(await page.locator("#empty").isVisible(), true);
+  });
+  await test("responsive-dark-reduced-motion", async () => {
+    await navigate("concert");
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await selectNode("action.reserve");
+    await page.screenshot({ path: path.join(folder, "concert-desktop.png") });
+    await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
+    assert.equal(
+      await page.evaluate(
+        () => getComputedStyle(document.body).backgroundColor,
+      ),
+      "rgb(29, 37, 36)",
+    );
+    await page.screenshot({ path: path.join(folder, "concert-dark.png") });
+    await page.emulateMedia({ colorScheme: "light" });
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.ok(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    );
+    await page.locator("#search").fill("action.reserve");
+    await selectNode("action.reserve");
+    assert.ok(
+      (await page.locator("#detail").innerText()).includes("Pseudokode"),
+    );
+    await page.screenshot({
+      path: path.join(folder, "concert-mobile.png"),
+      fullPage: true,
+    });
+  });
+  await test("exact-source-and-design-reference-selectors", async () => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await navigate("references");
+    const referenceText = async () => {
+      const details = page.locator("#detail details").filter({
+        has: page.locator("summary", { hasText: /^Reference$/ }),
+      });
+      await details.locator("summary").click();
+      return details.locator("pre").textContent();
+    };
+    const assertExact = (text) => {
+      assert.ok(text.includes("9007199254740993"));
+      assert.ok(!text.includes("9007199254740992"));
+    };
+    await selectNode("constructor");
+    assertExact(await referenceText());
+    await selectNode("screen.references");
+    assertExact(await referenceText());
+    await page.locator("#tab-edges").click();
+    await page.locator('[data-list-edge="edge.call_one"]').click();
+    assertExact(await referenceText());
+    await page
+      .getByRole("button", { name: "→ action.second", exact: true })
+      .click();
+    assert.equal(
+      await page.locator("#detail .canonical-id").textContent(),
+      "action.second",
+    );
+  });
+  await test("new-selections-reset-inspector-scroll", async () => {
+    await navigate("concert");
+    await selectNode("action.reserve");
+    await page.locator("#inspector").evaluate((item) => {
+      item.scrollTop = item.scrollHeight;
+    });
+    assert.ok(
+      await page.locator("#inspector").evaluate((item) => item.scrollTop > 0),
+    );
+    await selectNode("action.cancel");
+    assert.equal(
+      await page.locator("#inspector").evaluate((item) => item.scrollTop),
+      0,
+    );
+    await page.locator("#inspector").evaluate((item) => {
+      item.scrollTop = item.scrollHeight;
+    });
+    await page.locator("#tab-edges").click();
+    await page.locator("[data-list-edge]").first().click();
+    assert.equal(
+      await page.locator("#inspector").evaluate((item) => item.scrollTop),
+      0,
+    );
+    await page.locator("#detail .detail-link").first().click();
+    assert.equal(
+      await page.locator("#inspector").evaluate((item) => item.scrollTop),
+      0,
+    );
+  });
+  await test("mobile-selection-reveals-details-without-filter-jumps", async () => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await navigate("fixture");
+    await page.locator('[data-node-id="constructor"] .node-glyph').click();
+    assert.equal(
+      await page.locator("#detail .canonical-id").textContent(),
+      "constructor",
+    );
+    const visibleHeading = await page
+      .locator("#detail .detail-title")
+      .boundingBox();
+    assert.ok(visibleHeading.y >= 0 && visibleHeading.y < 844);
+    assert.ok(await page.evaluate(() => window.scrollY > 0));
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.locator("#search").fill("action.second");
+    assert.equal(
+      await page.locator("#detail .detail-tag").textContent(),
+      "Modeloversigt",
+    );
+    const inspector = await page.locator("#inspector").boundingBox();
+    assert.ok(inspector.y >= 844); // Filtering must not jump to details.
+    await selectNode("action.second");
+    const selectedHeading = await page
+      .locator("#detail .detail-title")
+      .boundingBox();
+    assert.ok(selectedHeading.y >= 0 && selectedHeading.y < 844);
+    await page.setViewportSize({ width: 1440, height: 1000 });
+  });
+  await test("responsive-panels-and-controls-do-not-overlap", async () => {
+    for (const size of [
+      { width: 740, height: 360 },
+      { width: 850, height: 600 },
+      { width: 800, height: 1024 },
+      { width: 851, height: 600 },
+      { width: 1151, height: 600 },
+      { width: 1440, height: 600 },
+      { width: 1440, height: 1000 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(size);
+      await navigate("concert");
+      const checkPanels = async () => {
+        const layout = await page.evaluate(() => {
+          const rect = (selector) => {
+            const { left, right, top, bottom, height } = document
+              .querySelector(selector)
+              .getBoundingClientRect();
+            return { left, right, top, bottom, height };
+          };
+          return {
+            panels: [".stage", ".explorer", "#inspector"].map(rect),
+            header: rect("header"),
+            main: rect("main"),
+            footer: rect("footer"),
+            controls: [
+              "#search",
+              "#kind",
+              "#relation",
+              "#community",
+              "#scenarios",
+              "#fold",
+              ".list-tabs",
+              "#object-list",
+              "#reset",
+            ].map(rect),
+            pageWidth: document.documentElement.scrollWidth,
+          };
+        });
+        const { panels, header, main, footer, controls, pageWidth } = layout;
+        const atSize = `${size.width}x${size.height}`;
+        assert.ok(pageWidth <= size.width, `Horizontal overflow at ${atSize}`);
+        assert.ok(
+          header.bottom <= main.top + 0.5,
+          `Header overlaps main at ${atSize}`,
+        );
+        assert.ok(
+          main.bottom <= footer.top + 0.5,
+          `Main overlaps footer at ${atSize}`,
+        );
+        for (const panel of panels)
+          assert.ok(
+            panel.top >= main.top - 0.5 && panel.bottom <= main.bottom + 0.5,
+            `Panel outside main at ${atSize}`,
+          );
+        for (let i = 0; i < panels.length; i++)
+          for (let j = i + 1; j < panels.length; j++) {
+            const a = panels[i],
+              b = panels[j];
+            assert.ok(
+              a.right <= b.left + 0.5 ||
+                b.right <= a.left + 0.5 ||
+                a.bottom <= b.top + 0.5 ||
+                b.bottom <= a.top + 0.5,
+              `Overlapping panels at ${size.width}x${size.height}`,
+            );
+          }
+        const explorer = panels[1];
+        for (const control of controls)
+          assert.ok(
+            control.top >= explorer.top &&
+              control.bottom <= explorer.bottom + 0.5,
+            `Control outside explorer at ${atSize}`,
+          );
+        if (size.width === 800)
+          assert.ok(panels[0].height <= size.height * 0.65 + 1);
+      };
+      await checkPanels();
+      await page.locator("#scenarios").check();
+      assert.equal((await manifest()).shown_nodes.length, 38);
+      await page.locator("#fold").check();
+      await page.locator("#reset").click();
+      assert.equal(await page.locator("#fold").isChecked(), false);
+      assert.equal((await manifest()).shown_nodes.length, 38);
+      await checkPanels();
+    }
+    await page.setViewportSize({ width: 1440, height: 1000 });
+  });
+  await test("desktop-fills-viewport-with-scrolling-panels", async () => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await navigate("concert");
+    const layout = await page.evaluate(() => {
+      const main = document.querySelector("main").getBoundingClientRect();
+      const header = document.querySelector("header").getBoundingClientRect();
+      const footer = document.querySelector("footer").getBoundingClientRect();
+      const stage = document.querySelector(".stage").getBoundingClientRect();
+      const graph = document.querySelector("#graph").getBoundingClientRect();
+      const panels = ["#object-list", "#inspector"].map((selector) => {
+        const item = document.querySelector(selector);
+        item.scrollTop = item.scrollHeight;
+        const result = {
+          scrollTop: item.scrollTop,
+          clientHeight: item.clientHeight,
+          scrollHeight: item.scrollHeight,
+        };
+        item.scrollTop = 0;
+        return result;
+      });
+      return {
+        mainTop: main.top,
+        mainBottom: main.bottom,
+        headerBottom: header.bottom,
+        footerTop: footer.top,
+        footerBottom: footer.bottom,
+        stageHeight: stage.height,
+        graphHeight: graph.height,
+        pageHeight: document.documentElement.scrollHeight,
+        panels,
+      };
+    });
+    assert.ok(Math.abs(layout.mainTop - layout.headerBottom) <= 0.5);
+    assert.ok(Math.abs(layout.mainBottom - layout.footerTop) <= 0.5);
+    assert.ok(Math.abs(layout.footerBottom - 1000) <= 0.5);
+    assert.equal(layout.pageHeight, 1000);
+    assert.ok(Math.abs(layout.graphHeight - layout.stageHeight) <= 0.5);
+    for (const panel of layout.panels) {
+      assert.ok(panel.scrollHeight > panel.clientHeight);
+      assert.ok(panel.scrollTop > 0);
+    }
+  });
+  await test("long-project-title-expands-header-without-overlap", async () => {
+    for (const size of [
+      { width: 740, height: 360 },
+      { width: 850, height: 600 },
+      { width: 851, height: 600 },
+      { width: 1151, height: 600 },
+      { width: 1440, height: 600 },
+      { width: 1440, height: 1000 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(size);
+      await navigate("long-title");
+      assert.equal(
+        await page.locator("#project-title").textContent(),
+        "A".repeat(500),
+      );
+      const layout = await page.evaluate(() => {
+        const rect = (selector) => {
+          const { left, right, top, bottom, height } = document
+            .querySelector(selector)
+            .getBoundingClientRect();
+          return { left, right, top, bottom, height };
+        };
+        return {
+          header: rect("header"),
+          children: [".brand", ".heading", "#project-title", "#overview"].map(
+            rect,
+          ),
+          main: rect("main"),
+          footer: rect("footer"),
+          pageWidth: document.documentElement.scrollWidth,
+        };
+      });
+      const atSize = `${size.width}x${size.height}`;
+      assert.ok(
+        layout.header.height > 88,
+        `Header failed to expand at ${atSize}`,
+      );
+      assert.ok(layout.header.top >= 0, `Header above viewport at ${atSize}`);
+      assert.ok(
+        layout.header.bottom <= layout.main.top + 0.5,
+        `Header overlaps main at ${atSize}`,
+      );
+      assert.ok(
+        layout.main.bottom <= layout.footer.top + 0.5,
+        `Main overlaps footer at ${atSize}`,
+      );
+      assert.ok(
+        layout.pageWidth <= size.width,
+        `Horizontal overflow at ${atSize}`,
+      );
+      for (const child of layout.children)
+        assert.ok(
+          child.top >= layout.header.top &&
+            child.bottom <= layout.header.bottom &&
+            child.left >= layout.header.left &&
+            child.right <= layout.header.right,
+          `Header content clipped at ${atSize}`,
+        );
+    }
+    await page.setViewportSize({ width: 1440, height: 1000 });
+  });
+  await test("no-script-errors-or-network", async () => {
+    assert.deepEqual(errors, []);
+    assert.deepEqual(consoleErrors, []);
+    assert.deepEqual(requests, []);
+  });
+  const report = {
+    format: "gdd-browser-conformance/0.1",
+    browser: await browser.version(),
+    offline: true,
+    results,
+    passed: results.filter((r) => r.result === "PASS").length,
+    total: results.length,
+    errors,
+    consoleErrors,
+    externalRequests: requests,
+  };
+  await fs.writeFile(
+    path.join(folder, "browser-conformance.json"),
+    JSON.stringify(report, null, 2) + "\n",
+  );
+  console.log(JSON.stringify(report, null, 2));
+  await browser.close();
+  await fs.rm(temporary, { recursive: true });
+  process.exitCode = report.passed === report.total ? 0 : 1;
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

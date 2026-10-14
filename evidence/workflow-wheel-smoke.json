@@ -1,0 +1,151 @@
+{
+  "format": "gdd-workflow-wheel-smoke/0.1",
+  "package_version": "0.5.0",
+  "installed_module": "/private/tmp/gdd-workflow-wheel-20261014/lib/python3.12/site-packages/gdd_validator/__init__.py",
+  "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]",
+  "outside_checkout": true,
+  "cli_steps": [
+    {
+      "step": "plan",
+      "exit": 0,
+      "stdout_sha256": "162efd2e3dfec08492e7e001c2a6aafddf090dcd65554b985d865868af278d80"
+    },
+    {
+      "step": "verify",
+      "exit": 0,
+      "stdout_sha256": "e97c6dab4a083b57c2e3f96212aeea3332b8877fe49e0abc9a5db39cab529a1b"
+    },
+    {
+      "step": "create",
+      "exit": 0,
+      "stdout_sha256": "6f1f4a6831492332463da6fae814316bb1bf72506ea559a7dfa9c542c2b1a53b"
+    },
+    {
+      "step": "status",
+      "exit": 0,
+      "stdout_sha256": "6f1f4a6831492332463da6fae814316bb1bf72506ea559a7dfa9c542c2b1a53b"
+    },
+    {
+      "step": "dispatch",
+      "exit": 0,
+      "stdout_sha256": "ee92cf1268a44b40f3a26cde3c75e03e9f63c2cb763ffde78003da7a5ad35051"
+    },
+    {
+      "step": "dispatch.status",
+      "exit": 0,
+      "stdout_sha256": "54bf21b2e6e48102cda4eb7f69ceb0334f4ce8337b022270f017c58889dd9d3c"
+    },
+    {
+      "step": "cancel",
+      "exit": 0,
+      "stdout_sha256": "abe203fa39c09a12650bbdbec1482f9cb6422f87bf0e1a08dc7189d7961b09c4"
+    },
+    {
+      "step": "cancel.status",
+      "exit": 0,
+      "stdout_sha256": "833a29a634f57288b93ea5c91ddc51d145f04cd3eab6262a2e20c23046e7e58a"
+    },
+    {
+      "step": "idempotent.retry",
+      "exit": 0,
+      "stdout_sha256": "ffc7a7fdc659c165474f5dc81404f11ddd19ebe29b064a40b254c752b8887eec"
+    },
+    {
+      "step": "resume",
+      "exit": 0,
+      "stdout_sha256": "23fc5760c80a98509c669ca370fc66f60801fb6627e18189e2201f3df6836213"
+    },
+    {
+      "step": "resume.status",
+      "exit": 0,
+      "stdout_sha256": "c076353e9c64ae9223151d581254ab91d0cca0f5b14d5b6b6cea4be91e1d333f"
+    },
+    {
+      "step": "submit",
+      "exit": 0,
+      "stdout_sha256": "4d6bf1c156b721bbba4358dc501e5918ced70dae3ec73db140e0a6032097a2ae"
+    },
+    {
+      "step": "submit.status",
+      "exit": 0,
+      "stdout_sha256": "e0f23b2ca45947a5fc891ae377853cf2180d7cbfe0e296bcf4286aa93c259436"
+    },
+    {
+      "step": "integrate",
+      "exit": 0,
+      "stdout_sha256": "030909152afc26a6283d5d84b6de9ac18883a5d0bf6d90e66ad095e1e575f74f"
+    },
+    {
+      "step": "integrate.status",
+      "exit": 0,
+      "stdout_sha256": "45e9be85282a0b397ec27e4361e8ae8cc84e1b8fdc656b0e90d99b2fc8abae51"
+    },
+    {
+      "step": "context",
+      "exit": 0,
+      "stdout_sha256": "a02a617c4915e461f060f8b203893ee4d6138e3a3b4b764dbd373da27d21eb91"
+    },
+    {
+      "step": "snapshot",
+      "exit": 0,
+      "stdout_sha256": "59b345e034dad7208c571a9352feb65179d17a9bfbebc505e6ff1e46341dea22"
+    },
+    {
+      "step": "accepted.current",
+      "exit": 0,
+      "stdout_sha256": "2bd2bc759b634f55c7fcfdad90c0c0542b0a9f11e7d684f6f59eb88e3516d964"
+    }
+  ],
+  "replayed_demo": {
+    "format": "gdd-workflow-demo/0.1",
+    "baseline_exit": 1,
+    "final_exit": 0,
+    "acceptance_current": true,
+    "events": 10,
+    "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+    "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874"
+  },
+  "runtime_files": {
+    "gdd_validator/__init__.py": "75467b43baf43559e759983f57cf946bfce6a6c66f712cc9e5866684a79e15ab",
+    "gdd_validator/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "gdd_validator/atomic.py": "f9af27aad136c00cfc524c585b92bc515e3c59cb63613329be5583c5b9c67b4c",
+    "gdd_validator/cli.py": "ea0eb46aad6cd22178403b7f9899f2e289d24ffea04066d978b7f904bdf497cc",
+    "gdd_validator/decision.py": "9afd19288354f4b7cf2aa57204fdc4962b27306b5faf32897a650126e14815e9",
+    "gdd_validator/graphify.py": "3aa82bbcc18a7cdff2476a3639cc02bae8f8dffa5c56a8c4fb3b73e47f004ebd",
+    "gdd_validator/graphify_io.py": "57ee12eaa619ab5b849e5bfe72bcda5bc9f25554987ffb37232e63c1282383c3",
+    "gdd_validator/graphify_proposal.py": "36bf7c10aeb9d3c97ceb38153d376f453b750d5d82340617168f09d52abb0a65",
+    "gdd_validator/loading.py": "bbb5a97ef91972b26162678507a04a0e664693689baffbf3160b0341740b25e5",
+    "gdd_validator/model.py": "02bb8d1120a682021c25aae7ba87f4b7b1e452e0494c2071b90611bfe6aacbf9",
+    "gdd_validator/numeric.py": "514b8b0bdcf51792fc76e27ec7b979b553f685ebb1f077cb6d4ceae7175b6e7e",
+    "gdd_validator/planning.py": "04dcda62f8ed2cd5f463a47f878cda21ac9b50ac2a08f53f2092c3bf67a0dcd3",
+    "gdd_validator/readiness.py": "91134363423cf71b8075319eaa581971d865928fdf9e7ac0509e3dd8c0b33a0e",
+    "gdd_validator/record_integrity.py": "953c88766ce936a18a8b300a0f4b58910db05f8cd11075e8cc073702841be3d5",
+    "gdd_validator/records.py": "1911fc98709d1303bb432f04148a487607334d679c94b10a454e122447b7193b",
+    "gdd_validator/report.py": "ad43e3e17ac1c547cf2bd29d2c9defa6f981bf89da00212ca1c76b1abe112160",
+    "gdd_validator/validator.py": "98eeee20ccad1b31cdab3b19d68dcd59bd8158d5411c715cec4e1d20b5734636",
+    "gdd_validator/visualization.py": "943796b72b1e9503f20ddfa532729f647e6459b733cfa96d7f83d5093c53cea3",
+    "gdd_validator/workflow.py": "d23fba2656a7efe31a19ec4a26fcac22c6b2357cd06aec43f10192959370e0d7",
+    "gdd_validator/workflow_run.py": "7c3bc1909fab15b56968cd5d23715b13bcbc5c7b4e914c9b19bc08417ee5ca85",
+    "gdd_validator/viewer/app.js": "ba39fd9fbbdfb00906c9966ec943469bb104c2186eb49f6fda2cdf670a1c7be3",
+    "gdd_validator/viewer/graph.js": "0227f9aad6eb648e25d56a2e5e7dd75c61e2509897f39c1c83cbbea65b5f1ccb",
+    "gdd_validator/viewer/inspector.js": "b1847b659826797f999708975d1333182640be2172c383ccab2b4a1e1a951203",
+    "gdd_validator/viewer/shell.html": "cf53014f365cf2a975c25623d8b5dee39473d86981d2a2a881741a7efd9b2bfb",
+    "gdd_validator/viewer/style.css": "d86df4ce315a1aac0d7277a41c5c25ea08bf97fb805535c41a2cba5825604f21",
+    "gdd_validator/schemas/README.md": "70281e559fff999a5609b1aa8e14158f2dbb36784c12f7b7a628ede119d2142c",
+    "gdd_validator/schemas/extension.schema.json": "fe31ae35826eb910191b1948fcd3fad33eae3180ed6575ee114dc20767731a1a",
+    "gdd_validator/schemas/fragment.schema.json": "14637f322e176659bdac4beed05ed56deadafe557ce8d91ea31a20152eacbf3c",
+    "gdd_validator/schemas/gdd.schema.json": "e21f1641872945f0b62facf7243c7a78c80b160bfb3f56d59be0fa0f7bf30623",
+    "gdd_validator/schemas/graphify-mapping.schema.json": "bfa77063b989acf5b4a487f0e90d54b5eb919af846f2e8360c3a6beec1ce7590",
+    "gdd_validator/schemas/observations.schema.json": "c59d7caba9c54853dbbe9ea326a93b8c6e3069fc31683bc0c2ef1bfe23de3c58",
+    "gdd_validator/schemas/records.schema.json": "a1069ce8358aedbb4c3b710072ce7e633d52e5a28e8b8bb82a61e683e89bb052",
+    "gdd_validator/schemas/report.schema.json": "89da06e6842cdc788a18ca4e6c4b1b6fd01340378d8a78b11f1160fd97a449c3",
+    "gdd_validator/schemas/snapshot.schema.json": "381a1b00790f81b29f8bdda0ad9d505d714d890de74d9c41c73546139d257fce",
+    "gdd_validator/schemas/validator-inputs.schema.json": "0aace1cd95de671e7c07336cb6d5fc3beda7d0c1bfd4ec5608a3c9af46e974e7",
+    "gdd_validator/schemas/view-state.schema.json": "ca9ede44d2bda23b17ce8ad68bfb451ba688817c4a7dafd76f06634ef97337ea",
+    "gdd_validator/schemas/view.schema.json": "33899d4cdfc4092a595914207bd24fd90236f75f42bd059745c86f551b5b1ec4",
+    "gdd_validator/schemas/workflow.schema.json": "c91844eece6dc4682a1f25d3043119c8370891aa0ec88839750a2d00208b65b0"
+  },
+  "all_runtime_bytes_match": true,
+  "sdist_delivery_files_present": true,
+  "passed": true
+}

@@ -1,0 +1,28 @@
+FF..FFFFFF......FFFFFFFFFFFFFFFFF.                                       [100%]
+=========================== short test summary info ============================
+FAILED tests/test_review_graphify_loop2.py::test_actual_schema_library_depth_exhaustion_is_scoped_unknown
+FAILED tests/test_review_graphify_loop2.py::test_public_validation_of_valid_deep_types_returns_a_report
+FAILED tests/test_review_graphify_loop2.py::test_extension_versions_reject_non_ascii_digits[extension-\u0661.\u0662.\u0663]
+FAILED tests/test_review_graphify_loop2.py::test_extension_versions_reject_non_ascii_digits[extension-\uff11.\uff12.\uff13]
+FAILED tests/test_review_graphify_loop2.py::test_extension_versions_reject_non_ascii_digits[extension-1.\u0662.3]
+FAILED tests/test_review_graphify_loop2.py::test_extension_versions_reject_non_ascii_digits[manifest-\u0661.\u0662.\u0663]
+FAILED tests/test_review_graphify_loop2.py::test_extension_versions_reject_non_ascii_digits[manifest-\uff11.\uff12.\uff13]
+FAILED tests/test_review_graphify_loop2.py::test_extension_versions_reject_non_ascii_digits[manifest-1.\u0662.3]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[title-bad\ud800text]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[title-\ud83d\ude00]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[description-bad\ud800text]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[description-\ud83d\ude00]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[node_rationale-bad\ud800text]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[node_rationale-\ud83d\ude00]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[edge_rationale-bad\ud800text]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[edge_rationale-\ud83d\ude00]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[source_uri-bad\ud800text]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_every_unencodable_string[source_uri-\ud83d\ude00]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_nonfinite_values_before_schema_or_io[nan]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_nonfinite_values_before_schema_or_io[inf]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_nonfinite_values_before_schema_or_io[-inf]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_source_uri_rejects_non_json_values_before_io[\xff]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_source_uri_rejects_non_json_values_before_io[value1]
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_rejects_circular_input_with_controlled_error
+FAILED tests/test_review_graphify_loop2.py::test_proposal_api_depth_exhaustion_is_a_controlled_error
+25 failed, 9 passed in 9.32s

@@ -1,0 +1,31 @@
+test_boundaries (tests.test_tax.LeafTests.test_boundaries)
+scenario.tax.floor: endpoints and exact large-integer control. ... ok
+test_floor_fraction (tests.test_tax.LeafTests.test_floor_fraction) ... FAIL
+test_floor_half (tests.test_tax.LeafTests.test_floor_half)
+scenario.tax.floor: accepted floor value, old half-up must fail. ... FAIL
+test_invalid (tests.test_tax.LeafTests.test_invalid)
+scenario.tax.invalid: integers and inclusive rates are mandatory. ... ok
+test_normal (tests.test_tax.LeafTests.test_normal)
+scenario.tax.normal: exactly divisible positive control. ... ok
+
+======================================================================
+FAIL: test_floor_fraction (tests.test_tax.LeafTests.test_floor_fraction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b/tests/test_tax.py", line 16, in test_floor_fraction
+    self.assertEqual(tax(103, 2500), 25)
+AssertionError: 26 != 25
+
+======================================================================
+FAIL: test_floor_half (tests.test_tax.LeafTests.test_floor_half)
+scenario.tax.floor: accepted floor value, old half-up must fail.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-native-tax-l8s45f2b/tests/test_tax.py", line 13, in test_floor_half
+    self.assertEqual(tax(101, 5000), 50)
+AssertionError: 51 != 50
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+FAILED (failures=2)

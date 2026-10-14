@@ -1,0 +1,2233 @@
+..FFFFFFFF..FF..FFF..F.....FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF..FFFF....FF. [ 70%]
+.FF..FF....FF....FF.........FF                                           [100%]
+=================================== FAILURES ===================================
+__ test_core_mixed_numeric_bounds[100000000000000000000000-1e23-PASS-number] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds2')
+kind = 'number', minimum = '100000000000000000000000', maximum = '1e23'
+result = 'PASS'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+__ test_core_mixed_numeric_bounds[100000000000000000000000-1e23-PASS-integer] __
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds3')
+kind = 'integer', minimum = '100000000000000000000000', maximum = '1e23'
+result = 'PASS'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+___ test_core_mixed_numeric_bounds[1e23-99999999999999999999999-FAIL-number] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds4')
+kind = 'number', minimum = '1e23', maximum = '99999999999999999999999'
+result = 'FAIL'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+__ test_core_mixed_numeric_bounds[1e23-99999999999999999999999-FAIL-integer] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds5')
+kind = 'integer', minimum = '1e23', maximum = '99999999999999999999999'
+result = 'FAIL'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+___ test_core_mixed_numeric_bounds[99999999999999999999999-1e23-PASS-number] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds6')
+kind = 'number', minimum = '99999999999999999999999', maximum = '1e23'
+result = 'PASS'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+__ test_core_mixed_numeric_bounds[99999999999999999999999-1e23-PASS-integer] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds7')
+kind = 'integer', minimum = '99999999999999999999999', maximum = '1e23'
+result = 'PASS'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+_ test_core_mixed_numeric_bounds[-1e23--100000000000000000000000-PASS-number] __
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds8')
+kind = 'number', minimum = '-1e23', maximum = '-100000000000000000000000'
+result = 'PASS'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+_ test_core_mixed_numeric_bounds[-1e23--100000000000000000000000-PASS-integer] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds9')
+kind = 'integer', minimum = '-1e23', maximum = '-100000000000000000000000'
+result = 'PASS'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+__ test_core_mixed_numeric_bounds[-99999999999999999999999--1e23-FAIL-number] __
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds12')
+kind = 'number', minimum = '-99999999999999999999999', maximum = '-1e23'
+result = 'FAIL'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+_ test_core_mixed_numeric_bounds[-99999999999999999999999--1e23-FAIL-integer] __
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_mixed_numeric_bounds13')
+kind = 'integer', minimum = '-99999999999999999999999', maximum = '-1e23'
+result = 'FAIL'
+
+    @pytest.mark.parametrize("kind", ["number", "integer"])
+    @pytest.mark.parametrize(
+        "minimum,maximum,result",
+        [
+            ("1e23", INTEGER, "PASS"),
+            (INTEGER, "1e23", "PASS"),
+            ("1e23", PREVIOUS, "FAIL"),
+            (PREVIOUS, "1e23", "PASS"),
+            ("-1e23", "-" + INTEGER, "PASS"),
+            ("-" + INTEGER, "-1e23", "PASS"),
+            ("-" + PREVIOUS, "-1e23", "FAIL"),
+            ("0.1", "0.2", "NUMBER_ONLY"),
+        ],
+    )
+    def test_core_mixed_numeric_bounds(tmp_path, kind, minimum, maximum, result):
+        report = run_core(
+            tmp_path,
+            {"type": kind, "minimum": "MIN", "maximum": "MAX"},
+            MIN=minimum,
+            MAX=maximum,
+        )
+        if result == "NUMBER_ONLY":
+            result = "PASS" if kind == "number" else "FAIL"
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:69: AssertionError
+_____ test_real_contradiction_is_invalid_in_every_type_context[optional0] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_real_contradiction_is_inv0')
+optional = {}
+
+    @pytest.mark.parametrize("optional", [{}, {"optional": True}, {"nullable": True}])
+    def test_real_contradiction_is_invalid_in_every_type_context(tmp_path, optional):
+        report = run_core(
+            tmp_path,
+            {"type": "integer", "minimum": "MIN", "maximum": "MAX", **optional},
+            MIN="1e23",
+            MAX=PREVIOUS,
+        )
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:81: AssertionError
+_____ test_real_contradiction_is_invalid_in_every_type_context[optional1] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_real_contradiction_is_inv1')
+optional = {'optional': True}
+
+    @pytest.mark.parametrize("optional", [{}, {"optional": True}, {"nullable": True}])
+    def test_real_contradiction_is_invalid_in_every_type_context(tmp_path, optional):
+        report = run_core(
+            tmp_path,
+            {"type": "integer", "minimum": "MIN", "maximum": "MAX", **optional},
+            MIN="1e23",
+            MAX=PREVIOUS,
+        )
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:81: AssertionError
+_____ test_real_contradiction_is_invalid_in_every_type_context[optional2] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_real_contradiction_is_inv2')
+optional = {'nullable': True}
+
+    @pytest.mark.parametrize("optional", [{}, {"optional": True}, {"nullable": True}])
+    def test_real_contradiction_is_invalid_in_every_type_context(tmp_path, optional):
+        report = run_core(
+            tmp_path,
+            {"type": "integer", "minimum": "MIN", "maximum": "MAX", **optional},
+            MIN="1e23",
+            MAX=PREVIOUS,
+        )
+>       assert aggregate(report["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:81: AssertionError
+_ test_core_enum_uses_exact_json_numeric_equality[[1e23,100000000000000000000000]-FAIL] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_core_enum_uses_exact_json0')
+values = '[1e23,100000000000000000000000]', result = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "values,result",
+        [
+            ("[1e23," + INTEGER + "]", "FAIL"),
+            ("[1e23," + PREVIOUS + "]", "PASS"),
+            ("[true,1]", "PASS"),
+            ("[false,0.0]", "PASS"),
+            ("[1,1.0]", "FAIL"),
+            ('["100000000000000000000000",1e23]', "PASS"),
+        ],
+    )
+    def test_core_enum_uses_exact_json_numeric_equality(tmp_path, values, result):
+        report = run_core(tmp_path, {"type": "enum", "values": "VALUES"}, VALUES=values)
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:106: AssertionError
+_ test_extension_exact_comparators[minimum-100000000000000000000000-1e23-PASS-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato0')
+mode = 'inline', keyword = 'minimum', bound = '100000000000000000000000'
+value = '1e23', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[minimum-100000000000000000000000-1e23-PASS-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato1')
+mode = 'ref', keyword = 'minimum', bound = '100000000000000000000000'
+value = '1e23', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[minimum-100000000000000000000000-1e23-PASS-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato2')
+mode = 'dynamic', keyword = 'minimum', bound = '100000000000000000000000'
+value = '1e23', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[minimum-1e23-99999999999999999999999-FAIL-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato3')
+mode = 'inline', keyword = 'minimum', bound = '1e23'
+value = '99999999999999999999999', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[minimum-1e23-99999999999999999999999-FAIL-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato4')
+mode = 'ref', keyword = 'minimum', bound = '1e23'
+value = '99999999999999999999999', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[minimum-1e23-99999999999999999999999-FAIL-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato5')
+mode = 'dynamic', keyword = 'minimum', bound = '1e23'
+value = '99999999999999999999999', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[maximum-99999999999999999999999-1e23-FAIL-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato6')
+mode = 'inline', keyword = 'maximum', bound = '99999999999999999999999'
+value = '1e23', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[maximum-99999999999999999999999-1e23-FAIL-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato7')
+mode = 'ref', keyword = 'maximum', bound = '99999999999999999999999'
+value = '1e23', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[maximum-99999999999999999999999-1e23-FAIL-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato8')
+mode = 'dynamic', keyword = 'maximum', bound = '99999999999999999999999'
+value = '1e23', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[maximum-1e23-100000000000000000000000-PASS-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato9')
+mode = 'inline', keyword = 'maximum', bound = '1e23'
+value = '100000000000000000000000', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[maximum-1e23-100000000000000000000000-PASS-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato10')
+mode = 'ref', keyword = 'maximum', bound = '1e23'
+value = '100000000000000000000000', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[maximum-1e23-100000000000000000000000-PASS-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato11')
+mode = 'dynamic', keyword = 'maximum', bound = '1e23'
+value = '100000000000000000000000', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMinimum-99999999999999999999999-1e23-PASS-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato12')
+mode = 'inline', keyword = 'exclusiveMinimum', bound = '99999999999999999999999'
+value = '1e23', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMinimum-99999999999999999999999-1e23-PASS-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato13')
+mode = 'ref', keyword = 'exclusiveMinimum', bound = '99999999999999999999999'
+value = '1e23', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMinimum-99999999999999999999999-1e23-PASS-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato14')
+mode = 'dynamic', keyword = 'exclusiveMinimum'
+bound = '99999999999999999999999', value = '1e23', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMinimum-1e23-100000000000000000000000-FAIL-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato15')
+mode = 'inline', keyword = 'exclusiveMinimum', bound = '1e23'
+value = '100000000000000000000000', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMinimum-1e23-100000000000000000000000-FAIL-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato16')
+mode = 'ref', keyword = 'exclusiveMinimum', bound = '1e23'
+value = '100000000000000000000000', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMinimum-1e23-100000000000000000000000-FAIL-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato17')
+mode = 'dynamic', keyword = 'exclusiveMinimum', bound = '1e23'
+value = '100000000000000000000000', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMaximum-100000000000000000000000-1e23-FAIL-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato18')
+mode = 'inline', keyword = 'exclusiveMaximum'
+bound = '100000000000000000000000', value = '1e23', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMaximum-100000000000000000000000-1e23-FAIL-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato19')
+mode = 'ref', keyword = 'exclusiveMaximum', bound = '100000000000000000000000'
+value = '1e23', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMaximum-100000000000000000000000-1e23-FAIL-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato20')
+mode = 'dynamic', keyword = 'exclusiveMaximum'
+bound = '100000000000000000000000', value = '1e23', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMaximum-1e23-99999999999999999999999-PASS-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato21')
+mode = 'inline', keyword = 'exclusiveMaximum', bound = '1e23'
+value = '99999999999999999999999', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMaximum-1e23-99999999999999999999999-PASS-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato22')
+mode = 'ref', keyword = 'exclusiveMaximum', bound = '1e23'
+value = '99999999999999999999999', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[exclusiveMaximum-1e23-99999999999999999999999-PASS-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato23')
+mode = 'dynamic', keyword = 'exclusiveMaximum', bound = '1e23'
+value = '99999999999999999999999', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[minimum--1e23--100000000000000000000000-PASS-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato24')
+mode = 'inline', keyword = 'minimum', bound = '-1e23'
+value = '-100000000000000000000000', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[minimum--1e23--100000000000000000000000-PASS-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato25')
+mode = 'ref', keyword = 'minimum', bound = '-1e23'
+value = '-100000000000000000000000', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[minimum--1e23--100000000000000000000000-PASS-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato26')
+mode = 'dynamic', keyword = 'minimum', bound = '-1e23'
+value = '-100000000000000000000000', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[maximum--1e23--99999999999999999999999-FAIL-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato27')
+mode = 'inline', keyword = 'maximum', bound = '-1e23'
+value = '-99999999999999999999999', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[maximum--1e23--99999999999999999999999-FAIL-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato28')
+mode = 'ref', keyword = 'maximum', bound = '-1e23'
+value = '-99999999999999999999999', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+_ test_extension_exact_comparators[maximum--1e23--99999999999999999999999-FAIL-dynamic] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_comparato29')
+mode = 'dynamic', keyword = 'maximum', bound = '-1e23'
+value = '-99999999999999999999999', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref", "dynamic"])
+    @pytest.mark.parametrize(
+        "keyword,bound,value,result",
+        [
+            ("minimum", INTEGER, "1e23", "PASS"),
+            ("minimum", "1e23", PREVIOUS, "FAIL"),
+            ("maximum", PREVIOUS, "1e23", "FAIL"),
+            ("maximum", "1e23", INTEGER, "PASS"),
+            ("exclusiveMinimum", PREVIOUS, "1e23", "PASS"),
+            ("exclusiveMinimum", "1e23", INTEGER, "FAIL"),
+            ("exclusiveMaximum", INTEGER, "1e23", "FAIL"),
+            ("exclusiveMaximum", "1e23", PREVIOUS, "PASS"),
+            ("minimum", "-1e23", "-" + INTEGER, "PASS"),
+            ("maximum", "-1e23", "-" + PREVIOUS, "FAIL"),
+        ],
+    )
+    def test_extension_exact_comparators(tmp_path, mode, keyword, bound, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {keyword: "BOUND"},
+            value,
+            schema_tokens={"BOUND": bound},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:184: AssertionError
+____________ test_extension_exact_multiple_of[0.1-0.3-PASS-inline] _____________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_multiple_0')
+mode = 'inline', divisor = '0.1', value = '0.3', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "divisor,value,result",
+        [
+            ("0.1", "0.3", "PASS"),
+            ("0.1", "0.31", "FAIL"),
+            ("1e-300", "1e300", "PASS"),
+            ("0.1", "1" + "0" * 400, "PASS"),
+            ("1e23", "2" + "0" * 23, "PASS"),
+            ("1e23", "2" + "0" * 22 + "1", "FAIL"),
+        ],
+    )
+    def test_extension_exact_multiple_of(tmp_path, mode, divisor, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {"multipleOf": "DIVISOR"},
+            value,
+            schema_tokens={"DIVISOR": divisor},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:208: AssertionError
+______________ test_extension_exact_multiple_of[0.1-0.3-PASS-ref] ______________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_multiple_1')
+mode = 'ref', divisor = '0.1', value = '0.3', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "divisor,value,result",
+        [
+            ("0.1", "0.3", "PASS"),
+            ("0.1", "0.31", "FAIL"),
+            ("1e-300", "1e300", "PASS"),
+            ("0.1", "1" + "0" * 400, "PASS"),
+            ("1e23", "2" + "0" * 23, "PASS"),
+            ("1e23", "2" + "0" * 22 + "1", "FAIL"),
+        ],
+    )
+    def test_extension_exact_multiple_of(tmp_path, mode, divisor, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {"multipleOf": "DIVISOR"},
+            value,
+            schema_tokens={"DIVISOR": divisor},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:208: AssertionError
+__________ test_extension_exact_multiple_of[1e-300-1e300-PASS-inline] __________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_multiple_4')
+mode = 'inline', divisor = '1e-300', value = '1e300', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "divisor,value,result",
+        [
+            ("0.1", "0.3", "PASS"),
+            ("0.1", "0.31", "FAIL"),
+            ("1e-300", "1e300", "PASS"),
+            ("0.1", "1" + "0" * 400, "PASS"),
+            ("1e23", "2" + "0" * 23, "PASS"),
+            ("1e23", "2" + "0" * 22 + "1", "FAIL"),
+        ],
+    )
+    def test_extension_exact_multiple_of(tmp_path, mode, divisor, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {"multipleOf": "DIVISOR"},
+            value,
+            schema_tokens={"DIVISOR": divisor},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:208: AssertionError
+___________ test_extension_exact_multiple_of[1e-300-1e300-PASS-ref] ____________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_multiple_5')
+mode = 'ref', divisor = '1e-300', value = '1e300', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "divisor,value,result",
+        [
+            ("0.1", "0.3", "PASS"),
+            ("0.1", "0.31", "FAIL"),
+            ("1e-300", "1e300", "PASS"),
+            ("0.1", "1" + "0" * 400, "PASS"),
+            ("1e23", "2" + "0" * 23, "PASS"),
+            ("1e23", "2" + "0" * 22 + "1", "FAIL"),
+        ],
+    )
+    def test_extension_exact_multiple_of(tmp_path, mode, divisor, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {"multipleOf": "DIVISOR"},
+            value,
+            schema_tokens={"DIVISOR": divisor},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:208: AssertionError
+_ test_extension_exact_multiple_of[0.1-10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-PASS-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_multiple_6')
+mode = 'inline', divisor = '0.1'
+value = '100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000...0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "divisor,value,result",
+        [
+            ("0.1", "0.3", "PASS"),
+            ("0.1", "0.31", "FAIL"),
+            ("1e-300", "1e300", "PASS"),
+            ("0.1", "1" + "0" * 400, "PASS"),
+            ("1e23", "2" + "0" * 23, "PASS"),
+            ("1e23", "2" + "0" * 22 + "1", "FAIL"),
+        ],
+    )
+    def test_extension_exact_multiple_of(tmp_path, mode, divisor, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {"multipleOf": "DIVISOR"},
+            value,
+            schema_tokens={"DIVISOR": divisor},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:208: AssertionError
+_ test_extension_exact_multiple_of[0.1-10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-PASS-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_multiple_7')
+mode = 'ref', divisor = '0.1'
+value = '100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000...0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "divisor,value,result",
+        [
+            ("0.1", "0.3", "PASS"),
+            ("0.1", "0.31", "FAIL"),
+            ("1e-300", "1e300", "PASS"),
+            ("0.1", "1" + "0" * 400, "PASS"),
+            ("1e23", "2" + "0" * 23, "PASS"),
+            ("1e23", "2" + "0" * 22 + "1", "FAIL"),
+        ],
+    )
+    def test_extension_exact_multiple_of(tmp_path, mode, divisor, value, result):
+        report, _ = run_extension(
+            tmp_path,
+            {"multipleOf": "DIVISOR"},
+            value,
+            schema_tokens={"DIVISOR": divisor},
+            mode=mode,
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:208: AssertionError
+_ test_extension_exact_equality_and_integer_type[constraint0-1e23-PASS-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_0')
+mode = 'inline', constraint = {'const': 'NUMBER'}, value = '1e23'
+result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+__ test_extension_exact_equality_and_integer_type[constraint0-1e23-PASS-ref] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_1')
+mode = 'ref', constraint = {'const': 'NUMBER'}, value = '1e23', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+_ test_extension_exact_equality_and_integer_type[constraint2-1e23-PASS-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_4')
+mode = 'inline', constraint = {'enum': ['NUMBER']}, value = '1e23'
+result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+__ test_extension_exact_equality_and_integer_type[constraint2-1e23-PASS-ref] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_5')
+mode = 'ref', constraint = {'enum': ['NUMBER']}, value = '1e23', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+_ test_extension_exact_equality_and_integer_type[constraint4-{"x":[1e23]}-PASS-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_8')
+mode = 'inline', constraint = {'const': {'x': ['NUMBER']}}
+value = '{"x":[1e23]}', result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+_ test_extension_exact_equality_and_integer_type[constraint4-{"x":[1e23]}-PASS-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_9')
+mode = 'ref', constraint = {'const': {'x': ['NUMBER']}}, value = '{"x":[1e23]}'
+result = 'PASS'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+_ test_extension_exact_equality_and_integer_type[constraint7-[1e23,100000000000000000000000]-FAIL-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_14')
+mode = 'inline', constraint = {'uniqueItems': True}
+value = '[1e23,100000000000000000000000]', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+_ test_extension_exact_equality_and_integer_type[constraint7-[1e23,100000000000000000000000]-FAIL-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_15')
+mode = 'ref', constraint = {'uniqueItems': True}
+value = '[1e23,100000000000000000000000]', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+_ test_extension_exact_equality_and_integer_type[constraint10-[{"x":[1e23]},{"x":[100000000000000000000000]}]-FAIL-inline] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_20')
+mode = 'inline', constraint = {'uniqueItems': True}
+value = '[{"x":[1e23]},{"x":[100000000000000000000000]}]', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+_ test_extension_exact_equality_and_integer_type[constraint10-[{"x":[1e23]},{"x":[100000000000000000000000]}]-FAIL-ref] _
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_extension_exact_equality_21')
+mode = 'ref', constraint = {'uniqueItems': True}
+value = '[{"x":[1e23]},{"x":[100000000000000000000000]}]', result = 'FAIL'
+
+    @pytest.mark.parametrize("mode", ["inline", "ref"])
+    @pytest.mark.parametrize(
+        "constraint,value,result",
+        [
+            ({"const": "NUMBER"}, "1e23", "PASS"),
+            ({"const": "NUMBER"}, PREVIOUS, "FAIL"),
+            ({"enum": ["NUMBER"]}, "1e23", "PASS"),
+            ({"enum": ["NUMBER"]}, PREVIOUS, "FAIL"),
+            ({"const": {"x": ["NUMBER"]}}, '{"x":[1e23]}', "PASS"),
+            ({"const": True}, "1", "FAIL"),
+            ({"enum": [False]}, "0.0", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + INTEGER + "]", "FAIL"),
+            ({"uniqueItems": True}, "[1e23," + PREVIOUS + "]", "PASS"),
+            ({"uniqueItems": True}, "[true,1]", "PASS"),
+            ({"uniqueItems": True}, '[{"x":[1e23]},{"x":[' + INTEGER + ']}]', "FAIL"),
+            ({"type": "integer"}, "1e23", "PASS"),
+            ({"type": "integer"}, "0.1", "FAIL"),
+            ({"type": "number"}, "0.1", "PASS"),
+        ],
+    )
+    def test_extension_exact_equality_and_integer_type(tmp_path, mode, constraint, value, result):
+        report, _ = run_extension(
+            tmp_path, constraint, value, schema_tokens={"NUMBER": INTEGER}, mode=mode
+        )
+>       assert aggregate(report["checks"], "model") == result
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:235: AssertionError
+____ test_numeric_validation_never_changes_model_assets_or_canonical_bytes _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_numeric_validation_never_0')
+
+    def test_numeric_validation_never_changes_model_assets_or_canonical_bytes(tmp_path):
+        report, path = run_extension(
+            tmp_path,
+            {"const": "NUMBER"},
+            "1e23",
+            schema_tokens={"NUMBER": INTEGER},
+        )
+>       assert aggregate(report["checks"], "model") == "PASS"
+E       AssertionError: assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/test_review_numbers_loop7.py:259: AssertionError
+___________ test_fragment_enum_and_yaml_have_same_numeric_semantics ____________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-139/test_fragment_enum_and_yaml_ha0')
+
+    def test_fragment_enum_and_yaml_have_same_numeric_semantics(tmp_path):
+        fragment = (
+            "format: gdd-fragment/0.2\n"
+            "nodes:\n"
+            "  entity.x:\n"
+            "    kind: entity\n"
+            "    description: Value\n"
+            "    fields:\n"
+            "      v:\n"
+            "        type: enum\n"
+            "        values: [!!float 1e23, " + INTEGER + "]\n"
+            "edges: []\n"
+        )
+        (tmp_path / "fragment.yaml").write_text(fragment)
+        model = base_model()
+        model["includes"] = ["fragment.yaml"]
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(model))
+>       assert aggregate(validate(path)["checks"], "model") == "FAIL"
+E       AssertionError: assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/test_review_numbers_loop7.py:297: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[100000000000000000000000-1e23-PASS-number]
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[100000000000000000000000-1e23-PASS-integer]
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[1e23-99999999999999999999999-FAIL-number]
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[1e23-99999999999999999999999-FAIL-integer]
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[99999999999999999999999-1e23-PASS-number]
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[99999999999999999999999-1e23-PASS-integer]
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[-1e23--100000000000000000000000-PASS-number]
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[-1e23--100000000000000000000000-PASS-integer]
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[-99999999999999999999999--1e23-FAIL-number]
+FAILED tests/test_review_numbers_loop7.py::test_core_mixed_numeric_bounds[-99999999999999999999999--1e23-FAIL-integer]
+FAILED tests/test_review_numbers_loop7.py::test_real_contradiction_is_invalid_in_every_type_context[optional0]
+FAILED tests/test_review_numbers_loop7.py::test_real_contradiction_is_invalid_in_every_type_context[optional1]
+FAILED tests/test_review_numbers_loop7.py::test_real_contradiction_is_invalid_in_every_type_context[optional2]
+FAILED tests/test_review_numbers_loop7.py::test_core_enum_uses_exact_json_numeric_equality[[1e23,100000000000000000000000]-FAIL]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[minimum-100000000000000000000000-1e23-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[minimum-100000000000000000000000-1e23-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[minimum-100000000000000000000000-1e23-PASS-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[minimum-1e23-99999999999999999999999-FAIL-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[minimum-1e23-99999999999999999999999-FAIL-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[minimum-1e23-99999999999999999999999-FAIL-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[maximum-99999999999999999999999-1e23-FAIL-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[maximum-99999999999999999999999-1e23-FAIL-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[maximum-99999999999999999999999-1e23-FAIL-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[maximum-1e23-100000000000000000000000-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[maximum-1e23-100000000000000000000000-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[maximum-1e23-100000000000000000000000-PASS-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMinimum-99999999999999999999999-1e23-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMinimum-99999999999999999999999-1e23-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMinimum-99999999999999999999999-1e23-PASS-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMinimum-1e23-100000000000000000000000-FAIL-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMinimum-1e23-100000000000000000000000-FAIL-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMinimum-1e23-100000000000000000000000-FAIL-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMaximum-100000000000000000000000-1e23-FAIL-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMaximum-100000000000000000000000-1e23-FAIL-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMaximum-100000000000000000000000-1e23-FAIL-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMaximum-1e23-99999999999999999999999-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMaximum-1e23-99999999999999999999999-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[exclusiveMaximum-1e23-99999999999999999999999-PASS-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[minimum--1e23--100000000000000000000000-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[minimum--1e23--100000000000000000000000-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[minimum--1e23--100000000000000000000000-PASS-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[maximum--1e23--99999999999999999999999-FAIL-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[maximum--1e23--99999999999999999999999-FAIL-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_comparators[maximum--1e23--99999999999999999999999-FAIL-dynamic]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_multiple_of[0.1-0.3-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_multiple_of[0.1-0.3-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_multiple_of[1e-300-1e300-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_multiple_of[1e-300-1e300-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_multiple_of[0.1-10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_multiple_of[0.1-10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint0-1e23-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint0-1e23-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint2-1e23-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint2-1e23-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint4-{"x":[1e23]}-PASS-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint4-{"x":[1e23]}-PASS-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint7-[1e23,100000000000000000000000]-FAIL-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint7-[1e23,100000000000000000000000]-FAIL-ref]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint10-[{"x":[1e23]},{"x":[100000000000000000000000]}]-FAIL-inline]
+FAILED tests/test_review_numbers_loop7.py::test_extension_exact_equality_and_integer_type[constraint10-[{"x":[1e23]},{"x":[100000000000000000000000]}]-FAIL-ref]
+FAILED tests/test_review_numbers_loop7.py::test_numeric_validation_never_changes_model_assets_or_canonical_bytes
+FAILED tests/test_review_numbers_loop7.py::test_fragment_enum_and_yaml_have_same_numeric_semantics
+62 failed, 40 passed in 0.73s

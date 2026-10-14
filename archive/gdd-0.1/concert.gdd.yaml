@@ -1,0 +1,249 @@
+# GDD v0.1 — foreslået format, IKKE Graphify-syntaks.
+# Beskrivelser, guards og effects er pseudokode, ikke eksekverbare udtryk.
+format: gdd/0.1
+project:
+  id: concert-reservations
+  title: Reservation af koncertpladser
+  status: example_draft
+  goal: En bruger kan reservere og annullere en plads uden overbooking.
+  scope: En modulær applikation og én transaktionel database; ikke mikroservices.
+  assumptions:
+    - Én plads pr. reservation. Flere reservationer med forskellige request-nøgler er tilladt.
+    - Koncerter findes på forhånd, og kapaciteten ændres ikke i dette eksempel.
+    - Identitet leveres af serverens autentificeringslag, ikke af et user_id i request-body.
+    - Reservationer udløber ikke automatisk i denne første model.
+    - Betaling, billetudstedelse, venteliste og eksterne events er uden for dette eksempel.
+    - Reservationshistorik og succesfulde request-nøgler bevares; sletning er uden for eksemplet.
+
+nodes:
+  component.api:
+    kind: component
+    description: Validerer transportinput og videresender autentificeret kontekst.
+  component.reservations:
+    kind: component
+    description: Ejer reservationsregler, adgangskontrol og transaktionsgrænser.
+  component.storage:
+    kind: component
+    description: Persistence-adapter til databasen; indeholder ikke beslutninger om adgangsrettigheder.
+  entity.concert:
+    kind: entity
+    description: En koncert med en fast, ikke-negativ heltalskapacitet.
+    owner: component.reservations
+    stored_in: component.storage
+    fields:
+      id: nonempty_string
+      capacity: nonnegative_integer
+  entity.reservation:
+    kind: entity
+    description: Én reserveret plads med ejer og permanent request-nøgle.
+    owner: component.reservations
+    stored_in: component.storage
+    fields:
+      id: nonempty_string
+      concert_id: nonempty_string
+      owner_id: nonempty_string
+      request_key: nonempty_string
+      state: enum[reserved,cancelled]
+  action.reserve:
+    kind: action
+    description: Reservér præcis én plads eller genfind resultatet af en tidligere succes.
+    owner: component.reservations
+    input:
+      concert_id: nonempty_string
+      request_key: nonempty_string
+    context:
+      principal_id: server_authenticated_identity
+    returns: Reservationens id og aktuelle tilstand.
+    errors: [Unauthenticated, InvalidInput, ConcertNotFound, SoldOut, IdempotencyConflict]
+    specification:
+      - Valider identitet og input før opslag eller mutation.
+      - Request-nøglen er scoped til principal_id og action.reserve.
+      - Bind en succesfuld nøgle til concert_id og reservations-id; samme nøgle med andet concert_id giver IdempotencyConflict.
+      - En identisk gentagelse returnerer samme reservations-id og AKTUEL tilstand, også efter annullering, uden nye sideeffekter.
+      - Slå en tidligere succes op FØR en ny kapacitetskontrol; et fuldt spillested må ikke gøre en succesfuld gentagelse til SoldOut.
+      - Kun en ny nøgle forsøger at oprette en ny reservation.
+      - Afvis en ny reservation med SoldOut, når antallet af reservationer i reserved er lig kapaciteten.
+      - Nøgleunikhed, kapacitetsbeskyttelse, oprettelse og nøglebinding skal indgå i samme atomare databaseoperation eller transaktion.
+      - Samtidige transaktioner skal give et resultat svarende til en gyldig sekventiel rækkefølge for disse regler; en check-then-insert uden beskyttelse er ikke nok.
+      - En mislykket oprettelse binder ikke request-nøglen og efterlader ingen reservation.
+  action.cancel:
+    kind: action
+    description: Ejeren kan annullere sin reservation; gentagelse er uden ekstra effekt.
+    owner: component.reservations
+    input:
+      reservation_id: nonempty_string
+    context:
+      principal_id: server_authenticated_identity
+    returns: Reservations-id og state=cancelled.
+    errors: [Unauthenticated, InvalidInput, ReservationNotFound]
+    specification:
+      - Valider identitet og input først.
+      - Manglende reservation og en anden ejers reservation giver begge ReservationNotFound.
+      - Kontrollér ejerskab før retur af data, også ved gentagelse på en allerede annulleret reservation.
+      - reserved ændres atomart til cancelled, så reservationen ikke længere optager en plads.
+      - cancelled returneres uændret; frigiv ikke en plads igen.
+      - Den gamle request-nøgle bevares, så en gentaget reserve-request ikke genopretter reservationen.
+
+edges:
+  - id: edge.api_imports_reservations
+    from: component.api
+    relation: imports
+    to: component.reservations
+  - id: edge.reservations_imports_storage
+    from: component.reservations
+    relation: imports
+    to: component.storage
+  - id: edge.api_calls_reserve
+    from: component.api
+    relation: calls
+    to: action.reserve
+  - id: edge.api_calls_cancel
+    from: component.api
+    relation: calls
+    to: action.cancel
+
+machines:
+  machine.reservation:
+    entity: entity.reservation
+    initial: absent
+    states: [absent, reserved, cancelled]
+    terminal: [cancelled]
+    default: reject_unlisted_mutation
+    notes:
+      - absent er en modelleringsmarkør for en reservation, der endnu ikke eksisterer; den lagres aldrig.
+      - Tilstandsmaskinen beskriver mutationer. Validering, fejl og idempotente returveje er defineret i action-kontrakterne.
+      - cancelled er terminal for mutationer, men må fortsat læses og returneres ved en autoriseret gentagelse.
+    transitions:
+      - id: transition.reserve
+        from: absent
+        to: reserved
+        trigger: action.reserve
+        guard: Autentificeret bruger; eksisterende koncert; ny request-nøgle; mindst én ledig plads.
+        effects: Opret reservation med state=reserved og bind request-nøglen atomart under kapacitetsbeskyttelsen.
+      - id: transition.cancel
+        from: reserved
+        to: cancelled
+        trigger: action.cancel
+        guard: Den autentificerede bruger ejer reservationen.
+        effects: Skift atomart til cancelled; en eventuel materialiseret pladstæller opdateres i samme transaktion.
+
+rules:
+  rule.capacity:
+    kind: invariant
+    targets: [entity.concert, entity.reservation]
+    statement: For hver koncert er 0 <= count(reservationer med state=reserved) <= capacity efter hver committed mutation.
+    verification: database_concurrency_and_integration_tests
+    blocking: true
+  rule.idempotency:
+    kind: behavior
+    targets: [action.reserve, action.cancel]
+    statement: Gentagelser må ikke oprette ekstra reservationer, genaktivere annullerede reservationer eller frigive ekstra pladser.
+    verification: integration_tests
+    blocking: true
+  rule.authorization:
+    kind: behavior
+    targets: [action.cancel]
+    statement: Kun ejeren må annullere eller få reservationsdata retur; en request-body må ikke fastlægge identiteten.
+    verification: authorization_tests
+    blocking: true
+  rule.atomicity:
+    kind: behavior
+    targets: [action.reserve, action.cancel]
+    statement: Fejl før commit efterlader ingen delvist gennemført mutation eller request-nøglebinding.
+    verification: database_fault_injection_tests
+    blocking: true
+  rule.state_machine:
+    kind: behavior
+    targets: [machine.reservation]
+    statement: Muterende forløb følger tilstandsmaskinen; annullerede reservations-id'er kan ikke genaktiveres.
+    verification: model_based_and_integration_tests
+    blocking: true
+  rule.api_boundary:
+    kind: architecture
+    targets: [component.api, component.storage]
+    statement: API-modulet må ikke importere persistence-modulet direkte.
+    constraint:
+      relation: imports
+      from: component.api
+      to: component.storage
+      reach: direct
+      policy: forbid
+    verification: static_import_analysis
+    blocking: true
+
+scenarios:
+  scenario.reserve:
+    verifies: [rule.capacity, rule.state_machine]
+    actions: [action.reserve]
+    given: Koncert C har capacity=1 og ingen reservationer; bruger A er autentificeret.
+    when: A reserverer C med nøgle K1.
+    then: Ét reservations-id i reserved til A, og præcis én plads optaget.
+  scenario.last_seat:
+    verifies: [rule.capacity]
+    actions: [action.reserve]
+    given: Koncert C har én ledig plads; A og B har hver sin nye request-nøgle.
+    when: To separate databaseforbindelser forsøger at reservere samtidigt med kontrolleret overlap.
+    then: Præcis én reservation lykkes; den anden giver SoldOut; højst én plads er optaget. Kør mod den valgte databases reelle transaktionsadfærd.
+  scenario.replay:
+    verifies: [rule.idempotency, rule.capacity]
+    actions: [action.reserve]
+    given: C har capacity=1; A's reserve med K1 er lykkedes og har optaget den sidste plads.
+    when: A gentager samme request flere gange, også samtidigt.
+    then: Samme reservations-id returneres hver gang; ingen ekstra plads optages; ingen SoldOut på gentagelsen.
+  scenario.concurrent_same_key:
+    verifies: [rule.idempotency, rule.capacity]
+    actions: [action.reserve]
+    given: C har capacity=2; K1 er endnu ikke brugt af A.
+    when: A sender to identiske reserve-requests med K1 samtidigt.
+    then: Begge returnerer samme reservations-id; præcis én reservation oprettes.
+  scenario.key_conflict:
+    verifies: [rule.idempotency]
+    actions: [action.reserve]
+    given: A har med K1 reserveret koncert C1.
+    when: A bruger K1 til koncert C2.
+    then: IdempotencyConflict; ingen ny reservation eller kapacitetsændring i nogen koncert.
+  scenario.cancel:
+    verifies: [rule.idempotency, rule.capacity, rule.state_machine]
+    actions: [action.reserve, action.cancel]
+    given: A ejer en reserved reservation i en koncert med capacity=1.
+    when: A annullerer to gange, også med samtidige requests.
+    then: Samme id i cancelled; nul aktive reservationer; aldrig flere ledige pladser end capacity.
+  scenario.foreign_cancel:
+    verifies: [rule.authorization]
+    actions: [action.cancel]
+    given: A ejer reservation R; B er autentificeret som B.
+    when: B forsøger at annullere R, også med et forfalsket owner_id i request-body. Gentag både når R er reserved og cancelled.
+    then: ReservationNotFound; ingen ændring og ingen reservationsdata returneres.
+  scenario.atomic_failure:
+    verifies: [rule.atomicity]
+    actions: [action.reserve, action.cancel]
+    given: Et gyldigt reserve- eller cancel-forløb er klar til mutation.
+    when: Testadapteren injicerer fejl ved relevante persistensgrænser før commit og lader klienten genforsøge.
+    then: Efter fejlen er vedvarende tilstand uændret; efter vellykket genforsøg er effekten udført én gang. Kontrollér også evt. tæller og nøglebinding.
+  scenario.replay_after_cancel:
+    verifies: [rule.idempotency, rule.state_machine, rule.capacity]
+    actions: [action.reserve, action.cancel]
+    given: A har reserveret med K1 og derefter annulleret reservation R.
+    when: A gentager den oprindelige reserve-request med K1 og opretter derefter en ny med K2.
+    then: K1 returnerer R i cancelled uden mutation. K2 kan oprette et nyt id, hvis der er plads; R forbliver cancelled.
+  scenario.api_boundary:
+    verifies: [rule.api_boundary]
+    actions: []
+    given: Komponenternes bindings peger på det implementerede projekts moduler.
+    when: Importgrafen udtrækkes; indsæt desuden en midlertidig direkte API-til-storage-import som negativ kontrol.
+    then: Den forbudte import skal give FAIL. En manglende scanning eller uafklaret mapping giver UNKNOWN, ikke PASS.
+
+bindings:
+  # FORSLÅEDE stier, ikke eksisterende kode eller evidens.
+  component.api: {status: planned, paths: [src/api/**]}
+  component.reservations: {status: planned, paths: [src/reservations/**]}
+  component.storage: {status: planned, paths: [src/storage/**]}
+
+verification_policy:
+  default_result: UNKNOWN
+  results: [PASS, FAIL, UNKNOWN]
+  require: [spec_revision, code_revision, check_id, checker_version, scope, result, evidence_location]
+  unknown_blocking_rule: block_acceptance
+  unlisted_architectural_edge: unspecified_unless_explicit_policy_says_otherwise
+  prose_is_executable: false
+  structural_validation_is_behavioral_verification: false

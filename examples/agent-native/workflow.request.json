@@ -1,0 +1,98 @@
+{
+  "format": "gdd-work-request/0.1",
+  "id": "workflow.quote_demo",
+  "objective": "Implement the accepted integer floor graph in the existing half-up baseline, preserve negative-input contracts, and prove the integrated behavior through real CLI tests.",
+  "implementation": "implementation.quote_demo.python",
+  "base_code_revision": "sha256:36574c16bae72b18e3439a476d0d23426da46c2ca1e0f0f71d2dfcb6e1579055",
+  "packages": [
+    {
+      "id": "package.discount",
+      "scope": [
+        "action.discount"
+      ],
+      "read_resources": [
+        "REQUIREMENTS.md",
+        "model.gdd.json",
+        "model.records.json",
+        "quote_demo/__init__.py",
+        "tests/__init__.py"
+      ],
+      "write_resources": [
+        "quote_demo/discount.py",
+        "tests/test_discount.py"
+      ],
+      "workspace": "workspaces/discount",
+      "deliverables": [
+        "quote_demo/discount.py",
+        "tests/test_discount.py"
+      ],
+      "integration_plan": "Repair discount to the pinned floor contract while preserving strict input validation; run its unittest module and return only owned file changes. The lead integrates before package.quote runs."
+    },
+    {
+      "id": "package.tax",
+      "scope": [
+        "action.tax"
+      ],
+      "read_resources": [
+        "REQUIREMENTS.md",
+        "model.gdd.json",
+        "model.records.json",
+        "quote_demo/__init__.py",
+        "tests/__init__.py"
+      ],
+      "write_resources": [
+        "quote_demo/tax.py",
+        "tests/test_tax.py"
+      ],
+      "workspace": "workspaces/tax",
+      "deliverables": [
+        "quote_demo/tax.py",
+        "tests/test_tax.py"
+      ],
+      "integration_plan": "Repair tax to the pinned floor contract while preserving strict input validation; run its unittest module and return only owned file changes. The lead integrates before package.quote runs."
+    },
+    {
+      "id": "package.quote",
+      "scope": [
+        "action.quote"
+      ],
+      "read_resources": [
+        "REQUIREMENTS.md",
+        "model.gdd.json",
+        "model.records.json",
+        "quote_demo/__init__.py",
+        "tests/__init__.py",
+        "quote_demo/discount.py",
+        "quote_demo/tax.py"
+      ],
+      "write_resources": [
+        "quote_demo/quote.py",
+        "quote_demo/__main__.py",
+        "tests/test_quote.py"
+      ],
+      "workspace": "workspaces/quote",
+      "deliverables": [
+        "quote_demo/quote.py",
+        "quote_demo/__main__.py",
+        "tests/test_quote.py"
+      ],
+      "integration_plan": "After discount and tax are integrated, verify the quote composition and CLI against unchanged floor assertions; return only owned file changes and a summary of actual checks."
+    }
+  ],
+  "serialized": [
+    [
+      "package.discount",
+      "package.quote"
+    ],
+    [
+      "package.tax",
+      "package.quote"
+    ]
+  ],
+  "integration": {
+    "owner": "actor.demo_lead",
+    "checks": [
+      "check.demo.all"
+    ]
+  }
+}

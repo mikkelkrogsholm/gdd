@@ -1,0 +1,218 @@
+FFFFFFFF.......                                                          [100%]
+=================================== FAILURES ===================================
+________ test_core_duplicate_surrogate_key_has_utf8_fail_report[\ud800] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-103/test_core_duplicate_surrogate_0')
+key = b'\\ud800'
+
+    @pytest.mark.parametrize("key", INVALID_KEYS)
+    def test_core_duplicate_surrogate_key_has_utf8_fail_report(tmp_path, key):
+        source = tmp_path / "model.json"
+        source.write_bytes(duplicate_raw(key))
+>       messages = assert_utf8_fail(validate(source))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_graphify_loop5.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+report = {'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-validator', 'version': '0.4.1'}, 'spec_revision': None, 'profiles': ['model'], ...}
+
+    def assert_utf8_fail(report):
+>       encoded = json.dumps(report, ensure_ascii=False).encode("utf-8")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       UnicodeEncodeError: 'utf-8' codec can't encode character '\ud800' in position 282: surrogates not allowed
+
+tests/test_review_graphify_loop5.py:26: UnicodeEncodeError
+________ test_core_duplicate_surrogate_key_has_utf8_fail_report[\udfff] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-103/test_core_duplicate_surrogate_1')
+key = b'\\udfff'
+
+    @pytest.mark.parametrize("key", INVALID_KEYS)
+    def test_core_duplicate_surrogate_key_has_utf8_fail_report(tmp_path, key):
+        source = tmp_path / "model.json"
+        source.write_bytes(duplicate_raw(key))
+>       messages = assert_utf8_fail(validate(source))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_graphify_loop5.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+report = {'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-validator', 'version': '0.4.1'}, 'spec_revision': None, 'profiles': ['model'], ...}
+
+    def assert_utf8_fail(report):
+>       encoded = json.dumps(report, ensure_ascii=False).encode("utf-8")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       UnicodeEncodeError: 'utf-8' codec can't encode character '\udfff' in position 282: surrogates not allowed
+
+tests/test_review_graphify_loop5.py:26: UnicodeEncodeError
+__ test_duplicate_surrogate_key_remains_fail_and_exactly_recoverable[\ud800] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-103/test_duplicate_surrogate_key_r0')
+key = b'\\ud800'
+
+    @pytest.mark.parametrize("key", INVALID_KEYS)
+    def test_duplicate_surrogate_key_remains_fail_and_exactly_recoverable(tmp_path, key):
+        raw = duplicate_raw(key)
+        _, observed = observe_graphify(raw, profile=PROFILE)
+>       assert_utf8_fail(observed)
+
+tests/test_review_graphify_loop5.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+report = {'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-graphify', 'version': '0.1.2'}, 'spec_revision': None, 'profiles': ['import.graphify'], ...}
+
+    def assert_utf8_fail(report):
+>       encoded = json.dumps(report, ensure_ascii=False).encode("utf-8")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       UnicodeEncodeError: 'utf-8' codec can't encode character '\ud800' in position 579: surrogates not allowed
+
+tests/test_review_graphify_loop5.py:26: UnicodeEncodeError
+__ test_duplicate_surrogate_key_remains_fail_and_exactly_recoverable[\udfff] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-103/test_duplicate_surrogate_key_r1')
+key = b'\\udfff'
+
+    @pytest.mark.parametrize("key", INVALID_KEYS)
+    def test_duplicate_surrogate_key_remains_fail_and_exactly_recoverable(tmp_path, key):
+        raw = duplicate_raw(key)
+        _, observed = observe_graphify(raw, profile=PROFILE)
+>       assert_utf8_fail(observed)
+
+tests/test_review_graphify_loop5.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+report = {'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-graphify', 'version': '0.1.2'}, 'spec_revision': None, 'profiles': ['import.graphify'], ...}
+
+    def assert_utf8_fail(report):
+>       encoded = json.dumps(report, ensure_ascii=False).encode("utf-8")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       UnicodeEncodeError: 'utf-8' codec can't encode character '\udfff' in position 579: surrogates not allowed
+
+tests/test_review_graphify_loop5.py:26: UnicodeEncodeError
+_______ test_cli_duplicate_surrogate_key_returns_json_fail[False-\ud800] _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-103/test_cli_duplicate_surrogate_k0')
+key = b'\\ud800', adapter = False
+
+    @pytest.mark.parametrize("key", INVALID_KEYS)
+    @pytest.mark.parametrize("adapter", [False, True])
+    def test_cli_duplicate_surrogate_key_returns_json_fail(tmp_path, key, adapter):
+        source = tmp_path / "graph.json"
+        source.write_bytes(duplicate_raw(key))
+        arguments = (
+            ["graphify", "validate", str(source), "--profile", PROFILE]
+            if adapter
+            else ["validate", str(source)]
+        )
+        result = subprocess.run(
+            [sys.executable, "-m", "gdd_validator", *arguments],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        assert result.returncode == 1
+>       assert result.stderr == ""
+E       assert "gdd: 'utf-8'...not allowed\n" == ''
+E         
+E         + gdd: 'utf-8' codec can't encode character '\ud800' in position 351: surrogates not allowed
+
+tests/test_review_graphify_loop5.py:85: AssertionError
+_______ test_cli_duplicate_surrogate_key_returns_json_fail[False-\udfff] _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-103/test_cli_duplicate_surrogate_k1')
+key = b'\\udfff', adapter = False
+
+    @pytest.mark.parametrize("key", INVALID_KEYS)
+    @pytest.mark.parametrize("adapter", [False, True])
+    def test_cli_duplicate_surrogate_key_returns_json_fail(tmp_path, key, adapter):
+        source = tmp_path / "graph.json"
+        source.write_bytes(duplicate_raw(key))
+        arguments = (
+            ["graphify", "validate", str(source), "--profile", PROFILE]
+            if adapter
+            else ["validate", str(source)]
+        )
+        result = subprocess.run(
+            [sys.executable, "-m", "gdd_validator", *arguments],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        assert result.returncode == 1
+>       assert result.stderr == ""
+E       assert "gdd: 'utf-8'...not allowed\n" == ''
+E         
+E         + gdd: 'utf-8' codec can't encode character '\udfff' in position 351: surrogates not allowed
+
+tests/test_review_graphify_loop5.py:85: AssertionError
+_______ test_cli_duplicate_surrogate_key_returns_json_fail[True-\ud800] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-103/test_cli_duplicate_surrogate_k2')
+key = b'\\ud800', adapter = True
+
+    @pytest.mark.parametrize("key", INVALID_KEYS)
+    @pytest.mark.parametrize("adapter", [False, True])
+    def test_cli_duplicate_surrogate_key_returns_json_fail(tmp_path, key, adapter):
+        source = tmp_path / "graph.json"
+        source.write_bytes(duplicate_raw(key))
+        arguments = (
+            ["graphify", "validate", str(source), "--profile", PROFILE]
+            if adapter
+            else ["validate", str(source)]
+        )
+        result = subprocess.run(
+            [sys.executable, "-m", "gdd_validator", *arguments],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        assert result.returncode == 1
+>       assert result.stderr == ""
+E       assert "gdd: 'utf-8'...not allowed\n" == ''
+E         
+E         + gdd: 'utf-8' codec can't encode character '\ud800' in position 694: surrogates not allowed
+
+tests/test_review_graphify_loop5.py:85: AssertionError
+_______ test_cli_duplicate_surrogate_key_returns_json_fail[True-\udfff] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-103/test_cli_duplicate_surrogate_k3')
+key = b'\\udfff', adapter = True
+
+    @pytest.mark.parametrize("key", INVALID_KEYS)
+    @pytest.mark.parametrize("adapter", [False, True])
+    def test_cli_duplicate_surrogate_key_returns_json_fail(tmp_path, key, adapter):
+        source = tmp_path / "graph.json"
+        source.write_bytes(duplicate_raw(key))
+        arguments = (
+            ["graphify", "validate", str(source), "--profile", PROFILE]
+            if adapter
+            else ["validate", str(source)]
+        )
+        result = subprocess.run(
+            [sys.executable, "-m", "gdd_validator", *arguments],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        assert result.returncode == 1
+>       assert result.stderr == ""
+E       assert "gdd: 'utf-8'...not allowed\n" == ''
+E         
+E         + gdd: 'utf-8' codec can't encode character '\udfff' in position 694: surrogates not allowed
+
+tests/test_review_graphify_loop5.py:85: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_graphify_loop5.py::test_core_duplicate_surrogate_key_has_utf8_fail_report[\ud800]
+FAILED tests/test_review_graphify_loop5.py::test_core_duplicate_surrogate_key_has_utf8_fail_report[\udfff]
+FAILED tests/test_review_graphify_loop5.py::test_duplicate_surrogate_key_remains_fail_and_exactly_recoverable[\ud800]
+FAILED tests/test_review_graphify_loop5.py::test_duplicate_surrogate_key_remains_fail_and_exactly_recoverable[\udfff]
+FAILED tests/test_review_graphify_loop5.py::test_cli_duplicate_surrogate_key_returns_json_fail[False-\ud800]
+FAILED tests/test_review_graphify_loop5.py::test_cli_duplicate_surrogate_key_returns_json_fail[False-\udfff]
+FAILED tests/test_review_graphify_loop5.py::test_cli_duplicate_surrogate_key_returns_json_fail[True-\ud800]
+FAILED tests/test_review_graphify_loop5.py::test_cli_duplicate_surrogate_key_returns_json_fail[True-\udfff]
+8 failed, 7 passed in 0.73s

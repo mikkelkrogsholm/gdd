@@ -1,0 +1,37 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_all_reference_inspectors_preserve_exact_selector_ordinals ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-31/test_all_reference_inspectors_0')
+
+    def test_all_reference_inspectors_preserve_exact_selector_ordinals(tmp_path):
+        model = fixture()
+        ref = {
+            "source": "source.test",
+            "purpose": "provenance",
+            "selector": {
+                "kind": "markdown-heading",
+                "value": "Title",
+                "ordinal": 9007199254740993,
+            },
+        }
+        model["nodes"]["constructor"]["source_refs"] = [ref]
+        model["nodes"]["screen.references"] = {
+            "kind": "screen",
+            "description": "Exact design reference",
+            "source_refs": [ref],
+            "design_refs": [ref],
+        }
+        model["edges"][0]["source_refs"] = [ref]
+        path = tmp_path / "model.json"
+        path.write_text(json.dumps(model), encoding="utf-8")
+        data = view_data(model_bundle(path))
+        for ident in ("constructor", "screen.references", "edge.call_one"):
+>           refs = data["text"]["references"][ident]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'references'
+
+tests/test_review_viewer.py:32: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_review_viewer.py::test_all_reference_inspectors_preserve_exact_selector_ordinals
+1 failed in 0.11s

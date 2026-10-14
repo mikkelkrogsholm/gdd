@@ -1,0 +1,41 @@
+{
+  "format": "gdd-graphify-mapping/0.2",
+  "project": {
+    "id": "example.existing_code",
+    "title": "GDD fra eksisterende kode",
+    "goal": "Demonstrér tabsfri Graphify-import og eksplicit review af et model-forslag."
+  },
+  "nodes": [
+    {
+      "observation": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
+      "target": "component.reservations",
+      "kind": "component",
+      "description": "Kandidatgrænse for modulet reservation.py.",
+      "rationale": "Eksplicit reviewforslag: et kodefile er foreslået som komponentgrænse, ikke automatisk accepteret arkitektur."
+    },
+    {
+      "observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
+      "target": "action.construct_reservation",
+      "kind": "action",
+      "description": "Kandidat for oprettelse af et Reservation-objekt; kontrakten skal afklares.",
+      "rationale": "Klassen fortolkes i dette afgrænsede forslag som en constructor-handling, fordi reserve kalder den. Dette er et eksplicit valg, ikke en generisk class-til-action regel."
+    },
+    {
+      "observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
+      "target": "action.reserve",
+      "kind": "action",
+      "description": "Kandidat for reserve-funktionen; ønsket adfærd og kontrakt er uafklaret.",
+      "rationale": "Eksplicit agent-/menneskevalg af en mulig handlingsgrænse; koden er alene observation."
+    }
+  ],
+  "edges": [
+    {
+      "observation": "observation.edge.h2179a3f1337083c5c1dac19d2fea68c77f99d4603f5888d15aabc30ddefc8224",
+      "id": "edge.reserve.constructs",
+      "from": "action.reserve",
+      "to": "action.construct_reservation",
+      "relation": "calls",
+      "rationale": "Bevar denne observerede retning som et foreslået calls-forhold; accept kræver projektets normale mandat og review."
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.2.0"
+  },
+  "spec_revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210",
+  "profiles": [
+    "records"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "records.integrity",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "implementation.required.0",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.api_boundary"
+      ],
+      "reason": "Applicability of recorded rule.api_boundary/static_import_analysis; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "No unambiguous evidence for check.rule.api_boundary.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.api_boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.1",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.atomicity"
+      ],
+      "reason": "Applicability of recorded rule.atomicity/database_fault_injection_tests; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "No unambiguous evidence for check.rule.atomicity.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.atomicity"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.2",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.authorization"
+      ],
+      "reason": "Applicability of recorded rule.authorization/authorization_tests; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "No unambiguous evidence for check.rule.authorization.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.authorization"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.3",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.capacity"
+      ],
+      "reason": "Applicability of recorded rule.capacity/database_concurrency_and_integration_tests; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "No unambiguous evidence for check.rule.capacity.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.capacity"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.4",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.idempotency"
+      ],
+      "reason": "Applicability of recorded rule.idempotency/integration_tests; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "No unambiguous evidence for check.rule.idempotency.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.idempotency"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.5",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.state_machine"
+      ],
+      "reason": "Applicability of recorded rule.state_machine/model_based_and_integration_tests; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "No unambiguous evidence for check.rule.state_machine.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.state_machine"
+          ]
+        }
+      ]
+    }
+  ]
+}

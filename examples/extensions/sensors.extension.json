@@ -1,0 +1,41 @@
+{
+  "format": "gdd-extension/0.2",
+  "namespace": "example.sensors",
+  "version": "0.1.0",
+  "node_kinds": {
+    "example.sensors.sensor": {
+      "description": "Et sensorbegreb som domæneudvidelse.",
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "unit"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "relations": {
+    "example.sensors.measures": {
+      "description": "Sensoren leverer en måling om den modellerede entitet.",
+      "from": [
+        "example.sensors.sensor"
+      ],
+      "to": [
+        "entity"
+      ],
+      "context": "outgoing",
+      "dependency": false,
+      "effect": "none",
+      "data_schema": {
+        "type": "object",
+        "additionalProperties": false
+      }
+    }
+  }
+}

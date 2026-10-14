@@ -1,0 +1,6 @@
+positive baseline {'model': 'PASS', 'implementation': 'PASS', 'authorization': 'UNRESOLVED', 'exit': 0, 'invalid_record_ids': []}
+model source/node collision rule.x {'model': 'FAIL', 'implementation': 'PASS', 'authorization': 'UNRESOLVED', 'exit': 1, 'invalid_record_ids': []}
+model source/node collision authority rule.x {'model': 'FAIL', 'implementation': 'UNKNOWN', 'authorization': 'GRANTED', 'exit': 1, 'invalid_record_ids': []}
+model source/node collision entity.x {'model': 'FAIL', 'implementation': 'PASS', 'authorization': 'UNRESOLVED', 'exit': 1, 'invalid_record_ids': []}
+model source/node collision authority entity.x {'model': 'FAIL', 'implementation': 'UNKNOWN', 'authorization': 'GRANTED', 'exit': 1, 'invalid_record_ids': []}
+Directory: /var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-loop6-protocol-8acewvos

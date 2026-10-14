@@ -1,0 +1,151 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "quote-demo",
+  "records": {
+    "binding.discount.code": {
+      "kind": "binding",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "targets": [
+        "action.discount"
+      ],
+      "implementation": "implementation.quote_demo.python",
+      "role": "code",
+      "resource": "quote_demo/discount.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "planned"
+    },
+    "binding.discount.test": {
+      "kind": "binding",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "targets": [
+        "action.discount"
+      ],
+      "implementation": "implementation.quote_demo.python",
+      "role": "test",
+      "resource": "tests/test_discount.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "planned"
+    },
+    "binding.tax.code": {
+      "kind": "binding",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "targets": [
+        "action.tax"
+      ],
+      "implementation": "implementation.quote_demo.python",
+      "role": "code",
+      "resource": "quote_demo/tax.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "planned"
+    },
+    "binding.tax.test": {
+      "kind": "binding",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "targets": [
+        "action.tax"
+      ],
+      "implementation": "implementation.quote_demo.python",
+      "role": "test",
+      "resource": "tests/test_tax.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "planned"
+    },
+    "binding.quote.code": {
+      "kind": "binding",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "targets": [
+        "action.quote"
+      ],
+      "implementation": "implementation.quote_demo.python",
+      "role": "code",
+      "resource": "quote_demo/quote.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "planned"
+    },
+    "binding.quote.test": {
+      "kind": "binding",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "targets": [
+        "action.quote"
+      ],
+      "implementation": "implementation.quote_demo.python",
+      "role": "test",
+      "resource": "tests/test_quote.py",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "planned"
+    },
+    "check.demo.all": {
+      "kind": "check",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "scope": [
+        "rule.discount_floor",
+        "rule.tax_floor",
+        "rule.quote_composition",
+        "rule.input"
+      ],
+      "method": "stdlib_unittest",
+      "required_environment": [
+        "python"
+      ],
+      "negative_controls": [
+        "Run the shipped half-up baseline against unchanged floor assertions; the rounding tests and actual CLI integration must detect the defect."
+      ]
+    },
+    "binding.demo.verified": {
+      "kind": "binding",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "targets": [
+        "rule.discount_floor",
+        "rule.tax_floor",
+        "rule.quote_composition",
+        "rule.input"
+      ],
+      "implementation": "implementation.quote_demo.python",
+      "role": "test",
+      "resource": "tests/",
+      "selector": {
+        "kind": "whole-document"
+      },
+      "status": "checked",
+      "revision": "sha256:27bbb402802f36054f4384afd07362918aec09613a3e0acb891d0909f97fdbaf",
+      "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874"
+    },
+    "evidence.demo.final": {
+      "kind": "evidence",
+      "check": "check.demo.all",
+      "check_revision": "sha256:9aa65f6a3115c2b814fe4cfa37ac4b428559a62010a97e4de69413038fe53894",
+      "implementation": "implementation.quote_demo.python",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874",
+      "checker": {
+        "name": "stdlib.unittest",
+        "version": "3.12.2"
+      },
+      "scope": [
+        "rule.discount_floor",
+        "rule.tax_floor",
+        "rule.quote_composition",
+        "rule.input"
+      ],
+      "result": "PASS",
+      "executed": true,
+      "reason": "Actual integrated stdlib suite and real CLI executed; archived half-up negative control failed the unchanged floor assertions.",
+      "environment": {
+        "python": "3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]"
+      },
+      "evidence_uri": "evidence/final.run.json"
+    }
+  }
+}

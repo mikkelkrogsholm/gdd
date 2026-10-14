@@ -1,0 +1,540 @@
+FFFFFFFFFFFF........FFFF                                                 [100%]
+=================================== FAILURES ===================================
+____ test_exported_projection_helpers_control_serialization_capacity[text] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_exported_projection_helpe0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1046861e0>
+phase = 'text'
+
+    @pytest.mark.parametrize("phase", ["text", "payload"])
+    def test_exported_projection_helpers_control_serialization_capacity(
+        tmp_path, monkeypatch, phase
+    ):
+        bundle = view.model_bundle(model_file(tmp_path))
+        data = view.view_data(bundle)
+        exhaust(monkeypatch, phase)
+        with pytest.raises(InputError) as error:
+>           view.view_data(bundle) if phase == "text" else view.html_document(data)
+            ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_viewer_loop9.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/visualization.py:54: in view_data
+    "full": json.dumps(record, ensure_ascii=False, indent=2),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'kind': 'entity', 'description': 'Capacity fixture', 'fields': {}, 'annotations': {'example.data': 0}}
+args = (), kwargs = {'ensure_ascii': False, 'indent': 2}
+
+    def failed(value, *args, **kwargs):
+        selected = isinstance(value, dict) and (
+            phase == "text"
+            and value.get("description") == "Capacity fixture"
+            or phase == "payload"
+            and value.get("format") == "gdd-view/0.2"
+        )
+        if selected:
+>           raise RecursionError("simulated serialization capacity")
+E           RecursionError: simulated serialization capacity
+
+tests/test_review_viewer_loop9.py:69: RecursionError
+___ test_exported_projection_helpers_control_serialization_capacity[payload] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_exported_projection_helpe1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x105da9040>
+phase = 'payload'
+
+    @pytest.mark.parametrize("phase", ["text", "payload"])
+    def test_exported_projection_helpers_control_serialization_capacity(
+        tmp_path, monkeypatch, phase
+    ):
+        bundle = view.model_bundle(model_file(tmp_path))
+        data = view.view_data(bundle)
+        exhaust(monkeypatch, phase)
+        with pytest.raises(InputError) as error:
+>           view.view_data(bundle) if phase == "text" else view.html_document(data)
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_viewer_loop9.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/visualization.py:111: in html_document
+    payload = json.dumps(data, sort_keys=True, ensure_ascii=True, allow_nan=False)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'format': 'gdd-view/0.2', 'generator': {'name': 'gdd-viewer', 'version': '0.1.3', 'profile': 'gdd-viewer-html/0.1'}, 'spec_revision': 'sha256:1bfbb16822111c30654ffb15a10cfb91e91eb4ac7cd83ba2bbba094fa57fa8a4', 'observation_inputs': [], ...}
+args = ()
+kwargs = {'sort_keys': True, 'ensure_ascii': True, 'allow_nan': False}
+
+    def failed(value, *args, **kwargs):
+        selected = isinstance(value, dict) and (
+            phase == "text"
+            and value.get("description") == "Capacity fixture"
+            or phase == "payload"
+            and value.get("format") == "gdd-view/0.2"
+        )
+        if selected:
+>           raise RecursionError("simulated serialization capacity")
+E           RecursionError: simulated serialization capacity
+
+tests/test_review_viewer_loop9.py:69: RecursionError
+________ test_render_capacity_stops_before_output_is_opened[False-text] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_render_capacity_stops_bef0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1057b2ea0>
+phase = 'text', existing = False
+
+    @pytest.mark.parametrize("phase", ["text", "payload", "decode"])
+    @pytest.mark.parametrize("existing", [False, True])
+    def test_render_capacity_stops_before_output_is_opened(
+        tmp_path, monkeypatch, phase, existing
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        if existing:
+            output.write_bytes(b"existing artifact")
+        exhaust(monkeypatch, phase)
+        with pytest.raises(InputError) as error:
+>           render_view(source, output)
+
+tests/test_review_viewer_loop9.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/visualization.py:149: in render_view
+    data = view_data(bundle, scope)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/visualization.py:54: in view_data
+    "full": json.dumps(record, ensure_ascii=False, indent=2),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'kind': 'entity', 'description': 'Capacity fixture', 'fields': {}, 'annotations': {'example.data': 0}}
+args = (), kwargs = {'ensure_ascii': False, 'indent': 2}
+
+    def failed(value, *args, **kwargs):
+        selected = isinstance(value, dict) and (
+            phase == "text"
+            and value.get("description") == "Capacity fixture"
+            or phase == "payload"
+            and value.get("format") == "gdd-view/0.2"
+        )
+        if selected:
+>           raise RecursionError("simulated serialization capacity")
+E           RecursionError: simulated serialization capacity
+
+tests/test_review_viewer_loop9.py:69: RecursionError
+______ test_render_capacity_stops_before_output_is_opened[False-payload] _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_render_capacity_stops_bef1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x105dab740>
+phase = 'payload', existing = False
+
+    @pytest.mark.parametrize("phase", ["text", "payload", "decode"])
+    @pytest.mark.parametrize("existing", [False, True])
+    def test_render_capacity_stops_before_output_is_opened(
+        tmp_path, monkeypatch, phase, existing
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        if existing:
+            output.write_bytes(b"existing artifact")
+        exhaust(monkeypatch, phase)
+        with pytest.raises(InputError) as error:
+>           render_view(source, output)
+
+tests/test_review_viewer_loop9.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/visualization.py:150: in render_view
+    html = html_document(data)
+           ^^^^^^^^^^^^^^^^^^^
+gdd_validator/visualization.py:111: in html_document
+    payload = json.dumps(data, sort_keys=True, ensure_ascii=True, allow_nan=False)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'format': 'gdd-view/0.2', 'generator': {'name': 'gdd-viewer', 'version': '0.1.3', 'profile': 'gdd-viewer-html/0.1'}, 'spec_revision': 'sha256:1bfbb16822111c30654ffb15a10cfb91e91eb4ac7cd83ba2bbba094fa57fa8a4', 'observation_inputs': [], ...}
+args = ()
+kwargs = {'sort_keys': True, 'ensure_ascii': True, 'allow_nan': False}
+
+    def failed(value, *args, **kwargs):
+        selected = isinstance(value, dict) and (
+            phase == "text"
+            and value.get("description") == "Capacity fixture"
+            or phase == "payload"
+            and value.get("format") == "gdd-view/0.2"
+        )
+        if selected:
+>           raise RecursionError("simulated serialization capacity")
+E           RecursionError: simulated serialization capacity
+
+tests/test_review_viewer_loop9.py:69: RecursionError
+_______ test_render_capacity_stops_before_output_is_opened[False-decode] _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_render_capacity_stops_bef2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x105da7260>
+phase = 'decode', existing = False
+
+    @pytest.mark.parametrize("phase", ["text", "payload", "decode"])
+    @pytest.mark.parametrize("existing", [False, True])
+    def test_render_capacity_stops_before_output_is_opened(
+        tmp_path, monkeypatch, phase, existing
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        if existing:
+            output.write_bytes(b"existing artifact")
+        exhaust(monkeypatch, phase)
+>       with pytest.raises(InputError) as error:
+E       Failed: DID NOT RAISE InputError
+
+tests/test_review_viewer_loop9.py:102: Failed
+________ test_render_capacity_stops_before_output_is_opened[True-text] _________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_render_capacity_stops_bef3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1057b3680>
+phase = 'text', existing = True
+
+    @pytest.mark.parametrize("phase", ["text", "payload", "decode"])
+    @pytest.mark.parametrize("existing", [False, True])
+    def test_render_capacity_stops_before_output_is_opened(
+        tmp_path, monkeypatch, phase, existing
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        if existing:
+            output.write_bytes(b"existing artifact")
+        exhaust(monkeypatch, phase)
+        with pytest.raises(InputError) as error:
+>           render_view(source, output)
+
+tests/test_review_viewer_loop9.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/visualization.py:149: in render_view
+    data = view_data(bundle, scope)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+gdd_validator/visualization.py:54: in view_data
+    "full": json.dumps(record, ensure_ascii=False, indent=2),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'kind': 'entity', 'description': 'Capacity fixture', 'fields': {}, 'annotations': {'example.data': 0}}
+args = (), kwargs = {'ensure_ascii': False, 'indent': 2}
+
+    def failed(value, *args, **kwargs):
+        selected = isinstance(value, dict) and (
+            phase == "text"
+            and value.get("description") == "Capacity fixture"
+            or phase == "payload"
+            and value.get("format") == "gdd-view/0.2"
+        )
+        if selected:
+>           raise RecursionError("simulated serialization capacity")
+E           RecursionError: simulated serialization capacity
+
+tests/test_review_viewer_loop9.py:69: RecursionError
+_______ test_render_capacity_stops_before_output_is_opened[True-payload] _______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_render_capacity_stops_bef4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x105e25b50>
+phase = 'payload', existing = True
+
+    @pytest.mark.parametrize("phase", ["text", "payload", "decode"])
+    @pytest.mark.parametrize("existing", [False, True])
+    def test_render_capacity_stops_before_output_is_opened(
+        tmp_path, monkeypatch, phase, existing
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        if existing:
+            output.write_bytes(b"existing artifact")
+        exhaust(monkeypatch, phase)
+        with pytest.raises(InputError) as error:
+>           render_view(source, output)
+
+tests/test_review_viewer_loop9.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/visualization.py:150: in render_view
+    html = html_document(data)
+           ^^^^^^^^^^^^^^^^^^^
+gdd_validator/visualization.py:111: in html_document
+    payload = json.dumps(data, sort_keys=True, ensure_ascii=True, allow_nan=False)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'format': 'gdd-view/0.2', 'generator': {'name': 'gdd-viewer', 'version': '0.1.3', 'profile': 'gdd-viewer-html/0.1'}, 'spec_revision': 'sha256:1bfbb16822111c30654ffb15a10cfb91e91eb4ac7cd83ba2bbba094fa57fa8a4', 'observation_inputs': [], ...}
+args = ()
+kwargs = {'sort_keys': True, 'ensure_ascii': True, 'allow_nan': False}
+
+    def failed(value, *args, **kwargs):
+        selected = isinstance(value, dict) and (
+            phase == "text"
+            and value.get("description") == "Capacity fixture"
+            or phase == "payload"
+            and value.get("format") == "gdd-view/0.2"
+        )
+        if selected:
+>           raise RecursionError("simulated serialization capacity")
+E           RecursionError: simulated serialization capacity
+
+tests/test_review_viewer_loop9.py:69: RecursionError
+_______ test_render_capacity_stops_before_output_is_opened[True-decode] ________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_render_capacity_stops_bef5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x105da7380>
+phase = 'decode', existing = True
+
+    @pytest.mark.parametrize("phase", ["text", "payload", "decode"])
+    @pytest.mark.parametrize("existing", [False, True])
+    def test_render_capacity_stops_before_output_is_opened(
+        tmp_path, monkeypatch, phase, existing
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        if existing:
+            output.write_bytes(b"existing artifact")
+        exhaust(monkeypatch, phase)
+        with pytest.raises(InputError) as error:
+>           render_view(source, output)
+
+tests/test_review_viewer_loop9.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/visualization.py:151: in render_view
+    with Path(output).open("x", encoding="utf-8", newline="\n") as file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_render_capacity_stops_bef5/graph.html')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = '\n'
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_render_capacity_stops_bef5/graph.html'
+
+/opt/miniconda3/lib/python3.12/pathlib.py:1013: FileExistsError
+____ test_verification_capacity_is_unknown_not_artifact_corruption[decode] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_verification_capacity_is_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1057b2ea0>
+phase = 'decode'
+
+    @pytest.mark.parametrize("phase", ["decode", "canonical", "text", "payload"])
+    def test_verification_capacity_is_unknown_not_artifact_corruption(
+        tmp_path, monkeypatch, phase
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        render_view(source, output)
+        original = output.read_bytes()
+        exhaust(monkeypatch, phase)
+        report = verify_view(source, output)
+>       assert exit_code(report) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = exit_code({'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-viewer', 'version': '0.1.3'}, 'spec_revision': 'sha256:1bfbb16822111c30654ffb15a10cfb91e91eb4ac7cd83ba2bbba094fa57fa8a4', 'profiles': ['visualization'], ...})
+
+tests/test_review_viewer_loop9.py:121: AssertionError
+___ test_verification_capacity_is_unknown_not_artifact_corruption[canonical] ___
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_verification_capacity_is_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x105e27dd0>
+phase = 'canonical'
+
+    @pytest.mark.parametrize("phase", ["decode", "canonical", "text", "payload"])
+    def test_verification_capacity_is_unknown_not_artifact_corruption(
+        tmp_path, monkeypatch, phase
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        render_view(source, output)
+        original = output.read_bytes()
+        exhaust(monkeypatch, phase)
+        report = verify_view(source, output)
+>       assert exit_code(report) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = exit_code({'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-viewer', 'version': '0.1.3'}, 'spec_revision': 'sha256:1bfbb16822111c30654ffb15a10cfb91e91eb4ac7cd83ba2bbba094fa57fa8a4', 'profiles': ['visualization'], ...})
+
+tests/test_review_viewer_loop9.py:121: AssertionError
+_____ test_verification_capacity_is_unknown_not_artifact_corruption[text] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_verification_capacity_is_2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x105dabd40>
+phase = 'text'
+
+    @pytest.mark.parametrize("phase", ["decode", "canonical", "text", "payload"])
+    def test_verification_capacity_is_unknown_not_artifact_corruption(
+        tmp_path, monkeypatch, phase
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        render_view(source, output)
+        original = output.read_bytes()
+        exhaust(monkeypatch, phase)
+        report = verify_view(source, output)
+>       assert exit_code(report) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = exit_code({'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-viewer', 'version': '0.1.3'}, 'spec_revision': 'sha256:1bfbb16822111c30654ffb15a10cfb91e91eb4ac7cd83ba2bbba094fa57fa8a4', 'profiles': ['visualization'], ...})
+
+tests/test_review_viewer_loop9.py:121: AssertionError
+____ test_verification_capacity_is_unknown_not_artifact_corruption[payload] ____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_verification_capacity_is_3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x105121550>
+phase = 'payload'
+
+    @pytest.mark.parametrize("phase", ["decode", "canonical", "text", "payload"])
+    def test_verification_capacity_is_unknown_not_artifact_corruption(
+        tmp_path, monkeypatch, phase
+    ):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        render_view(source, output)
+        original = output.read_bytes()
+        exhaust(monkeypatch, phase)
+        report = verify_view(source, output)
+>       assert exit_code(report) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = exit_code({'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-viewer', 'version': '0.1.3'}, 'spec_revision': 'sha256:1bfbb16822111c30654ffb15a10cfb91e91eb4ac7cd83ba2bbba094fa57fa8a4', 'profiles': ['visualization'], ...})
+
+tests/test_review_viewer_loop9.py:121: AssertionError
+_____ test_real_near_capacity_cli_has_no_traceback_or_partial_output[991] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_real_near_capacity_cli_ha1')
+depth = 991
+
+    @pytest.mark.parametrize("depth", [980, 991, 995, 1200])
+    def test_real_near_capacity_cli_has_no_traceback_or_partial_output(tmp_path, depth):
+        source = model_file(tmp_path, depth)
+        output = tmp_path / "graph.html"
+        command = [sys.executable, "-m", "gdd_validator"]
+        result = subprocess.run(
+            command + ["view", str(source), "--output", str(output)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+>       assert "Traceback" not in result.stderr
+E       assert 'Traceback' not in 'Traceback (...h exceeded\n'
+E         
+E         'Traceback' is contained here:
+E           Traceback (most recent call last):
+E         ? +++++++++
+E             File "<frozen runpy>", line 198, in _run_module_as_main
+E             File "<frozen runpy>", line 88, in _run_code
+E             File "/private/tmp/gdd-loop9-viewer-fix-wfb8cqcs/baseline-work/gdd_validator/__main__.py", line 3, in <module>...
+E         
+E         ...Full output truncated (34 lines hidden), use '-vv' to show
+
+tests/test_review_viewer_loop9.py:169: AssertionError
+_____ test_real_near_capacity_cli_has_no_traceback_or_partial_output[995] ______
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_real_near_capacity_cli_ha2')
+depth = 995
+
+    @pytest.mark.parametrize("depth", [980, 991, 995, 1200])
+    def test_real_near_capacity_cli_has_no_traceback_or_partial_output(tmp_path, depth):
+        source = model_file(tmp_path, depth)
+        output = tmp_path / "graph.html"
+        command = [sys.executable, "-m", "gdd_validator"]
+        result = subprocess.run(
+            command + ["view", str(source), "--output", str(output)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+>       assert "Traceback" not in result.stderr
+E       assert 'Traceback' not in 'Traceback (...h exceeded\n'
+E         
+E         'Traceback' is contained here:
+E           Traceback (most recent call last):
+E         ? +++++++++
+E             File "<frozen runpy>", line 198, in _run_module_as_main
+E             File "<frozen runpy>", line 88, in _run_code
+E             File "/private/tmp/gdd-loop9-viewer-fix-wfb8cqcs/baseline-work/gdd_validator/__main__.py", line 3, in <module>...
+E         
+E         ...Full output truncated (34 lines hidden), use '-vv' to show
+
+tests/test_review_viewer_loop9.py:169: AssertionError
+_____ test_real_near_capacity_cli_has_no_traceback_or_partial_output[1200] _____
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_real_near_capacity_cli_ha3')
+depth = 1200
+
+    @pytest.mark.parametrize("depth", [980, 991, 995, 1200])
+    def test_real_near_capacity_cli_has_no_traceback_or_partial_output(tmp_path, depth):
+        source = model_file(tmp_path, depth)
+        output = tmp_path / "graph.html"
+        command = [sys.executable, "-m", "gdd_validator"]
+        result = subprocess.run(
+            command + ["view", str(source), "--output", str(output)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+>       assert "Traceback" not in result.stderr
+E       assert 'Traceback' not in 'Traceback (...h exceeded\n'
+E         
+E         'Traceback' is contained here:
+E           Traceback (most recent call last):
+E         ? +++++++++
+E             File "<frozen runpy>", line 198, in _run_module_as_main
+E             File "<frozen runpy>", line 88, in _run_code
+E             File "/private/tmp/gdd-loop9-viewer-fix-wfb8cqcs/baseline-work/gdd_validator/__main__.py", line 3, in <module>...
+E         
+E         ...Full output truncated (34 lines hidden), use '-vv' to show
+
+tests/test_review_viewer_loop9.py:169: AssertionError
+_______________ test_cli_serialization_capacity_exit_is_unknown ________________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-161/test_cli_serialization_capacit0')
+
+    def test_cli_serialization_capacity_exit_is_unknown(tmp_path):
+        source = model_file(tmp_path)
+        output = tmp_path / "graph.html"
+        code = """
+    import json, sys
+    from gdd_validator.cli import main
+    original = json.dumps
+    def exhausted(value, *args, **kwargs):
+        if isinstance(value, dict) and value.get('description') == 'Capacity fixture':
+            raise RecursionError('simulated serialization capacity')
+        return original(value, *args, **kwargs)
+    json.dumps = exhausted
+    sys.argv = ['gdd', 'view', sys.argv[1], '--output', sys.argv[2]]
+    raise SystemExit(main())
+    """
+        result = subprocess.run(
+            [sys.executable, "-c", code, str(source), str(output)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+>       assert result.returncode == 2
+E       assert 1 == 2
+E        +  where 1 = CompletedProcess(args=['/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python', '-c', "\nimport json, sys\nfro...^^^^^^^^^^^^^^^^^^^^^^^^\n  File "<string>", line 7, in exhausted\nRecursionError: simulated serialization capacity\n').returncode
+
+tests/test_review_viewer_loop9.py:214: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_viewer_loop9.py::test_exported_projection_helpers_control_serialization_capacity[text]
+FAILED tests/test_review_viewer_loop9.py::test_exported_projection_helpers_control_serialization_capacity[payload]
+FAILED tests/test_review_viewer_loop9.py::test_render_capacity_stops_before_output_is_opened[False-text]
+FAILED tests/test_review_viewer_loop9.py::test_render_capacity_stops_before_output_is_opened[False-payload]
+FAILED tests/test_review_viewer_loop9.py::test_render_capacity_stops_before_output_is_opened[False-decode]
+FAILED tests/test_review_viewer_loop9.py::test_render_capacity_stops_before_output_is_opened[True-text]
+FAILED tests/test_review_viewer_loop9.py::test_render_capacity_stops_before_output_is_opened[True-payload]
+FAILED tests/test_review_viewer_loop9.py::test_render_capacity_stops_before_output_is_opened[True-decode]
+FAILED tests/test_review_viewer_loop9.py::test_verification_capacity_is_unknown_not_artifact_corruption[decode]
+FAILED tests/test_review_viewer_loop9.py::test_verification_capacity_is_unknown_not_artifact_corruption[canonical]
+FAILED tests/test_review_viewer_loop9.py::test_verification_capacity_is_unknown_not_artifact_corruption[text]
+FAILED tests/test_review_viewer_loop9.py::test_verification_capacity_is_unknown_not_artifact_corruption[payload]
+FAILED tests/test_review_viewer_loop9.py::test_real_near_capacity_cli_has_no_traceback_or_partial_output[991]
+FAILED tests/test_review_viewer_loop9.py::test_real_near_capacity_cli_has_no_traceback_or_partial_output[995]
+FAILED tests/test_review_viewer_loop9.py::test_real_near_capacity_cli_has_no_traceback_or_partial_output[1200]
+FAILED tests/test_review_viewer_loop9.py::test_cli_serialization_capacity_exit_is_unknown
+16 failed, 8 passed in 1.40s

@@ -1,0 +1,118 @@
+{
+  "total": 16,
+  "passed": 16,
+  "results": [
+    {
+      "id": "overflow-json",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "overflow-yaml",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "underflow-json",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "underflow-yaml",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "fraction-precision-json",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "fraction-precision-yaml",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "float-id-precision-json",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "float-id-precision-yaml",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "integer-limit-json",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "integer-limit-yaml",
+      "expected_core_exit": 2,
+      "result": "PASS",
+      "core_exit": 2,
+      "view_exit": 1
+    },
+    {
+      "id": "decimal-json",
+      "expected_core_exit": 0,
+      "result": "PASS",
+      "core_exit": 0,
+      "view_exit": 0
+    },
+    {
+      "id": "decimal-yaml",
+      "expected_core_exit": 0,
+      "result": "PASS",
+      "core_exit": 0,
+      "view_exit": 0
+    },
+    {
+      "id": "exponent-json",
+      "expected_core_exit": 0,
+      "result": "PASS",
+      "core_exit": 0,
+      "view_exit": 0
+    },
+    {
+      "id": "exponent-yaml",
+      "expected_core_exit": 0,
+      "result": "PASS",
+      "core_exit": 0,
+      "view_exit": 0
+    },
+    {
+      "id": "exact-integer-json",
+      "expected_core_exit": 0,
+      "result": "PASS",
+      "core_exit": 0,
+      "view_exit": 0
+    },
+    {
+      "id": "exact-integer-yaml",
+      "expected_core_exit": 0,
+      "result": "PASS",
+      "core_exit": 0,
+      "view_exit": 0
+    }
+  ]
+}

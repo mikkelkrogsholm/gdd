@@ -1,0 +1,701 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GDD workflow tool envelopes 0.1 (not GDD core)",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/request"
+    },
+    {
+      "$ref": "#/$defs/plan"
+    },
+    {
+      "$ref": "#/$defs/event"
+    }
+  ],
+  "$defs": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "gdd-work-request/0.1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+        },
+        "objective": {
+          "type": "string",
+          "minLength": 1
+        },
+        "implementation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "base_code_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+              },
+              "scope": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true,
+                "minItems": 1
+              },
+              "write_resources": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true,
+                "minItems": 1
+              },
+              "read_resources": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              },
+              "workspace": {
+                "type": "string",
+                "minLength": 1
+              },
+              "deliverables": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true,
+                "minItems": 1
+              },
+              "integration_plan": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id",
+              "scope",
+              "write_resources",
+              "read_resources",
+              "workspace",
+              "deliverables",
+              "integration_plan"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "serialized": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "uniqueItems": true
+        },
+        "integration": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "minLength": 1
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "owner",
+            "checks"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "format",
+        "id",
+        "objective",
+        "implementation",
+        "base_code_revision",
+        "packages",
+        "serialized",
+        "integration"
+      ],
+      "additionalProperties": false
+    },
+    "plan": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "gdd-workplan/0.1"
+        },
+        "request": {
+          "$ref": "#/$defs/request"
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "spec_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "snapshot": {
+          "type": "object"
+        },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "packages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/packet"
+          },
+          "minItems": 1
+        },
+        "notice": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "format",
+        "request",
+        "project_id",
+        "spec_revision",
+        "snapshot",
+        "scope",
+        "packages",
+        "notice",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "event": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expected_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "dispatch"
+            },
+            "package": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "attempt": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "idempotency_key",
+            "expected_revision",
+            "type",
+            "package",
+            "attempt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expected_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "submit"
+            },
+            "package": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "attempt": {
+              "type": "string",
+              "minLength": 1
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_uri": {
+              "type": "string",
+              "minLength": 1
+            },
+            "changed_resources": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true,
+              "minItems": 1
+            }
+          },
+          "required": [
+            "idempotency_key",
+            "expected_revision",
+            "type",
+            "package",
+            "attempt",
+            "summary",
+            "artifact_uri",
+            "changed_resources"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expected_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "integrate"
+            },
+            "package": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "attempt": {
+              "type": "string",
+              "minLength": 1
+            },
+            "base_code_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "code_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "review": {
+              "type": "object",
+              "properties": {
+                "reviewer": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "verdict": {
+                  "const": "PASS"
+                },
+                "evidence_uri": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "reviewer",
+                "verdict",
+                "evidence_uri"
+              ],
+              "additionalProperties": false
+            },
+            "verified_resources": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true,
+              "minItems": 1
+            }
+          },
+          "required": [
+            "idempotency_key",
+            "expected_revision",
+            "type",
+            "package",
+            "attempt",
+            "base_code_revision",
+            "code_revision",
+            "review",
+            "verified_resources"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expected_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "retry"
+            },
+            "package": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "idempotency_key",
+            "expected_revision",
+            "type",
+            "package",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expected_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "cancel"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "idempotency_key",
+            "expected_revision",
+            "type",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expected_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "resume"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "idempotency_key",
+            "expected_revision",
+            "type",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "idempotency_key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expected_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "const": "accept"
+            }
+          },
+          "required": [
+            "idempotency_key",
+            "expected_revision",
+            "type"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "packet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+        },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "write_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "read_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "workspace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deliverables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "integration_plan": {
+          "type": "string",
+          "minLength": 1
+        },
+        "implementation_targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "const": "gdd-context/0.2"
+            },
+            "spec_revision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "scope": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "nodes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "edges": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "questions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "extensions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "format",
+            "spec_revision",
+            "scope",
+            "nodes",
+            "edges",
+            "sources",
+            "questions",
+            "extensions"
+          ],
+          "additionalProperties": false
+        },
+        "model_slice": {
+          "type": "object"
+        },
+        "locations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "locked_contracts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "required_checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rule": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method": {
+                "type": "string",
+                "minLength": 1
+              },
+              "checks": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "rule",
+              "method",
+              "checks"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "check_plans": {
+          "type": "object"
+        },
+        "extension_semantics": {
+          "type": "object"
+        },
+        "base_revision": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "scope",
+        "write_resources",
+        "read_resources",
+        "workspace",
+        "deliverables",
+        "integration_plan",
+        "implementation_targets",
+        "context",
+        "model_slice",
+        "locations",
+        "locked_contracts",
+        "required_checks",
+        "check_plans",
+        "extension_semantics",
+        "base_revision"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

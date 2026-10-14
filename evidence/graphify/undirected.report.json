@@ -1,0 +1,113 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-graphify",
+    "version": "0.1.0"
+  },
+  "spec_revision": null,
+  "profiles": [
+    "import.graphify"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "graphify.raw",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Supplied artifact sha256:24c71e3f813f89104be7ec5459ecec8e493e40f231240bd10c46b0e057345d7e: original bytes hashed; producer completeness and code correctness are not inferred.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.layout",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.nodes",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Each supplied node retained; typed producer identities checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.edges",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.direction",
+      "dimension": "integration",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+      "diagnostics": [
+        {
+          "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+          "severity": "warning",
+          "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+          "location": {
+            "file": "graphify.raw.json",
+            "pointer": "/links/0"
+          },
+          "related_ids": []
+        },
+        {
+          "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+          "severity": "warning",
+          "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+          "location": {
+            "file": "graphify.raw.json",
+            "pointer": "/links/1"
+          },
+          "related_ids": []
+        },
+        {
+          "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+          "severity": "warning",
+          "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+          "location": {
+            "file": "graphify.raw.json",
+            "pointer": "/links/2"
+          },
+          "related_ids": []
+        },
+        {
+          "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+          "severity": "warning",
+          "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+          "location": {
+            "file": "graphify.raw.json",
+            "pointer": "/links/3"
+          },
+          "related_ids": []
+        },
+        {
+          "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+          "severity": "warning",
+          "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+          "location": {
+            "file": "graphify.raw.json",
+            "pointer": "/links/4"
+          },
+          "related_ids": []
+        }
+      ]
+    },
+    {
+      "check_id": "graphify.code_candidates",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+      "diagnostics": []
+    }
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "format": "gdd-graphify-assets/0.2",
+  "created_at": "2026-10-13T18:58:45.975356+00:00",
+  "package_version": "0.3.0",
+  "adapter_version": "0.1.0",
+  "gdd_format": "0.2",
+  "pytest_passed": 143,
+  "standard_cases_matched": 58,
+  "adapter_cases_matched": 18,
+  "installed_wheel": "PASS",
+  "byte_roundtrip": "PASS",
+  "assets": [
+    {
+      "path": "GDD.md",
+      "sha256": "9fd2c9ce899f113edc732fa04b396980e8f15c81ddd240a3baea96f7712c9d98"
+    },
+    {
+      "path": "GRAPHIFY.md",
+      "sha256": "01e030ed5102e8f381b1c54036fa4ac8c99289930096f41956ccca5665aa1ad4"
+    },
+    {
+      "path": "README.md",
+      "sha256": "d34e3c3a0d4180bfcd98c0eda26755b50c29f9016401303ec94d7f1387589403"
+    },
+    {
+      "path": "SPEC.md",
+      "sha256": "76a496a404b9661636c3e707084ceb7cfd148b6e2952e1a7e7a6ef26d7c8bb08"
+    },
+    {
+      "path": "VALIDATOR.md",
+      "sha256": "fba9fb961152cdfa71cebda5a68a0a22b0ac19f7b44fcd9011243edf4a71c8eb"
+    },
+    {
+      "path": "WORKLOG.md",
+      "sha256": "dce371e70ac2826e8acc3b0146e8c10c95f6513f4f9c0dfe45dd0fcefe8a959c"
+    },
+    {
+      "path": "conformance/cases.yaml",
+      "sha256": "eefad5c37f7d797ec1f185fcea772905b7cc5c699cef84e773e178481e709e6e"
+    },
+    {
+      "path": "conformance/diagnostics.csv",
+      "sha256": "b856ca00e7bb3b74e1da86481912a073cc8a70caa18db46b07e224de2b47ccc2"
+    },
+    {
+      "path": "conformance/generate_graphify_fixture.py",
+      "sha256": "372a852633fe8f415f7a74d228c2912c58b26b7521a9d1022d02791b694899cb"
+    },
+    {
+      "path": "conformance/graphify-cases.yaml",
+      "sha256": "e954d1217a7e4c6cbde595e62a84b5ac7de3beaa7e2f66b2830aaf847354c8fe"
+    },
+    {
+      "path": "conformance/graphify-diagnostics.csv",
+      "sha256": "a137c5f34c0d3babe92e6d692d21046cff6371338488faa4812d047f878bb741"
+    },
+    {
+      "path": "conformance/run.py",
+      "sha256": "10f067a1d80be00d1dc32fd7b2c558bb32ef40f16957dfd8c41b7d88f8d7eb4b"
+    },
+    {
+      "path": "conformance/run_graphify.py",
+      "sha256": "7bb22ba80b229e7dab3a4c2e8006c31e5a34d4fdad4ab6a213b045c8e13f9142"
+    },
+    {
+      "path": "dist/gdd_validator-0.3.0-py3-none-any.whl",
+      "sha256": "1424013a3647540a4812a81169546e0cfc00c5ce053d506bcdcb9b7ac9bbc9fd"
+    },
+    {
+      "path": "dist/gdd_validator-0.3.0.tar.gz",
+      "sha256": "fd65a5b7d939448d6356a1c9d05c2062a2dd40be5387bbcccb31c364217d70b8"
+    },
+    {
+      "path": "evidence/graphify/adapter-conformance.json",
+      "sha256": "896353424836fafdc381bed7ef16e0fdfaaeea498de2c4a821ee5d83cb7593fe"
+    },
+    {
+      "path": "evidence/graphify/agent-lint.json",
+      "sha256": "3e6c6cb3dc7357081660c73728b5e9596fac13ac70fe081c822edb03154217e6"
+    },
+    {
+      "path": "evidence/graphify/build.txt",
+      "sha256": "2941b549308c1b84b2735f3ae229db4b6f16b84fce2a1065680172607472b620"
+    },
+    {
+      "path": "evidence/graphify/recovered.ast.json",
+      "sha256": "f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb"
+    },
+    {
+      "path": "evidence/graphify/roundtrip.report.json",
+      "sha256": "221de8fea65ba8907062dfcdd99e9b28881dec418c935471f01350541a05b1c7"
+    },
+    {
+      "path": "evidence/graphify/standard-conformance.json",
+      "sha256": "92931c7d96a353fcdd9c7a80e9dd7d6b807924c8641e3dce9443829aa4807a4e"
+    },
+    {
+      "path": "evidence/graphify/tests.txt",
+      "sha256": "b4a553a4f28fcc489cd52a6fb16971d5a870cab6842eabf54da2dda3ac80195a"
+    },
+    {
+      "path": "evidence/graphify/undirected.report.json",
+      "sha256": "c2e230795a34545a160481d6a6eb5d7993c054e62517959fd519d6c12e3be659"
+    },
+    {
+      "path": "evidence/graphify/wheel-smoke.json",
+      "sha256": "44ed82fe04dc89833d4421358c4d5847cc5d0044d18f9000aa389bd2d39e3256"
+    },
+    {
+      "path": "evidence/graphify/wheel-smoke.source.py",
+      "sha256": "55342a41441cd9280a15850c2ff51b33dbc76aad579c57eba852a58d992e6530"
+    },
+    {
+      "path": "evidence/graphify-review.md",
+      "sha256": "7277f2f892e6b2a3a3bf32c712da4c59f06b9226539ed4df7cbdd8fa7506576e"
+    },
+    {
+      "path": "examples/graphify/README.md",
+      "sha256": "4ecfe5a321b2914a527cb48eb89035baf9a5f7c9acffc0b280ca472547341660"
+    },
+    {
+      "path": "examples/graphify/code/reservation.py",
+      "sha256": "a2a7d9b4510518c727670c267f140c3d393a6870387933b7da24f16551dfe703"
+    },
+    {
+      "path": "examples/graphify/export.collapsed.json",
+      "sha256": "c24075bf8e66bf8ea803bfc208c95c36cf436cff54c0f7fe2ca08877f4b59fbb"
+    },
+    {
+      "path": "examples/graphify/export.directed.json",
+      "sha256": "c4ea22ec8b01156192ca67aada50143034379626e46a1a408f5ede7004f9624e"
+    },
+    {
+      "path": "examples/graphify/export.undirected.json",
+      "sha256": "24c71e3f813f89104be7ec5459ecec8e493e40f231240bd10c46b0e057345d7e"
+    },
+    {
+      "path": "examples/graphify/mapping.json",
+      "sha256": "3e4b2936d529ad8c741dc3319b47c0ffdb73e3e3b70390f487c735755839015d"
+    },
+    {
+      "path": "examples/graphify/observations/README.md",
+      "sha256": "b38cdc7a69bc569428e08ade971820af86d119a380db0c0a4e806c6866427db5"
+    },
+    {
+      "path": "examples/graphify/observations/graphify.raw.json",
+      "sha256": "f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb"
+    },
+    {
+      "path": "examples/graphify/observations/import.report.json",
+      "sha256": "221de8fea65ba8907062dfcdd99e9b28881dec418c935471f01350541a05b1c7"
+    },
+    {
+      "path": "examples/graphify/observations/observations.json",
+      "sha256": "0d1fccf6370711d37f0be062d0ba4801be7e0452143196c7c9875460fed28d52"
+    },
+    {
+      "path": "examples/graphify/observations/proposal.json",
+      "sha256": "5086b5b769fed00ad2b56629e00b34616c314db506bf0efc0c952ad198c930d6"
+    },
+    {
+      "path": "examples/graphify/producer-evidence.json",
+      "sha256": "33d53a8e77d44d02cf9aea5b173e1c0ba956661762d7fa0b9954a294621e009c"
+    },
+    {
+      "path": "examples/graphify/raw.ast.json",
+      "sha256": "f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb"
+    },
+    {
+      "path": "gdd_validator/__init__.py",
+      "sha256": "d27969a55f16a918fe65203f733923beeb37fcbb90724937e29612c20ce0e9cf"
+    },
+    {
+      "path": "gdd_validator/__main__.py",
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+    },
+    {
+      "path": "gdd_validator/cli.py",
+      "sha256": "1a92b119af3a7dd760e17b2d93c1519801e70f403c55e0ec169ea853a63dbc1b"
+    },
+    {
+      "path": "gdd_validator/graphify.py",
+      "sha256": "25b3d5f5ed8ead7638dcd261b04845c9642834f5747dc2a383bf0a181b92b157"
+    },
+    {
+      "path": "gdd_validator/graphify_io.py",
+      "sha256": "528fba3b378048f2c048b7b01975aa183fb8264e93b1f6b4920d1fa5744f1d30"
+    },
+    {
+      "path": "gdd_validator/graphify_proposal.py",
+      "sha256": "c0486cf112f11d4f5753933d7b85e8121f96da0a6b7ebc24105f221a8750390a"
+    },
+    {
+      "path": "gdd_validator/loading.py",
+      "sha256": "d792a2140a3f14a8dec4c31fa238719d8950da095c8d1391e8572dcd81b955a2"
+    },
+    {
+      "path": "gdd_validator/model.py",
+      "sha256": "7253425e6e428e2b5a700f9091ac71e4ffdefac1809c0771a8070560c07169f8"
+    },
+    {
+      "path": "gdd_validator/planning.py",
+      "sha256": "2ad832ff4dd8502400cacb9fae8113f34898e10691ae14b40c4793f602b3d5f5"
+    },
+    {
+      "path": "gdd_validator/readiness.py",
+      "sha256": "1d279aef70c6d57cbe7acf62b2ea6dad4a7fe741ced7999510650912ce0f2fda"
+    },
+    {
+      "path": "gdd_validator/records.py",
+      "sha256": "71c23ea831c2f8ac70965b7f16a570bcf2e1134ab4db44b44c27ebf50ba327e2"
+    },
+    {
+      "path": "gdd_validator/report.py",
+      "sha256": "6048bf58fc5f7a3e94a37a694bb2cc81362c0cb55595993556b6f9a93fcede7f"
+    },
+    {
+      "path": "gdd_validator/validator.py",
+      "sha256": "63539de7183caedabf3a07e736df59275820c3687dc0e1631081f579c260d927"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "41e90bb7876576d99c72264b94fb6280c41dba631a2a1e29aac6c3755acde322"
+    },
+    {
+      "path": "schemas/extension.schema.json",
+      "sha256": "30efcd4a135fa0974a0996c460a3eec5cf88319934f4018c3f8ce9b3687ed79a"
+    },
+    {
+      "path": "schemas/fragment.schema.json",
+      "sha256": "a320ee8be3ebf7790accd0e96c86420f56d614fa0f207b70dc401de2f857ca56"
+    },
+    {
+      "path": "schemas/gdd.schema.json",
+      "sha256": "eb8617d183e74379484f5d4bca42ae688e72bcb6499e8e183992aa76192b5b89"
+    },
+    {
+      "path": "schemas/graphify-mapping.schema.json",
+      "sha256": "d4b0b4f7b06c7cb1e61f7935e96b9a7e431c19ba186624607e49c802f118cfc3"
+    },
+    {
+      "path": "schemas/observations.schema.json",
+      "sha256": "5397d4903e24b350812e8226d1745deb1e0800f64925bb6fe644170ef676e296"
+    },
+    {
+      "path": "schemas/records.schema.json",
+      "sha256": "0ce927f6ee551fe3cf99083b00f07949eeddcf3c798598c83169cc5432554084"
+    },
+    {
+      "path": "schemas/report.schema.json",
+      "sha256": "ba403b6f5dd3e9e3adc6873c6d84441a3a6d74852a7c58992fbc1afdc0d04fd4"
+    },
+    {
+      "path": "schemas/snapshot.schema.json",
+      "sha256": "1555d665c54d2a4aa39df185e69e0467cd57635a0a5a07cdd2641e80d1d72d1e"
+    },
+    {
+      "path": "schemas/validator-inputs.schema.json",
+      "sha256": "0aace1cd95de671e7c07336cb6d5fc3beda7d0c1bfd4ec5608a3c9af46e974e7"
+    },
+    {
+      "path": "standard/AGENT-PROTOCOL.md",
+      "sha256": "5b2bac83d2363bcf624bc42a819354b7c068a86e86aeadaf0c2042bf5001993c"
+    },
+    {
+      "path": "standard/DECISIONS.md",
+      "sha256": "e92d10c0929a385f638e8104b9249bb60fe116621c1e391a7900f54872518fd4"
+    },
+    {
+      "path": "standard/FORMAT.md",
+      "sha256": "c308e219ddba65fc1bfdfd8b2202536e3833fba77bcbf97e6ae72dac9fcac609"
+    },
+    {
+      "path": "standard/INTEGRATIONS.md",
+      "sha256": "a401aae0d7f0ce9abb1ed84cc5a0ba31402dcff36bfa66413557f82bfa5359fe"
+    },
+    {
+      "path": "standard/MIGRATION.md",
+      "sha256": "c6c057cb72379c42e1287c29a83b0c4415f01c6099d5ab716bd180143c92f344"
+    },
+    {
+      "path": "standard/VALIDATION.md",
+      "sha256": "beaee8fa0a45f5d254feb6b7a9c1d89138bbf5ed09608efbeeca7642e7dd19dd"
+    },
+    {
+      "path": "tests/test_conformance.py",
+      "sha256": "fa7c665070721ef80a2040f51343f8746f286ff1d420979eda7861e2ef9d53d5"
+    },
+    {
+      "path": "tests/test_graphify.py",
+      "sha256": "d0f10265397bee882608f2ca4615ac2d3e4ecb63cf994ee8a16663086d6c19d7"
+    },
+    {
+      "path": "tests/test_validator.py",
+      "sha256": "af42694a594c73e58e2a65b39eeb8f59d1fc86c7403f69682bac9ae806b28476"
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "b24a38b2c5f8593a209d14a5625d7f991c6fa3387774705b3cff33558d3562ae"
+    }
+  ],
+  "manifest_digest": "sha256:ea5f24327f414163bbed8221f24dfbae213e33546543d00820414caa247296c9"
+}

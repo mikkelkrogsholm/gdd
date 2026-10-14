@@ -1,0 +1,14 @@
+{
+  "format": "gdd-snapshot/0.2",
+  "revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+  "assets": [
+    {
+      "path": "REQUIREMENTS.md",
+      "sha256": "1f4b10c9fbc2a9b2e05b54bf049bfe432c24472e15271b37f23d1fe547fa3fb7"
+    },
+    {
+      "path": "model.gdd.json",
+      "sha256": "531fab4b22edcbda686a4a636072e0f7a0766c9e5b14fd7f791b315436e8ff32"
+    }
+  ]
+}

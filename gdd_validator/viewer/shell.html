@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'sha256-@@HASH@@'; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; object-src 'none'; form-action 'none'"
+    />
+    <title>GDD · Grafvisning</title>
+    <style>
+      @@CSS@@;
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand" aria-label="Graph Driven Development">
+        gdd<span class="brand-dot">●</span>
+      </div>
+      <div class="heading">
+        <span class="eyebrow">GRAPH DRIVEN DEVELOPMENT</span>
+        <h1 id="project-title"></h1>
+      </div>
+      <span class="mode">Læsevisning · GDD 0.2</span>
+      <button id="overview">Om modellen</button>
+    </header>
+    <p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+    <main>
+      <aside class="explorer" aria-label="Udforsk grafen">
+        <div class="panel-heading">
+          <h2>Udforsk</h2>
+          <span id="total-count" class="quiet"></span>
+        </div>
+        <label for="search">Søg i noder og relationer</label>
+        <input
+          id="search"
+          type="search"
+          placeholder="ID, beskrivelse eller pseudokode…"
+          autocomplete="off"
+        />
+        <div class="filter-row">
+          <div>
+            <label for="kind">Nodetype</label
+            ><select id="kind">
+              <option value="">Alle typer</option>
+            </select>
+          </div>
+          <div>
+            <label for="relation">Relation</label
+            ><select id="relation">
+              <option value="">Alle relationer</option>
+            </select>
+          </div>
+        </div>
+        <label for="community">Community</label
+        ><select id="community">
+          <option value="">Hele grafen</option>
+        </select>
+        <div class="switch-row">
+          <label for="scenarios"
+            >Vis scenarier <span id="scenario-count"></span></label
+          ><input id="scenarios" type="checkbox" />
+        </div>
+        <div class="switch-row">
+          <label for="fold">Fold communities</label
+          ><input id="fold" type="checkbox" />
+        </div>
+        <p class="hint" id="fold-hint">
+          Medlemskab er gruppering, ikke ejerskab.
+        </p>
+        <div class="list-tabs" role="group" aria-label="Objektliste">
+          <button id="tab-nodes" aria-pressed="true">Noder</button
+          ><button id="tab-edges" aria-pressed="false">Relationer</button>
+        </div>
+        <div
+          id="object-list"
+          class="object-list"
+          aria-label="Synlige objekter"
+        ></div>
+        <button id="reset" class="reset">Nulstil filtre og foldning</button>
+      </aside>
+      <section class="stage" aria-label="Interaktiv graf">
+        <div class="stage-toolbar">
+          <div>
+            <span class="live-dot"></span
+            ><span id="view-count" role="status" aria-live="polite"></span>
+          </div>
+          <button id="manifest-download">Hent visningsmanifest</button>
+        </div>
+        <svg
+          id="graph"
+          role="img"
+          aria-label="GDD-graf. Brug objektlisten til tastaturinspektion."
+        >
+          <defs>
+            <marker
+              id="arrow"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+          </defs>
+          <g id="viewport">
+            <g id="edge-layer"></g>
+            <g id="node-layer"></g>
+          </g>
+        </svg>
+        <div id="empty" hidden>
+          Ingen noder matcher filtrene. Nulstil filtrene for at se grafen igen.
+        </div>
+        <div class="canvas-note">
+          Træk for at flytte · Rul for at zoome · Vælg en node eller forbindelse
+        </div>
+        <div class="zoom-controls" role="group" aria-label="Grafnavigation">
+          <button id="zoom-out" aria-label="Zoom ud">−</button
+          ><span id="zoom-level">100%</span
+          ><button id="zoom-in" aria-label="Zoom ind">+</button
+          ><button id="fit">Tilpas</button>
+        </div>
+      </section>
+      <aside id="inspector" class="inspector" aria-label="Detaljer">
+        <div id="detail"></div>
+      </aside>
+    </main>
+    <footer>
+      <span id="revision"></span><span id="projection-status"></span
+      ><span id="renderer-meta"></span>
+    </footer>
+    <script id="gdd-data" type="application/json">@@DATA@@</script>
+    <script>@@SCRIPT@@</script>
+  </body>
+</html>

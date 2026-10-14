@@ -1,0 +1,114 @@
+FFFFFFF....                                                              [100%]
+=================================== FAILURES ===================================
+_________ test_view_scope_rejects_invalid_types_without_publishing[ab] _________
+
+model_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-83/test_view_scope_rejects_invali0/model.json')
+scope = 'ab'
+
+    @pytest.mark.parametrize("scope", ["ab", "", 3, False, {}, [{}], [3]])
+    def test_view_scope_rejects_invalid_types_without_publishing(model_path, scope):
+>       with pytest.raises(ValueError, match="list of strings"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_viewer_loop4.py:26: Failed
+__________ test_view_scope_rejects_invalid_types_without_publishing[] __________
+
+model_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-83/test_view_scope_rejects_invali1/model.json')
+scope = ''
+
+    @pytest.mark.parametrize("scope", ["ab", "", 3, False, {}, [{}], [3]])
+    def test_view_scope_rejects_invalid_types_without_publishing(model_path, scope):
+>       with pytest.raises(ValueError, match="list of strings"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_viewer_loop4.py:26: Failed
+_________ test_view_scope_rejects_invalid_types_without_publishing[3] __________
+
+model_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-83/test_view_scope_rejects_invali2/model.json')
+scope = 3
+
+    @pytest.mark.parametrize("scope", ["ab", "", 3, False, {}, [{}], [3]])
+    def test_view_scope_rejects_invalid_types_without_publishing(model_path, scope):
+        with pytest.raises(ValueError, match="list of strings"):
+>           view_data(model_bundle(model_path), scope=scope)
+
+tests/test_review_viewer_loop4.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+bundle = Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...7a', 'assets': [{'path': 'model.json', 'sha256': '231fedec5b4e6d45452629fabcc2ac128a385c71e0edfb56473c56d4743157e5'}]})
+scope = 3
+
+    def view_data(bundle: Bundle, scope: list[str] | None = None) -> dict:
+        """Keep canonical data intact; scope bounds eligible canvas/list IDs."""
+>       scope = sorted(set(scope or []))
+                       ^^^^^^^^^^^^^^^^
+E       TypeError: 'int' object is not iterable
+
+gdd_validator/visualization.py:36: TypeError
+_______ test_view_scope_rejects_invalid_types_without_publishing[False] ________
+
+model_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-83/test_view_scope_rejects_invali3/model.json')
+scope = False
+
+    @pytest.mark.parametrize("scope", ["ab", "", 3, False, {}, [{}], [3]])
+    def test_view_scope_rejects_invalid_types_without_publishing(model_path, scope):
+>       with pytest.raises(ValueError, match="list of strings"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_viewer_loop4.py:26: Failed
+_______ test_view_scope_rejects_invalid_types_without_publishing[scope4] _______
+
+model_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-83/test_view_scope_rejects_invali4/model.json')
+scope = {}
+
+    @pytest.mark.parametrize("scope", ["ab", "", 3, False, {}, [{}], [3]])
+    def test_view_scope_rejects_invalid_types_without_publishing(model_path, scope):
+>       with pytest.raises(ValueError, match="list of strings"):
+E       Failed: DID NOT RAISE ValueError
+
+tests/test_review_viewer_loop4.py:26: Failed
+_______ test_view_scope_rejects_invalid_types_without_publishing[scope5] _______
+
+model_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-83/test_view_scope_rejects_invali5/model.json')
+scope = [{}]
+
+    @pytest.mark.parametrize("scope", ["ab", "", 3, False, {}, [{}], [3]])
+    def test_view_scope_rejects_invalid_types_without_publishing(model_path, scope):
+        with pytest.raises(ValueError, match="list of strings"):
+>           view_data(model_bundle(model_path), scope=scope)
+
+tests/test_review_viewer_loop4.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+bundle = Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...7a', 'assets': [{'path': 'model.json', 'sha256': '231fedec5b4e6d45452629fabcc2ac128a385c71e0edfb56473c56d4743157e5'}]})
+scope = [{}]
+
+    def view_data(bundle: Bundle, scope: list[str] | None = None) -> dict:
+        """Keep canonical data intact; scope bounds eligible canvas/list IDs."""
+>       scope = sorted(set(scope or []))
+                       ^^^^^^^^^^^^^^^^
+E       TypeError: unhashable type: 'dict'
+
+gdd_validator/visualization.py:36: TypeError
+_______ test_view_scope_rejects_invalid_types_without_publishing[scope6] _______
+
+model_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-83/test_view_scope_rejects_invali6/model.json')
+scope = [3]
+
+    @pytest.mark.parametrize("scope", ["ab", "", 3, False, {}, [{}], [3]])
+    def test_view_scope_rejects_invalid_types_without_publishing(model_path, scope):
+>       with pytest.raises(ValueError, match="list of strings"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'list of strings'
+E         Actual message: 'Unknown view scope.'
+
+tests/test_review_viewer_loop4.py:26: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_viewer_loop4.py::test_view_scope_rejects_invalid_types_without_publishing[ab]
+FAILED tests/test_review_viewer_loop4.py::test_view_scope_rejects_invalid_types_without_publishing[]
+FAILED tests/test_review_viewer_loop4.py::test_view_scope_rejects_invalid_types_without_publishing[3]
+FAILED tests/test_review_viewer_loop4.py::test_view_scope_rejects_invalid_types_without_publishing[False]
+FAILED tests/test_review_viewer_loop4.py::test_view_scope_rejects_invalid_types_without_publishing[scope4]
+FAILED tests/test_review_viewer_loop4.py::test_view_scope_rejects_invalid_types_without_publishing[scope5]
+FAILED tests/test_review_viewer_loop4.py::test_view_scope_rejects_invalid_types_without_publishing[scope6]
+7 failed, 4 passed in 0.17s

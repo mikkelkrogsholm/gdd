@@ -1,0 +1,324 @@
+{
+  "browser": "155.0.8059.40",
+  "offline": true,
+  "total": 35,
+  "passed": 35,
+  "errors": [],
+  "requests": [],
+  "results": [
+    {
+      "id": "geometry-fixtures/concert.html-320x568",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 108.375,
+        "mainHeight": 2422.28125,
+        "width": 320
+      }
+    },
+    {
+      "id": "geometry-unicode-long-title.html-320x568",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 952.625,
+        "mainHeight": 2870.28125,
+        "width": 320
+      }
+    },
+    {
+      "id": "geometry-fixtures/concert.html-520x600",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 78,
+        "mainHeight": 2300.6875,
+        "width": 520
+      }
+    },
+    {
+      "id": "geometry-unicode-long-title.html-520x600",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 375.1875,
+        "mainHeight": 2528.6875,
+        "width": 520
+      }
+    },
+    {
+      "id": "geometry-fixtures/concert.html-521x600",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 78,
+        "mainHeight": 1793.6875,
+        "width": 521
+      }
+    },
+    {
+      "id": "geometry-unicode-long-title.html-521x600",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 413.5625,
+        "mainHeight": 2021.6875,
+        "width": 521
+      }
+    },
+    {
+      "id": "geometry-fixtures/concert.html-850x360",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 78,
+        "mainHeight": 1721.6875,
+        "width": 850
+      }
+    },
+    {
+      "id": "geometry-unicode-long-title.html-850x360",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 221.6875,
+        "mainHeight": 1812.1875,
+        "width": 850
+      }
+    },
+    {
+      "id": "geometry-fixtures/concert.html-851x360",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 88,
+        "mainHeight": 629.5,
+        "width": 851
+      }
+    },
+    {
+      "id": "geometry-unicode-long-title.html-851x360",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 303.765625,
+        "mainHeight": 629.5,
+        "width": 851
+      }
+    },
+    {
+      "id": "geometry-fixtures/concert.html-1150x600",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 88,
+        "mainHeight": 629.5,
+        "width": 1150
+      }
+    },
+    {
+      "id": "geometry-unicode-long-title.html-1150x600",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 212.578125,
+        "mainHeight": 629.5,
+        "width": 1150
+      }
+    },
+    {
+      "id": "geometry-fixtures/concert.html-1151x600",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 88,
+        "mainHeight": 629.5,
+        "width": 1151
+      }
+    },
+    {
+      "id": "geometry-unicode-long-title.html-1151x600",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 258.171875,
+        "mainHeight": 629.5,
+        "width": 1151
+      }
+    },
+    {
+      "id": "geometry-fixtures/concert.html-1440x360",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 88,
+        "mainHeight": 629.5,
+        "width": 1440
+      }
+    },
+    {
+      "id": "geometry-unicode-long-title.html-1440x360",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 212.578125,
+        "mainHeight": 629.5,
+        "width": 1440
+      }
+    },
+    {
+      "id": "geometry-fixtures/concert.html-1920x1080",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 88,
+        "mainHeight": 957,
+        "width": 1920
+      }
+    },
+    {
+      "id": "geometry-unicode-long-title.html-1920x1080",
+      "result": "PASS",
+      "detail": {
+        "headerHeight": 166.984375,
+        "mainHeight": 878.015625,
+        "width": 1920
+      }
+    },
+    {
+      "id": "layout-figure-boundary-0",
+      "result": "PASS",
+      "detail": {
+        "glyphs": 0,
+        "deterministic": true
+      }
+    },
+    {
+      "id": "layout-figure-boundary-1",
+      "result": "PASS",
+      "detail": {
+        "glyphs": 1,
+        "deterministic": true
+      }
+    },
+    {
+      "id": "layout-figure-boundary-200",
+      "result": "PASS",
+      "detail": {
+        "glyphs": 200,
+        "deterministic": true
+      }
+    },
+    {
+      "id": "layout-figure-boundary-201",
+      "result": "PASS",
+      "detail": {
+        "glyphs": 201,
+        "deterministic": true
+      }
+    },
+    {
+      "id": "partition-initial",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 6,
+        "shown_edges": 8,
+        "glyphs": 6,
+        "internal": 0
+      }
+    },
+    {
+      "id": "partition-scenarios",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 7,
+        "shown_edges": 9,
+        "glyphs": 7,
+        "internal": 0
+      }
+    },
+    {
+      "id": "partition-fold",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 7,
+        "shown_edges": 9,
+        "glyphs": 5,
+        "internal": 3
+      }
+    },
+    {
+      "id": "partition-folded-relation",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 7,
+        "shown_edges": 3,
+        "glyphs": 5,
+        "internal": 2
+      }
+    },
+    {
+      "id": "partition-community",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 3,
+        "shown_edges": 2,
+        "glyphs": 1,
+        "internal": 2
+      }
+    },
+    {
+      "id": "partition-kind",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 2,
+        "shown_edges": 0,
+        "glyphs": 2,
+        "internal": 0
+      }
+    },
+    {
+      "id": "partition-no-match",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 0,
+        "shown_edges": 0,
+        "glyphs": 0,
+        "internal": 0
+      }
+    },
+    {
+      "id": "partition-reset",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 7,
+        "shown_edges": 9,
+        "glyphs": 7,
+        "internal": 0
+      }
+    },
+    {
+      "id": "partition-numeric-search",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 1,
+        "shown_edges": 0,
+        "glyphs": 1,
+        "internal": 0
+      }
+    },
+    {
+      "id": "partition-scenario-search",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 1,
+        "shown_edges": 0,
+        "glyphs": 1,
+        "internal": 0
+      }
+    },
+    {
+      "id": "folded-internal-edge-remains-exact-and-inspectable",
+      "result": "PASS",
+      "detail": {
+        "shown_nodes": 7,
+        "shown_edges": 9,
+        "glyphs": 5,
+        "internal": 3
+      }
+    },
+    {
+      "id": "source-uri-inert-and-csp-present",
+      "result": "PASS",
+      "detail": "inert source metadata + restrictive CSP"
+    },
+    {
+      "id": "isolated-artifact-scope-reset-cannot-widen",
+      "result": "PASS",
+      "detail": "scope stays isolated"
+    }
+  ]
+}

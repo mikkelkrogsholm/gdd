@@ -1,0 +1,71 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "id": "reservation_reservation",
+      "label": "Reservation",
+      "_callable": true,
+      "_callable_class": true,
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "reservation",
+      "source_file": "reservation.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "reservation_reserve",
+      "label": "reserve()",
+      "_callable": true,
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "reserve()",
+      "source_file": "reservation.py",
+      "source_location": "L5"
+    },
+    {
+      "id": "reservation_py",
+      "label": "reservation.py",
+      "community": 0,
+      "file_type": "code",
+      "norm_label": "reservation.py",
+      "source_file": "reservation.py",
+      "source_location": "L1"
+    }
+  ],
+  "links": [
+    {
+      "source": "reservation_reserve",
+      "target": "reservation_reservation",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "reservation.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "reservation_py",
+      "target": "reservation_reservation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reservation.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "reservation_py",
+      "target": "reservation_reserve",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reservation.py",
+      "source_location": "L5",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

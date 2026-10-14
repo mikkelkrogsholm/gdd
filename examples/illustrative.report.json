@@ -1,0 +1,26 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "illustrative-not-an-execution",
+    "version": "0.2-draft"
+  },
+  "spec_revision": null,
+  "profiles": [
+    "readiness"
+  ],
+  "scope": [
+    "action.reserve"
+  ],
+  "checks": [
+    {
+      "check_id": "check.illustration",
+      "dimension": "readiness",
+      "result": "UNKNOWN",
+      "scope": [
+        "action.reserve"
+      ],
+      "reason": "Illustrativ rapport; en readiness-validator er ikke udført.",
+      "diagnostics": []
+    }
+  ]
+}

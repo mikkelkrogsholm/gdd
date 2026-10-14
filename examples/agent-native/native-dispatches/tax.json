@@ -1,0 +1,1053 @@
+{
+  "format": "gdd-dispatch/0.1",
+  "plan_revision": "sha256:bf29646cebc577f8238377a8405d51bea98d7af3906ad6d66a726a4a893206f5",
+  "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+  "implementation": "implementation.quote_demo.python",
+  "attempt": "native.tax.1",
+  "base_code_revision": "sha256:36574c16bae72b18e3439a476d0d23426da46c2ca1e0f0f71d2dfcb6e1579055",
+  "package": {
+    "id": "package.tax",
+    "scope": [
+      "action.tax"
+    ],
+    "read_resources": [
+      "REQUIREMENTS.md",
+      "model.gdd.json",
+      "model.records.json",
+      "quote_demo/__init__.py",
+      "tests/__init__.py"
+    ],
+    "write_resources": [
+      "quote_demo/tax.py",
+      "tests/test_tax.py"
+    ],
+    "workspace": "workspaces/tax",
+    "deliverables": [
+      "quote_demo/tax.py",
+      "tests/test_tax.py"
+    ],
+    "integration_plan": "Repair tax to the pinned floor contract while preserving strict input validation; run its unittest module and return only owned file changes. The lead integrates before package.quote runs.",
+    "implementation_targets": [
+      "action.tax"
+    ],
+    "context": {
+      "format": "gdd-context/0.2",
+      "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+      "scope": [
+        "action.tax"
+      ],
+      "nodes": [
+        "action.discount",
+        "action.quote",
+        "action.tax",
+        "component.discount",
+        "component.quote",
+        "component.tax",
+        "rule.discount_floor",
+        "rule.input",
+        "rule.quote_composition",
+        "rule.tax_floor",
+        "scenario.discount.floor",
+        "scenario.discount.invalid",
+        "scenario.discount.normal",
+        "scenario.quote.cli",
+        "scenario.quote.floor",
+        "scenario.quote.invalid",
+        "scenario.quote.normal",
+        "scenario.tax.floor",
+        "scenario.tax.invalid",
+        "scenario.tax.normal"
+      ],
+      "edges": [
+        "edge.calls.action.quote.action.discount",
+        "edge.calls.action.quote.action.tax",
+        "edge.constrains.rule.discount_floor.action.discount",
+        "edge.constrains.rule.input.action.discount",
+        "edge.constrains.rule.input.action.quote",
+        "edge.constrains.rule.input.action.tax",
+        "edge.constrains.rule.quote_composition.action.quote",
+        "edge.constrains.rule.tax_floor.action.tax",
+        "edge.exercises.scenario.discount.floor.action.discount",
+        "edge.exercises.scenario.discount.invalid.action.discount",
+        "edge.exercises.scenario.discount.normal.action.discount",
+        "edge.exercises.scenario.quote.cli.action.quote",
+        "edge.exercises.scenario.quote.floor.action.quote",
+        "edge.exercises.scenario.quote.invalid.action.quote",
+        "edge.exercises.scenario.quote.normal.action.quote",
+        "edge.exercises.scenario.tax.floor.action.tax",
+        "edge.exercises.scenario.tax.invalid.action.tax",
+        "edge.exercises.scenario.tax.normal.action.tax",
+        "edge.owned_by.action.discount.component.discount",
+        "edge.owned_by.action.quote.component.quote",
+        "edge.owned_by.action.tax.component.tax",
+        "edge.verifies.scenario.discount.floor.rule.discount_floor",
+        "edge.verifies.scenario.discount.invalid.rule.input",
+        "edge.verifies.scenario.discount.normal.rule.discount_floor",
+        "edge.verifies.scenario.quote.cli.rule.quote_composition",
+        "edge.verifies.scenario.quote.floor.rule.quote_composition",
+        "edge.verifies.scenario.quote.invalid.rule.input",
+        "edge.verifies.scenario.quote.normal.rule.quote_composition",
+        "edge.verifies.scenario.tax.floor.rule.tax_floor",
+        "edge.verifies.scenario.tax.invalid.rule.input",
+        "edge.verifies.scenario.tax.normal.rule.tax_floor"
+      ],
+      "sources": [
+        "source.requirements"
+      ],
+      "questions": [],
+      "extensions": []
+    },
+    "model_slice": {
+      "nodes": {
+        "action.discount": {
+          "kind": "action",
+          "description": "Calculate discount using the accepted floor contract.",
+          "maturity": "specified",
+          "source_refs": [
+            {
+              "source": "source.requirements",
+              "purpose": "contract",
+              "selector": {
+                "kind": "whole-document"
+              }
+            }
+          ],
+          "contract": {
+            "input": {
+              "amount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "rate_bps": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10000
+              }
+            },
+            "context": {},
+            "output": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "errors": {
+              "InvalidInput": "InvalidInput"
+            },
+            "preconditions": [
+              "Reject non-integers, booleans, negative amounts and rates outside 0..10000 before calculation."
+            ],
+            "external_effects": [],
+            "effects_complete": true,
+            "dependencies_complete": true,
+            "risks": {
+              "authorization": {
+                "relevant": false,
+                "rationale": "Pure local arithmetic has no identity or protected data.",
+                "scenarios": []
+              },
+              "idempotency": {
+                "relevant": false,
+                "rationale": "No request keys or external effects; equal input gives equal output.",
+                "scenarios": []
+              },
+              "concurrency": {
+                "relevant": false,
+                "rationale": "No shared mutable state or persistence.",
+                "scenarios": []
+              },
+              "atomicity": {
+                "relevant": false,
+                "rationale": "No mutations, commits, or external systems.",
+                "scenarios": []
+              },
+              "boundaries": {
+                "relevant": true,
+                "rationale": "Exact integers, inclusive rate bounds and rounding boundaries require checks.",
+                "scenarios": [
+                  "scenario.discount.floor",
+                  "scenario.discount.invalid"
+                ]
+              }
+            },
+            "error_cases": {
+              "InvalidInput": [
+                "scenario.discount.invalid"
+              ]
+            }
+          },
+          "behavior": "Validate exact integer inputs (excluding booleans), amount >= 0 and 0 <= rate_bps <= 10000; otherwise return InvalidInput. Return floor(amount * rate_bps / 10000), using exact integer arithmetic. Return the calculated amount, not the remaining balance."
+        },
+        "action.quote": {
+          "kind": "action",
+          "description": "Calculate quote using the accepted floor contract.",
+          "maturity": "specified",
+          "source_refs": [
+            {
+              "source": "source.requirements",
+              "purpose": "contract",
+              "selector": {
+                "kind": "whole-document"
+              }
+            }
+          ],
+          "contract": {
+            "input": {
+              "subtotal": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "discount_bps": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10000
+              },
+              "tax_bps": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10000
+              }
+            },
+            "context": {},
+            "output": {
+              "type": "object",
+              "properties": {
+                "subtotal": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "discount": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "net": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "tax": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "total": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "subtotal",
+                "discount",
+                "net",
+                "tax",
+                "total"
+              ]
+            },
+            "errors": {
+              "InvalidInput": "InvalidInput"
+            },
+            "preconditions": [
+              "Reject non-integers, booleans, negative amounts and rates outside 0..10000 before calculation."
+            ],
+            "external_effects": [],
+            "effects_complete": true,
+            "dependencies_complete": true,
+            "risks": {
+              "authorization": {
+                "relevant": false,
+                "rationale": "Pure local arithmetic has no identity or protected data.",
+                "scenarios": []
+              },
+              "idempotency": {
+                "relevant": false,
+                "rationale": "No request keys or external effects; equal input gives equal output.",
+                "scenarios": []
+              },
+              "concurrency": {
+                "relevant": false,
+                "rationale": "No shared mutable state or persistence.",
+                "scenarios": []
+              },
+              "atomicity": {
+                "relevant": false,
+                "rationale": "No mutations, commits, or external systems.",
+                "scenarios": []
+              },
+              "boundaries": {
+                "relevant": true,
+                "rationale": "Exact integers, inclusive rate bounds and rounding boundaries require checks.",
+                "scenarios": [
+                  "scenario.quote.floor",
+                  "scenario.quote.invalid"
+                ]
+              }
+            },
+            "error_cases": {
+              "InvalidInput": [
+                "scenario.quote.invalid"
+              ]
+            }
+          },
+          "behavior": "Validate all inputs before calling dependencies. discount_amount := action.discount(subtotal, discount_bps). net := subtotal - discount_amount. tax_amount := action.tax(net, tax_bps). Return exactly {subtotal, discount:discount_amount, net, tax:tax_amount, total:net+tax_amount}. Never combine rates or defer rounding."
+        },
+        "action.tax": {
+          "kind": "action",
+          "description": "Calculate tax using the accepted floor contract.",
+          "maturity": "specified",
+          "source_refs": [
+            {
+              "source": "source.requirements",
+              "purpose": "contract",
+              "selector": {
+                "kind": "whole-document"
+              }
+            }
+          ],
+          "contract": {
+            "input": {
+              "amount": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "rate_bps": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10000
+              }
+            },
+            "context": {},
+            "output": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "errors": {
+              "InvalidInput": "InvalidInput"
+            },
+            "preconditions": [
+              "Reject non-integers, booleans, negative amounts and rates outside 0..10000 before calculation."
+            ],
+            "external_effects": [],
+            "effects_complete": true,
+            "dependencies_complete": true,
+            "risks": {
+              "authorization": {
+                "relevant": false,
+                "rationale": "Pure local arithmetic has no identity or protected data.",
+                "scenarios": []
+              },
+              "idempotency": {
+                "relevant": false,
+                "rationale": "No request keys or external effects; equal input gives equal output.",
+                "scenarios": []
+              },
+              "concurrency": {
+                "relevant": false,
+                "rationale": "No shared mutable state or persistence.",
+                "scenarios": []
+              },
+              "atomicity": {
+                "relevant": false,
+                "rationale": "No mutations, commits, or external systems.",
+                "scenarios": []
+              },
+              "boundaries": {
+                "relevant": true,
+                "rationale": "Exact integers, inclusive rate bounds and rounding boundaries require checks.",
+                "scenarios": [
+                  "scenario.tax.floor",
+                  "scenario.tax.invalid"
+                ]
+              }
+            },
+            "error_cases": {
+              "InvalidInput": [
+                "scenario.tax.invalid"
+              ]
+            }
+          },
+          "behavior": "Validate exact integer inputs (excluding booleans), amount >= 0 and 0 <= rate_bps <= 10000; otherwise return InvalidInput. Return floor(amount * rate_bps / 10000), using exact integer arithmetic. Return the calculated amount, not the remaining balance."
+        },
+        "component.discount": {
+          "kind": "component",
+          "description": "Owns the pure discount interface.",
+          "maturity": "specified",
+          "interfaces": [
+            "action.discount"
+          ]
+        },
+        "component.quote": {
+          "kind": "component",
+          "description": "Owns the pure quote interface.",
+          "maturity": "specified",
+          "interfaces": [
+            "action.quote"
+          ]
+        },
+        "component.tax": {
+          "kind": "component",
+          "description": "Owns the pure tax interface.",
+          "maturity": "specified",
+          "interfaces": [
+            "action.tax"
+          ]
+        },
+        "rule.discount_floor": {
+          "kind": "rule",
+          "description": "Every valid discount result equals floor(amount * rate_bps / 10000).",
+          "maturity": "specified",
+          "source_refs": [
+            {
+              "source": "source.requirements",
+              "purpose": "contract",
+              "selector": {
+                "kind": "whole-document"
+              }
+            }
+          ],
+          "rule": {
+            "category": "behavior",
+            "statement": "Every valid discount result equals floor(amount * rate_bps / 10000).",
+            "scope": "targeted",
+            "blocking": true,
+            "verification": [
+              "stdlib_unittest"
+            ]
+          }
+        },
+        "rule.input": {
+          "kind": "rule",
+          "description": "Reject non-integers (including booleans), negative amounts and rates outside 0..10000 with InvalidInput before calculation. The reference CLI exits 2, empty stdout and InvalidInput stderr for invalid input.",
+          "maturity": "specified",
+          "source_refs": [
+            {
+              "source": "source.requirements",
+              "purpose": "contract",
+              "selector": {
+                "kind": "whole-document"
+              }
+            }
+          ],
+          "rule": {
+            "category": "behavior",
+            "statement": "Reject non-integers (including booleans), negative amounts and rates outside 0..10000 with InvalidInput before calculation. The reference CLI exits 2, empty stdout and InvalidInput stderr for invalid input.",
+            "scope": "targeted",
+            "blocking": true,
+            "verification": [
+              "stdlib_unittest"
+            ]
+          }
+        },
+        "rule.quote_composition": {
+          "kind": "rule",
+          "description": "Discount is computed on subtotal and subtracted before tax is computed on net; return exactly subtotal, discount, net, tax and total=net+tax. The CLI exposes this same result.",
+          "maturity": "specified",
+          "source_refs": [
+            {
+              "source": "source.requirements",
+              "purpose": "contract",
+              "selector": {
+                "kind": "whole-document"
+              }
+            }
+          ],
+          "rule": {
+            "category": "behavior",
+            "statement": "Discount is computed on subtotal and subtracted before tax is computed on net; return exactly subtotal, discount, net, tax and total=net+tax. The CLI exposes this same result.",
+            "scope": "targeted",
+            "blocking": true,
+            "verification": [
+              "stdlib_unittest"
+            ]
+          }
+        },
+        "rule.tax_floor": {
+          "kind": "rule",
+          "description": "Every valid tax result equals floor(amount * rate_bps / 10000).",
+          "maturity": "specified",
+          "source_refs": [
+            {
+              "source": "source.requirements",
+              "purpose": "contract",
+              "selector": {
+                "kind": "whole-document"
+              }
+            }
+          ],
+          "rule": {
+            "category": "behavior",
+            "statement": "Every valid tax result equals floor(amount * rate_bps / 10000).",
+            "scope": "targeted",
+            "blocking": true,
+            "verification": [
+              "stdlib_unittest"
+            ]
+          }
+        },
+        "scenario.discount.floor": {
+          "kind": "scenario",
+          "description": "Return 50 and 25 respectively. Zero amount/rate gives 0; rate 10000 returns the amount. Exact integer arithmetic also applies to large amounts.",
+          "scenario": {
+            "category": "boundary",
+            "given": "amount=101, rate_bps=5000; also amount=103, rate_bps=2500",
+            "when": "Calculate discount.",
+            "then": "Return 50 and 25 respectively. Zero amount/rate gives 0; rate 10000 returns the amount. Exact integer arithmetic also applies to large amounts."
+          }
+        },
+        "scenario.discount.invalid": {
+          "kind": "scenario",
+          "description": "Raise InvalidInput before returning a calculated amount.",
+          "scenario": {
+            "category": "negative",
+            "given": "Negative amount, rate outside 0..10000, boolean or non-integer input.",
+            "when": "Calculate discount.",
+            "then": "Raise InvalidInput before returning a calculated amount."
+          }
+        },
+        "scenario.discount.normal": {
+          "kind": "scenario",
+          "description": "Return 1000.",
+          "scenario": {
+            "category": "normal",
+            "given": "amount=10000 and rate_bps=1000",
+            "when": "Calculate discount.",
+            "then": "Return 1000."
+          }
+        },
+        "scenario.quote.cli": {
+          "kind": "scenario",
+          "description": "Exit 0, empty stderr, one JSON object matching the normal and floor quote fields exactly.",
+          "scenario": {
+            "category": "normal",
+            "given": "The actual CLI process can import the installed/local quote_demo modules.",
+            "when": "Run CLI with 10000 1000 2500 and with 101 5000 5000.",
+            "then": "Exit 0, empty stderr, one JSON object matching the normal and floor quote fields exactly."
+          }
+        },
+        "scenario.quote.floor": {
+          "kind": "scenario",
+          "description": "Return subtotal=101, discount=50, net=51, tax=25, total=76. With discount_bps=0, tax=50 and total=151. Zero and full-discount endpoints preserve nonnegative totals.",
+          "scenario": {
+            "category": "boundary",
+            "given": "subtotal=101, discount_bps=5000, tax_bps=5000",
+            "when": "Calculate a quote, rounding each leaf calculation with floor.",
+            "then": "Return subtotal=101, discount=50, net=51, tax=25, total=76. With discount_bps=0, tax=50 and total=151. Zero and full-discount endpoints preserve nonnegative totals."
+          }
+        },
+        "scenario.quote.invalid": {
+          "kind": "scenario",
+          "description": "Domain raises InvalidInput. CLI exits 2 with InvalidInput on stderr and empty stdout.",
+          "scenario": {
+            "category": "negative",
+            "given": "Negative subtotal, rate outside 0..10000, boolean, non-integer, or invalid CLI integer text.",
+            "when": "Call quote or the actual reference CLI.",
+            "then": "Domain raises InvalidInput. CLI exits 2 with InvalidInput on stderr and empty stdout."
+          }
+        },
+        "scenario.quote.normal": {
+          "kind": "scenario",
+          "description": "Return subtotal=10000, discount=1000, net=9000, tax=2250, total=11250.",
+          "scenario": {
+            "category": "normal",
+            "given": "subtotal=10000, discount_bps=1000, tax_bps=2500",
+            "when": "Calculate a quote.",
+            "then": "Return subtotal=10000, discount=1000, net=9000, tax=2250, total=11250."
+          }
+        },
+        "scenario.tax.floor": {
+          "kind": "scenario",
+          "description": "Return 50 and 25 respectively. Zero amount/rate gives 0; rate 10000 returns the amount. Exact integer arithmetic also applies to large amounts.",
+          "scenario": {
+            "category": "boundary",
+            "given": "amount=101, rate_bps=5000; also amount=103, rate_bps=2500",
+            "when": "Calculate tax.",
+            "then": "Return 50 and 25 respectively. Zero amount/rate gives 0; rate 10000 returns the amount. Exact integer arithmetic also applies to large amounts."
+          }
+        },
+        "scenario.tax.invalid": {
+          "kind": "scenario",
+          "description": "Raise InvalidInput before returning a calculated amount.",
+          "scenario": {
+            "category": "negative",
+            "given": "Negative amount, rate outside 0..10000, boolean or non-integer input.",
+            "when": "Calculate tax.",
+            "then": "Raise InvalidInput before returning a calculated amount."
+          }
+        },
+        "scenario.tax.normal": {
+          "kind": "scenario",
+          "description": "Return 1000.",
+          "scenario": {
+            "category": "normal",
+            "given": "amount=10000 and rate_bps=1000",
+            "when": "Calculate tax.",
+            "then": "Return 1000."
+          }
+        }
+      },
+      "sources": {
+        "source.requirements": {
+          "role": "input",
+          "title": "Accepted integer floor contract",
+          "uri": "REQUIREMENTS.md",
+          "format": "text/markdown",
+          "normative": true,
+          "revision": {
+            "sha256": "1f4b10c9fbc2a9b2e05b54bf049bfe432c24472e15271b37f23d1fe547fa3fb7"
+          }
+        }
+      },
+      "questions": {},
+      "extensions": {},
+      "edges": [
+        {
+          "id": "edge.calls.action.quote.action.discount",
+          "from": "action.quote",
+          "relation": "calls",
+          "to": "action.discount"
+        },
+        {
+          "id": "edge.calls.action.quote.action.tax",
+          "from": "action.quote",
+          "relation": "calls",
+          "to": "action.tax"
+        },
+        {
+          "id": "edge.constrains.rule.discount_floor.action.discount",
+          "from": "rule.discount_floor",
+          "relation": "constrains",
+          "to": "action.discount"
+        },
+        {
+          "id": "edge.constrains.rule.input.action.discount",
+          "from": "rule.input",
+          "relation": "constrains",
+          "to": "action.discount"
+        },
+        {
+          "id": "edge.constrains.rule.input.action.quote",
+          "from": "rule.input",
+          "relation": "constrains",
+          "to": "action.quote"
+        },
+        {
+          "id": "edge.constrains.rule.input.action.tax",
+          "from": "rule.input",
+          "relation": "constrains",
+          "to": "action.tax"
+        },
+        {
+          "id": "edge.constrains.rule.quote_composition.action.quote",
+          "from": "rule.quote_composition",
+          "relation": "constrains",
+          "to": "action.quote"
+        },
+        {
+          "id": "edge.constrains.rule.tax_floor.action.tax",
+          "from": "rule.tax_floor",
+          "relation": "constrains",
+          "to": "action.tax"
+        },
+        {
+          "id": "edge.exercises.scenario.discount.floor.action.discount",
+          "from": "scenario.discount.floor",
+          "relation": "exercises",
+          "to": "action.discount"
+        },
+        {
+          "id": "edge.exercises.scenario.discount.invalid.action.discount",
+          "from": "scenario.discount.invalid",
+          "relation": "exercises",
+          "to": "action.discount"
+        },
+        {
+          "id": "edge.exercises.scenario.discount.normal.action.discount",
+          "from": "scenario.discount.normal",
+          "relation": "exercises",
+          "to": "action.discount"
+        },
+        {
+          "id": "edge.exercises.scenario.quote.cli.action.quote",
+          "from": "scenario.quote.cli",
+          "relation": "exercises",
+          "to": "action.quote"
+        },
+        {
+          "id": "edge.exercises.scenario.quote.floor.action.quote",
+          "from": "scenario.quote.floor",
+          "relation": "exercises",
+          "to": "action.quote"
+        },
+        {
+          "id": "edge.exercises.scenario.quote.invalid.action.quote",
+          "from": "scenario.quote.invalid",
+          "relation": "exercises",
+          "to": "action.quote"
+        },
+        {
+          "id": "edge.exercises.scenario.quote.normal.action.quote",
+          "from": "scenario.quote.normal",
+          "relation": "exercises",
+          "to": "action.quote"
+        },
+        {
+          "id": "edge.exercises.scenario.tax.floor.action.tax",
+          "from": "scenario.tax.floor",
+          "relation": "exercises",
+          "to": "action.tax"
+        },
+        {
+          "id": "edge.exercises.scenario.tax.invalid.action.tax",
+          "from": "scenario.tax.invalid",
+          "relation": "exercises",
+          "to": "action.tax"
+        },
+        {
+          "id": "edge.exercises.scenario.tax.normal.action.tax",
+          "from": "scenario.tax.normal",
+          "relation": "exercises",
+          "to": "action.tax"
+        },
+        {
+          "id": "edge.owned_by.action.discount.component.discount",
+          "from": "action.discount",
+          "relation": "owned_by",
+          "to": "component.discount"
+        },
+        {
+          "id": "edge.owned_by.action.quote.component.quote",
+          "from": "action.quote",
+          "relation": "owned_by",
+          "to": "component.quote"
+        },
+        {
+          "id": "edge.owned_by.action.tax.component.tax",
+          "from": "action.tax",
+          "relation": "owned_by",
+          "to": "component.tax"
+        },
+        {
+          "id": "edge.verifies.scenario.discount.floor.rule.discount_floor",
+          "from": "scenario.discount.floor",
+          "relation": "verifies",
+          "to": "rule.discount_floor"
+        },
+        {
+          "id": "edge.verifies.scenario.discount.invalid.rule.input",
+          "from": "scenario.discount.invalid",
+          "relation": "verifies",
+          "to": "rule.input"
+        },
+        {
+          "id": "edge.verifies.scenario.discount.normal.rule.discount_floor",
+          "from": "scenario.discount.normal",
+          "relation": "verifies",
+          "to": "rule.discount_floor"
+        },
+        {
+          "id": "edge.verifies.scenario.quote.cli.rule.quote_composition",
+          "from": "scenario.quote.cli",
+          "relation": "verifies",
+          "to": "rule.quote_composition"
+        },
+        {
+          "id": "edge.verifies.scenario.quote.floor.rule.quote_composition",
+          "from": "scenario.quote.floor",
+          "relation": "verifies",
+          "to": "rule.quote_composition"
+        },
+        {
+          "id": "edge.verifies.scenario.quote.invalid.rule.input",
+          "from": "scenario.quote.invalid",
+          "relation": "verifies",
+          "to": "rule.input"
+        },
+        {
+          "id": "edge.verifies.scenario.quote.normal.rule.quote_composition",
+          "from": "scenario.quote.normal",
+          "relation": "verifies",
+          "to": "rule.quote_composition"
+        },
+        {
+          "id": "edge.verifies.scenario.tax.floor.rule.tax_floor",
+          "from": "scenario.tax.floor",
+          "relation": "verifies",
+          "to": "rule.tax_floor"
+        },
+        {
+          "id": "edge.verifies.scenario.tax.invalid.rule.input",
+          "from": "scenario.tax.invalid",
+          "relation": "verifies",
+          "to": "rule.input"
+        },
+        {
+          "id": "edge.verifies.scenario.tax.normal.rule.tax_floor",
+          "from": "scenario.tax.normal",
+          "relation": "verifies",
+          "to": "rule.tax_floor"
+        }
+      ]
+    },
+    "locations": {
+      "action.discount": [
+        "model.gdd.json",
+        "/nodes/action.discount"
+      ],
+      "action.quote": [
+        "model.gdd.json",
+        "/nodes/action.quote"
+      ],
+      "action.tax": [
+        "model.gdd.json",
+        "/nodes/action.tax"
+      ],
+      "component.discount": [
+        "model.gdd.json",
+        "/nodes/component.discount"
+      ],
+      "component.quote": [
+        "model.gdd.json",
+        "/nodes/component.quote"
+      ],
+      "component.tax": [
+        "model.gdd.json",
+        "/nodes/component.tax"
+      ],
+      "edge.calls.action.quote.action.discount": [
+        "model.gdd.json",
+        "/edges/13"
+      ],
+      "edge.calls.action.quote.action.tax": [
+        "model.gdd.json",
+        "/edges/14"
+      ],
+      "edge.constrains.rule.discount_floor.action.discount": [
+        "model.gdd.json",
+        "/edges/15"
+      ],
+      "edge.constrains.rule.input.action.discount": [
+        "model.gdd.json",
+        "/edges/18"
+      ],
+      "edge.constrains.rule.input.action.quote": [
+        "model.gdd.json",
+        "/edges/20"
+      ],
+      "edge.constrains.rule.input.action.tax": [
+        "model.gdd.json",
+        "/edges/19"
+      ],
+      "edge.constrains.rule.quote_composition.action.quote": [
+        "model.gdd.json",
+        "/edges/17"
+      ],
+      "edge.constrains.rule.tax_floor.action.tax": [
+        "model.gdd.json",
+        "/edges/16"
+      ],
+      "edge.exercises.scenario.discount.floor.action.discount": [
+        "model.gdd.json",
+        "/edges/2"
+      ],
+      "edge.exercises.scenario.discount.invalid.action.discount": [
+        "model.gdd.json",
+        "/edges/3"
+      ],
+      "edge.exercises.scenario.discount.normal.action.discount": [
+        "model.gdd.json",
+        "/edges/1"
+      ],
+      "edge.exercises.scenario.quote.cli.action.quote": [
+        "model.gdd.json",
+        "/edges/12"
+      ],
+      "edge.exercises.scenario.quote.floor.action.quote": [
+        "model.gdd.json",
+        "/edges/10"
+      ],
+      "edge.exercises.scenario.quote.invalid.action.quote": [
+        "model.gdd.json",
+        "/edges/11"
+      ],
+      "edge.exercises.scenario.quote.normal.action.quote": [
+        "model.gdd.json",
+        "/edges/9"
+      ],
+      "edge.exercises.scenario.tax.floor.action.tax": [
+        "model.gdd.json",
+        "/edges/6"
+      ],
+      "edge.exercises.scenario.tax.invalid.action.tax": [
+        "model.gdd.json",
+        "/edges/7"
+      ],
+      "edge.exercises.scenario.tax.normal.action.tax": [
+        "model.gdd.json",
+        "/edges/5"
+      ],
+      "edge.owned_by.action.discount.component.discount": [
+        "model.gdd.json",
+        "/edges/0"
+      ],
+      "edge.owned_by.action.quote.component.quote": [
+        "model.gdd.json",
+        "/edges/8"
+      ],
+      "edge.owned_by.action.tax.component.tax": [
+        "model.gdd.json",
+        "/edges/4"
+      ],
+      "edge.verifies.scenario.discount.floor.rule.discount_floor": [
+        "model.gdd.json",
+        "/edges/22"
+      ],
+      "edge.verifies.scenario.discount.invalid.rule.input": [
+        "model.gdd.json",
+        "/edges/23"
+      ],
+      "edge.verifies.scenario.discount.normal.rule.discount_floor": [
+        "model.gdd.json",
+        "/edges/21"
+      ],
+      "edge.verifies.scenario.quote.cli.rule.quote_composition": [
+        "model.gdd.json",
+        "/edges/29"
+      ],
+      "edge.verifies.scenario.quote.floor.rule.quote_composition": [
+        "model.gdd.json",
+        "/edges/28"
+      ],
+      "edge.verifies.scenario.quote.invalid.rule.input": [
+        "model.gdd.json",
+        "/edges/30"
+      ],
+      "edge.verifies.scenario.quote.normal.rule.quote_composition": [
+        "model.gdd.json",
+        "/edges/27"
+      ],
+      "edge.verifies.scenario.tax.floor.rule.tax_floor": [
+        "model.gdd.json",
+        "/edges/25"
+      ],
+      "edge.verifies.scenario.tax.invalid.rule.input": [
+        "model.gdd.json",
+        "/edges/26"
+      ],
+      "edge.verifies.scenario.tax.normal.rule.tax_floor": [
+        "model.gdd.json",
+        "/edges/24"
+      ],
+      "rule.discount_floor": [
+        "model.gdd.json",
+        "/nodes/rule.discount_floor"
+      ],
+      "rule.input": [
+        "model.gdd.json",
+        "/nodes/rule.input"
+      ],
+      "rule.quote_composition": [
+        "model.gdd.json",
+        "/nodes/rule.quote_composition"
+      ],
+      "rule.tax_floor": [
+        "model.gdd.json",
+        "/nodes/rule.tax_floor"
+      ],
+      "scenario.discount.floor": [
+        "model.gdd.json",
+        "/nodes/scenario.discount.floor"
+      ],
+      "scenario.discount.invalid": [
+        "model.gdd.json",
+        "/nodes/scenario.discount.invalid"
+      ],
+      "scenario.discount.normal": [
+        "model.gdd.json",
+        "/nodes/scenario.discount.normal"
+      ],
+      "scenario.quote.cli": [
+        "model.gdd.json",
+        "/nodes/scenario.quote.cli"
+      ],
+      "scenario.quote.floor": [
+        "model.gdd.json",
+        "/nodes/scenario.quote.floor"
+      ],
+      "scenario.quote.invalid": [
+        "model.gdd.json",
+        "/nodes/scenario.quote.invalid"
+      ],
+      "scenario.quote.normal": [
+        "model.gdd.json",
+        "/nodes/scenario.quote.normal"
+      ],
+      "scenario.tax.floor": [
+        "model.gdd.json",
+        "/nodes/scenario.tax.floor"
+      ],
+      "scenario.tax.invalid": [
+        "model.gdd.json",
+        "/nodes/scenario.tax.invalid"
+      ],
+      "scenario.tax.normal": [
+        "model.gdd.json",
+        "/nodes/scenario.tax.normal"
+      ],
+      "source.requirements": [
+        "model.gdd.json",
+        "/sources/source.requirements"
+      ]
+    },
+    "locked_contracts": [
+      "action.discount",
+      "action.quote",
+      "action.tax"
+    ],
+    "required_checks": [
+      {
+        "rule": "rule.discount_floor",
+        "method": "stdlib_unittest",
+        "checks": [
+          "check.demo.all"
+        ]
+      },
+      {
+        "rule": "rule.input",
+        "method": "stdlib_unittest",
+        "checks": [
+          "check.demo.all"
+        ]
+      },
+      {
+        "rule": "rule.quote_composition",
+        "method": "stdlib_unittest",
+        "checks": [
+          "check.demo.all"
+        ]
+      },
+      {
+        "rule": "rule.tax_floor",
+        "method": "stdlib_unittest",
+        "checks": [
+          "check.demo.all"
+        ]
+      }
+    ],
+    "check_plans": {
+      "check.demo.all": {
+        "kind": "check",
+        "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+        "scope": [
+          "rule.discount_floor",
+          "rule.tax_floor",
+          "rule.quote_composition",
+          "rule.input"
+        ],
+        "method": "stdlib_unittest",
+        "required_environment": [
+          "python"
+        ],
+        "negative_controls": [
+          "Run the shipped half-up baseline against unchanged floor assertions; the rounding tests and actual CLI integration must detect the defect."
+        ]
+      }
+    },
+    "extension_semantics": {},
+    "base_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d"
+  }
+}

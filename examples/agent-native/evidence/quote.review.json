@@ -1,0 +1,9 @@
+{
+  "review": "Only one test added; exact literal expected CLI fields for 10**30+1 verify precision, per-step floor and discount-before-tax. Existing18tests unchanged; real19test suite PASS. Product code unchanged by quote package.",
+  "artifact_sha256": "d629e91c41366570057e6f1d3eb4c8a9a1762c088b4914a36eb10c08842f664f",
+  "changed_resources": [
+    "tests/test_quote.py"
+  ],
+  "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874",
+  "check": "evidence/final.run.json"
+}

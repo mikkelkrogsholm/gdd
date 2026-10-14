@@ -1,0 +1,22 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:7654a567caf105ff015b8561983962ea7512b7b623f37b51502b17cd5c59504a",
+  "event": {
+    "type": "integrate",
+    "expected_revision": "sha256:7654a567caf105ff015b8561983962ea7512b7b623f37b51502b17cd5c59504a",
+    "idempotency_key": "integrate.package.tax",
+    "package": "package.tax",
+    "attempt": "native.tax.1",
+    "base_code_revision": "sha256:4f11ee83d684d71c945ef14538fe753fcaee15ae9381c24d8e5629671be98a5d",
+    "code_revision": "sha256:e9c32589894dc4b697fb2187257835e044684497c981860812e3f82bf10a6d34",
+    "review": {
+      "reviewer": "actor.demo_lead",
+      "verdict": "PASS",
+      "evidence_uri": "evidence/tax.review.json"
+    },
+    "verified_resources": [
+      "quote_demo/tax.py"
+    ]
+  },
+  "revision": "sha256:ce9915d157ac936478a7ffd408e36949b0028a9cf6f0bf9c7ed12a3e176c49f8"
+}

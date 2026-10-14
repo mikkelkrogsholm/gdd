@@ -1,0 +1,78 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-graphify",
+    "version": "0.1.0"
+  },
+  "spec_revision": null,
+  "profiles": [
+    "import.graphify"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "graphify.raw",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Supplied artifact sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb: original bytes hashed; producer completeness and code correctness are not inferred.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.layout",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Explicit profile graphify-0.9.75-ast matches the supplied collection layout; unknown fields preserved in original bytes.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.nodes",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Each supplied node retained; typed producer identities checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.edges",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.direction",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.code_candidates",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.integrity",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Original bytes match the recorded SHA-256 and length.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "graphify.projection",
+      "dimension": "integration",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+      "diagnostics": []
+    }
+  ]
+}

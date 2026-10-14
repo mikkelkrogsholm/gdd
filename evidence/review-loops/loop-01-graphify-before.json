@@ -1,0 +1,19 @@
+[
+  {
+    "case": "numeric_identity",
+    "source": "99999999999999991611392",
+    "exit_code": 0,
+    "resolved_source": "observation.node.ha768a8b398a44d014d9db1e06bab664ae6df78f3f48b0d68d0e7bf4e2bbcaaf7"
+  },
+  {
+    "case": "numeric_identity",
+    "source": "100000000000000000000000",
+    "exit_code": 1,
+    "resolved_source": null
+  },
+  {
+    "case": "missing_original_proposal",
+    "status": "proposed",
+    "nodes": 3
+  }
+]

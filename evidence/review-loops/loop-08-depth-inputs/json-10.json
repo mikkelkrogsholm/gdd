@@ -1,0 +1,1 @@
+{"format": "gdd/0.2", "project": {"id": "review", "title": "Depth", "goal": "Classify parser capacity"}, "nodes": {"entity.x": {"kind": "entity", "description": "Value", "fields": {}, "annotations": {"example.data": [[[[[[[[[[0]]]]]]]]]]}}}, "edges": []}

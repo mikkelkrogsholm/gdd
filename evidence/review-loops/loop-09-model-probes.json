@@ -1,0 +1,13 @@
+{
+  "loop": 9,
+  "owner": "model_review",
+  "result": "CLEAN",
+  "independent_probe_counts": {
+    "independent_decimal_core_oracle": 128,
+    "dynamic_ref_composite_exact_assertions_and_nonmutation": 8,
+    "scoped_closure_readiness_parallel_multiedges": 5,
+    "independent_parallel_required_pair_oracle": 16,
+    "json_yaml_capacity_and_forbidden_controls": 7
+  },
+  "independent_probe_total": 164
+}

@@ -1,0 +1,124 @@
+.FF.FF                                                                   [100%]
+=================================== FAILURES ===================================
+_ test_used_readiness_decision_requires_record_integrity[screen-dangling_scope] _
+
+case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-97/test_..., 'entity.deleted'], 'spec_revision': 'sha256:faf3bbdc1a6893af2064f40d7c47d3257fd8d971371f3b68957a7e12f61a0f11', ...}})
+variant = 'dangling_scope'
+
+    @pytest.mark.parametrize("variant", ["valid", "dangling_scope", "dangling_check"])
+    def test_used_readiness_decision_requires_record_integrity(case, variant):
+        path, scope, records = case
+        if variant == "dangling_scope":
+            records["decision.review"]["scope"].append("entity.deleted")
+        elif variant == "dangling_check":
+            records["decision.review"]["checks"] = ["check.missing"]
+        write_records(path.parent, records)
+        report = validate(
+            path,
+            profiles=["readiness"],
+            scope=scope,
+            host_context={"trusted_decisions": ["decision.review"]},
+        )
+        if variant == "valid":
+            assert aggregate(report["checks"], "model") == "PASS"
+            assert aggregate(report["checks"], "readiness") == "PASS"
+        else:
+            assert aggregate(report["checks"], "model") == "FAIL"
+>           assert aggregate(report["checks"], "readiness") != "PASS"
+E           AssertionError: assert 'PASS' != 'PASS'
+E            +  where 'PASS' = aggregate([{'check_id': 'representation.schema', 'dimension': 'model', 'result': 'PASS', 'scope': [], ...}, {'check_id': 'repres...[], ...}, {'check_id': 'readiness.structural', 'dimension': 'readiness', 'result': 'PASS', 'scope': ['screen.x'], ...}], 'readiness')
+
+tests/test_review_readiness_integrity.py:63: AssertionError
+_ test_used_readiness_decision_requires_record_integrity[screen-dangling_check] _
+
+case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-97/test_...cope': ['screen.x'], 'spec_revision': 'sha256:faf3bbdc1a6893af2064f40d7c47d3257fd8d971371f3b68957a7e12f61a0f11', ...}})
+variant = 'dangling_check'
+
+    @pytest.mark.parametrize("variant", ["valid", "dangling_scope", "dangling_check"])
+    def test_used_readiness_decision_requires_record_integrity(case, variant):
+        path, scope, records = case
+        if variant == "dangling_scope":
+            records["decision.review"]["scope"].append("entity.deleted")
+        elif variant == "dangling_check":
+            records["decision.review"]["checks"] = ["check.missing"]
+        write_records(path.parent, records)
+        report = validate(
+            path,
+            profiles=["readiness"],
+            scope=scope,
+            host_context={"trusted_decisions": ["decision.review"]},
+        )
+        if variant == "valid":
+            assert aggregate(report["checks"], "model") == "PASS"
+            assert aggregate(report["checks"], "readiness") == "PASS"
+        else:
+            assert aggregate(report["checks"], "model") == "FAIL"
+>           assert aggregate(report["checks"], "readiness") != "PASS"
+E           AssertionError: assert 'PASS' != 'PASS'
+E            +  where 'PASS' = aggregate([{'check_id': 'representation.schema', 'dimension': 'model', 'result': 'PASS', 'scope': [], ...}, {'check_id': 'repres...[], ...}, {'check_id': 'readiness.structural', 'dimension': 'readiness', 'result': 'PASS', 'scope': ['screen.x'], ...}], 'readiness')
+
+tests/test_review_readiness_integrity.py:63: AssertionError
+_ test_used_readiness_decision_requires_record_integrity[question-dangling_scope] _
+
+case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-97/test_..., 'entity.deleted'], 'spec_revision': 'sha256:f881c7751a8c34bff069342c95357fcc4370e6cf644576854be5169075c44710', ...}})
+variant = 'dangling_scope'
+
+    @pytest.mark.parametrize("variant", ["valid", "dangling_scope", "dangling_check"])
+    def test_used_readiness_decision_requires_record_integrity(case, variant):
+        path, scope, records = case
+        if variant == "dangling_scope":
+            records["decision.review"]["scope"].append("entity.deleted")
+        elif variant == "dangling_check":
+            records["decision.review"]["checks"] = ["check.missing"]
+        write_records(path.parent, records)
+        report = validate(
+            path,
+            profiles=["readiness"],
+            scope=scope,
+            host_context={"trusted_decisions": ["decision.review"]},
+        )
+        if variant == "valid":
+            assert aggregate(report["checks"], "model") == "PASS"
+            assert aggregate(report["checks"], "readiness") == "PASS"
+        else:
+            assert aggregate(report["checks"], "model") == "FAIL"
+>           assert aggregate(report["checks"], "readiness") != "PASS"
+E           AssertionError: assert 'PASS' != 'PASS'
+E            +  where 'PASS' = aggregate([{'check_id': 'representation.schema', 'dimension': 'model', 'result': 'PASS', 'scope': [], ...}, {'check_id': 'repres...[], ...}, {'check_id': 'readiness.structural', 'dimension': 'readiness', 'result': 'PASS', 'scope': ['entity.x'], ...}], 'readiness')
+
+tests/test_review_readiness_integrity.py:63: AssertionError
+_ test_used_readiness_decision_requires_record_integrity[question-dangling_check] _
+
+case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-97/test_...cope': ['entity.x'], 'spec_revision': 'sha256:f881c7751a8c34bff069342c95357fcc4370e6cf644576854be5169075c44710', ...}})
+variant = 'dangling_check'
+
+    @pytest.mark.parametrize("variant", ["valid", "dangling_scope", "dangling_check"])
+    def test_used_readiness_decision_requires_record_integrity(case, variant):
+        path, scope, records = case
+        if variant == "dangling_scope":
+            records["decision.review"]["scope"].append("entity.deleted")
+        elif variant == "dangling_check":
+            records["decision.review"]["checks"] = ["check.missing"]
+        write_records(path.parent, records)
+        report = validate(
+            path,
+            profiles=["readiness"],
+            scope=scope,
+            host_context={"trusted_decisions": ["decision.review"]},
+        )
+        if variant == "valid":
+            assert aggregate(report["checks"], "model") == "PASS"
+            assert aggregate(report["checks"], "readiness") == "PASS"
+        else:
+            assert aggregate(report["checks"], "model") == "FAIL"
+>           assert aggregate(report["checks"], "readiness") != "PASS"
+E           AssertionError: assert 'PASS' != 'PASS'
+E            +  where 'PASS' = aggregate([{'check_id': 'representation.schema', 'dimension': 'model', 'result': 'PASS', 'scope': [], ...}, {'check_id': 'repres...[], ...}, {'check_id': 'readiness.structural', 'dimension': 'readiness', 'result': 'PASS', 'scope': ['entity.x'], ...}], 'readiness')
+
+tests/test_review_readiness_integrity.py:63: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_readiness_integrity.py::test_used_readiness_decision_requires_record_integrity[screen-dangling_scope]
+FAILED tests/test_review_readiness_integrity.py::test_used_readiness_decision_requires_record_integrity[screen-dangling_check]
+FAILED tests/test_review_readiness_integrity.py::test_used_readiness_decision_requires_record_integrity[question-dangling_scope]
+FAILED tests/test_review_readiness_integrity.py::test_used_readiness_decision_requires_record_integrity[question-dangling_check]
+4 failed, 2 passed in 0.15s

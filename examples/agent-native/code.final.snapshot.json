@@ -1,0 +1,15 @@
+{
+  "format": "demo-code-snapshot/0.1",
+  "files": {
+    "quote_demo/__init__.py": "a96ca849f4ea2fecb861018aca029f1d111ae68c66631560168ade12dd42bfc1",
+    "quote_demo/__main__.py": "d422b4e4f9a09e7b391b2e31086eff902f3ab18989a68a3d1f118e7e38f4de40",
+    "quote_demo/discount.py": "6c0a876bfad1f796c2cb5dad37e576d2fd8822a3656bf3052fb42f82d2fb95ca",
+    "quote_demo/quote.py": "04b954920697085e7495e2c0459f6c88ddc2d0898c874eae6c6f67ec930ad1f0",
+    "quote_demo/tax.py": "35229a5dad001f6be243634176fb8f27013e850e8c4887d1f2f78185e6d266c7",
+    "tests/__init__.py": "7747c278e4a219176cbcceaab501053362c7b6b78bd6c3a9e53f1fe5e5a83fba",
+    "tests/test_discount.py": "f8f6061652572e9040f534cc6cf227a62b5b1ec78cf0438557465a3b3191b82f",
+    "tests/test_quote.py": "ff5510024503e28f8e30aa0da618b60b0debb910e0fb763b5cf382975b962715",
+    "tests/test_tax.py": "55ba20d490465c8bb04189e2e97c3b71dde0b50e76c9bc1cc514723a7b4b76df"
+  },
+  "revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874"
+}

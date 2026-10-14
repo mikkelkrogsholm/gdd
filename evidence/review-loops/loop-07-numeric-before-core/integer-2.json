@@ -1,0 +1,1 @@
+{"format": "gdd/0.2", "project": {"id": "probe", "title": "Probe", "goal": "Exact declared bounds"}, "nodes": {"entity.x": {"kind": "entity", "description": "Value", "fields": {"v": {"type": "integer", "minimum": 1e23, "maximum": 99999999999999995000000}}}}, "edges": []}

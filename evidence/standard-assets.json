@@ -1,0 +1,131 @@
+{
+  "kind": "standard-authoring-asset-manifest",
+  "standard": "gdd/0.2-draft",
+  "sha256": "eb5b6261b35715501bc76948cabeea7978bae9fc5024b908a5e4f95e61b72fc4",
+  "assets": [
+    {
+      "path": "GDD.md",
+      "sha256": "b392b7457d46ae3182d9ab43bd605b71e2544189d0a08c9e17500107cead9f7d"
+    },
+    {
+      "path": "README.md",
+      "sha256": "602ee3116fc5d29d8ebda2d2603571c4083e8461e48ae71691093b3a294def7b"
+    },
+    {
+      "path": "SPEC.md",
+      "sha256": "76a496a404b9661636c3e707084ceb7cfd148b6e2952e1a7e7a6ef26d7c8bb08"
+    },
+    {
+      "path": "conformance/README.md",
+      "sha256": "edf76e69b66b9d48bb57ba6acc923693fa07ed7c42ff4bdbf266b424cde05870"
+    },
+    {
+      "path": "conformance/cases.yaml",
+      "sha256": "eefad5c37f7d797ec1f185fcea772905b7cc5c699cef84e773e178481e709e6e"
+    },
+    {
+      "path": "conformance/diagnostics.csv",
+      "sha256": "b856ca00e7bb3b74e1da86481912a073cc8a70caa18db46b07e224de2b47ccc2"
+    },
+    {
+      "path": "examples/README.md",
+      "sha256": "68bb0975ee4ee252d9c49e2ab04b51379fb8317a96873de97e186396cd519a91"
+    },
+    {
+      "path": "examples/concert.gdd.yaml",
+      "sha256": "826d52effcc6b30b1585341d201cc03ef0a89501fffaf3b404fb1a339564239e"
+    },
+    {
+      "path": "examples/concert.records.yaml",
+      "sha256": "496a0525a5fcbf5ef4abf74a89c8bceb31ca0b1ab581355180b6e0641e54fbee"
+    },
+    {
+      "path": "examples/concert.snapshot.json",
+      "sha256": "4e271aeb3e03d5e22f7f7f37e2f1d73158d3c572ca4d6c35f59e226d1a88a880"
+    },
+    {
+      "path": "examples/extension.gdd.yaml",
+      "sha256": "b877697b77ddcdde91c122f7393599c1a82676790bcd44eb4f25bf9ca23690c2"
+    },
+    {
+      "path": "examples/extensions/sensors.extension.json",
+      "sha256": "1822e580e00ef250f7e8a0b3b411fd501a75e37726fadb59d3246936ea971136"
+    },
+    {
+      "path": "examples/fragmented.gdd.yaml",
+      "sha256": "a2b8070721684aa36ed5e96be89b9255e8e97dd6d2a50af2096303c2b6ee2c90"
+    },
+    {
+      "path": "examples/illustrative.report.json",
+      "sha256": "8c1cdad2a076951581e2914c037fd0a64caa47e02f400b8eceb675abf6bd0520"
+    },
+    {
+      "path": "examples/note.fragment.yaml",
+      "sha256": "713978586061a7ffd9ff69d149068dc23e2a7befa9c52017cb2c2c750cbfcdb5"
+    },
+    {
+      "path": "examples/refinement.gdd.yaml",
+      "sha256": "0911cf6c303d7db4a1919fe51ac75d522a60d1dfaeb1305bafc48e1dfe9b597b"
+    },
+    {
+      "path": "examples/sketch.gdd.yaml",
+      "sha256": "30f9af560ffc8b8d3bb409721e2719591a334a2a3124b6895ed7f20dbef05a7f"
+    },
+    {
+      "path": "examples/sources/legacy-concert.gdd.yaml",
+      "sha256": "8dfcf87613d59edce97d911e57ce1314c9d17356b53d48029d8eebe3b24bbc88"
+    },
+    {
+      "path": "schemas/README.md",
+      "sha256": "ff98b5812a68a62b55ffa778e312736ed9e2d89ea48b243dad2f516a1aa888a0"
+    },
+    {
+      "path": "schemas/extension.schema.json",
+      "sha256": "30efcd4a135fa0974a0996c460a3eec5cf88319934f4018c3f8ce9b3687ed79a"
+    },
+    {
+      "path": "schemas/fragment.schema.json",
+      "sha256": "a320ee8be3ebf7790accd0e96c86420f56d614fa0f207b70dc401de2f857ca56"
+    },
+    {
+      "path": "schemas/gdd.schema.json",
+      "sha256": "eb8617d183e74379484f5d4bca42ae688e72bcb6499e8e183992aa76192b5b89"
+    },
+    {
+      "path": "schemas/records.schema.json",
+      "sha256": "0ce927f6ee551fe3cf99083b00f07949eeddcf3c798598c83169cc5432554084"
+    },
+    {
+      "path": "schemas/report.schema.json",
+      "sha256": "ba403b6f5dd3e9e3adc6873c6d84441a3a6d74852a7c58992fbc1afdc0d04fd4"
+    },
+    {
+      "path": "schemas/snapshot.schema.json",
+      "sha256": "1555d665c54d2a4aa39df185e69e0467cd57635a0a5a07cdd2641e80d1d72d1e"
+    },
+    {
+      "path": "standard/AGENT-PROTOCOL.md",
+      "sha256": "5b2bac83d2363bcf624bc42a819354b7c068a86e86aeadaf0c2042bf5001993c"
+    },
+    {
+      "path": "standard/DECISIONS.md",
+      "sha256": "e92d10c0929a385f638e8104b9249bb60fe116621c1e391a7900f54872518fd4"
+    },
+    {
+      "path": "standard/FORMAT.md",
+      "sha256": "c308e219ddba65fc1bfdfd8b2202536e3833fba77bcbf97e6ae72dac9fcac609"
+    },
+    {
+      "path": "standard/INTEGRATIONS.md",
+      "sha256": "a6ca2973e9baa7457c80365f41a03f2ea62c9d2290d251b8deb0846ccf179749"
+    },
+    {
+      "path": "standard/MIGRATION.md",
+      "sha256": "c6c057cb72379c42e1287c29a83b0c4415f01c6099d5ab716bd180143c92f344"
+    },
+    {
+      "path": "standard/VALIDATION.md",
+      "sha256": "6e034a9a673d9e2e14a79411e603219eb2e670c4be6ce357efb7a2475e9a7ad0"
+    }
+  ]
+}

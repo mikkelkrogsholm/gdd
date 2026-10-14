@@ -1,0 +1,82 @@
+[
+  {
+    "case": "raw filename",
+    "name": "graph.json",
+    "exit": 0,
+    "checks": [
+      [
+        "graphify.raw",
+        "PASS"
+      ],
+      [
+        "graphify.layout",
+        "PASS"
+      ],
+      [
+        "graphify.nodes",
+        "PASS"
+      ],
+      [
+        "graphify.edges",
+        "PASS"
+      ],
+      [
+        "graphify.direction",
+        "PASS"
+      ],
+      [
+        "graphify.code_candidates",
+        "PASS"
+      ]
+    ]
+  },
+  {
+    "case": "raw filename",
+    "name": "observations.json",
+    "exit": 2,
+    "checks": [
+      [
+        "graphify.manifest",
+        "UNKNOWN"
+      ]
+    ]
+  },
+  {
+    "case": "manifest alias",
+    "exit": 0,
+    "checks": [
+      [
+        "graphify.raw",
+        "PASS"
+      ],
+      [
+        "graphify.layout",
+        "PASS"
+      ],
+      [
+        "graphify.nodes",
+        "PASS"
+      ],
+      [
+        "graphify.edges",
+        "PASS"
+      ],
+      [
+        "graphify.direction",
+        "PASS"
+      ],
+      [
+        "graphify.code_candidates",
+        "PASS"
+      ],
+      [
+        "graphify.integrity",
+        "PASS"
+      ],
+      [
+        "graphify.projection",
+        "PASS"
+      ]
+    ]
+  }
+]

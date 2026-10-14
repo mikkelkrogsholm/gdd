@@ -1,0 +1,102 @@
+[
+  {
+    "id": "workflow.scope",
+    "test": "tests/test_workflow_model.py::test_scope_is_not_closure_and_complete_contract_payloads_are_preserved",
+    "assertion": "Read closure never expands implementation scope; full contracts retained."
+  },
+  {
+    "id": "workflow.determinism",
+    "test": "tests/test_workflow_model.py::test_preparation_is_deterministic_and_never_rewrites_inputs",
+    "assertion": "Identical inputs produce identical packets without rewriting source."
+  },
+  {
+    "id": "workflow.model_drift",
+    "test": "tests/test_workflow_model.py::test_raw_model_byte_change_invalidates_the_old_plan",
+    "assertion": "Model byte change invalidates previous packet."
+  },
+  {
+    "id": "workflow.asset_drift",
+    "test": "tests/test_workflow_model.py::test_changed_pinned_contract_asset_invalidates_old_plan",
+    "assertion": "Normative source/design asset change invalidates previous packet."
+  },
+  {
+    "id": "workflow.packet_tamper",
+    "test": "tests/test_workflow_model.py::test_tampered_packet_contract_cannot_verify_against_unchanged_model",
+    "assertion": "Embedded contract tamper fails complete payload verification."
+  },
+  {
+    "id": "workflow.parallel_readiness",
+    "test": "tests/test_workflow_model.py::test_parallel_pass_cannot_hide_missing_structural_readiness",
+    "assertion": "Parallel declarations cannot replace individual readiness."
+  },
+  {
+    "id": "workflow.ownership",
+    "test": "tests/test_workflow_model.py::test_parallel_ownership_conflicts_remain_known_failures",
+    "assertion": "Unserialized file or workspace overlaps fail."
+  },
+  {
+    "id": "workflow.serialization",
+    "test": "tests/test_workflow_model.py::test_explicit_serialization_can_resolve_declared_write_overlap",
+    "assertion": "Explicit ordering resolves declared sequential write overlap."
+  },
+  {
+    "id": "workflow.graph_dependencies",
+    "test": "tests/test_workflow_model.py::test_calls_and_depends_on_do_not_invent_code_execution_order",
+    "assertion": "Graph calls/depends_on do not invent work serialization."
+  },
+  {
+    "id": "workflow.host_shape",
+    "test": "tests/test_workflow_adversary.py::test_falsy_nonobject_host_is_rejected",
+    "assertion": "Every API rejects malformed falsey host input."
+  },
+  {
+    "id": "workflow.publication",
+    "test": "tests/test_workflow_protocol.py::test_create_rejects_invalid_packet_before_publication",
+    "assertion": "Altered, stale, or malformed packet publishes no run."
+  },
+  {
+    "id": "workflow.unresolved_model",
+    "test": "tests/test_workflow_protocol.py::test_semantically_dangling_model_is_controlled_before_slice_derivation",
+    "assertion": "Unresolved graph references produce controlled errors before slicing."
+  },
+  {
+    "id": "workflow.historical_records",
+    "test": "tests/test_workflow_protocol.py::test_unrelated_records_preserve_scoped_dispatch",
+    "assertion": "Unrelated historical/invalid record diagnostics preserve valid scoped gates."
+  },
+  {
+    "id": "workflow.draft",
+    "test": "tests/test_workflow_protocol.py::test_valid_unready_draft_can_be_created_without_dispatch",
+    "assertion": "Unready draft can be inspected but cannot dispatch."
+  },
+  {
+    "id": "workflow.current_acceptance",
+    "test": "tests/test_workflow_protocol.py::test_current_acceptance_requires_separate_bound_gates",
+    "assertion": "Acceptance requires independent current evidence, trust, revision, checks and question gates."
+  },
+  {
+    "id": "workflow.integration",
+    "test": "tests/test_workflow_protocol.py::test_integration_has_fresh_authority_code_and_scope_guards",
+    "assertion": "Integration rechecks authorization, actual code and file scope."
+  },
+  {
+    "id": "workflow.resume",
+    "test": "tests/test_workflow_protocol.py::test_idempotency_cancellation_and_attempt_generation",
+    "assertion": "Retries preserve receipts; cancellation/attempts cannot replay work."
+  },
+  {
+    "id": "workflow.concurrency",
+    "test": "tests/test_workflow_protocol.py::test_compare_and_publish_has_one_concurrent_winner",
+    "assertion": "Competing heads permit exactly one event publication."
+  },
+  {
+    "id": "workflow.cancel_unavailable",
+    "test": "tests/test_workflow_protocol.py::test_cancel_remains_available_when_model_is_unavailable",
+    "assertion": "Unavailable current model cannot prevent cancellation or preserving late results."
+  },
+  {
+    "id": "workflow.native_demo",
+    "test": "tests/test_workflow_demo.py::test_archived_native_results_replay_red_green_and_current_acceptance",
+    "assertion": "Actual archived native patches produce red/green application checks and current acceptance."
+  }
+]

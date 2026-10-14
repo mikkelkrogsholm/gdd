@@ -1,0 +1,26 @@
+{
+  "total": 4,
+  "passed": 4,
+  "results": [
+    {
+      "id": "exact-numbers-remain-temporary-positive",
+      "result": "PASS",
+      "detail": "multipleOf0.1, integral exponent bounds, distinct numeric enum and exact large integer retain original JSON values/types/bytes"
+    },
+    {
+      "id": "bad-multiple-of",
+      "result": "PASS",
+      "detail": "known semantic failure, no HTML output"
+    },
+    {
+      "id": "old-binary-alias",
+      "result": "PASS",
+      "detail": "known semantic failure, no HTML output"
+    },
+    {
+      "id": "duplicate-numeric-enum",
+      "result": "PASS",
+      "detail": "known semantic failure, no HTML output"
+    }
+  ]
+}

@@ -1,0 +1,908 @@
+FFFFFFFFFFFFFFFFFFFFFF.........FFF....FFFFFF.FFF...FFFFFFF               [100%]
+=================================== FAILURES ===================================
+___ test_ambiguous_current_targets_cannot_support_positive_use[check-source] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'source', kind = 'check'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('check' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...76', 'assets': [{'path': 'model.json', 'sha256': 'ae53b033fa9b311db60c22534ca259161a489b0eaec2b169d070e75e904ecb12'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...76', 'assets': [{'path': 'model.json', 'sha256': 'ae53b033fa9b311db60c22534ca259161a489b0eaec2b169d070e75e904ecb12'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets0/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+____ test_ambiguous_current_targets_cannot_support_positive_use[check-edge] ____
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'edge', kind = 'check'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('check' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...14', 'assets': [{'path': 'model.json', 'sha256': '67045e81679b2874a3c923afff9e6b63fafcd42088480e255fac3eaad3a69eb3'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...14', 'assets': [{'path': 'model.json', 'sha256': '67045e81679b2874a3c923afff9e6b63fafcd42088480e255fac3eaad3a69eb3'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets1/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+_ test_ambiguous_current_targets_cannot_support_positive_use[check-transition] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'transition', kind = 'check'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('check' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '4b6b869ead7a145f62ee122fb1f2aaa181a3c75ce89f925503eddb8aa8d4f47b'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '4b6b869ead7a145f62ee122fb1f2aaa181a3c75ce89f925503eddb8aa8d4f47b'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets2/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+__ test_ambiguous_current_targets_cannot_support_positive_use[check-question] __
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'question', kind = 'check'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('check' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...db', 'assets': [{'path': 'model.json', 'sha256': 'b8ec66591bbd3e333696ef81c816c1817d9931e598dbe6f676d2dc20e1fb82a6'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...db', 'assets': [{'path': 'model.json', 'sha256': 'b8ec66591bbd3e333696ef81c816c1817d9931e598dbe6f676d2dc20e1fb82a6'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets3/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+_ test_ambiguous_current_targets_cannot_support_positive_use[evidence-source] __
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'source', kind = 'evidence'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('evidence' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...76', 'assets': [{'path': 'model.json', 'sha256': 'ae53b033fa9b311db60c22534ca259161a489b0eaec2b169d070e75e904ecb12'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...76', 'assets': [{'path': 'model.json', 'sha256': 'ae53b033fa9b311db60c22534ca259161a489b0eaec2b169d070e75e904ecb12'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets4/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+__ test_ambiguous_current_targets_cannot_support_positive_use[evidence-edge] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'edge', kind = 'evidence'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('evidence' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...14', 'assets': [{'path': 'model.json', 'sha256': '67045e81679b2874a3c923afff9e6b63fafcd42088480e255fac3eaad3a69eb3'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...14', 'assets': [{'path': 'model.json', 'sha256': '67045e81679b2874a3c923afff9e6b63fafcd42088480e255fac3eaad3a69eb3'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets5/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+_ test_ambiguous_current_targets_cannot_support_positive_use[evidence-transition] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'transition', kind = 'evidence'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('evidence' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '4b6b869ead7a145f62ee122fb1f2aaa181a3c75ce89f925503eddb8aa8d4f47b'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '4b6b869ead7a145f62ee122fb1f2aaa181a3c75ce89f925503eddb8aa8d4f47b'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets6/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+_ test_ambiguous_current_targets_cannot_support_positive_use[evidence-question] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'question', kind = 'evidence'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('evidence' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...db', 'assets': [{'path': 'model.json', 'sha256': 'b8ec66591bbd3e333696ef81c816c1817d9931e598dbe6f676d2dc20e1fb82a6'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...db', 'assets': [{'path': 'model.json', 'sha256': 'b8ec66591bbd3e333696ef81c816c1817d9931e598dbe6f676d2dc20e1fb82a6'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets7/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+__ test_ambiguous_current_targets_cannot_support_positive_use[binding-source] __
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'source', kind = 'binding'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('binding' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...76', 'assets': [{'path': 'model.json', 'sha256': 'ae53b033fa9b311db60c22534ca259161a489b0eaec2b169d070e75e904ecb12'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...76', 'assets': [{'path': 'model.json', 'sha256': 'ae53b033fa9b311db60c22534ca259161a489b0eaec2b169d070e75e904ecb12'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets8/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+___ test_ambiguous_current_targets_cannot_support_positive_use[binding-edge] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'edge', kind = 'binding'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('binding' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...14', 'assets': [{'path': 'model.json', 'sha256': '67045e81679b2874a3c923afff9e6b63fafcd42088480e255fac3eaad3a69eb3'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...14', 'assets': [{'path': 'model.json', 'sha256': '67045e81679b2874a3c923afff9e6b63fafcd42088480e255fac3eaad3a69eb3'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets9/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+_ test_ambiguous_current_targets_cannot_support_positive_use[binding-transition] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'transition', kind = 'binding'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('binding' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '4b6b869ead7a145f62ee122fb1f2aaa181a3c75ce89f925503eddb8aa8d4f47b'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '4b6b869ead7a145f62ee122fb1f2aaa181a3c75ce89f925503eddb8aa8d4f47b'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets10/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+_ test_ambiguous_current_targets_cannot_support_positive_use[binding-question] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'question', kind = 'binding'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('binding' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...db', 'assets': [{'path': 'model.json', 'sha256': 'b8ec66591bbd3e333696ef81c816c1817d9931e598dbe6f676d2dc20e1fb82a6'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...db', 'assets': [{'path': 'model.json', 'sha256': 'b8ec66591bbd3e333696ef81c816c1817d9931e598dbe6f676d2dc20e1fb82a6'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets11/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+_ test_ambiguous_current_targets_cannot_support_positive_use[decision-source] __
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'source', kind = 'decision'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('decision' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...76', 'assets': [{'path': 'model.json', 'sha256': 'ae53b033fa9b311db60c22534ca259161a489b0eaec2b169d070e75e904ecb12'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...76', 'assets': [{'path': 'model.json', 'sha256': 'ae53b033fa9b311db60c22534ca259161a489b0eaec2b169d070e75e904ecb12'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets12/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+__ test_ambiguous_current_targets_cannot_support_positive_use[decision-edge] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'edge', kind = 'decision'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('decision' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...14', 'assets': [{'path': 'model.json', 'sha256': '67045e81679b2874a3c923afff9e6b63fafcd42088480e255fac3eaad3a69eb3'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...14', 'assets': [{'path': 'model.json', 'sha256': '67045e81679b2874a3c923afff9e6b63fafcd42088480e255fac3eaad3a69eb3'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets13/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+_ test_ambiguous_current_targets_cannot_support_positive_use[decision-transition] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'transition', kind = 'decision'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('decision' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '4b6b869ead7a145f62ee122fb1f2aaa181a3c75ce89f925503eddb8aa8d4f47b'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '4b6b869ead7a145f62ee122fb1f2aaa181a3c75ce89f925503eddb8aa8d4f47b'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets14/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+_ test_ambiguous_current_targets_cannot_support_positive_use[decision-question] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+registry = 'question', kind = 'decision'
+
+    @pytest.mark.parametrize("registry", ["source", "edge", "transition", "question"])
+    @pytest.mark.parametrize("kind", ["check", "evidence", "binding", "decision"])
+    def test_ambiguous_current_targets_cannot_support_positive_use(proof_case, registry, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "rule.x", registry)
+        record = records[kind + ".x"]
+        field = "targets" if kind == "binding" else "scope"
+        if kind == "decision":
+            record[field].append("rule.x")
+        report = run(proof_case, activity="implementation" if kind == "decision" else None)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('decision' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...db', 'assets': [{'path': 'model.json', 'sha256': 'b8ec66591bbd3e333696ef81c816c1817d9931e598dbe6f676d2dc20e1fb82a6'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...db', 'assets': [{'path': 'model.json', 'sha256': 'b8ec66591bbd3e333696ef81c816c1817d9931e598dbe6f676d2dc20e1fb82a6'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_ambiguous_current_targets15/model.json'))
+
+tests/test_review_protocol_loop6.py:69: AssertionError
+__ test_ambiguous_request_node_cannot_be_authorized[explicit-request_scope0] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+request_scope = ['entity.x'], requirement = 'explicit'
+
+    @pytest.mark.parametrize("request_scope", [["entity.x"], []])
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    def test_ambiguous_request_node_cannot_be_authorized(proof_case, request_scope, requirement):
+        path, records, host = proof_case
+        collide(proof_case, "entity.x")
+        host["policy"]["requirement"] = requirement
+        records["decision.x"]["scope"] = []  # Full project approval covers either request_scope.
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], activity="implementation", scope=request_scope, host_context=host)
+>       assert aggregate(report["checks"], "authorization") == "UNRESOLVED"
+E       AssertionError: assert 'GRANTED' == 'UNRESOLVED'
+E         
+E         - UNRESOLVED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:112: AssertionError
+__ test_ambiguous_request_node_cannot_be_authorized[explicit-request_scope1] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+request_scope = [], requirement = 'explicit'
+
+    @pytest.mark.parametrize("request_scope", [["entity.x"], []])
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    def test_ambiguous_request_node_cannot_be_authorized(proof_case, request_scope, requirement):
+        path, records, host = proof_case
+        collide(proof_case, "entity.x")
+        host["policy"]["requirement"] = requirement
+        records["decision.x"]["scope"] = []  # Full project approval covers either request_scope.
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], activity="implementation", scope=request_scope, host_context=host)
+>       assert aggregate(report["checks"], "authorization") == "UNRESOLVED"
+E       AssertionError: assert 'GRANTED' == 'UNRESOLVED'
+E         
+E         - UNRESOLVED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:112: AssertionError
+__ test_ambiguous_request_node_cannot_be_authorized[standing-request_scope0] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+request_scope = ['entity.x'], requirement = 'standing'
+
+    @pytest.mark.parametrize("request_scope", [["entity.x"], []])
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    def test_ambiguous_request_node_cannot_be_authorized(proof_case, request_scope, requirement):
+        path, records, host = proof_case
+        collide(proof_case, "entity.x")
+        host["policy"]["requirement"] = requirement
+        records["decision.x"]["scope"] = []  # Full project approval covers either request_scope.
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], activity="implementation", scope=request_scope, host_context=host)
+>       assert aggregate(report["checks"], "authorization") == "UNRESOLVED"
+E       AssertionError: assert 'GRANTED' == 'UNRESOLVED'
+E         
+E         - UNRESOLVED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:112: AssertionError
+__ test_ambiguous_request_node_cannot_be_authorized[standing-request_scope1] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+request_scope = [], requirement = 'standing'
+
+    @pytest.mark.parametrize("request_scope", [["entity.x"], []])
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    def test_ambiguous_request_node_cannot_be_authorized(proof_case, request_scope, requirement):
+        path, records, host = proof_case
+        collide(proof_case, "entity.x")
+        host["policy"]["requirement"] = requirement
+        records["decision.x"]["scope"] = []  # Full project approval covers either request_scope.
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], activity="implementation", scope=request_scope, host_context=host)
+>       assert aggregate(report["checks"], "authorization") == "UNRESOLVED"
+E       AssertionError: assert 'GRANTED' == 'UNRESOLVED'
+E         
+E         - UNRESOLVED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:112: AssertionError
+____ test_ambiguous_request_node_cannot_be_authorized[none-request_scope0] _____
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+request_scope = ['entity.x'], requirement = 'none'
+
+    @pytest.mark.parametrize("request_scope", [["entity.x"], []])
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    def test_ambiguous_request_node_cannot_be_authorized(proof_case, request_scope, requirement):
+        path, records, host = proof_case
+        collide(proof_case, "entity.x")
+        host["policy"]["requirement"] = requirement
+        records["decision.x"]["scope"] = []  # Full project approval covers either request_scope.
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], activity="implementation", scope=request_scope, host_context=host)
+>       assert aggregate(report["checks"], "authorization") == "UNRESOLVED"
+E       AssertionError: assert 'GRANTED' == 'UNRESOLVED'
+E         
+E         - UNRESOLVED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:112: AssertionError
+____ test_ambiguous_request_node_cannot_be_authorized[none-request_scope1] _____
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+request_scope = [], requirement = 'none'
+
+    @pytest.mark.parametrize("request_scope", [["entity.x"], []])
+    @pytest.mark.parametrize("requirement", ["explicit", "standing", "none"])
+    def test_ambiguous_request_node_cannot_be_authorized(proof_case, request_scope, requirement):
+        path, records, host = proof_case
+        collide(proof_case, "entity.x")
+        host["policy"]["requirement"] = requirement
+        records["decision.x"]["scope"] = []  # Full project approval covers either request_scope.
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], activity="implementation", scope=request_scope, host_context=host)
+>       assert aggregate(report["checks"], "authorization") == "UNRESOLVED"
+E       AssertionError: assert 'GRANTED' == 'UNRESOLVED'
+E         
+E         - UNRESOLVED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:112: AssertionError
+_________ test_ambiguous_requested_entity_prevents_dependent_rule_pass _________
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+
+    def test_ambiguous_requested_entity_prevents_dependent_rule_pass(proof_case):
+        collide(proof_case, "entity.x")
+        # Records reference the unique rule, but the rule/request_scope uses ambiguous entity.x.
+        report = run(proof_case)
+>       assert rule_result(report) == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_protocol_loop6.py:152: AssertionError
+____ test_ambiguity_preserves_independent_failure_in_combined_scope[rule.x] ____
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+ambiguous = 'rule.x'
+
+    @pytest.mark.parametrize("ambiguous", ["rule.x", "entity.x"])
+    def test_ambiguity_preserves_independent_failure_in_combined_scope(proof_case, ambiguous):
+        _, records, _ = proof_case
+        collide(proof_case, ambiguous)
+        records["evidence.y"]["result"] = "FAIL"
+        report = run(proof_case, scope=["entity.x", "entity.y"])
+>       assert rule_result(report, "x") == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_protocol_loop6.py:161: AssertionError
+___ test_ambiguity_preserves_independent_failure_in_combined_scope[entity.x] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+ambiguous = 'entity.x'
+
+    @pytest.mark.parametrize("ambiguous", ["rule.x", "entity.x"])
+    def test_ambiguity_preserves_independent_failure_in_combined_scope(proof_case, ambiguous):
+        _, records, _ = proof_case
+        collide(proof_case, ambiguous)
+        records["evidence.y"]["result"] = "FAIL"
+        report = run(proof_case, scope=["entity.x", "entity.y"])
+>       assert rule_result(report, "x") == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_protocol_loop6.py:161: AssertionError
+_____ test_ambiguous_successor_cannot_retire_valid_current_failure[check] ______
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+kind = 'check'
+
+    @pytest.mark.parametrize("kind", ["check", "evidence"])
+    def test_ambiguous_successor_cannot_retire_valid_current_failure(proof_case, kind):
+        _, records, host = proof_case
+        collide(proof_case, "entity.y")
+        records["evidence.x"]["result"] = "FAIL"
+        replacement = {**deepcopy(records[kind + ".x"]), "supersedes": kind + ".x"}
+        replacement["scope"].append("entity.y")
+        records[kind + ".other"] = replacement
+        if kind == "evidence":
+            replacement["result"] = "PASS"
+            host["trusted_evidence"].append("evidence.other")
+        host["check_selection"] = {"rule.x": {"probe": "check.x"}}
+        host["evidence_selection"] = {"check.x": "evidence.x"}
+>       assert rule_result(run(proof_case)) == "FAIL"
+E       AssertionError: assert 'UNKNOWN' == 'FAIL'
+E         
+E         - FAIL
+E         + UNKNOWN
+
+tests/test_review_protocol_loop6.py:194: AssertionError
+____ test_ambiguous_successor_cannot_retire_valid_current_failure[evidence] ____
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test...n': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y', 'evidence.other'], ...})
+kind = 'evidence'
+
+    @pytest.mark.parametrize("kind", ["check", "evidence"])
+    def test_ambiguous_successor_cannot_retire_valid_current_failure(proof_case, kind):
+        _, records, host = proof_case
+        collide(proof_case, "entity.y")
+        records["evidence.x"]["result"] = "FAIL"
+        replacement = {**deepcopy(records[kind + ".x"]), "supersedes": kind + ".x"}
+        replacement["scope"].append("entity.y")
+        records[kind + ".other"] = replacement
+        if kind == "evidence":
+            replacement["result"] = "PASS"
+            host["trusted_evidence"].append("evidence.other")
+        host["check_selection"] = {"rule.x": {"probe": "check.x"}}
+        host["evidence_selection"] = {"check.x": "evidence.x"}
+>       assert rule_result(run(proof_case)) == "FAIL"
+E       AssertionError: assert 'UNKNOWN' == 'FAIL'
+E         
+E         - FAIL
+E         + UNKNOWN
+
+tests/test_review_protocol_loop6.py:194: AssertionError
+___________ test_ambiguous_successor_cannot_erase_explicit_rejection ___________
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+
+    def test_ambiguous_successor_cannot_erase_explicit_rejection(proof_case):
+        _, records, host = proof_case
+        collide(proof_case, "entity.y")
+        records["decision.x"]["outcome"] = "rejected"
+        records["decision.other"] = {
+            **deepcopy(records["decision.x"]), "scope": ["entity.x", "entity.y"],
+            "supersedes": "decision.x", "outcome": "accepted",
+        }
+        host["trusted_decisions"].append("decision.other")
+        host["policy"]["requirement"] = "standing"
+>       assert aggregate(run(proof_case, activity="implementation")["checks"], "authorization") == "DENIED"
+E       AssertionError: assert 'GRANTED' == 'DENIED'
+E         
+E         - DENIED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:207: AssertionError
+______ test_used_readiness_receipts_share_ambiguous_target_guard[screen] _______
+
+readiness_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test...'entity.unrelated'], 'spec_revision': 'sha256:1bb71794d0b53cb355bca9fb7b5cea8c4b5422fa62a3e957fd03f827eed0856b', ...}})
+
+    def test_used_readiness_receipts_share_ambiguous_target_guard(readiness_case):
+        path, scope, records = readiness_case
+        model = json.loads(path.read_text())
+        model["nodes"]["entity.unrelated"] = {"kind": "entity", "description": "Value", "fields": {}}
+        model.setdefault("sources", {})["entity.unrelated"] = source()
+        path.write_text(json.dumps(model))
+        records["decision.review"].update(
+            spec_revision=load_bundle(path).revision, scope=scope + ["entity.unrelated"],
+        )
+        write_records(path.parent, records)
+        report = validate(path, profiles=["readiness"], scope=scope, host_context={"trusted_decisions": ["decision.review"]})
+>       assert "decision.review" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert 'decision.review' in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...9a35308701a6'}, {'path': 'model.json', 'sha256': '8d8b03563c3ad783f2b9384ad79d70dd97f38b507f3bd2616d5b1f646ce9f43f'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...9a35308701a6'}, {'path': 'model.json', 'sha256': '8d8b03563c3ad783f2b9384ad79d70dd97f38b507f3bd2616d5b1f646ce9f43f'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_used_readiness_receipts_s0/model.json'))
+
+tests/test_review_protocol_loop6.py:221: AssertionError
+_____ test_used_readiness_receipts_share_ambiguous_target_guard[question] ______
+
+readiness_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test...'entity.unrelated'], 'spec_revision': 'sha256:2bc93e8711a3fb6d814b2a676dca225f42360f9893a0e32b1af9a8c27eea1ad6', ...}})
+
+    def test_used_readiness_receipts_share_ambiguous_target_guard(readiness_case):
+        path, scope, records = readiness_case
+        model = json.loads(path.read_text())
+        model["nodes"]["entity.unrelated"] = {"kind": "entity", "description": "Value", "fields": {}}
+        model.setdefault("sources", {})["entity.unrelated"] = source()
+        path.write_text(json.dumps(model))
+        records["decision.review"].update(
+            spec_revision=load_bundle(path).revision, scope=scope + ["entity.unrelated"],
+        )
+        write_records(path.parent, records)
+        report = validate(path, profiles=["readiness"], scope=scope, host_context={"trusted_decisions": ["decision.review"]})
+>       assert "decision.review" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert 'decision.review' in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '2cc4bfd582203694e7b09814ffcb145247e8aa049c7aca131928029c0a231645'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...d6', 'assets': [{'path': 'model.json', 'sha256': '2cc4bfd582203694e7b09814ffcb145247e8aa049c7aca131928029c0a231645'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_used_readiness_receipts_s1/model.json'))
+
+tests/test_review_protocol_loop6.py:221: AssertionError
+__________ test_rule_context_ambiguity_preserves_valid_failure[PASS] ___________
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+result = 'PASS'
+
+    @pytest.mark.parametrize("result", ["PASS", "FAIL"])
+    def test_rule_context_ambiguity_preserves_valid_failure(proof_case, result):
+        _, records, _ = proof_case
+        collide(proof_case, "entity.x")
+        records["evidence.x"]["result"] = result
+        # The plan/evidence have the unique rule.x in their scope.
+        # Ambiguous context prevents positive completeness, but does not erase
+        # a known independent failure reported for that rule.
+>       assert rule_result(run(proof_case)) == ("UNKNOWN" if result == "PASS" else "FAIL")
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_protocol_loop6.py:233: AssertionError
+_ test_global_authority_scope_includes_nonnode_model_identities[request_scope0-edge.x] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+model_id = 'edge.x', request_scope = []
+
+    @pytest.mark.parametrize("model_id", ["edge.x", "transition.x", "source.input"])
+    @pytest.mark.parametrize("request_scope", [[], ["entity.x"]])
+    def test_global_authority_scope_includes_nonnode_model_identities(proof_case, model_id, request_scope):
+        path, records, host = proof_case
+        if model_id == "source.input":
+            # A source/edge collision contains no ambiguous node ID.
+            collide(proof_case, model_id, "edge")
+        else:
+            collide(proof_case, model_id)
+        host["policy"]["requirement"] = "standing"
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], scope=request_scope, activity="implementation", host_context=host)
+>       assert aggregate(report["checks"], "authorization") == ("GRANTED" if request_scope else "UNRESOLVED")
+E       AssertionError: assert 'GRANTED' == 'UNRESOLVED'
+E         
+E         - UNRESOLVED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:248: AssertionError
+_ test_global_authority_scope_includes_nonnode_model_identities[request_scope0-transition.x] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+model_id = 'transition.x', request_scope = []
+
+    @pytest.mark.parametrize("model_id", ["edge.x", "transition.x", "source.input"])
+    @pytest.mark.parametrize("request_scope", [[], ["entity.x"]])
+    def test_global_authority_scope_includes_nonnode_model_identities(proof_case, model_id, request_scope):
+        path, records, host = proof_case
+        if model_id == "source.input":
+            # A source/edge collision contains no ambiguous node ID.
+            collide(proof_case, model_id, "edge")
+        else:
+            collide(proof_case, model_id)
+        host["policy"]["requirement"] = "standing"
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], scope=request_scope, activity="implementation", host_context=host)
+>       assert aggregate(report["checks"], "authorization") == ("GRANTED" if request_scope else "UNRESOLVED")
+E       AssertionError: assert 'GRANTED' == 'UNRESOLVED'
+E         
+E         - UNRESOLVED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:248: AssertionError
+_ test_global_authority_scope_includes_nonnode_model_identities[request_scope0-source.input] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+model_id = 'source.input', request_scope = []
+
+    @pytest.mark.parametrize("model_id", ["edge.x", "transition.x", "source.input"])
+    @pytest.mark.parametrize("request_scope", [[], ["entity.x"]])
+    def test_global_authority_scope_includes_nonnode_model_identities(proof_case, model_id, request_scope):
+        path, records, host = proof_case
+        if model_id == "source.input":
+            # A source/edge collision contains no ambiguous node ID.
+            collide(proof_case, model_id, "edge")
+        else:
+            collide(proof_case, model_id)
+        host["policy"]["requirement"] = "standing"
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], scope=request_scope, activity="implementation", host_context=host)
+>       assert aggregate(report["checks"], "authorization") == ("GRANTED" if request_scope else "UNRESOLVED")
+E       AssertionError: assert 'GRANTED' == 'UNRESOLVED'
+E         
+E         - UNRESOLVED
+E         + GRANTED
+
+tests/test_review_protocol_loop6.py:248: AssertionError
+______ test_nonnode_ambiguous_current_record_reference_is_invalid[check] _______
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+kind = 'check'
+
+    @pytest.mark.parametrize("kind", ["check", "binding", "evidence", "decision"])
+    def test_nonnode_ambiguous_current_record_reference_is_invalid(proof_case, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "edge.x")
+        record = records[kind + ".x"]
+        record["targets" if kind == "binding" else "scope"].append("edge.x")
+        if kind == "check":
+            records["evidence.x"]["scope"] = list(record["scope"])
+            records["evidence.x"]["check_revision"] = digest(record)
+        write_records(path.parent, records)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('check' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...eb', 'assets': [{'path': 'model.json', 'sha256': '434d93a64deb4ffcf701af14e610338343b3e734097e05c769268dd0266cb873'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...eb', 'assets': [{'path': 'model.json', 'sha256': '434d93a64deb4ffcf701af14e610338343b3e734097e05c769268dd0266cb873'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_nonnode_ambiguous_current0/model.json'))
+
+tests/test_review_protocol_loop6.py:261: AssertionError
+_____ test_nonnode_ambiguous_current_record_reference_is_invalid[binding] ______
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+kind = 'binding'
+
+    @pytest.mark.parametrize("kind", ["check", "binding", "evidence", "decision"])
+    def test_nonnode_ambiguous_current_record_reference_is_invalid(proof_case, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "edge.x")
+        record = records[kind + ".x"]
+        record["targets" if kind == "binding" else "scope"].append("edge.x")
+        if kind == "check":
+            records["evidence.x"]["scope"] = list(record["scope"])
+            records["evidence.x"]["check_revision"] = digest(record)
+        write_records(path.parent, records)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('binding' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...eb', 'assets': [{'path': 'model.json', 'sha256': '434d93a64deb4ffcf701af14e610338343b3e734097e05c769268dd0266cb873'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...eb', 'assets': [{'path': 'model.json', 'sha256': '434d93a64deb4ffcf701af14e610338343b3e734097e05c769268dd0266cb873'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_nonnode_ambiguous_current1/model.json'))
+
+tests/test_review_protocol_loop6.py:261: AssertionError
+_____ test_nonnode_ambiguous_current_record_reference_is_invalid[evidence] _____
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+kind = 'evidence'
+
+    @pytest.mark.parametrize("kind", ["check", "binding", "evidence", "decision"])
+    def test_nonnode_ambiguous_current_record_reference_is_invalid(proof_case, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "edge.x")
+        record = records[kind + ".x"]
+        record["targets" if kind == "binding" else "scope"].append("edge.x")
+        if kind == "check":
+            records["evidence.x"]["scope"] = list(record["scope"])
+            records["evidence.x"]["check_revision"] = digest(record)
+        write_records(path.parent, records)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('evidence' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...eb', 'assets': [{'path': 'model.json', 'sha256': '434d93a64deb4ffcf701af14e610338343b3e734097e05c769268dd0266cb873'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...eb', 'assets': [{'path': 'model.json', 'sha256': '434d93a64deb4ffcf701af14e610338343b3e734097e05c769268dd0266cb873'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_nonnode_ambiguous_current2/model.json'))
+
+tests/test_review_protocol_loop6.py:261: AssertionError
+_____ test_nonnode_ambiguous_current_record_reference_is_invalid[decision] _____
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+kind = 'decision'
+
+    @pytest.mark.parametrize("kind", ["check", "binding", "evidence", "decision"])
+    def test_nonnode_ambiguous_current_record_reference_is_invalid(proof_case, kind):
+        path, records, _ = proof_case
+        collide(proof_case, "edge.x")
+        record = records[kind + ".x"]
+        record["targets" if kind == "binding" else "scope"].append("edge.x")
+        if kind == "check":
+            records["evidence.x"]["scope"] = list(record["scope"])
+            records["evidence.x"]["check_revision"] = digest(record)
+        write_records(path.parent, records)
+>       assert kind + ".x" in invalid_record_ids(load_bundle(path))
+E       AssertionError: assert ('decision' + '.x') in set()
+E        +  where set() = invalid_record_ids(Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...eb', 'assets': [{'path': 'model.json', 'sha256': '434d93a64deb4ffcf701af14e610338343b3e734097e05c769268dd0266cb873'}]}))
+E        +    where Bundle(path=PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pyte...eb', 'assets': [{'path': 'model.json', 'sha256': '434d93a64deb4ffcf701af14e610338343b3e734097e05c769268dd0266cb873'}]}) = load_bundle(PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test_nonnode_ambiguous_current3/model.json'))
+
+tests/test_review_protocol_loop6.py:261: AssertionError
+__ test_ambiguous_extra_request_does_not_claim_complete_implementation[PASS] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+result = 'PASS'
+
+    @pytest.mark.parametrize("result", ["PASS", "FAIL"])
+    def test_ambiguous_extra_request_does_not_claim_complete_implementation(proof_case, result):
+        path, records, _ = proof_case
+        model = json.loads(path.read_text())
+        model["nodes"]["entity.extra"] = {"kind": "entity", "description": "Extra", "fields": {}}
+        path.write_text(json.dumps(model))
+        collide(proof_case, "entity.extra")
+        records["evidence.x"]["result"] = result
+        report = run(proof_case, scope=["entity.x", "entity.extra"])
+        assert rule_result(report) == result
+>       assert aggregate(report["checks"], "implementation") == ("UNKNOWN" if result == "PASS" else "FAIL")
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_protocol_loop6.py:274: AssertionError
+__ test_ambiguous_extra_request_does_not_claim_complete_implementation[FAIL] ___
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+result = 'FAIL'
+
+    @pytest.mark.parametrize("result", ["PASS", "FAIL"])
+    def test_ambiguous_extra_request_does_not_claim_complete_implementation(proof_case, result):
+        path, records, _ = proof_case
+        model = json.loads(path.read_text())
+        model["nodes"]["entity.extra"] = {"kind": "entity", "description": "Extra", "fields": {}}
+        path.write_text(json.dumps(model))
+        collide(proof_case, "entity.extra")
+        records["evidence.x"]["result"] = result
+        report = run(proof_case, scope=["entity.x", "entity.extra"])
+        assert rule_result(report) == result
+        assert aggregate(report["checks"], "implementation") == ("UNKNOWN" if result == "PASS" else "FAIL")
+>       assert any(c["check_id"] == "implementation.scope" and c["result"] == "UNKNOWN" for c in report["checks"])
+E       assert False
+E        +  where False = any(<generator object test_ambiguous_extra_request_does_not_claim_complete_implementation.<locals>.<genexpr> at 0x11147aa80>)
+
+tests/test_review_protocol_loop6.py:275: AssertionError
+________ test_global_implementation_request_includes_nonnode_identities ________
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-120/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+
+    def test_global_implementation_request_includes_nonnode_identities(proof_case):
+        path, records, host = proof_case
+        collide(proof_case, "edge.x")
+        write_records(path.parent, records)
+        report = validate(path, profiles=["records"], scope=[], host_context=host)
+        assert rule_result(report, "x") == "PASS"
+        assert rule_result(report, "y") == "PASS"
+>       assert aggregate(report["checks"], "implementation") == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_review_protocol_loop6.py:285: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[check-source]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[check-edge]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[check-transition]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[check-question]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[evidence-source]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[evidence-edge]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[evidence-transition]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[evidence-question]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[binding-source]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[binding-edge]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[binding-transition]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[binding-question]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[decision-source]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[decision-edge]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[decision-transition]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_current_targets_cannot_support_positive_use[decision-question]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_request_node_cannot_be_authorized[explicit-request_scope0]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_request_node_cannot_be_authorized[explicit-request_scope1]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_request_node_cannot_be_authorized[standing-request_scope0]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_request_node_cannot_be_authorized[standing-request_scope1]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_request_node_cannot_be_authorized[none-request_scope0]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_request_node_cannot_be_authorized[none-request_scope1]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_requested_entity_prevents_dependent_rule_pass
+FAILED tests/test_review_protocol_loop6.py::test_ambiguity_preserves_independent_failure_in_combined_scope[rule.x]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguity_preserves_independent_failure_in_combined_scope[entity.x]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_successor_cannot_retire_valid_current_failure[check]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_successor_cannot_retire_valid_current_failure[evidence]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_successor_cannot_erase_explicit_rejection
+FAILED tests/test_review_protocol_loop6.py::test_used_readiness_receipts_share_ambiguous_target_guard[screen]
+FAILED tests/test_review_protocol_loop6.py::test_used_readiness_receipts_share_ambiguous_target_guard[question]
+FAILED tests/test_review_protocol_loop6.py::test_rule_context_ambiguity_preserves_valid_failure[PASS]
+FAILED tests/test_review_protocol_loop6.py::test_global_authority_scope_includes_nonnode_model_identities[request_scope0-edge.x]
+FAILED tests/test_review_protocol_loop6.py::test_global_authority_scope_includes_nonnode_model_identities[request_scope0-transition.x]
+FAILED tests/test_review_protocol_loop6.py::test_global_authority_scope_includes_nonnode_model_identities[request_scope0-source.input]
+FAILED tests/test_review_protocol_loop6.py::test_nonnode_ambiguous_current_record_reference_is_invalid[check]
+FAILED tests/test_review_protocol_loop6.py::test_nonnode_ambiguous_current_record_reference_is_invalid[binding]
+FAILED tests/test_review_protocol_loop6.py::test_nonnode_ambiguous_current_record_reference_is_invalid[evidence]
+FAILED tests/test_review_protocol_loop6.py::test_nonnode_ambiguous_current_record_reference_is_invalid[decision]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_extra_request_does_not_claim_complete_implementation[PASS]
+FAILED tests/test_review_protocol_loop6.py::test_ambiguous_extra_request_does_not_claim_complete_implementation[FAIL]
+FAILED tests/test_review_protocol_loop6.py::test_global_implementation_request_includes_nonnode_identities
+41 failed, 17 passed, 6 deselected in 1.17s

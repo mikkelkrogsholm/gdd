@@ -1,0 +1,581 @@
+{
+  "format": "gdd-view-conformance/0.1",
+  "profile": "gdd-viewer-html/0.1",
+  "matched": 16,
+  "total": 16,
+  "results": [
+    {
+      "id": "viewer.concert",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.fragments",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:7b161987e395642c362ae16bc8540c266598e8e7f896e13137297136713ed920",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.extension",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:67ee27d4c9368047ebfacb03ca4bc5ac30f8134ab1a68c4e5c6bc241d8805ba0",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.scope",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [
+          "action.reserve"
+        ],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [
+              "action.reserve"
+            ],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.hostile_multigraph",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.unknown_renderer",
+      "expected": "UNKNOWN",
+      "actual": "UNKNOWN",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Unsupported renderer/profile/version.",
+            "diagnostics": [
+              {
+                "code": "FORMAT_UNSUPPORTED",
+                "severity": "warning",
+                "message": "Unsupported renderer/profile/version.",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.stale_revision",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "View and current model revisions differ.",
+            "diagnostics": [
+              {
+                "code": "VIEW_REVISION_MISMATCH",
+                "severity": "error",
+                "message": "View and current model revisions differ.",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.changed_direction",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "View payload or trusted renderer assets differ.",
+            "diagnostics": [
+              {
+                "code": "VIEW_ARTIFACT_MISMATCH",
+                "severity": "error",
+                "message": "View payload or trusted renderer assets differ.",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.omitted_parallel_edge",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "View payload or trusted renderer assets differ.",
+            "diagnostics": [
+              {
+                "code": "VIEW_ARTIFACT_MISMATCH",
+                "severity": "error",
+                "message": "View payload or trusted renderer assets differ.",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.missing_manifest_ids",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "View payload or trusted renderer assets differ.",
+            "diagnostics": [
+              {
+                "code": "VIEW_ARTIFACT_MISMATCH",
+                "severity": "error",
+                "message": "View payload or trusted renderer assets differ.",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.changed_script",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "View payload or trusted renderer assets differ.",
+            "diagnostics": [
+              {
+                "code": "VIEW_ARTIFACT_MISMATCH",
+                "severity": "error",
+                "message": "View payload or trusted renderer assets differ.",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.blank_html",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "Missing or ambiguous embedded view payload.",
+            "diagnostics": [
+              {
+                "code": "VIEW_ARTIFACT_MISMATCH",
+                "severity": "error",
+                "message": "Missing or ambiguous embedded view payload.",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.missing_input",
+      "expected": "UNKNOWN",
+      "actual": "UNKNOWN",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Supply --view for artifact verification.",
+            "diagnostics": [
+              {
+                "code": "VIEW_INPUT_MISSING",
+                "severity": "warning",
+                "message": "Supply --view for artifact verification.",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.unavailable_artifact",
+      "expected": "UNKNOWN",
+      "actual": "UNKNOWN",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "[Errno 2] No such file or directory: '/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-view-case-7vjawph7/graph.html'",
+            "diagnostics": [
+              {
+                "code": "SOURCE_UNAVAILABLE",
+                "severity": "warning",
+                "message": "[Errno 2] No such file or directory: '/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-view-case-7vjawph7/graph.html'",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.changed_newlines",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "View payload or trusted renderer assets differ.",
+            "diagnostics": [
+              {
+                "code": "VIEW_ARTIFACT_MISMATCH",
+                "severity": "error",
+                "message": "View payload or trusted renderer assets differ.",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "viewer.deep_payload",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "matched": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.3"
+        },
+        "spec_revision": "sha256:80498bfbbf6f62e7820b0b42eb70f619fad370e063fbe99d94724a82e85dedfe",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "maximum recursion depth exceeded while decoding a JSON array from a unicode string",
+            "diagnostics": [
+              {
+                "code": "VIEW_ARTIFACT_MISMATCH",
+                "severity": "error",
+                "message": "maximum recursion depth exceeded while decoding a JSON array from a unicode string",
+                "location": {
+                  "file": null,
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

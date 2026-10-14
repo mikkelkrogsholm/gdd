@@ -1,0 +1,344 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/schemas/0.2/report.schema.json",
+  "title": "GDD 0.2 report.schema.json",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-report/0.2"
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "spec_revision": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "representation",
+          "model",
+          "readiness",
+          "records",
+          "import.graphify",
+          "visualization"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "dimension": {
+            "enum": [
+              "model",
+              "readiness",
+              "authorization",
+              "implementation",
+              "integration"
+            ]
+          },
+          "result": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "UNKNOWN",
+              "GRANTED",
+              "DENIED",
+              "UNRESOLVED"
+            ]
+          },
+          "scope": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "severity": {
+                  "enum": [
+                    "error",
+                    "warning",
+                    "info"
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "location": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "pointer": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "file",
+                    "pointer"
+                  ],
+                  "additionalProperties": false
+                },
+                "related_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+                  },
+                  "minItems": 0,
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "code",
+                "severity",
+                "message",
+                "location",
+                "related_ids"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          },
+          "implementation": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+          },
+          "code_revision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*(?:[.-][a-z0-9_]+)*(?![\\s\\S])"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "activity": {
+            "enum": [
+              "model_changes",
+              "implementation",
+              "acceptance"
+            ]
+          },
+          "policy_revision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "authority_basis": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "check_id",
+          "dimension",
+          "result",
+          "scope",
+          "reason",
+          "diagnostics"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "dimension": {
+                  "const": "authorization"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "result": {
+                  "enum": [
+                    "GRANTED",
+                    "DENIED",
+                    "UNRESOLVED"
+                  ]
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "UNKNOWN"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "dimension": {
+                  "const": "implementation"
+                },
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "implementation",
+                "code_revision",
+                "evidence_refs"
+              ],
+              "properties": {
+                "code_revision": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "dimension": {
+                  "const": "authorization"
+                },
+                "result": {
+                  "const": "GRANTED"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "activity",
+                "policy_revision",
+                "authority_basis"
+              ],
+              "properties": {
+                "policy_revision": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "format",
+    "tool",
+    "spec_revision",
+    "profiles",
+    "scope",
+    "checks"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "checks": {
+            "contains": {
+              "properties": {
+                "dimension": {
+                  "const": "implementation"
+                },
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL"
+                  ]
+                }
+              },
+              "required": [
+                "dimension",
+                "result"
+              ]
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "spec_revision": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+          }
+        }
+      }
+    }
+  ]
+}

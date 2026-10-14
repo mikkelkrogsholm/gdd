@@ -1,0 +1,12 @@
+{
+  "package": "package.discount",
+  "artifact_sha256": "6c0a876bfad1f796c2cb5dad37e576d2fd8822a3656bf3052fb42f82d2fb95ca",
+  "changed_resources": [
+    "quote_demo/discount.py"
+  ],
+  "verified_code_revision": "sha256:4f11ee83d684d71c945ef14538fe753fcaee15ae9381c24d8e5629671be98a5d",
+  "test_exit_code": 0,
+  "stdout": "",
+  "stderr": "test_boundaries (tests.test_discount.LeafTests.test_boundaries)\nscenario.discount.floor: endpoints and exact large-integer control. ... ok\ntest_floor_fraction (tests.test_discount.LeafTests.test_floor_fraction) ... ok\ntest_floor_half (tests.test_discount.LeafTests.test_floor_half)\nscenario.discount.floor: accepted floor value, old half-up must fail. ... ok\ntest_invalid (tests.test_discount.LeafTests.test_invalid)\nscenario.discount.invalid: integers and inclusive rates are mandatory. ... ok\ntest_normal (tests.test_discount.LeafTests.test_normal)\nscenario.discount.normal: exactly divisible positive control. ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.000s\n\nOK\n",
+  "review": "Exact integer floor division matches action contract; strict type/range guards preserved; existing test bytes unchanged."
+}

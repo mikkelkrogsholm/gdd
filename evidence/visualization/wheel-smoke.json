@@ -1,0 +1,161 @@
+{
+  "wheel": "gdd_validator-0.4.0-py3-none-any.whl",
+  "sha256": "799f8bfc12383ac81f4986a627cecb80ce6d90a540f5c95b3f322e9e021eb24d",
+  "assets": [
+    "gdd_validator/viewer/app.js",
+    "gdd_validator/viewer/graph.js",
+    "gdd_validator/viewer/inspector.js",
+    "gdd_validator/viewer/shell.html",
+    "gdd_validator/viewer/style.css"
+  ],
+  "outside_checkout": true,
+  "html_matches_checkout_renderer": true,
+  "steps": [
+    {
+      "step": "render",
+      "exit_code": 0,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.1.0"
+        },
+        "spec_revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Generated a read-only gdd-viewer-html/0.1 projection.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "step": "verify",
+      "exit_code": 0,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-validator",
+          "version": "0.4.0"
+        },
+        "spec_revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "representation.schema",
+            "dimension": "model",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Local JSON Schema validation.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "representation.schema",
+            "dimension": "model",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Local JSON Schema validation.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "model.semantics",
+            "dimension": "model",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "records.integrity",
+            "dimension": "model",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "step": "readiness",
+      "exit_code": 0,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-validator",
+          "version": "0.4.0"
+        },
+        "spec_revision": "sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210",
+        "profiles": [
+          "readiness"
+        ],
+        "scope": [
+          "action.reserve"
+        ],
+        "checks": [
+          {
+            "check_id": "representation.schema",
+            "dimension": "model",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Local JSON Schema validation.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "representation.schema",
+            "dimension": "model",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Local JSON Schema validation.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "model.semantics",
+            "dimension": "model",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "records.integrity",
+            "dimension": "model",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "readiness.structural",
+            "dimension": "readiness",
+            "result": "PASS",
+            "scope": [
+              "action.reserve"
+            ],
+            "reason": "Selected targets and required boundary contracts are structurally specified; no behavioral proof claimed.",
+            "diagnostics": []
+          }
+        ]
+      }
+    }
+  ]
+}

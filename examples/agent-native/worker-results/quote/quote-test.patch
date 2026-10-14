@@ -1,0 +1,26 @@
+--- a/tests/test_quote.py
++++ b/tests/test_quote.py
+@@ -72,3 +72,23 @@
+                 self.assertEqual(result.returncode, 2)
+                 self.assertEqual(result.stdout, "")
+                 self.assertEqual(result.stderr, "InvalidInput\n")
++
++    def test_cli_large_integer_floor_composition(self):
++        """Exact CLI integers and stepwise floor must survive beyond float precision."""
++        subtotal = 10**30 + 1
++        result = subprocess.run(
++            [sys.executable, "-B", "-m", "quote_demo", str(subtotal), "5000", "5000"],
++            cwd=ROOT, capture_output=True, text=True, check=False,
++        )
++        self.assertEqual(result.returncode, 0, result.stderr)
++        self.assertEqual(result.stderr, "")
++        actual = json.loads(result.stdout)
++        # The odd remainder survives discount subtraction before tax is floored.
++        self.assertEqual(actual, {
++            "subtotal": 1000000000000000000000000000001,
++            "discount": 500000000000000000000000000000,
++            "net": 500000000000000000000000000001,
++            "tax": 250000000000000000000000000000,
++            "total": 750000000000000000000000000001,
++        })
++        self.assertTrue(all(type(value) is int for value in actual.values()))

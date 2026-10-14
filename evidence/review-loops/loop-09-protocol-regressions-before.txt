@@ -1,0 +1,1609 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF........ [ 72%]
+............................                                             [100%]
+=================================== FAILURES ===================================
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles0-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['representation'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles0-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['representation'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles0-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['representation'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles0-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['representation'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles1-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['model'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles1-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['model'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles1-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['model'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles1-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['model'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles2-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['records'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles2-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['records'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles2-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['records'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles2-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['records'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles3-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['readiness'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles3-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['readiness'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles3-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['readiness'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles3-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['readiness'], activity = None
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles0-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['representation'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles0-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['representation']
+activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles0-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['representation'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles0-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['representation'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles1-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['model'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles1-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['model'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles1-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['model'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles1-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['model'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles2-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['records'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles2-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['records'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles2-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['records'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles2-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['records'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles3-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['readiness'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles3-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['readiness'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles3-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['readiness'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles3-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['readiness'], activity = 'model_changes'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles0-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['representation'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles0-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['representation']
+activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles0-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['representation']
+activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles0-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['representation']
+activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles1-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['model'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles1-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['model'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles1-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['model'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles1-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['model'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles2-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['records'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles2-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['records'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles2-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['records'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles2-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['records'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles3-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['readiness'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles3-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['readiness'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles3-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['readiness'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles3-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['readiness'], activity = 'implementation'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles0-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['representation'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles0-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['representation'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles0-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['representation'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles0-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['representation'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles1-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['model'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles1-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['model'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles1-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['model'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles1-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['model'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles2-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['records'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles2-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['records'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles2-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['records'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles2-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['records'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles3-missing] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'missing', profiles = ['readiness'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles3-unsupported] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'unsupported', profiles = ['readiness'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles3-deep-json] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-json', profiles = ['readiness'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+_ test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles3-deep-yaml] _
+
+proof_case = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-157/test....x', 'code_revision': 'code.x', 'supported_methods': ['probe'], 'trusted_evidence': ['evidence.x', 'evidence.y'], ...})
+variant = 'deep-yaml', profiles = ['readiness'], activity = 'acceptance'
+
+    @pytest.mark.parametrize("variant", ["missing", "unsupported", "deep-json", "deep-yaml"])
+    @pytest.mark.parametrize("profiles", PROFILES)
+    @pytest.mark.parametrize("activity", ACTIVITIES)
+    def test_unknown_primary_does_not_fabricate_secondary_project_mismatch(
+        proof_case, variant, profiles, activity
+    ):
+        path, secondary, host = prepare(proof_case, activity)
+        unavailable_primary(path, variant)
+        report = validate(
+            secondary, model_path=path, profiles=profiles,
+            scope=["entity.x"], activity=activity, host_context=host,
+        )
+>       assert aggregate(report["checks"], "model") == "UNKNOWN"
+E       AssertionError: assert 'FAIL' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + FAIL
+
+tests/test_review_protocol_loop9.py:61: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles0-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles0-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles0-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles0-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles1-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles1-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles1-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles1-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles2-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles2-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles2-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles2-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles3-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles3-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles3-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[None-profiles3-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles0-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles0-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles0-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles0-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles1-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles1-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles1-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles1-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles2-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles2-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles2-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles2-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles3-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles3-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles3-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[model_changes-profiles3-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles0-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles0-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles0-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles0-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles1-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles1-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles1-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles1-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles2-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles2-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles2-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles2-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles3-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles3-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles3-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[implementation-profiles3-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles0-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles0-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles0-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles0-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles1-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles1-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles1-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles1-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles2-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles2-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles2-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles2-deep-yaml]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles3-missing]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles3-unsupported]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles3-deep-json]
+FAILED tests/test_review_protocol_loop9.py::test_unknown_primary_does_not_fabricate_secondary_project_mismatch[acceptance-profiles3-deep-yaml]
+64 failed, 36 passed in 20.42s

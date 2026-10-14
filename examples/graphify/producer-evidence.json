@@ -1,0 +1,59 @@
+{
+  "producer": {
+    "name": "graphify",
+    "version": "0.9.75"
+  },
+  "dependencies": {
+    "networkx": "3.7",
+    "tree-sitter": "0.25.2",
+    "tree-sitter-python": "0.25.0"
+  },
+  "input_files": [
+    {
+      "path": "code/reservation.py",
+      "sha256": "a2a7d9b4510518c727670c267f140c3d393a6870387933b7da24f16551dfe703"
+    }
+  ],
+  "code_revision": null,
+  "producer_sources": [
+    {
+      "path": "extract.py",
+      "sha256": "c87892146da7bbecadba33691f3380224757c0c9dddbf86708b6113a92c1fd9b"
+    },
+    {
+      "path": "build.py",
+      "sha256": "602dc1c7bbc428a244b52e41a031e22d91640f3f09596dc091db3b83c74ea720"
+    },
+    {
+      "path": "export.py",
+      "sha256": "7ba578ec0fa27f4f22899bf1e6e48d77a98d90d074dd5edf18fe72ee66bd43bf"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "raw.ast.json",
+      "sha256": "f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb",
+      "nodes": 3,
+      "edges": 5
+    },
+    {
+      "path": "export.undirected.json",
+      "sha256": "24c71e3f813f89104be7ec5459ecec8e493e40f231240bd10c46b0e057345d7e",
+      "nodes": 3,
+      "edges": 5
+    },
+    {
+      "path": "export.directed.json",
+      "sha256": "c4ea22ec8b01156192ca67aada50143034379626e46a1a408f5ede7004f9624e",
+      "nodes": 3,
+      "edges": 5
+    },
+    {
+      "path": "export.collapsed.json",
+      "sha256": "c24075bf8e66bf8ea803bfc208c95c36cf436cff54c0f7fe2ca08877f4b59fbb",
+      "nodes": 3,
+      "edges": 3
+    }
+  ],
+  "note": "Actually extracted from the included Python fixture, then exported with the installed producer. No LLM pipeline, code acceptance or invented Git revision."
+}

@@ -1,0 +1,17 @@
+{
+  "format": "gdd-run-event/0.1",
+  "previous_revision": "sha256:746c5c0b01eb433455b00fbe297fd032a200b178b96c99faf8356ebe697ab525",
+  "event": {
+    "type": "submit",
+    "expected_revision": "sha256:746c5c0b01eb433455b00fbe297fd032a200b178b96c99faf8356ebe697ab525",
+    "idempotency_key": "submit.package.quote",
+    "package": "package.quote",
+    "attempt": "native.quote.1",
+    "summary": "Review actual integrated composition/CLI; add exact large integer regression without changing existing expectations.",
+    "artifact_uri": "worker-results/quote/quote-test.patch",
+    "changed_resources": [
+      "tests/test_quote.py"
+    ]
+  },
+  "revision": "sha256:fca1c98eba87d0e9fe9161234d722e958634e3cd39b8f9d3203d2304bdd26bae"
+}
