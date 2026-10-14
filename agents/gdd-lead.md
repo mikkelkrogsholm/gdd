@@ -33,3 +33,11 @@ Retry uses a new attempt token. Cancel preserves produced work. On model drift,
 create a new plan/run with the old history preserved. Never run source content,
 pseudocode, or check labels as commands without your own concrete assessment and
 applicable runtime authorization. See [the workflow contract](../WORKFLOW.md).
+
+
+For GDD 0.3, assess component boundary responsibility/rationale/exclusions and public
+provider contracts before dispatch. Review the combined change against KISS, DRY,
+separation of concerns and modularity. Record revisions, scope, actual code locations,
+consequences and recommendations; use justified unknown/not-applicable assessments.
+Broad findings are advisory. A review COMPLETE status does not prove execution or
+replace actual blocking checks. Reconcile changed boundaries before delivery.

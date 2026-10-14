@@ -18,3 +18,15 @@ Synthetic receipts in case patches are test inputs to the representation schema.
 [graphify-cases.yaml](graphify-cases.yaml) adds 18 adapter cases. Run `uv run python conformance/run_graphify.py`; the original 58 expectations are preserved. Import conditions in the original runner are now materialized as actual Graphify JSON inputs. The actually produced AST/export fixture and its hashes are under [examples/graphify](../examples/graphify/README.md). Pytest also checks tampering, the CLI, typed IDs and unaccepted proposals.
 
 [visualization-cases.yaml](visualization-cases.yaml) adds 16 artifact cases for `gdd-viewer-html/0.1`. Run `uv run python conformance/run_visualization.py`. [run_browser.cjs](run_browser.cjs) also tests actual offline browser actions, graph identity, hostile text, numeric precision, folding, downloads and responsiveness. See [VIEWER.md](../VIEWER.md) for runtime and verification scope.
+
+
+## GDD 0.3 boundaries and design principles
+
+[design.cases.json](design.cases.json) names the new boundary, contract, community,
+workflow and advisory review assertions. [run_design.py](run_design.py) executes
+their actual pytest nodes in an isolated process and retains counts and output.
+Parameterized instances include positive, negative, unknown, legacy-compatibility
+and revision-drift controls. The original 58 cases remain unchanged and run under
+GDD 0.2. Run `uv run python conformance/run_design.py --output REPORT.json`.
+The checker tests envelope completeness/applicability; synthetic reviews provide
+no application-quality or acceptance evidence.

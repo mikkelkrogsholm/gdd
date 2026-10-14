@@ -1,0 +1,10 @@
+{
+  "format": "gdd-snapshot/0.2",
+  "revision": "sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a",
+  "assets": [
+    {
+      "path": "concert.gdd.yaml",
+      "sha256": "3c736f81bea5e74454600cc1ae62ba7e784593b913f177d85e5996d1034a31c1"
+    }
+  ]
+}

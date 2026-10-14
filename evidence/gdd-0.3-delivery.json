@@ -1,0 +1,23 @@
+{
+  "format": "gdd-delivery-check/0.3",
+  "standard": "gdd/0.3",
+  "package": "0.6.0",
+  "head": "05946abfb0417d05d3c35fbec01ec1fe6a896749",
+  "basis": "Current uncommitted working-tree assets; historical execution claims retain their original Git state.",
+  "schemas_validated": 16,
+  "both_view_formats_offline": true,
+  "current_snapshot_matches": true,
+  "normative_and_current_asset_hashes_match": true,
+  "installed_wheel_hash_matches": true,
+  "matching_runtime_files": 44,
+  "source_archive": {
+    "path": "gdd_validator-0.6.0.tar.gz",
+    "sha256": "378ee4b502eba274b401e8941dc2ddd1b1cc8dc81c536055d2d61b960a080317",
+    "matching_files": 567,
+    "excluded_after_build": [
+      "evidence/gdd-0.3-delivery.json"
+    ]
+  },
+  "preserved_historical_files": 84,
+  "passed": true
+}

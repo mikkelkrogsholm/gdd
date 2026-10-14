@@ -1,3 +1,4 @@
+from gdd_validator.visualization import GENERATOR
 """Meaningful checks of projection fidelity, trust boundaries and CLI delivery."""
 
 from copy import deepcopy
@@ -122,7 +123,7 @@ def test_stale_revision_and_unknown_renderer_are_distinct(tmp_path):
     data["generator"]["version"] = "99.0"
     output.write_text(html_document(data), encoding="utf-8")
     assert exit_code(verify_view(path, output)) == 2
-    data["generator"]["version"] = "0.1.4"
+    data["generator"]["version"] = GENERATOR["version"]
     data["spec_revision"] = "sha256:" + "0" * 64
     output.write_text(html_document(data), encoding="utf-8")
     report = verify_view(path, output)

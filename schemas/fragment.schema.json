@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://gdd.example/schemas/0.2/fragment.schema.json",
-  "title": "GDD 0.2 fragment.schema.json",
+  "$id": "https://gdd.example/schemas/0.3/fragment.schema.json",
+  "title": "GDD 0.3 fragment.schema.json",
   "type": "object",
   "properties": {
     "format": {
-      "const": "gdd-fragment/0.2"
+      "const": "gdd-fragment/0.3"
     },
     "nodes": {
       "type": "object",
@@ -511,6 +511,28 @@
               },
               "minItems": 0,
               "uniqueItems": true
+            },
+            "boundary": {
+              "type": "object",
+              "properties": {
+                "responsibility": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "rationale": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "excludes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "\\S"
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "additionalProperties": false
             }
           },
           "required": [
@@ -856,6 +878,13 @@
                     "minItems": 1,
                     "uniqueItems": true
                   }
+                },
+                "postconditions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "\\S"
+                  }
                 }
               },
               "required": [],
@@ -1124,6 +1153,14 @@
                     "policy"
                   ],
                   "additionalProperties": false
+                },
+                "principle": {
+                  "enum": [
+                    "kiss",
+                    "dry",
+                    "separation_of_concerns",
+                    "modularity"
+                  ]
                 }
               },
               "required": [

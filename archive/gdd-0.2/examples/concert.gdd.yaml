@@ -1,0 +1,909 @@
+format: gdd/0.2
+project:
+  id: concert-reservations
+  title: Concert seat reservations
+  goal: A user can reserve and cancel a seat without overbooking.
+  scope: A modular application and one transactional database; no microservices.
+  assumptions:
+  - One seat per reservation. Multiple reservations with different request keys are allowed.
+  - Concerts already exist, and capacity does not change in this example.
+  - Identity comes from the server authentication layer, not a user_id in the request body.
+  - Reservations do not expire automatically in this initial model.
+  - Payment, ticket issuance, waiting lists and external events are outside this example.
+  - Reservation history and successful request keys are retained; deletion is outside this example.
+nodes:
+  component.api:
+    kind: component
+    description: Validates transport input and forwards authenticated context.
+    maturity: specified
+    source_refs:
+    - source: source.legacy
+      purpose: provenance
+    interfaces:
+    - action.reserve
+    - action.cancel
+  component.reservations:
+    kind: component
+    description: Owns reservation rules, access control and transaction boundaries.
+    maturity: specified
+    source_refs:
+    - source: source.legacy
+      purpose: provenance
+    interfaces:
+    - action.reserve
+    - action.cancel
+  component.storage:
+    kind: component
+    description: Database persistence adapter; contains no access-control decisions.
+    maturity: specified
+    source_refs:
+    - source: source.legacy
+      purpose: provenance
+    interfaces: []
+  entity.concert:
+    kind: entity
+    description: A concert with a fixed nonnegative integer capacity.
+    maturity: specified
+    source_refs:
+    - source: source.legacy
+      purpose: provenance
+    fields:
+      id:
+        type: string
+        min_length: 1
+      capacity:
+        type: integer
+        minimum: 0
+  entity.reservation:
+    kind: entity
+    description: One reserved seat with an owner and permanent request key.
+    maturity: specified
+    source_refs:
+    - source: source.legacy
+      purpose: provenance
+    fields:
+      id:
+        type: string
+        min_length: 1
+      concert_id:
+        type: string
+        min_length: 1
+      owner_id:
+        type: string
+        min_length: 1
+      request_key:
+        type: string
+        min_length: 1
+      state:
+        type: enum
+        values:
+        - reserved
+        - cancelled
+  action.reserve:
+    kind: action
+    description: Reserve exactly one seat or retrieve an earlier successful result.
+    maturity: specified
+    source_refs:
+    - source: source.legacy
+      purpose: provenance
+    contract:
+      input:
+        concert_id:
+          type: string
+          min_length: 1
+        request_key:
+          type: string
+          min_length: 1
+      context:
+        principal_id:
+          type: string
+          min_length: 1
+          origin: authenticated_context
+      output:
+        type: object
+        properties:
+          id:
+            type: string
+            min_length: 1
+          state:
+            type: enum
+            values:
+            - reserved
+            - cancelled
+        required:
+        - id
+        - state
+      errors:
+        Unauthenticated: Unauthenticated
+        InvalidInput: InvalidInput
+        ConcertNotFound: ConcertNotFound
+        SoldOut: SoldOut
+        IdempotencyConflict: IdempotencyConflict
+      preconditions:
+      - Validate authenticated identity and input before lookup or mutation.
+      external_effects: []
+      effects_complete: true
+      dependencies_complete: true
+      risks:
+        authorization:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.reserve_unauthenticated
+        idempotency:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.replay
+          - scenario.key_conflict
+        boundaries:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.zero_capacity
+          - scenario.sold_out
+        concurrency:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.last_seat
+          - scenario.concurrent_same_key
+        atomicity:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.atomic_failure
+      error_cases:
+        Unauthenticated:
+        - scenario.reserve_unauthenticated
+        InvalidInput:
+        - scenario.reserve_invalid
+        ConcertNotFound:
+        - scenario.concert_missing
+        SoldOut:
+        - scenario.sold_out
+        IdempotencyConflict:
+        - scenario.key_conflict
+    behavior: 'Validate identity and input before lookup or mutation.
+
+      The request key is scoped to principal_id and action.reserve.
+
+      Bind a successful key to concert_id and reservation ID; reusing the key with another concert_id yields IdempotencyConflict.
+
+      An identical retry returns the same reservation ID and CURRENT state, including after cancellation, without new side effects.
+
+      Look up an earlier success BEFORE checking new capacity; a full venue must not turn a successful retry into SoldOut.
+
+      Only a new key attempts to create a new reservation.
+
+      Reject a new reservation with SoldOut when the number of reservations in reserved equals capacity.
+
+      Key uniqueness, capacity protection, creation and key binding must be part of the same atomic database operation or transaction.
+
+      Concurrent transactions must produce a result equivalent to a valid sequential order under these rules; an unprotected check-then-insert is insufficient.
+
+      A failed creation does not bind the request key and leaves no reservation.'
+  action.cancel:
+    kind: action
+    description: The owner may cancel their reservation; repeating the request has no additional effect.
+    maturity: specified
+    source_refs:
+    - source: source.legacy
+      purpose: provenance
+    contract:
+      input:
+        reservation_id:
+          type: string
+          min_length: 1
+      context:
+        principal_id:
+          type: string
+          min_length: 1
+          origin: authenticated_context
+      output:
+        type: object
+        properties:
+          id:
+            type: string
+            min_length: 1
+          state:
+            type: enum
+            values:
+            - cancelled
+        required:
+        - id
+        - state
+      errors:
+        Unauthenticated: Unauthenticated
+        InvalidInput: InvalidInput
+        ReservationNotFound: ReservationNotFound
+      preconditions:
+      - Validate authenticated identity and input before lookup or mutation.
+      external_effects: []
+      effects_complete: true
+      dependencies_complete: true
+      risks:
+        authorization:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.foreign_cancel
+        idempotency:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.cancel
+          - scenario.replay_after_cancel
+        boundaries:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.reservation_missing
+        concurrency:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.cancel_concurrent
+        atomicity:
+          relevant: true
+          rationale: The contract covers this risk; the scenarios are planned checks.
+          scenarios:
+          - scenario.atomic_failure
+      error_cases:
+        Unauthenticated:
+        - scenario.cancel_unauthenticated
+        InvalidInput:
+        - scenario.cancel_invalid
+        ReservationNotFound:
+        - scenario.reservation_missing
+        - scenario.foreign_cancel
+    behavior: 'Validate identity and input first.
+
+      An absent reservation and another owner''s reservation both yield ReservationNotFound.
+
+      Check ownership before returning data, including a retry for an already cancelled reservation.
+
+      Atomically change reserved to cancelled so the reservation no longer occupies a seat.
+
+      Return cancelled unchanged; do not release a seat again.
+
+      Preserve the old request key so a repeated reserve request cannot recreate the reservation.'
+  rule.capacity:
+    kind: rule
+    description: For each concert, 0 <= count(reservations with state=reserved) <= capacity after every committed mutation.
+    maturity: specified
+    rule:
+      category: invariant
+      statement: For each concert, 0 <= count(reservations with state=reserved) <= capacity after every committed mutation.
+      scope: targeted
+      blocking: true
+      verification:
+      - database_concurrency_and_integration_tests
+  rule.idempotency:
+    kind: rule
+    description: Retries must not create extra reservations, reactivate cancelled reservations or release extra seats.
+    maturity: specified
+    rule:
+      category: behavior
+      statement: Retries must not create extra reservations, reactivate cancelled reservations or release extra seats.
+      scope: targeted
+      blocking: true
+      verification:
+      - integration_tests
+  rule.authorization:
+    kind: rule
+    description: Only the owner may cancel or receive reservation data; the request body must not determine identity.
+    maturity: specified
+    rule:
+      category: behavior
+      statement: Only the owner may cancel or receive reservation data; the request body must not determine identity.
+      scope: targeted
+      blocking: true
+      verification:
+      - authorization_tests
+  rule.atomicity:
+    kind: rule
+    description: Errors before commit leave no partially completed mutation or request-key binding.
+    maturity: specified
+    rule:
+      category: behavior
+      statement: Errors before commit leave no partially completed mutation or request-key binding.
+      scope: targeted
+      blocking: true
+      verification:
+      - database_fault_injection_tests
+  rule.state_machine:
+    kind: rule
+    description: Mutating flows follow the state machine; cancelled reservation IDs cannot be reactivated.
+    maturity: specified
+    rule:
+      category: behavior
+      statement: Mutating flows follow the state machine; cancelled reservation IDs cannot be reactivated.
+      scope: targeted
+      blocking: true
+      verification:
+      - model_based_and_integration_tests
+  rule.api_boundary:
+    kind: rule
+    description: The API module must not import the persistence module directly.
+    maturity: specified
+    rule:
+      category: architecture
+      statement: The API module must not import the persistence module directly.
+      scope: targeted
+      blocking: true
+      verification:
+      - static_import_analysis
+      constraint:
+        relation: imports
+        from: component.api
+        to: component.storage
+        reach: direct
+        policy: forbid
+  machine.reservation:
+    kind: machine
+    description: Reservation mutation lifecycle; retries and errors follow the action contracts.
+    maturity: specified
+    machine:
+      states:
+      - absent
+      - reserved
+      - cancelled
+      initial: absent
+      terminal:
+      - cancelled
+      transitions:
+      - id: transition.reserve
+        from: absent
+        to: reserved
+        trigger: action.reserve
+        guard: Authenticated user; existing concert; new request key; at least one available seat.
+        effects: Create a reservation with state=reserved and bind the request key atomically under capacity protection.
+      - id: transition.cancel
+        from: reserved
+        to: cancelled
+        trigger: action.cancel
+        guard: The authenticated user owns the reservation.
+        effects: Atomically change to cancelled; any materialized seat counter is updated within the same transaction.
+    annotations:
+      gdd.notes:
+      - absent is a modeling marker for a reservation that does not yet exist; it is never stored.
+      - The state machine describes mutations. Validation, errors and idempotent return paths are defined in the action contracts.
+      - cancelled is terminal for mutations but may still be read and returned during an authorized retry.
+  scenario.reserve:
+    kind: scenario
+    description: One reservation ID in reserved for A, and exactly one seat occupied.
+    scenario:
+      category: normal
+      given: Concert C has capacity=1 and no reservations; user A is authenticated.
+      when: A reserves C using key K1.
+      then: One reservation ID in reserved for A, and exactly one seat occupied.
+  scenario.last_seat:
+    kind: scenario
+    description: Exactly one reservation succeeds; the other yields SoldOut; at most one seat is occupied. Run against the selected database's actual transaction behavior.
+    scenario:
+      category: concurrency
+      given: Concert C has one available seat; A and B each have a new request key.
+      when: Two separate database connections attempt concurrent reservations with controlled overlap.
+      then: Exactly one reservation succeeds; the other yields SoldOut; at most one seat is occupied. Run against the selected database's actual transaction behavior.
+  scenario.replay:
+    kind: scenario
+    description: The same reservation ID is returned every time; no extra seat is occupied; no SoldOut on a retry.
+    scenario:
+      category: boundary
+      given: C has capacity=1; A's reserve request with K1 succeeded and took the last seat.
+      when: A repeats the same request several times, including concurrently.
+      then: The same reservation ID is returned every time; no extra seat is occupied; no SoldOut on a retry.
+  scenario.concurrent_same_key:
+    kind: scenario
+    description: Both return the same reservation ID; exactly one reservation is created.
+    scenario:
+      category: concurrency
+      given: C has capacity=2; A has not yet used K1.
+      when: A sends two identical reserve requests with K1 concurrently.
+      then: Both return the same reservation ID; exactly one reservation is created.
+  scenario.key_conflict:
+    kind: scenario
+    description: IdempotencyConflict; no new reservation or capacity change in any concert.
+    scenario:
+      category: negative
+      given: A has reserved concert C1 using K1.
+      when: A uses K1 for concert C2.
+      then: IdempotencyConflict; no new reservation or capacity change in any concert.
+  scenario.cancel:
+    kind: scenario
+    description: Same ID in cancelled; zero active reservations; available seats never exceed capacity.
+    scenario:
+      category: boundary
+      given: A owns a reserved reservation for a concert with capacity=1.
+      when: A cancels twice, including concurrent requests.
+      then: Same ID in cancelled; zero active reservations; available seats never exceed capacity.
+  scenario.foreign_cancel:
+    kind: scenario
+    description: ReservationNotFound; no change and no reservation data returned.
+    scenario:
+      category: negative
+      given: A owns reservation R; B is authenticated as B.
+      when: B attempts to cancel R, including a forged owner_id in the request body. Repeat for both reserved and cancelled states.
+      then: ReservationNotFound; no change and no reservation data returned.
+  scenario.atomic_failure:
+    kind: scenario
+    description: Persistent state is unchanged after the failure; a successful retry applies the effect once. Also verify any counter and key binding.
+    scenario:
+      category: negative
+      given: A valid reserve or cancel flow is ready for mutation.
+      when: The test adapter injects failures at relevant persistence boundaries before commit and lets the client retry.
+      then: Persistent state is unchanged after the failure; a successful retry applies the effect once. Also verify any counter and key binding.
+  scenario.replay_after_cancel:
+    kind: scenario
+    description: K1 returns R in cancelled without mutation. K2 may create a new ID if capacity is available; R remains cancelled.
+    scenario:
+      category: boundary
+      given: A reserved using K1 and then cancelled reservation R.
+      when: A repeats the original reserve request with K1 and then creates a new one with K2.
+      then: K1 returns R in cancelled without mutation. K2 may create a new ID if capacity is available; R remains cancelled.
+  scenario.api_boundary:
+    kind: scenario
+    description: The forbidden import must yield FAIL. An absent scan or unresolved mapping yields UNKNOWN, not PASS.
+    scenario:
+      category: architecture
+      given: Component bindings point to the implemented project's modules.
+      when: Extract the import graph; also insert a temporary direct API-to-storage import as a negative control.
+      then: The forbidden import must yield FAIL. An absent scan or unresolved mapping yields UNKNOWN, not PASS.
+  scenario.reserve_unauthenticated:
+    kind: scenario
+    description: Unauthenticated; no lookup or mutation.
+    scenario:
+      category: negative
+      given: No server-authenticated principal.
+      when: Reserve is called with otherwise valid input.
+      then: Unauthenticated; no lookup or mutation.
+  scenario.reserve_invalid:
+    kind: scenario
+    description: InvalidInput; no mutation.
+    scenario:
+      category: negative
+      given: Authenticated user; empty concert_id or request_key.
+      when: Reserve kaldes.
+      then: InvalidInput; no mutation.
+  scenario.concert_missing:
+    kind: scenario
+    description: ConcertNotFound; the key is not bound.
+    scenario:
+      category: negative
+      given: Authenticated user; new key; concert does not exist.
+      when: Reserve kaldes.
+      then: ConcertNotFound; the key is not bound.
+  scenario.sold_out:
+    kind: scenario
+    description: SoldOut; no mutation or key binding.
+    scenario:
+      category: negative
+      given: The concert is full; the user has a new key.
+      when: Reserve kaldes.
+      then: SoldOut; no mutation or key binding.
+  scenario.zero_capacity:
+    kind: scenario
+    description: SoldOut; zero active reservations.
+    scenario:
+      category: boundary
+      given: The concert has capacity=0.
+      when: A valid new reservation is attempted.
+      then: SoldOut; zero active reservations.
+  scenario.cancel_once:
+    kind: scenario
+    description: The same ID is returned as cancelled; one seat is released.
+    scenario:
+      category: normal
+      given: A owns a reserved reservation.
+      when: A cancels once.
+      then: The same ID is returned as cancelled; one seat is released.
+  scenario.cancel_concurrent:
+    kind: scenario
+    description: Both return the same cancelled ID; the seat is released only once.
+    scenario:
+      category: concurrency
+      given: A ejer én reserved reservation.
+      when: Two connections cancel concurrently.
+      then: Both return the same cancelled ID; the seat is released only once.
+  scenario.cancel_unauthenticated:
+    kind: scenario
+    description: Unauthenticated; no lookup or mutation.
+    scenario:
+      category: negative
+      given: No server-authenticated principal.
+      when: Cancel kaldes.
+      then: Unauthenticated; no lookup or mutation.
+  scenario.cancel_invalid:
+    kind: scenario
+    description: InvalidInput; no mutation.
+    scenario:
+      category: negative
+      given: Authenticated user; empty reservation_id.
+      when: Cancel kaldes.
+      then: InvalidInput; no mutation.
+  scenario.reservation_missing:
+    kind: scenario
+    description: ReservationNotFound without reservation data.
+    scenario:
+      category: negative
+      given: Authenticated user; reservation does not exist.
+      when: Cancel kaldes.
+      then: ReservationNotFound without reservation data.
+  component.frontend:
+    kind: component
+    description: Planned interface; a sketch without a technology stack.
+    maturity: sketch
+  screen.reserve:
+    kind: screen
+    description: Planned reservation screen; interaction and design are still missing.
+    maturity: sketch
+    design_refs:
+    - source: source.design
+      purpose: contract
+      selector:
+        kind: whole-document
+  community.backend:
+    kind: community
+    description: Backend view of the shared model.
+  community.frontend:
+    kind: community
+    description: Frontend view of the shared model.
+edges:
+- id: edge.owner.entity.concert
+  from: entity.concert
+  relation: owned_by
+  to: component.reservations
+- id: edge.storage.entity.concert
+  from: entity.concert
+  relation: stored_in
+  to: component.storage
+- id: edge.owner.entity.reservation
+  from: entity.reservation
+  relation: owned_by
+  to: component.reservations
+- id: edge.storage.entity.reservation
+  from: entity.reservation
+  relation: stored_in
+  to: component.storage
+- id: edge.owner.action.reserve
+  from: action.reserve
+  relation: owned_by
+  to: component.reservations
+- id: edge.owner.action.cancel
+  from: action.cancel
+  relation: owned_by
+  to: component.reservations
+- id: edge.api_imports_reservations
+  from: component.api
+  relation: imports
+  to: component.reservations
+- id: edge.reservations_imports_storage
+  from: component.reservations
+  relation: imports
+  to: component.storage
+- id: edge.api_calls_reserve
+  from: component.api
+  relation: calls
+  to: action.reserve
+- id: edge.api_calls_cancel
+  from: component.api
+  relation: calls
+  to: action.cancel
+- id: edge.constraint.rule.capacity.entity.concert
+  from: rule.capacity
+  relation: constrains
+  to: entity.concert
+- id: edge.constraint.rule.capacity.entity.reservation
+  from: rule.capacity
+  relation: constrains
+  to: entity.reservation
+- id: edge.constraint.rule.idempotency.action.reserve
+  from: rule.idempotency
+  relation: constrains
+  to: action.reserve
+- id: edge.constraint.rule.idempotency.action.cancel
+  from: rule.idempotency
+  relation: constrains
+  to: action.cancel
+- id: edge.constraint.rule.authorization.action.cancel
+  from: rule.authorization
+  relation: constrains
+  to: action.cancel
+- id: edge.constraint.rule.atomicity.action.reserve
+  from: rule.atomicity
+  relation: constrains
+  to: action.reserve
+- id: edge.constraint.rule.atomicity.action.cancel
+  from: rule.atomicity
+  relation: constrains
+  to: action.cancel
+- id: edge.constraint.rule.state_machine.machine.reservation
+  from: rule.state_machine
+  relation: constrains
+  to: machine.reservation
+- id: edge.constraint.rule.api_boundary.component.api
+  from: rule.api_boundary
+  relation: constrains
+  to: component.api
+- id: edge.constraint.rule.api_boundary.component.storage
+  from: rule.api_boundary
+  relation: constrains
+  to: component.storage
+- id: edge.state.machine.reservation
+  from: machine.reservation
+  relation: state_of
+  to: entity.reservation
+- id: edge.owner.machine.reservation
+  from: machine.reservation
+  relation: owned_by
+  to: component.reservations
+- id: edge.exercise.scenario.reserve.action.reserve
+  from: scenario.reserve
+  relation: exercises
+  to: action.reserve
+- id: edge.verify.scenario.reserve.rule.capacity
+  from: scenario.reserve
+  relation: verifies
+  to: rule.capacity
+- id: edge.verify.scenario.reserve.rule.state_machine
+  from: scenario.reserve
+  relation: verifies
+  to: rule.state_machine
+- id: edge.exercise.scenario.last_seat.action.reserve
+  from: scenario.last_seat
+  relation: exercises
+  to: action.reserve
+- id: edge.verify.scenario.last_seat.rule.capacity
+  from: scenario.last_seat
+  relation: verifies
+  to: rule.capacity
+- id: edge.exercise.scenario.replay.action.reserve
+  from: scenario.replay
+  relation: exercises
+  to: action.reserve
+- id: edge.verify.scenario.replay.rule.idempotency
+  from: scenario.replay
+  relation: verifies
+  to: rule.idempotency
+- id: edge.verify.scenario.replay.rule.capacity
+  from: scenario.replay
+  relation: verifies
+  to: rule.capacity
+- id: edge.exercise.scenario.concurrent_same_key.action.reserve
+  from: scenario.concurrent_same_key
+  relation: exercises
+  to: action.reserve
+- id: edge.verify.scenario.concurrent_same_key.rule.idempotency
+  from: scenario.concurrent_same_key
+  relation: verifies
+  to: rule.idempotency
+- id: edge.verify.scenario.concurrent_same_key.rule.capacity
+  from: scenario.concurrent_same_key
+  relation: verifies
+  to: rule.capacity
+- id: edge.exercise.scenario.key_conflict.action.reserve
+  from: scenario.key_conflict
+  relation: exercises
+  to: action.reserve
+- id: edge.verify.scenario.key_conflict.rule.idempotency
+  from: scenario.key_conflict
+  relation: verifies
+  to: rule.idempotency
+- id: edge.exercise.scenario.cancel.action.reserve
+  from: scenario.cancel
+  relation: exercises
+  to: action.reserve
+- id: edge.exercise.scenario.cancel.action.cancel
+  from: scenario.cancel
+  relation: exercises
+  to: action.cancel
+- id: edge.verify.scenario.cancel.rule.idempotency
+  from: scenario.cancel
+  relation: verifies
+  to: rule.idempotency
+- id: edge.verify.scenario.cancel.rule.capacity
+  from: scenario.cancel
+  relation: verifies
+  to: rule.capacity
+- id: edge.verify.scenario.cancel.rule.state_machine
+  from: scenario.cancel
+  relation: verifies
+  to: rule.state_machine
+- id: edge.exercise.scenario.foreign_cancel.action.cancel
+  from: scenario.foreign_cancel
+  relation: exercises
+  to: action.cancel
+- id: edge.verify.scenario.foreign_cancel.rule.authorization
+  from: scenario.foreign_cancel
+  relation: verifies
+  to: rule.authorization
+- id: edge.exercise.scenario.atomic_failure.action.reserve
+  from: scenario.atomic_failure
+  relation: exercises
+  to: action.reserve
+- id: edge.exercise.scenario.atomic_failure.action.cancel
+  from: scenario.atomic_failure
+  relation: exercises
+  to: action.cancel
+- id: edge.verify.scenario.atomic_failure.rule.atomicity
+  from: scenario.atomic_failure
+  relation: verifies
+  to: rule.atomicity
+- id: edge.exercise.scenario.replay_after_cancel.action.reserve
+  from: scenario.replay_after_cancel
+  relation: exercises
+  to: action.reserve
+- id: edge.exercise.scenario.replay_after_cancel.action.cancel
+  from: scenario.replay_after_cancel
+  relation: exercises
+  to: action.cancel
+- id: edge.verify.scenario.replay_after_cancel.rule.idempotency
+  from: scenario.replay_after_cancel
+  relation: verifies
+  to: rule.idempotency
+- id: edge.verify.scenario.replay_after_cancel.rule.state_machine
+  from: scenario.replay_after_cancel
+  relation: verifies
+  to: rule.state_machine
+- id: edge.verify.scenario.replay_after_cancel.rule.capacity
+  from: scenario.replay_after_cancel
+  relation: verifies
+  to: rule.capacity
+- id: edge.verify.scenario.api_boundary.rule.api_boundary
+  from: scenario.api_boundary
+  relation: verifies
+  to: rule.api_boundary
+- id: edge.exercise.scenario.reserve_unauthenticated.action.reserve
+  from: scenario.reserve_unauthenticated
+  relation: exercises
+  to: action.reserve
+- id: edge.exercise.scenario.reserve_invalid.action.reserve
+  from: scenario.reserve_invalid
+  relation: exercises
+  to: action.reserve
+- id: edge.exercise.scenario.concert_missing.action.reserve
+  from: scenario.concert_missing
+  relation: exercises
+  to: action.reserve
+- id: edge.exercise.scenario.sold_out.action.reserve
+  from: scenario.sold_out
+  relation: exercises
+  to: action.reserve
+- id: edge.verify.scenario.sold_out.rule.capacity
+  from: scenario.sold_out
+  relation: verifies
+  to: rule.capacity
+- id: edge.exercise.scenario.zero_capacity.action.reserve
+  from: scenario.zero_capacity
+  relation: exercises
+  to: action.reserve
+- id: edge.verify.scenario.zero_capacity.rule.capacity
+  from: scenario.zero_capacity
+  relation: verifies
+  to: rule.capacity
+- id: edge.exercise.scenario.cancel_once.action.cancel
+  from: scenario.cancel_once
+  relation: exercises
+  to: action.cancel
+- id: edge.verify.scenario.cancel_once.rule.capacity
+  from: scenario.cancel_once
+  relation: verifies
+  to: rule.capacity
+- id: edge.verify.scenario.cancel_once.rule.state_machine
+  from: scenario.cancel_once
+  relation: verifies
+  to: rule.state_machine
+- id: edge.exercise.scenario.cancel_concurrent.action.cancel
+  from: scenario.cancel_concurrent
+  relation: exercises
+  to: action.cancel
+- id: edge.verify.scenario.cancel_concurrent.rule.capacity
+  from: scenario.cancel_concurrent
+  relation: verifies
+  to: rule.capacity
+- id: edge.verify.scenario.cancel_concurrent.rule.idempotency
+  from: scenario.cancel_concurrent
+  relation: verifies
+  to: rule.idempotency
+- id: edge.exercise.scenario.cancel_unauthenticated.action.cancel
+  from: scenario.cancel_unauthenticated
+  relation: exercises
+  to: action.cancel
+- id: edge.exercise.scenario.cancel_invalid.action.cancel
+  from: scenario.cancel_invalid
+  relation: exercises
+  to: action.cancel
+- id: edge.exercise.scenario.reservation_missing.action.cancel
+  from: scenario.reservation_missing
+  relation: exercises
+  to: action.cancel
+- id: edge.verify.scenario.reservation_missing.rule.authorization
+  from: scenario.reservation_missing
+  relation: verifies
+  to: rule.authorization
+- id: edge.effect.action.reserve.reads.entity.concert
+  from: action.reserve
+  relation: reads
+  to: entity.concert
+- id: edge.effect.action.reserve.reads.entity.reservation
+  from: action.reserve
+  relation: reads
+  to: entity.reservation
+- id: edge.effect.action.reserve.creates.entity.reservation
+  from: action.reserve
+  relation: creates
+  to: entity.reservation
+- id: edge.effect.action.cancel.reads.entity.reservation
+  from: action.cancel
+  relation: reads
+  to: entity.reservation
+- id: edge.effect.action.cancel.changes.entity.reservation
+  from: action.cancel
+  relation: changes
+  to: entity.reservation
+- id: edge.owner.screen.reserve
+  from: screen.reserve
+  relation: owned_by
+  to: component.frontend
+- id: edge.screen.reserve.calls
+  from: screen.reserve
+  relation: calls
+  to: action.reserve
+- id: edge.community.component.api
+  from: component.api
+  relation: member_of
+  to: community.backend
+- id: edge.community.component.reservations
+  from: component.reservations
+  relation: member_of
+  to: community.backend
+- id: edge.community.component.storage
+  from: component.storage
+  relation: member_of
+  to: community.backend
+- id: edge.community.entity.concert
+  from: entity.concert
+  relation: member_of
+  to: community.backend
+- id: edge.community.entity.reservation
+  from: entity.reservation
+  relation: member_of
+  to: community.backend
+- id: edge.community.action.reserve
+  from: action.reserve
+  relation: member_of
+  to: community.backend
+- id: edge.community.action.cancel
+  from: action.cancel
+  relation: member_of
+  to: community.backend
+- id: edge.community.machine.reservation
+  from: machine.reservation
+  relation: member_of
+  to: community.backend
+- id: edge.community.component.frontend
+  from: component.frontend
+  relation: member_of
+  to: community.frontend
+- id: edge.community.screen.reserve
+  from: screen.reserve
+  relation: member_of
+  to: community.frontend
+sources:
+  source.legacy:
+    role: input
+    title: Preserved gdd/0.1 intent for explicit migration
+    uri: sources/legacy-concert.gdd.yaml
+    format: gdd/0.1
+    normative: false
+    revision:
+      sha256: f7b866db5d8e132b08044289ce35c82e65bef51d2833e0fb67806c3eebe682f5
+  source.design:
+    role: design
+    title: Planned frontend DESIGN.md; not written or verified
+    uri: DESIGN.md
+    format: design-md/alpha
+    normative: false
+record_files:
+- concert.records.yaml

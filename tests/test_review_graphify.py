@@ -224,7 +224,8 @@ def test_all_schema_end_anchors_reject_trailing_newlines():
 
     def visit(value):
         if isinstance(value, dict):
-            if "pattern" in value:
+            # Nonblank prose can span lines; identity patterns must reject suffixes.
+            if "pattern" in value and value["pattern"] != r"\S":
                 patterns.add(value["pattern"])
             for item in value.values():
                 visit(item)

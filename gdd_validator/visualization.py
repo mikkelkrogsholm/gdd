@@ -11,9 +11,10 @@ from .loading import Bundle, InputError, canonical, load_bundle
 from .model import validate_model
 from .readiness import context_closure
 from .report import check, diagnostic
+from .boundaries import boundary_view
 
 __all__ = ["render_view", "verify_view", "view_data", "html_document"]
-GENERATOR = {"name": "gdd-viewer", "version": "0.1.4", "profile": "gdd-viewer-html/0.1"}
+GENERATOR = {"name": "gdd-viewer", "version": "0.2.0", "profile": "gdd-viewer-html/0.1"}
 ASSETS = Path(__file__).parent / "viewer"
 PAYLOAD = re.compile(
     r'<script id="gdd-data" type="application/json">(.*?)</script>', re.S
@@ -32,8 +33,8 @@ def _json_text(value: Any, **options: Any) -> str:
 
 def model_bundle(path: str | Path) -> Bundle:
     bundle = load_bundle(Path(path))
-    if bundle.model.get("format") != "gdd/0.2":
-        raise ValueError("The viewer requires a GDD 0.2 model manifest.")
+    if bundle.model.get("format") not in {"gdd/0.2", "gdd/0.3"}:
+        raise ValueError("The viewer requires a supported GDD 0.2 or 0.3 model manifest.")
     if any(c["result"] != "PASS" for c in bundle.checks):
         raise ValueError("The viewer requires a resolved, valid model bundle.")
     validate_model(bundle)
@@ -91,7 +92,7 @@ def view_data(bundle: Bundle, scope: list[str] | None = None) -> dict:
     }
     text["project"] = _json_text(bundle.model["project"], ensure_ascii=False, indent=2)
     text["snapshot"] = _json_text(bundle.snapshot, ensure_ascii=False, indent=2)
-    return {
+    payload = {
         "format": "gdd-view/0.2",
         "generator": dict(GENERATOR),
         "spec_revision": bundle.revision,
@@ -110,6 +111,9 @@ def view_data(bundle: Bundle, scope: list[str] | None = None) -> dict:
             ),
         },
     }
+    if bundle.model["format"] == "gdd/0.3":
+        payload["boundaries"] = boundary_view(bundle, sorted(shown))
+    return payload
 
 
 def html_document(data: dict) -> str:

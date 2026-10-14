@@ -1,6 +1,6 @@
-# GDD validator 0.5.1 — standard format GDD 0.2
+# GDD validator 0.6.0 — GDD 0.2 and 0.3
 
-The validator loads GDD 0.2, checks the model, and assesses the structural readiness of a selected scope. It has a Python API and CLI and writes reports in `gdd-report/0.2`. Pseudocode, extension code, and application tests are not executed.
+The validator loads version-dispatched GDD 0.2 and 0.3, checks the model, and assesses the structural readiness of a selected scope. It has a Python API and CLI and writes reports in `gdd-report/0.2`. Pseudocode, extension code, and application tests are not executed.
 
 Python 3.11 or newer is required. `uv.lock` pins the installation. Run from the project directory:
 
@@ -94,3 +94,31 @@ assert exit_code(report) == 0
 The API returns a JSON-compatible report object. Invalid tool arguments raise `ValueError`; model/file failures produce report diagnostics. Revision and report formats are validated internally. [The code](gdd_validator/validator.py) is the entry point for orchestration; loading/model/readiness/planning/records contain the respective checks.
 
 Version 0.5.0 adds [the agent workflow](WORKFLOW.md) as a separate tool layer. Runtime validation still executes no application tests; the bounded [quote example](examples/agent-native/README.md) has actual externally executed checks and explicitly host-verified evidence. [The workflow review](evidence/workflow-review.md) documents this version.
+
+
+## GDD 0.3 boundary and advisory checks
+
+Legacy 0.2 manifests/fragments use preserved schemas and semantics. New 0.3
+manifests/fragments require matching versions; records/extensions/report/snapshot
+and existing workflow envelope versions remain unchanged.
+
+The model checker rejects exports owned by a different component, resolved calls to
+another component's private action, and broad principle rules marked blocking or
+using another category. Unknown ownership/interfaces remain valid sketches.
+Readiness requires relevant component responsibility/rationale/exclusions, unique
+public providers and resolvable call consumers, and action postconditions. Nonblank
+text is structurally checked; the quality of its content requires review.
+
+`gdd boundaries MANIFEST` derives public interfaces, community membership basis,
+call classification, unresolved inputs and explicit omitted calls. It writes no
+intent. The Python API is `boundary_view(bundle, scope=None)` in
+`gdd_validator.boundaries`; a supplied scope is a read-context ID list, not an
+assertion that entire communities have been analyzed.
+
+`gdd design-review MANIFEST --review FILE --implementation ID --code-revision REV
+--scope NODE` checks the advisory envelope and its applicability to host-supplied
+identities/scope. Repeat scope as needed. A missing scope selection reports only the
+review's declared scope. COMPLETE returns 0, INVALID 1, UNKNOWN 2. Findings do not
+change blocking acceptance checks. The tool does not inspect code or verify that a
+review actually occurred. Its schema is [design-review](schemas/design-review.schema.json).
+New cases run with `uv run python conformance/run_design.py`.

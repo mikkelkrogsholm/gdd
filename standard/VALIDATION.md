@@ -1,6 +1,6 @@
 # Validation contract
 
-Normative chapter for GDD 0.2. The concrete implementation's support and limitations are documented in [VALIDATOR.md](../VALIDATOR.md); the requirements in this chapter are not themselves execution evidence.
+Normative chapter for GDD 0.3. The concrete implementation's support and limitations are documented in [VALIDATOR.md](../VALIDATOR.md); the requirements in this chapter are not themselves execution evidence.
 
 ## 1. Four independent assessments
 
@@ -38,6 +38,8 @@ MUST checks:
 - Source/question/design references and revision requirements for normative sources. An unavailable external source is integration UNKNOWN, not a dangling internal reference.
 - At most one owned_by edge to a component per action/entity/screen/machine when ownership is specified. Two edges with different IDs and identical owner semantics are ownership ambiguity, not an additional owner.
 - Refines without cycles, self-loops or multiple parents. Realization children are descendants of the declaring parent.
+- Public component interfaces resolve to actions; specified action owners match their exporting component. A resolved cross-component call targets a declared public provider interface. Unknown provider/consumer ownership and unspecified interfaces remain incomplete sketches.
+- A rule with principle uses category=design and blocking=false; this does not reinterpret other design rules, including precise UI requirements.
 - Member_of to a community from a non-community; overlapping membership is allowed.
 - A targeted rule has constrains targets; a global rule applies regardless of local graph distance. Architecture constraint endpoints must be components, and relation is imports in this core profile. Other constraint semantics requires an extension.
 - Machine states are unique; initial/terminal/from/to exist; trigger is an action; `(from,trigger)` is unique; a terminal state has no outgoing mutation. State_of must be unambiguous when specified.
@@ -54,7 +56,7 @@ Readiness scope is a list of implementation targets; read context is kept separa
 Each selected action requires:
 
 - Exactly one owned_by component and access to relevant interfaces/boundary contracts.
-- Input, context, output, errors, preconditions, external_effects, effects_complete=true, dependencies_complete=true and non-empty behavior. Empty maps/lists can be deliberate declarations.
+- Input, context, output, errors, preconditions, postconditions, external_effects, effects_complete=true, dependencies_complete=true and non-empty behavior. Empty maps/lists can be deliberate declarations.
 - Type specifications and the relevant fields of referenced entities are available.
 - All five risk assessments with rationale. A relevant risk requires scenarios; they must exercise the action. Authorization/idempotency/boundaries/atomicity require negative or boundary scenarios; concurrency requires a concurrency scenario. A scenario can cover multiple risks.
 - Each declared error outcome has at least one error_cases reference to a negative/boundary scenario that exercises the action.
@@ -63,7 +65,7 @@ Each selected action requires:
 - No open question in closure that blocks implementation. Resolved questions require a valid accepted decision receipt or must be treated as unresolved.
 - Necessary contract/design sources are normative=true, locally materialized, resolved and pinned with a verified byte hash, and included in the model snapshot; unknown extension semantics must not affect closure.
 
-A screen requires interaction.states, behavior, accessibility and responsive; relevant calls/navigation boundaries; a normal scenario and resolved design_refs. Assessment of relevant error/boundary flows is recorded as a readiness_review decision. Entity/machine/component must have sufficient relevant fields/states/interfaces when the slice depends on them. A top-level component can be ready as implementation scope only when its realization obligations and necessary child contracts are specified and structurally covered. Children need not already be implemented. "Sketch" on a parent does not make a full parent scope ready.
+A screen requires interaction.states, behavior, accessibility and responsive; relevant calls/navigation boundaries; a normal scenario and resolved design_refs. Assessment of relevant error/boundary flows is recorded as a readiness_review decision. Every component in the required closure needs nonblank boundary.responsibility, a short nonblank boundary.rationale, explicit boundary.excludes (possibly []), and specified interfaces. Public actions and call consumers/providers need unique matching owners. Entity/machine/component must have sufficient relevant fields/states/interfaces when the slice depends on them. A top-level component can be ready as implementation scope only when its realization obligations and necessary child contracts are specified and structurally covered. Children need not already be implemented. "Sketch" on a parent does not make a full parent scope ready.
 
 `maturity`, a handwritten ready marker, planned bindings or textual "reviewed" is not readiness evidence. The first validator checks this structural profile. A semantic review can challenge declarations but must not be disguised as a deterministic check.
 
@@ -81,7 +83,7 @@ A planned binding does not prove file/symbol existence. An observed binding does
 
 Evidence MUST refer to an existing immutable check plan and matching check_revision, spec_revision, implementation and code_revision, together with checker identity/version and raw output. Evidence scope must cover the check plan's required scope; extra scope is not automatically verified. A missing environment, missing revision-bound bindings, an unsupported method or unknown observation provenance gives UNKNOWN.
 
-Older evidence retains its historical result. Under 0.2's conservative profile, its applicability is UNKNOWN when the model, code or normative asset revision changes. There is no automatic semantic cache invalidation. Negative controls are declared in the check plan and must be executed before the combined check can claim to demonstrate defect detection.
+Older evidence retains its historical result. Under 0.3's conservative profile, its applicability is UNKNOWN when the model, code or normative asset revision changes. There is no automatic semantic cache invalidation. Negative controls are declared in the check plan and must be executed before the combined check can claim to demonstrate defect detection.
 
 ## 7. Report and diagnostics
 
@@ -89,4 +91,8 @@ The report follows [report.schema.json](../schemas/report.schema.json): format, 
 
 No fabricated hash: spec_revision can be null until the snapshot can be computed. The check must then not claim revision-bound PASS. Recommended CLI exit codes are 0=all requested required checks PASS/GRANTED, 1=known FAIL/DENIED, 2=UNKNOWN/UNRESOLVED without a known error. An API can use the same results without a process exit.
 
-The machine-readable [diagnostic catalog](../conformance/diagnostics.csv) lists stable codes. [Cases](../conformance/cases.yaml) specify the expected dimension/result and whether the check is based on schema, semantics or readiness. An implementation must declare which cases/profiles it satisfies.
+The machine-readable [diagnostic catalog](../conformance/diagnostics.csv) lists stable codes. [Legacy cases](../conformance/cases.yaml) and [0.3 boundary/design cases](../conformance/design.cases.json) specify the expected dimension/result and whether the check is based on schema, semantics or readiness. An implementation must declare which cases/profiles it satisfies.
+
+## 8. Advisory design review
+
+[DESIGN-PRINCIPLES](DESIGN-PRINCIPLES.md) specifies concrete assessments and review evidence. Structural completeness or current applicability of a review MUST NOT be reported as deterministic proof of KISS, DRY, separation of concerns or modularity. Missing, planned, unsupported or stale review input is UNKNOWN when that review is requested. Findings from a broad principle remain advisory and MUST NOT silently enter blocking acceptance checks. Precise blocking constraints retain the ordinary evidence requirements.

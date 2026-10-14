@@ -1,9 +1,11 @@
 # Verification evidence and English presentation
 
-Current English verification is collected in [the localization review](english-review.md).
+The English 0.5.1 verification is collected in [the localization review](english-review.md).
 The repository's current prose, models, interface, generated graph and screenshot
-presentations are English. The GDD format remains 0.2; package 0.5.1 and renderer
-0.1.4 identify the English release.
+presentations are English. Package 0.5.1 and renderer 0.1.4 identify that English GDD 0.2 release.
+The subsequent GDD 0.3/package 0.6.0 verification is collected in
+[the 0.3 review](gdd-0.3-review.md). Older execution reports remain tied to their
+original source states.
 
 Earlier reviews describe executions against earlier source states. Their dates,
 results, tool versions, hashes and revision claims have not been rebound to the

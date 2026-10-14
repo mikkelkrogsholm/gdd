@@ -1,6 +1,6 @@
 # GDD — entry point for agents
 
-Reading guide for the 0.2 draft. Normative requirements are in [SPEC.md](SPEC.md) and the chapters it references.
+Reading guide for the 0.3 draft. Normative requirements are in [SPEC.md](SPEC.md) and the chapters it references.
 
 1. Read the format version, model manifest and trusted mandate. Do not assume an approval mode.
 2. Register input as sources; maintain the wiki/OKF. Distinguish statements, observations, interpretations and accepted requirements.
@@ -19,6 +19,16 @@ The package now includes the [GDD validator](VALIDATOR.md). Run `uv run gdd vali
 
 ## Agent workflow
 
-Use [WORKFLOW.md](WORKFLOW.md) for concrete development plans and run events, and the [lead](agents/gdd-lead.md)/[worker](agents/gdd-worker.md) instructions in existing agents. The graph's context closure is the reading basis; the plan's scope and explicit file areas determine the work. Workflow 0.1 is a tool layer above GDD 0.2 and grants no independent authorization or evidence.
+Use [WORKFLOW.md](WORKFLOW.md) for concrete development plans and run events, and the [lead](agents/gdd-lead.md)/[worker](agents/gdd-worker.md) instructions in existing agents. The graph's context closure is the reading basis; the plan's scope and explicit file areas determine the work. Workflow 0.1 is a tool layer above GDD 0.2/0.3 and grants no independent authorization or evidence.
 
 Repository documentation, example prose and user-facing output must be English. Preserve identifiers, proper names and intentional Unicode test data. Follow [AGENTS.md](AGENTS.md) when updating generated or revision-bound assets.
+
+
+For 0.3, read each relevant component's responsibility, boundary rationale and
+exclusions. Cross-component calls use the target action in its owning provider's
+interfaces. Contracts include postconditions; community membership grants no access.
+Use `gdd boundaries` to inspect the derived public view. Review all four design
+principles before implementation and delivery under
+[DESIGN-PRINCIPLES](standard/DESIGN-PRINCIPLES.md). Record concrete advisory findings
+with model/code revisions, graph IDs and actual code locations. A review COMPLETE
+status is not acceptance or proof of KISS/DRY compliance. Preserve historical 0.2 runs.

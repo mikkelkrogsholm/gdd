@@ -30,8 +30,10 @@ __all__ = [
 ]
 
 FORMATS = {
-    "gdd/0.2": "gdd",
-    "gdd-fragment/0.2": "fragment",
+    "gdd/0.2": "gdd-0.2",
+    "gdd-fragment/0.2": "fragment-0.2",
+    "gdd/0.3": "gdd",
+    "gdd-fragment/0.3": "fragment",
     "gdd-extension/0.2": "extension",
     "gdd-records/0.2": "records",
     "gdd-report/0.2": "report",
@@ -482,7 +484,7 @@ def load_bundle(
     if data is None:
         return bundle
     bundle.model = data
-    if data["format"] != "gdd/0.2":
+    if data["format"] not in {"gdd/0.2", "gdd/0.3"}:
         if data["format"] == "gdd-records/0.2":
             bundle.records = data["records"]
         return bundle
@@ -492,7 +494,8 @@ def load_bundle(
     for index, edge in enumerate(data["edges"]):
         bundle.locations[edge["id"]] = (bundle.path.name, pointer("edges", index))
     for relative in data.get("includes", []):
-        fragment = read(relative, "gdd-fragment/0.2", asset=True)
+        version = data["format"].split("/")[1]
+        fragment = read(relative, f"gdd-fragment/{version}", asset=True)
         if fragment is None:
             continue
         for ident, node in fragment["nodes"].items():

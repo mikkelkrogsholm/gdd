@@ -19,3 +19,20 @@ No workflow policy is chosen in the standard examples below. Missing policy prev
 The standard examples are used for format and method semantics. The practical quote example is separate under `agent-native/`; it grants no implicit authorization to other projects.
 
 [concert.graph.html](concert.graph.html) is a generated, interactive, offline [GDD view](../VIEWER.md) of the concert model. It is read-only, contains no application evidence, and is not a normative model asset.
+
+
+## GDD 0.3 design-quality example
+
+[concert-0.3.gdd.yaml](concert-0.3.gdd.yaml) intentionally migrates the reservation
+model: authored component boundary rationale/responsibility/exclusions, public
+provider contracts, action postconditions, four advisory principle rules and an
+ownership-aware overlapping feature community. API's old duplicated exports are
+removed; Reservations remains the provider. The frontend screen remains a sketch.
+[Its snapshot](concert-0.3.snapshot.json) and planned records are regenerated for
+these bytes; no reservation application execution is claimed.
+
+[The planned design review](design-review.planned.json) declares executed=false and
+unknown assessments. It is a format example, not review evidence.
+[The derived public view](concert-0.3.boundaries.json) and
+[interactive graph](concert-0.3.graph.html) preserve IDs and revision.
+Existing 0.2 examples and the native-agent run remain unchanged.

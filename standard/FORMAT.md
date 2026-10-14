@@ -1,14 +1,14 @@
 # File format and revision profile
 
-Normative chapter for GDD 0.2. The machine-readable form of fields is specified in [schemas](../schemas/README.md). Semantic rules apply in addition to JSON Schema.
+Normative chapter for GDD 0.3. The machine-readable form of fields is specified in [schemas](../schemas/README.md). Semantic rules apply in addition to JSON Schema.
 
 ## 1. Documents and loading
 
-A model manifest is JSON or YAML with `format: gdd/0.2`, `project`, `nodes` and `edges`. Other registries are optional. The recommended name is `gdd.yaml`; the name is not a semantic identity.
+A model manifest is JSON or YAML with `format: gdd/0.3`, `project`, `nodes` and `edges`. Other registries are optional. The recommended name is `gdd.yaml`; the name is not a semantic identity.
 
 A YAML consumer MUST use YAML 1.2 JSON-compatible scalars and safe loaders. Only JSON values are allowed: objects with string keys, arrays, strings with valid Unicode scalar values, finite numbers, booleans and null. Duplicate mapping keys, custom tags, anchors, aliases and merge keys are forbidden. Constructors or code must not be executed. A consumer that supports only JSON MUST declare this.
 
-Local `includes` refer to `gdd-fragment/0.2` files, which can contribute only nodes and edges. Fragments must not include files themselves. Registry IDs and edge IDs must not be overwritten. In 0.2, the bundle root is the manifest's directory. Includes, record_files, normative local sources and extension paths are relative to the manifest and MUST stay within this root after normalization and symlink resolution. Each asset is loaded once; cycles, duplicates and path escapes are errors. External sources use separate `sources`.
+Local `includes` refer to `gdd-fragment/0.3` files, which can contribute only nodes and edges. Fragments must not include files themselves. Registry IDs and edge IDs must not be overwritten. In 0.3, the bundle root is the manifest's directory. Includes, record_files, normative local sources and extension paths are relative to the manifest and MUST stay within this root after normalization and symlink resolution. Each asset is loaded once; cycles, duplicates and path escapes are errors. External sources use separate `sources`.
 
 Node, source, question and extension IDs are object keys. Edges and transitions have `id`. ID syntax consists of lowercase ASCII letters, digits, underscores and periods/hyphens between segments; the first character is a letter. Unicode is allowed in labels and text.
 
@@ -16,7 +16,7 @@ Node, source, question and extension IDs are object keys. Edges and transitions 
 
 | Field | Meaning |
 | --- | --- |
-| format | Exact format version, `gdd/0.2` |
+| format | Exact format version, `gdd/0.3` |
 | project | id, title, goal; optional scope, assumptions, workflow |
 | nodes | Map from stable ID to node |
 | edges | List of explicit relation records |
@@ -34,11 +34,11 @@ A missing workflow is allowed in a sketch. Dependent authorization decisions are
 
 All nodes: `kind`, `description`; optional `label`, `maturity: sketch|specified`, `source_refs`, `annotations` and `realization`. Unknown structural fields are rejected; non-normative extensions belong in namespaced annotations.
 
-- Component: `interfaces` is a list of public action IDs. A readiness assessment requires relevant boundary contracts to be available.
+- Component: `boundary` contains responsibility, rationale and excludes (a list). A sketch may omit or partially describe it; readiness requires all three. `interfaces` is a list of public action IDs owned by that component. A readiness assessment requires relevant boundary contracts to be available.
 - Entity: `fields` maps field names to abstract type specifications.
-- Action: `contract` and `behavior`. Contract has input/context field maps, an output type, an errors map from error name to description, preconditions, external_effects, effects_complete, dependencies_complete, risks and error_cases.
+- Action: `contract` and `behavior`. Contract has input/context field maps, an output type, an errors map from error name to description, preconditions, postconditions, external_effects, effects_complete, dependencies_complete, risks and error_cases.
 - Screen: `interaction` describes states, accessibility, responsive and behavior; `design_refs` refers to sources with `purpose: contract`. `calls` and `navigates_to` are described as edges.
-- Rule: `rule` has category, statement, scope (`global|targeted`), blocking and verification (a list of method IDs). An architecture rule can have a constraint with relation/from/to/reach (`direct|transitive`)/policy (`forbid`). Method IDs are labels for checkers, not code that is executed.
+- Rule: `rule` has category, statement, scope (`global|targeted`), blocking and verification (a list of method IDs). An architecture rule can have a constraint with relation/from/to/reach (`direct|transitive`)/policy (`forbid`). Method IDs are labels for checkers, not code that is executed. Optional principle (`kiss|dry|separation_of_concerns|modularity`) identifies a broad advisory assessment and requires category=design and blocking=false.
 - Scenario: `scenario` has category (`normal|negative|boundary|concurrency|architecture`), given, when and then.
 - Machine: `machine` has states, initial, terminal and transitions. Each transition has id/from/to/trigger/guard/effects. All transitions are mutating in this profile.
 - Community: the common fields suffice; membership is described only in edges.
@@ -94,4 +94,4 @@ A label or Git commit MAY be an additional locator but must not replace identifi
 
 ## 7. Versioning
 
-0.2 is explicitly incompatible with 0.1. No silent upgrade. A consumer MUST declare supported formats and extension versions. Future changes with new interpretation requirements must have a new format version. The schema IDs' `https://gdd.example/` is a local identifier namespace, not a published service; schemas must be resolved from this package without network access.
+0.3 adds boundary descriptions, public interface ownership/call semantics, postconditions and advisory principle labels to 0.2. A consumer supporting both versions MUST dispatch their schemas and semantics separately; model fragments MUST match their manifest version. New interpretation requirements MUST NOT be silently applied to an unchanged 0.2 model. Records, extensions, reports and snapshots retain their 0.2 envelopes and can reference a 0.3 snapshot. The 0.1 format remains unsupported by this validator. No silent upgrade. A consumer MUST declare supported formats and extension versions. Future changes with new interpretation requirements must have a new format version. The schema IDs' `https://gdd.example/` is a local identifier namespace, not a published service; schemas must be resolved from this package without network access.

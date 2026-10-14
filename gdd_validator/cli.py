@@ -14,12 +14,15 @@ from .validator import PROFILES, validate
 from .visualization import render_view
 from .workflow import prepare_workflow, verify_workflow, context_manifest
 from .workflow_run import create_run, run_status, advance_run
+from .boundaries import boundary_view
+from .design_review import review_design
+from .visualization import model_bundle
 
 __all__ = ["main"]
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(prog="gdd", description="GDD 0.2 model tools")
+    parser = argparse.ArgumentParser(prog="gdd", description="GDD 0.2 and 0.3 model tools")
     commands = parser.add_subparsers(dest="command", required=True)
     validation = commands.add_parser("validate")
     validation.add_argument("path", type=Path)
@@ -83,7 +86,14 @@ def main() -> int:
             sub.add_argument("--source-id", default="source.graphify")
         if action == "propose":
             sub.add_argument("--mapping", type=Path, required=True)
-    for command in ("snapshot", "context"):
+    review = commands.add_parser("design-review", help="Check an advisory review's structure and current applicability")
+    review.add_argument("path", type=Path)
+    review.add_argument("--review", type=Path)
+    review.add_argument("--implementation", required=True)
+    review.add_argument("--code-revision", required=True)
+    review.add_argument("--scope", action="append")
+    review.add_argument("--output", type=Path)
+    for command in ("snapshot", "context", "boundaries"):
         sub = commands.add_parser(command)
         sub.add_argument("path", type=Path)
         sub.add_argument("--output", type=Path)
@@ -93,7 +103,15 @@ def main() -> int:
     if hasattr(args, "scope"):
         args.scope = list(dict.fromkeys(args.scope or []))
     try:
-        if args.command == "workflow":
+        if args.command == "boundaries":
+            result = boundary_view(model_bundle(args.path))
+            code = 0
+        elif args.command == "design-review":
+            result = review_design(model_bundle(args.path), parse(args.review.read_bytes()) if args.review else None,
+                                   implementation=args.implementation, code_revision=args.code_revision,
+                                   expected_scope=args.scope or None)
+            code = {"COMPLETE": 0, "INVALID": 1, "UNKNOWN": 2}[result["status"]]
+        elif args.command == "workflow":
             if args.output and args.output.exists():
                 raise FileExistsError(f"Output already exists: {args.output}")
             host = parse(args.host_context.read_bytes()) if args.host_context else None

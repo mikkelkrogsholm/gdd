@@ -264,7 +264,7 @@ def validate(
                     "SCHEMA_INVALID", "Secondary input must be gdd-records/0.2."
                 )
             elif (
-                bundle.model.get("format") == "gdd/0.2"
+                bundle.model.get("format") in {"gdd/0.2", "gdd/0.3"}
                 and records_bundle.model["project_id"] != bundle.model["project"]["id"]
             ):
                 bundle.issue(
@@ -275,7 +275,7 @@ def validate(
                 bundle.issue("ID_COLLISION", f"Record loaded twice: {ident}.")
             else:
                 bundle.records[ident] = record
-    known_model = bundle.model.get("format") == "gdd/0.2"
+    known_model = bundle.model.get("format") in {"gdd/0.2", "gdd/0.3"}
     representation_valid = not any(
         c["dimension"] == "model" and c["result"] != "PASS" for c in bundle.checks
     )
@@ -304,7 +304,7 @@ def validate(
                         "model.unavailable",
                         "model",
                         "UNKNOWN",
-                        "Semantic model validation requires a GDD 0.2 model manifest; schema validation alone is representation-only.",
+                        "Semantic model validation requires a supported GDD 0.2 or 0.3 model manifest; schema validation alone is representation-only.",
                         scope,
                         [
                             diagnostic(
@@ -325,7 +325,7 @@ def validate(
                             profile + ".unavailable",
                             dimension,
                             "UNKNOWN",
-                            "A valid GDD 0.2 model is required; no semantic PASS inferred.",
+                            "A valid supported GDD model is required; no semantic PASS inferred.",
                             scope,
                             [
                                 diagnostic(
@@ -409,7 +409,7 @@ def validate(
                     "integration.visualization",
                     "integration",
                     "UNKNOWN",
-                    "A valid GDD 0.2 model is required for artifact verification.",
+                    "A valid supported GDD model is required for artifact verification.",
                     diagnostics=[
                         diagnostic(
                             "REVISION_UNRESOLVED",
@@ -421,7 +421,7 @@ def validate(
             )
     report = {
         "format": "gdd-report/0.2",
-        "tool": {"name": "gdd-validator", "version": "0.5.1"},
+        "tool": {"name": "gdd-validator", "version": "0.6.0"},
         "spec_revision": bundle.revision,
         "profiles": profiles,
         "scope": scope,

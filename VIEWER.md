@@ -1,6 +1,6 @@
 # Interactive GDD graph
 
-`gdd view` creates a standalone HTML file containing the validated GDD 0.2 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. The package version is 0.5.1, the renderer is 0.1.4 with profile `gdd-viewer-html/0.1`; the standard format remains GDD 0.2.
+`gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. Package 0.6.0 uses renderer 0.2.0 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
 
 ```sh
 uv run gdd view examples/concert.gdd.yaml --output concert.html
@@ -88,3 +88,12 @@ node conformance/run_browser.cjs
 The browser harness uses installed `playwright`, starts headless Chromium, generates fresh fixtures in a temporary directory, and tests `file://` with networking disabled. `NODE_PATH` or `GDD_PLAYWRIGHT_MODULE` can specify an existing Playwright runtime; `GDD_BROWSER_EXECUTABLE` can specify local Chrome, and `GDD_PYTHON` an environment containing this package. The harness installs no browser. Reports and screenshots are saved under `evidence/visualization/`; `GDD_BROWSER_OUTPUT` selects another directory for new review rounds.
 
 [The review rounds](evidence/review-loops/README.md) describe current verification. [The visualization review](evidence/visualization-review.md) preserves the results from 0.4.0.
+
+
+## GDD 0.3 boundary inspection
+
+Renderer 0.2.0 supports both model versions. For0.3 it shows component responsibility,
+boundary rationale and exclusions, links to authoritative public actions, and derived
+community boundaries with ownership-based participation, overlap and omitted calls.
+These views are model context and grant no access or quality/acceptance status.
+The shipped 0.3 example is [concert-0.3.graph.html](examples/concert-0.3.graph.html).

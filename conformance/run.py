@@ -324,7 +324,7 @@ def run() -> dict:
                 )
     return {
         "format": "gdd-conformance-run/0.2",
-        "tool": "gdd-validator/0.5.1",
+        "tool": "gdd-validator/0.6.0",
         "executed_at": datetime.now(timezone.utc).isoformat(),
         "synthetic_inputs": True,
         "total": len(results),

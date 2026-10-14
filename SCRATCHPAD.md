@@ -2,9 +2,11 @@
 
 Date: October 13, 2026.
 
-Collected working notes from the conversation through October 13, 2026. These notes distinguish between the agreed direction, research findings, proposals, and open choices. They do not themselves change SPEC.md or concert.gdd.yaml.
+Collected working notes from the original conversation through October 13, 2026, with a dated follow-up on October 14, 2026. These notes distinguish between the agreed direction, research findings, proposals, and open choices. They do not themselves change SPEC.md or concert.gdd.yaml.
 
 **Subsequent status:** The agreements have now been incorporated into the [GDD 0.2 draft standard](SPEC.md), with normative chapters, schemas, and illustrative examples. The former 0.1 specification is explicitly archived. See the [README](README.md) for a reading guide and the [review report](evidence/standard-review.md) for completed checks. This scratchpad is retained as the historical basis for decisions; its original open questions below describe the starting point for the now completed standards work.
+
+**Latest follow-up:** [Design quality and explicit boundaries](#follow-up-october-14-2026--design-quality-and-explicit-boundaries) records the next proposed extension and the agreed requirement for a short rationale for every component boundary. These additions have been incorporated into the GDD 0.3 draft and reference tools. GDD 0.2 retains its original contract; the dated notes below preserve the design basis. See [the 0.3 design principles](standard/DESIGN-PRINCIPLES.md).
 
 ## Agreed direction and decisions
 
@@ -337,3 +339,125 @@ Then clarify:
 For now, the reservation model serves as illustrative material for formulating the standard. A later practical experiment can implement an action, change a rule through the graph, and introduce a deliberate fault to challenge the checks. That experiment is not the current task, and no demonstration project has yet been selected.
 
 Existing projects such as ZeroRepo and Spec Growth Engine must be included in the comparison. See the [research on existing work](research/2026-10-13-existing-work.md). Reuse of their mechanisms and selection of a framework engine have not yet been decided.
+
+## Follow-up: October 14, 2026 — design quality and explicit boundaries
+
+### Purpose and decision status
+
+The user wants GDD to help agents preserve KISS, DRY, separation of concerns, and modularity as a system develops. The graph should describe what the system does and how its parts may collaborate. Clear contracts between nodes and across communities are part of this direction.
+
+**Agreed decision:** Every component boundary must have a short rationale explaining why it exists. This requirement is to be incorporated into a future revision of the standard. Its exact representation and treatment of incomplete sketches remain to be specified.
+
+The mechanisms below record the brainstorm and recommendations. They are proposals for the next standards work, not additional normative requirements in GDD 0.2. The current task is to retain this design basis in the scratchpad.
+
+### Existing foundation in GDD 0.2
+
+The current model already provides component responsibilities and public contracts, action contracts, explicit ownership and dependency relations, architecture rules, scenarios, and revision-bound evidence. Work packets include the applicable contracts and rules. Parallel development already requires compatible boundary contracts and an integration plan.
+
+Communities currently provide grouping, navigation, and context. They can overlap and do not establish ownership or independence. Architecture constraints in the core support explicit prohibitions on component imports; an absent edge is unspecified and does not establish a complete allowlist.
+
+These mechanisms can support design quality, but a valid graph does not establish that the implementation is simple, free of duplicated business logic, or appropriately modular. The validator has no general automatic KISS or DRY assessment. Code review and relevant implementation checks remain necessary.
+
+### Component responsibility and boundary rationale
+
+Proposed responsibility descriptions should make the following clear:
+
+- The component's purpose and the decisions it owns.
+- The operations, domain concepts, or state for which it is responsible.
+- The responsibilities outside its scope.
+- Its public contracts and relevant dependency restrictions.
+- The short rationale for its boundary.
+
+Ownership should reuse the existing authoritative relations. The extension should avoid adding a second ownership representation that can disagree with `owned_by`. Different node kinds need appropriate contracts: an action, entity, and component have different obligations.
+
+The rationale should identify a concrete reason for separation, such as a coherent domain responsibility, a stable public interface, or an external system that changes independently. It should give a future agent enough context to assess whether the boundary still helps or whether responsibilities should be combined or split.
+
+Illustrative rationale:
+
+> Reservations owns seat allocation and reservation state so that availability, atomicity, and cancellation rules remain consistent behind one public interface. API handlers translate requests and responses; storage implements persistence.
+
+The agreed requirement applies to every component boundary. Whether its rationale is represented on the component or through a referenced boundary description is an open format choice. It does not imply a separate rationale for every graph edge or a requirement for a long design document.
+
+### Explicit contracts at collaboration boundaries
+
+The proposal is to make contracts explicit wherever an interaction crosses a responsibility boundary. Depending on the interaction, the contract should describe:
+
+- Inputs and outputs using abstract domain types.
+- Expected errors and failure behavior.
+- Preconditions, postconditions, and relevant guarantees.
+- Reads, mutations, and external effects.
+- Idempotency, atomicity, or consistency requirements where relevant.
+- The responsible provider, participating consumers, and the referenced contract revision.
+
+Define each authoritative contract once and let participants refer to it. References on relationships or in community views should preserve its identity and revision. Repeating a contract in derived work packets must retain that provenance and must not create an independently editable specification.
+
+Different relations need different obligations. A call, event, or data exchange may need a behavioral or data contract; a navigation or grouping relation does not automatically need a full operation contract. Existing action contracts and component interfaces should be reused before introducing a new core node kind or contract registry.
+
+Language-independent notation sketch, not an adopted schema:
+
+```text
+Frontend -> Reservations: reserve_seats
+
+Input: event_id, seat_ids, customer_reference
+Output: reservation_id, expires_at
+Errors: seats_unavailable, invalid_request
+Guarantee: Reserve all requested seats or none.
+```
+
+Agents working on the two sides can implement against the same contract. Stubs can support parallel development, while acceptance still requires checks of the realized integration. A contract change must be reconciled with affected consumers and their evidence under the existing project mandate.
+
+### Public boundaries across communities
+
+A community such as frontend or backend should be able to show its participating components' public contracts and the interactions that cross its visible boundary. For example, frontend can call the reservation interface while storage remains behind the responsible backend components.
+
+The recommended first approach is to derive this public view from component contracts. Concrete components retain responsibility for the contracts. Community membership alone must not create ownership, permission to access internals, or evidence of independence, especially when communities overlap.
+
+If a community later receives enforceable architectural semantics, those semantics must be explicit and separately specified. The standard must define membership, exposed contracts, exceptions, and the effect of overlaps before a checker can enforce them. A grouping must not silently become a complete import allowlist.
+
+### Design principles as concrete assessments
+
+An agent instruction to follow KISS or DRY needs enough context to assess a real design decision.
+
+| Principle | What the graph and agent review should examine | Interpretation |
+| --- | --- | --- |
+| KISS | Extra layers, indirection, abstractions, and their current purpose | Prefer the smallest clear solution that satisfies the actual requirements. More nodes or layers do not automatically improve the design. |
+| DRY | Multiple implementations of the same business rule or authoritative knowledge | Keep one authoritative definition of the rule. Similar-looking code alone does not justify a shared abstraction; small local duplication can preserve clarity and independence. |
+| Separation of concerns | Responsibility, ownership, decisions, and state changes across boundaries | Keep behavior with the component responsible for it and make necessary cross-boundary effects explicit. |
+| Modularity | Public contracts, dependencies, and knowledge of other components' internals | Support changes within a component while preserving its public obligations. Coupling and cycles need context before they can be judged. |
+
+Shared rules should remain accessible to all relevant agents through the existing context closure. Their implementation may require a shared operation or another suitable mechanism, but the graph must not force every shared requirement into a new abstraction.
+
+### Precise constraints and advisory findings
+
+The recommended first version distinguishes explicit constraints from design judgments:
+
+- Precise architecture constraints can block acceptance when the project declares them blocking and the relevant checker establishes a violation. Examples include a forbidden import or a required boundary contract.
+- KISS and DRY assessments initially produce reasoned advisory findings. They should identify concrete graph IDs and code locations, explain the consequence, and suggest a proportionate improvement. They should not assert a universal complexity score or force deduplication based only on textual similarity.
+
+Metrics such as dependency counts or cycles may help investigation, but are not universal proof of poor design. Any project-specific blocking threshold needs explicit semantics and a suitable verification method.
+
+Missing or unsupported analysis remains UNKNOWN for the dependent check. Structural validation establishes fields and references; a present rationale or contract is not proof that its content is adequate or that code follows it.
+
+### Agent workflow and implementation evidence
+
+The proposed workflow builds on the existing agent protocol:
+
+1. **Before implementation:** Include relevant responsibilities, boundary rationales, public contracts, applicable rules, and scenarios in the work packet. Assess whether the planned change fits them and whether necessary contracts are sufficiently specified.
+2. **During implementation:** Keep the change within its scope, use existing responsibilities and contracts, and make discovered design problems visible. Propose boundary or requirement changes under the project's existing policy.
+3. **After implementation:** Compare actual dependencies and behavior with the model using suitable code analysis, integration tests, and review. Connect results to graph IDs, the model revision, and the concrete implementation revision.
+4. **After a model change:** Reconcile affected consumers, work packets, bindings, derived views, and checks. Preserve historical evidence and do not present it as proof of a changed contract without reassessment.
+
+The existing concert example already illustrates a precise boundary rule: API must not import storage directly; its intended path is through Reservations. Actual import analysis supplies implementation evidence. Graphify observations can help expose dependencies for comparison, but observed code must remain distinguishable from accepted intent and must not automatically rewrite the architecture.
+
+### Recommended next standards boundary
+
+The next standards work should first specify component responsibility descriptions, the agreed boundary rationale, references to authoritative public contracts, and their inclusion in work packets and derived community views. It should then define the applicable structural checks and evidence requirements, with KISS and DRY review remaining advisory initially.
+
+Candidate conformance coverage includes missing boundary rationales at the chosen readiness stage, unresolved or inconsistent contract references, preservation of obligations during refinement, overlapping communities, forbidden imports, contract changes during parallel work, and missing implementation evidence. Cases must distinguish model validity, structural readiness, and implementation acceptance.
+
+Open design choices include the exact fields and reference representation, how incomplete sketches express unknown rationales, whether community boundaries require a separate profile or extension, how compatibility of changed contracts is assessed, and how advisory findings are recorded. These are specification choices for the next phase, not authorization to implement them in this scratchpad update.
+
+
+### Follow-up implementation status
+
+The October 14 direction is now implemented in GDD 0.3: component responsibility/rationale/exclusions, canonical public action contracts with postconditions, ownership-aware community boundary views, and four concrete advisory review topics. Broad principle rules use the existing design category and nonblocking evidence mechanisms. Model/fragment 0.3 uses distinct schemas and semantics; other established envelopes retain their versions. The 0.2 contract and historical execution claims are preserved. See [verification](evidence/gdd-0.3-review.md) for actual results and limitations.

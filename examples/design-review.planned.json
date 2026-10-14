@@ -1,0 +1,40 @@
+{
+  "format": "gdd-design-review/0.3",
+  "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b",
+  "implementation": "implementation.concert.python",
+  "code_revision": "planned",
+  "scope": [
+    "action.reserve"
+  ],
+  "reviewer": {
+    "name": "planned-reviewer",
+    "version": "not-executed"
+  },
+  "executed": false,
+  "assessments": [
+    {
+      "principle": "kiss",
+      "status": "unknown",
+      "rationale": "Planned review; no reservation application was implemented or reviewed.",
+      "findings": []
+    },
+    {
+      "principle": "dry",
+      "status": "unknown",
+      "rationale": "Planned review; no reservation application was implemented or reviewed.",
+      "findings": []
+    },
+    {
+      "principle": "separation_of_concerns",
+      "status": "unknown",
+      "rationale": "Planned review; no reservation application was implemented or reviewed.",
+      "findings": []
+    },
+    {
+      "principle": "modularity",
+      "status": "unknown",
+      "rationale": "Planned review; no reservation application was implemented or reviewed.",
+      "findings": []
+    }
+  ]
+}

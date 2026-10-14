@@ -270,7 +270,9 @@ def validate_parallel(bundle: Bundle, plan: dict) -> None:
         needed_contracts = {
             n
             for n in closure
-            if bundle.model["nodes"].get(n, {}).get("kind") in {"action", "screen"}
+            if bundle.model["nodes"].get(n, {}).get("kind") in (
+                {"action", "screen", "component"} if bundle.model["format"] == "gdd/0.3" else {"action", "screen"}
+            )
         }
         if (
             not package.get("workspace")

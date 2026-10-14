@@ -13,6 +13,7 @@ from referencing.exceptions import NoSuchResource
 from .loading import Bundle, canonical
 from .numeric import exact_number, exact_numbers
 from .report import check, pointer
+from .boundaries import validate_boundaries
 
 __all__ = ["validate_model", "type_references", "CORE_KINDS", "RELATIONS", "has_cycle"]
 
@@ -508,7 +509,7 @@ def validate_model(bundle: Bundle) -> None:
             if constraint["relation"] != "imports":
                 issue(
                     "CONSTRAINT_INVALID",
-                    "Only imports constraints are supported by core 0.2.",
+                    "Only imports constraints are supported by this core profile.",
                     ident,
                 )
             for side in ("from", "to"):
@@ -615,6 +616,7 @@ def validate_model(bundle: Bundle) -> None:
                 lineage[identity].append((target, canonical(parent["revision"])))
     if has_cycle(lineage):
         issue("SOURCE_DERIVATION_CYCLE", "Source+revision derivation contains a cycle.")
+    validate_boundaries(bundle)
     if len(bundle.checks) == start:
         bundle.checks.append(
             check(

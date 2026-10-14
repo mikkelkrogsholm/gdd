@@ -8,13 +8,13 @@ The agent organizes input, models structure and behavior, and refines the releva
 
 ## Status
 
-**GDD 0.2 — draft standard, October 13, 2026.** This is a developed method and format proposal, not an established industry standard. The protocol is independent of vendor, agent, programming language, and any particular CLI.
+**GDD 0.3 — draft standard, October 14, 2026.** This is a developed method and format proposal, not an established industry standard. The protocol is independent of vendor, agent, programming language, and any particular CLI.
 
-The package contains standard documents, JSON Schemas, illustrative models, and a **GDD 0.2 validator with a Python API and CLI**. The package has a [Graphify adapter](GRAPHIFY.md) that preserves original bytes and all relations and can prepare explicit, unaccepted GDD proposals from code observations. [The validator documentation](VALIDATOR.md) describes support and limitations. An [interactive, offline graph view](VIEWER.md) provides search, communities, and inspection of contracts and pseudocode, with fixes from the [review rounds](evidence/review-loops/README.md). Version 0.5.0 introduced an [agent workflow](WORKFLOW.md) that creates complete work packages, coordinates dependencies, and manages integration/acceptance through existing agents. An [actual code example](examples/agent-native/README.md) demonstrates parallel repairs and revision-bound red/green verification.
+The package contains standard documents, JSON Schemas, illustrative models, and a **GDD 0.2/0.3 validator with a Python API and CLI**. The package has a [Graphify adapter](GRAPHIFY.md) that preserves original bytes and all relations and can prepare explicit, unaccepted GDD proposals from code observations. [The validator documentation](VALIDATOR.md) describes support and limitations. An [interactive, offline graph view](VIEWER.md) provides search, communities, and inspection of contracts and pseudocode, with fixes from the [review rounds](evidence/review-loops/README.md). Version 0.5.0 introduced an [agent workflow](WORKFLOW.md) that creates complete work packages, coordinates dependencies, and manages integration/acceptance through existing agents. An [actual code example](examples/agent-native/README.md) demonstrates parallel repairs and revision-bound red/green verification.
 
 ```sh
-uv run gdd validate examples/concert.gdd.yaml --profile readiness --scope action.reserve
-uv run gdd view examples/concert.gdd.yaml --output concert.html
+uv run gdd validate examples/concert-0.3.gdd.yaml --profile readiness --scope action.reserve
+uv run gdd view examples/concert-0.3.gdd.yaml --output concert.html
 uv run pytest -q
 uv run python conformance/run.py --output conformance-report.json
 uv run python conformance/run_graphify.py
@@ -29,7 +29,8 @@ The validation CLI writes JSON in `gdd-report/0.2`; workflow commands have separ
 - [AGENT-PROTOCOL.md](standard/AGENT-PROTOCOL.md): input, iteration, mandate, context, parallelism, and delivery.
 - [VALIDATION.md](standard/VALIDATION.md): validity, readiness, authorization, evidence, and diagnostics.
 - [INTEGRATIONS.md](standard/INTEGRATIONS.md): wiki/OKF, DESIGN.md, Graphify, and views.
-- [MIGRATION.md](standard/MIGRATION.md): migration from gdd/0.1.
+- [DESIGN-PRINCIPLES.md](standard/DESIGN-PRINCIPLES.md): component rationale, public contracts, community boundaries and advisory KISS/DRY review.
+- [MIGRATION.md](standard/MIGRATION.md): explicit migration from gdd/0.1 and gdd/0.2.
 - [DECISIONS.md](standard/DECISIONS.md): rationale for the draft's technical choices.
 - [GDD.md](GDD.md): concise entry point for agents.
 - [schemas/README.md](schemas/README.md): machine-readable contracts and limitations.
@@ -49,4 +50,26 @@ The decision basis is in [SCRATCHPAD.md](SCRATCHPAD.md). [Research](research/202
 
 ## Repository language
 
-All repository prose and user-facing assets are English. Package 0.5.1 and renderer 0.1.4 provide the English presentation without changing GDD 0.2 semantics. [English verification](evidence/english-review.md) records current checks and the provenance of translated historical material.
+All repository prose and user-facing assets are English. Package 0.6.0 and renderer 0.2.0 support the English GDD 0.3 standard and preserved GDD 0.2 semantics. Package 0.5.1 provided the earlier English presentation. [English verification](evidence/english-review.md) records that release's checks and the provenance of translated historical material.
+
+
+## Component boundaries and design review in 0.3
+
+Every relevant component has a responsibility, a short rationale for its boundary,
+and explicit exclusions at implementation readiness. Public action contracts have
+postconditions and belong to one provider; cross-component calls use that provider's
+interface. Communities display derived public boundaries with overlap and omissions.
+Agents review KISS, DRY, separation of concerns and modularity. Broad findings are
+advisory; precise blocking constraints still require actual implementation evidence.
+
+```sh
+uv run gdd boundaries examples/concert-0.3.gdd.yaml
+uv run gdd design-review examples/concert-0.3.gdd.yaml --review examples/design-review.planned.json --implementation implementation.concert.python --code-revision planned --scope action.reserve
+uv run python conformance/run_design.py
+```
+
+The supplied review is explicitly planned and returns UNKNOWN (exit 2). A completed
+review envelope can match revisions without proving execution, quality or acceptance.
+See [the 0.3 verification](evidence/gdd-0.3-review.md). The unchanged 0.2 example and
+native execution remain valid under their own contract; [the archive](archive/gdd-0.2/README.md)
+and version-dispatched schemas preserve it.

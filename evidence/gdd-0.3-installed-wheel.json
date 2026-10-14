@@ -1,0 +1,115 @@
+{
+  "format": "gdd-installed-wheel-check/0.3",
+  "wheel": "gdd_validator-0.6.0-py3-none-any.whl",
+  "checks": [
+    {
+      "name": "legacy-model",
+      "exit_code": 0
+    },
+    {
+      "name": "legacy-readiness",
+      "exit_code": 0
+    },
+    {
+      "name": "legacy-snapshot",
+      "exit_code": 0
+    },
+    {
+      "name": "legacy-view",
+      "exit_code": 0
+    },
+    {
+      "name": "legacy-verify-view",
+      "exit_code": 0
+    },
+    {
+      "name": "current-model",
+      "exit_code": 0
+    },
+    {
+      "name": "current-readiness",
+      "exit_code": 0
+    },
+    {
+      "name": "current-snapshot",
+      "exit_code": 0
+    },
+    {
+      "name": "current-view",
+      "exit_code": 0
+    },
+    {
+      "name": "current-verify-view",
+      "exit_code": 0
+    },
+    {
+      "name": "current-boundaries",
+      "exit_code": 0
+    },
+    {
+      "name": "planned-review-unknown",
+      "exit_code": 2
+    },
+    {
+      "name": "legacy-native-acceptance",
+      "exit_code": 0
+    }
+  ],
+  "cli_checks": 13,
+  "legacy_replay": {
+    "format": "gdd-workflow-demo/0.1",
+    "baseline_exit": 1,
+    "final_exit": 0,
+    "acceptance_current": true,
+    "events": 10,
+    "spec_revision": "sha256:c65811c68f16741119733de9e8ba13912cad6c924f69a807c0adaeab946e8f2d",
+    "code_revision": "sha256:823363456281af31e3002008e280be30b8ab5a7b47dfded18f165cfeae70c874"
+  },
+  "matching_runtime_files": [
+    "gdd_validator/__init__.py",
+    "gdd_validator/__main__.py",
+    "gdd_validator/atomic.py",
+    "gdd_validator/boundaries.py",
+    "gdd_validator/cli.py",
+    "gdd_validator/decision.py",
+    "gdd_validator/design_review.py",
+    "gdd_validator/graphify.py",
+    "gdd_validator/graphify_io.py",
+    "gdd_validator/graphify_proposal.py",
+    "gdd_validator/loading.py",
+    "gdd_validator/model.py",
+    "gdd_validator/numeric.py",
+    "gdd_validator/planning.py",
+    "gdd_validator/readiness.py",
+    "gdd_validator/record_integrity.py",
+    "gdd_validator/records.py",
+    "gdd_validator/report.py",
+    "gdd_validator/validator.py",
+    "gdd_validator/visualization.py",
+    "gdd_validator/workflow.py",
+    "gdd_validator/workflow_run.py",
+    "gdd_validator/viewer/app.js",
+    "gdd_validator/viewer/graph.js",
+    "gdd_validator/viewer/inspector.js",
+    "gdd_validator/viewer/shell.html",
+    "gdd_validator/viewer/style.css",
+    "gdd_validator/schemas/README.md",
+    "gdd_validator/schemas/boundaries.schema.json",
+    "gdd_validator/schemas/design-review.schema.json",
+    "gdd_validator/schemas/extension.schema.json",
+    "gdd_validator/schemas/fragment-0.2.schema.json",
+    "gdd_validator/schemas/fragment.schema.json",
+    "gdd_validator/schemas/gdd-0.2.schema.json",
+    "gdd_validator/schemas/gdd.schema.json",
+    "gdd_validator/schemas/graphify-mapping.schema.json",
+    "gdd_validator/schemas/observations.schema.json",
+    "gdd_validator/schemas/records.schema.json",
+    "gdd_validator/schemas/report.schema.json",
+    "gdd_validator/schemas/snapshot.schema.json",
+    "gdd_validator/schemas/validator-inputs.schema.json",
+    "gdd_validator/schemas/view-state.schema.json",
+    "gdd_validator/schemas/view.schema.json",
+    "gdd_validator/schemas/workflow.schema.json"
+  ],
+  "passed": true
+}

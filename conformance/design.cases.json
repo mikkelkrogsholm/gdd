@@ -1,0 +1,162 @@
+[
+  {
+    "id": "case.design.complete_boundary_readiness",
+    "assertion": "complete boundary readiness",
+    "test": "tests/test_design_boundaries.py::test_complete_boundary_readiness"
+  },
+  {
+    "id": "case.design.partial_boundary_sketch_and_readiness",
+    "assertion": "partial boundary sketch and readiness",
+    "test": "tests/test_design_boundaries.py::test_partial_boundary_sketch_and_readiness"
+  },
+  {
+    "id": "case.design.blank_boundary_is_invalid",
+    "assertion": "blank boundary is invalid",
+    "test": "tests/test_design_boundaries.py::test_blank_boundary_is_invalid"
+  },
+  {
+    "id": "case.design.explicit_empty_exclusions",
+    "assertion": "explicit empty exclusions",
+    "test": "tests/test_design_boundaries.py::test_explicit_empty_exclusions"
+  },
+  {
+    "id": "case.design.unrelated_incomplete_component",
+    "assertion": "unrelated incomplete component",
+    "test": "tests/test_design_boundaries.py::test_unrelated_incomplete_component"
+  },
+  {
+    "id": "case.design.legacy_semantics_preserved",
+    "assertion": "legacy semantics preserved",
+    "test": "tests/test_design_boundaries.py::test_legacy_semantics_preserved"
+  },
+  {
+    "id": "case.design.new_fields_cannot_silently_enter_legacy_format",
+    "assertion": "new fields cannot silently enter legacy format",
+    "test": "tests/test_design_boundaries.py::test_new_fields_cannot_silently_enter_legacy_format"
+  },
+  {
+    "id": "case.design.fragment_version_must_match",
+    "assertion": "fragment version must match",
+    "test": "tests/test_design_boundaries.py::test_fragment_version_must_match"
+  },
+  {
+    "id": "case.design.public_interface_requires_matching_owner",
+    "assertion": "public interface requires matching owner",
+    "test": "tests/test_design_boundaries.py::test_public_interface_requires_matching_owner"
+  },
+  {
+    "id": "case.design.cross_component_private_call",
+    "assertion": "cross component private call",
+    "test": "tests/test_design_boundaries.py::test_cross_component_private_call"
+  },
+  {
+    "id": "case.design.internal_private_call_allowed",
+    "assertion": "internal private call allowed",
+    "test": "tests/test_design_boundaries.py::test_internal_private_call_allowed"
+  },
+  {
+    "id": "case.design.unresolved_call_valid_sketch_unready",
+    "assertion": "unresolved call valid sketch unready",
+    "test": "tests/test_design_boundaries.py::test_unresolved_call_valid_sketch_unready"
+  },
+  {
+    "id": "case.design.postconditions_required_in_read_context",
+    "assertion": "postconditions required in read context",
+    "test": "tests/test_design_boundaries.py::test_postconditions_required_in_read_context"
+  },
+  {
+    "id": "case.design.unrelated_private_call_does_not_block_readiness",
+    "assertion": "unrelated private call does not block readiness",
+    "test": "tests/test_design_boundaries.py::test_unrelated_private_call_does_not_block_readiness"
+  },
+  {
+    "id": "case.design.community_overlap_and_owner_derived_membership",
+    "assertion": "community overlap and owner derived membership",
+    "test": "tests/test_design_boundaries.py::test_community_overlap_and_owner_derived_membership"
+  },
+  {
+    "id": "case.design.community_membership_does_not_grant_access",
+    "assertion": "community membership does not grant access",
+    "test": "tests/test_design_boundaries.py::test_community_membership_does_not_grant_access"
+  },
+  {
+    "id": "case.design.scoped_boundary_view_declares_omitted_calls",
+    "assertion": "scoped boundary view declares omitted calls",
+    "test": "tests/test_design_boundaries.py::test_scoped_boundary_view_declares_omitted_calls"
+  },
+  {
+    "id": "case.design.unrelated_unresolved_call_not_in_every_community",
+    "assertion": "unrelated unresolved call not in every community",
+    "test": "tests/test_design_boundaries.py::test_unrelated_unresolved_call_not_in_every_community"
+  },
+  {
+    "id": "case.design.boundary_and_contract_changes_change_revision",
+    "assertion": "boundary and contract changes change revision",
+    "test": "tests/test_design_boundaries.py::test_boundary_and_contract_changes_change_revision"
+  },
+  {
+    "id": "case.design.refinement_preserves_parent_boundary_context",
+    "assertion": "refinement preserves parent boundary context",
+    "test": "tests/test_design_boundaries.py::test_refinement_preserves_parent_boundary_context"
+  },
+  {
+    "id": "case.design.packet_contains_canonical_boundaries_and_review_topics",
+    "assertion": "packet contains canonical boundaries and review topics",
+    "test": "tests/test_design_boundaries.py::test_packet_contains_canonical_boundaries_and_review_topics"
+  },
+  {
+    "id": "case.design.packet_omission_rejected",
+    "assertion": "packet omission rejected",
+    "test": "tests/test_design_boundaries.py::test_packet_omission_rejected"
+  },
+  {
+    "id": "case.design.boundary_change_invalidates_plan",
+    "assertion": "boundary change invalidates plan",
+    "test": "tests/test_design_boundaries.py::test_boundary_change_invalidates_plan"
+  },
+  {
+    "id": "case.design.broad_principle_is_advisory",
+    "assertion": "broad principle is advisory",
+    "test": "tests/test_design_boundaries.py::test_broad_principle_is_advisory"
+  },
+  {
+    "id": "case.design.precise_design_rule_can_still_block",
+    "assertion": "precise design rule can still block",
+    "test": "tests/test_design_boundaries.py::test_precise_design_rule_can_still_block"
+  },
+  {
+    "id": "case.design.advisory_review_complete_even_with_findings",
+    "assertion": "advisory review complete even with findings",
+    "test": "tests/test_design_boundaries.py::test_advisory_review_complete_even_with_findings"
+  },
+  {
+    "id": "case.design.review_unknown_is_explicit",
+    "assertion": "review unknown is explicit",
+    "test": "tests/test_design_boundaries.py::test_review_unknown_is_explicit"
+  },
+  {
+    "id": "case.design.invalid_review_cannot_be_complete",
+    "assertion": "invalid review cannot be complete",
+    "test": "tests/test_design_boundaries.py::test_invalid_review_cannot_be_complete"
+  },
+  {
+    "id": "case.design.invalid_model_cannot_supply_complete_review",
+    "assertion": "invalid model cannot supply complete review",
+    "test": "tests/test_design_boundaries.py::test_invalid_model_cannot_supply_complete_review"
+  },
+  {
+    "id": "case.design.complete_review_does_not_replace_blocking_evidence",
+    "assertion": "complete review does not replace blocking evidence",
+    "test": "tests/test_design_boundaries.py::test_complete_review_does_not_replace_blocking_evidence"
+  },
+  {
+    "id": "case.design.new_viewer_and_cli_operations",
+    "assertion": "new viewer and cli operations",
+    "test": "tests/test_design_boundaries.py::test_new_viewer_and_cli_operations"
+  },
+  {
+    "id": "case.design.versioned_schema_definitions_align",
+    "assertion": "versioned schema definitions align",
+    "test": "tests/test_design_boundaries.py::test_versioned_schema_definitions_align"
+  }
+]

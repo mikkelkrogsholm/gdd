@@ -1,10 +1,10 @@
-# Graph-Driven Development 0.2
+# Graph-Driven Development 0.3
 
-**Status: draft standard. Date: 13 October 2026. Format: `gdd/0.2`.**
+**Status: draft standard. Date: 14 October 2026. Format: `gdd/0.3`.**
 
 GDD is a method and an agent-independent representation for developing software from a pseudo-graph with pseudocode. The accepted model describes intent; code, scans and test results describe the implementation and evidence.
 
-This chapter and [FORMAT](standard/FORMAT.md), [AGENT-PROTOCOL](standard/AGENT-PROTOCOL.md), [VALIDATION](standard/VALIDATION.md) and [INTEGRATIONS](standard/INTEGRATIONS.md) are normative. Examples, migration, research and the scratchpad are informative. MUST, MUST NOT, SHOULD and MAY mean a requirement, prohibition, recommendation with a documentable exception, and permission. A discrepancy between schema and text is a standard defect; a tool must not silently choose the most permissive interpretation.
+This chapter and [FORMAT](standard/FORMAT.md), [AGENT-PROTOCOL](standard/AGENT-PROTOCOL.md), [VALIDATION](standard/VALIDATION.md) and [INTEGRATIONS](standard/INTEGRATIONS.md) and [DESIGN-PRINCIPLES](standard/DESIGN-PRINCIPLES.md) are normative. Examples, migration, research and the scratchpad are informative. MUST, MUST NOT, SHOULD and MAY mean a requirement, prohibition, recommendation with a documentable exception, and permission. A discrepancy between schema and text is a standard defect; a tool must not silently choose the most permissive interpretation.
 
 ## 1. Method and mandate
 
@@ -65,7 +65,7 @@ Internal references MUST resolve unambiguously. An external URI is only a locato
 | refines | all except community → component/entity/action/screen | Child → decomposition parent |
 | member_of | all except community → community | Grouping |
 
-The absence of an edge means not specified. `imports` is not a complete allowlist. Prohibitions MUST be expressed in a rule constraint with relation, from, to, reach and policy. Policy is `forbid` in 0.2; complete allowlists are not a core capability. A direct prohibition does not prohibit a legal indirect path.
+The absence of an edge means not specified. `imports` is not a complete allowlist. Prohibitions MUST be expressed in a rule constraint with relation, from, to, reach and policy. Policy is `forbid` in 0.3; complete allowlists are not a core capability. A direct prohibition does not prohibit a legal indirect path.
 
 `contract.effects_complete: true` declares that reads/creates/changes edges and external effects are listed. `dependencies_complete: true` declares that known prerequisites and necessary boundary contracts are listed. These are reviewable declarations, not evidence of completeness. Missing declarations MUST NOT be interpreted as independence.
 
@@ -87,6 +87,18 @@ Behavior, guards, effects, statements and scenario text are free-form pseudocode
 
 Domain types MUST be abstract. Concrete paths, framework types and language-specific symbols belong in implementation bindings. Multiple implementations MAY realize the same model; evidence MUST be tied to each implementation separately.
 
+## 6a. Component boundaries and public contracts
+
+Every implementation-ready component boundary MUST have `boundary.responsibility`, a short `boundary.rationale` explaining why the separation exists, and explicit `boundary.excludes`. Empty exclusions are a deliberate declaration. A sketch MAY omit these fields; their structural presence does not prove adequate separation. Responsibilities are prose obligations; `owned_by` remains the authoritative ownership relation.
+
+Action contracts remain authoritative on action nodes. `component.interfaces` lists that component's public actions. When an exported action's owner is specified, it MUST be that component. A public action's contract identity is `(project.id, action ID, model snapshot revision)`; consumers MUST NOT maintain a competing contract on an edge or community. Forwarding requires a separate action with its own owner/contract; aggregation or refinement does not silently re-export another component's action.
+
+A call's consumer is its source component, or the unique owner of its source action/screen. Its provider is the unique owner of the target action. A resolved cross-component `calls` relation MUST target an action in that provider's specified `interfaces`. An explicitly private cross-component call is a model violation. Missing owners or interfaces can remain an incomplete sketch but prevent dependent readiness. Internal calls can use private actions. Imports, domain effects, navigation and membership do not acquire action-contract obligations through this rule.
+
+Successful-return guarantees are expressed in `contract.postconditions`. Error descriptions MUST state relevant failure behavior and effects; atomicity, idempotency and consistency obligations belong in these contracts, applicable rules and scenarios. Postconditions are reviewable prose, not executable proof.
+
+Communities MAY present an ownership-aware public boundary derived from component interfaces. Their participating components are directly membered components plus unique owners of directly membered actions/entities/screens/machines. Each community classifies calls independently as internal, inbound or outbound according to its participating consumer/provider components. Missing inputs and scoped omissions MUST remain visible. Overlap MUST NOT invent ownership, permission or a complete allowlist. See [design principles](standard/DESIGN-PRINCIPLES.md).
+
 ## 7. Rules, scenarios and machines
 
 A rule has category, statement, scope and planned verification methods. Global scope applies to the entire project; targeted scope requires at least one constrains edge. A blocking rule requires relevant passing evidence or a visible policy-permitted exception at implementation acceptance. It does not prevent a valid sketch.
@@ -96,6 +108,8 @@ A slice ready for implementation MUST have at least one normal flow and relevant
 A machine has unique local states, an initial state, terminal states and transitions with stable IDs. Start/end MUST exist; trigger MUST be an action. The profile allows one mutating transition per `(from, trigger)`; textual guards do not disambiguate duplicates. Unlisted mutations and outgoing mutations from a terminal state are forbidden. Idempotent responses and authorized reads can still be described in the action contract.
 
 `absent` MAY denote pre-existence and is not automatically a database value. Hierarchical machines, parallel regions and multiple guarded alternatives are outside the core.
+
+Broad design assessments MAY declare `rule.principle: kiss|dry|separation_of_concerns|modularity`. Such a rule MUST use category `design` and `blocking: false`. Precise architecture or design requirements can still be blocking under their ordinary rule semantics. Agents MUST assess the four principles as described in [DESIGN-PRINCIPLES](standard/DESIGN-PRINCIPLES.md); an advisory finding is not an acceptance failure or a universal quality score.
 
 ## 8. Extensions
 
@@ -111,4 +125,6 @@ Tools MUST declare profiles: representation, model, readiness, records, import.g
 
 Unknown formats and missing analysis input produce scoped UNKNOWN with a diagnostic. Known violations produce FAIL. An incomplete analysis with an empty error list MUST NOT produce PASS. [VALIDATION](standard/VALIDATION.md) defines results and reports.
 
-Conformance requires satisfying normative rules and relevant [cases](conformance/cases.yaml). There is not yet a certification body or a complete reference validator. The draft builds on existing methods; [research](research/2026-10-13-existing-work.md) documents overlap.
+Conformance requires satisfying normative rules and relevant [0.2 cases](conformance/cases.yaml) and [0.3 cases](conformance/design.cases.json). There is not yet a certification body or a complete reference validator. The draft builds on existing methods; [research](research/2026-10-13-existing-work.md) documents overlap.
+
+GDD 0.2 remains a separately supported historical contract in [the archive](archive/gdd-0.2/README.md). Migration to 0.3 is explicit and changes snapshot identity; [migration](standard/MIGRATION.md) describes the additions. Ancillary records, extensions, reports and snapshots retain their 0.2 envelopes because their representation is unchanged.

@@ -12,6 +12,7 @@ from .readiness import context_closure, implementation_targets
 from .record_integrity import invalid_record_ids
 from .report import check
 from .validator import input_schema, validate
+from .boundaries import boundary_view, design_checklist
 
 __all__ = ["prepare_workflow", "verify_workflow", "context_manifest"]
 
@@ -121,7 +122,7 @@ def _packet(bundle, package: dict, request: dict) -> dict:
     requirements, checks = _check_plans(
         bundle, package["scope"], request["integration"]["checks"]
     )
-    return {
+    packet = {
         **deepcopy(package),
         "scope": context["scope"],
         "implementation_targets": sorted(
@@ -150,13 +151,19 @@ def _packet(bundle, package: dict, request: dict) -> dict:
         "locked_contracts": sorted(
             ident
             for ident in context["nodes"]
-            if bundle.model["nodes"][ident]["kind"] in {"action", "screen"}
+            if bundle.model["nodes"][ident]["kind"] in (
+                {"action", "screen", "component"} if bundle.model["format"] == "gdd/0.3" else {"action", "screen"}
+            )
         ),
         "required_checks": requirements,
         "check_plans": checks,
         "extension_semantics": deepcopy(bundle.extensions),
         "base_revision": bundle.revision,
     }
+    if bundle.model["format"] == "gdd/0.3":
+        packet["boundaries"] = boundary_view(bundle, context["nodes"])
+        packet["design_review"] = design_checklist(bundle, context["nodes"])
+    return packet
 
 
 def _derive(path: Path, request: dict) -> dict:

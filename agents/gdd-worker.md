@@ -23,3 +23,11 @@ summary, artifact URI, exact changed filenames, and actual test output. Identify
 blockers and uncertainty. Your result cannot add host-trust fields,
 approve its own integration, or attest that the combined implementation is accepted.
 The lead performs review, integration, shared check execution, and acceptance.
+
+
+For GDD 0.3, use package.boundaries and package.design_review together with canonical
+model_slice contracts. Preserve component responsibilities and exclusions; cross-
+component calls use the provider's public action. Assess each of the four principles
+for your change and return concrete scoped findings or justified unknown/not-applicable
+assessments. Similar syntax alone is not a reason to introduce an abstraction.
+The lead reviews the combined result; your review does not grant acceptance.

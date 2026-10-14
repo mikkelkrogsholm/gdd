@@ -8,6 +8,7 @@ from .record_integrity import invalid_record_ids, model_ids as referenceable_mod
 from .loading import Bundle, InputError, parse, parse_json, resolve_asset
 from .model import CORE_KINDS, type_references
 from .report import check
+from .boundaries import call_boundaries, owners
 
 __all__ = [
     "context_closure",
@@ -88,6 +89,8 @@ def context_closure(bundle: Bundle, seeds: list[str]) -> set[str]:
                 "exercises",
                 "verifies",
             }:
+                found.add(target)
+            if bundle.model["format"] == "gdd/0.3" and source in found and relation == "member_of":
                 found.add(target)
             if target in found and relation in {
                 "constrains",
@@ -297,6 +300,7 @@ def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
                 "UNKNOWN",
             )
 
+    owned = owners(bundle.model)
     for ident in sorted(closure & nodes.keys()):
         node, kind = nodes[ident], nodes[ident]["kind"]
         # All action boundary contracts in read context are necessary; UI sketches reached only
@@ -315,6 +319,8 @@ def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
                 "risks",
                 "error_cases",
             }
+            if bundle.model["format"] == "gdd/0.3":
+                required.add("postconditions")
             if required - contract.keys() or not node.get("behavior", "").strip():
                 issue(
                     "READINESS_CONTRACT_MISSING",
@@ -330,10 +336,10 @@ def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
                     "Effects/dependencies are not declared complete.",
                     ident,
                 )
-            owners = [
+            owner_edges = [
                 e for e in edges if e["from"] == ident and e["relation"] == "owned_by"
             ]
-            if len(owners) != 1:
+            if len(owner_edges) != 1:
                 issue(
                     "READINESS_CONTRACT_MISSING",
                     "Action requires exactly one owner.",
@@ -399,12 +405,16 @@ def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
                 "Required machine states/transitions are unspecified.",
                 ident,
             )
-        elif kind == "component" and "interfaces" not in node:
-            issue(
-                "READINESS_CONTRACT_MISSING",
-                "Required component interfaces are unspecified.",
-                ident,
-            )
+        elif kind == "component":
+            if "interfaces" not in node:
+                issue("READINESS_CONTRACT_MISSING", "Required component interfaces are unspecified.", ident)
+            if bundle.model["format"] == "gdd/0.3":
+                boundary = node.get("boundary", {})
+                if (not boundary.get("responsibility", "").strip()
+                        or not boundary.get("rationale", "").strip() or "excludes" not in boundary):
+                    issue("BOUNDARY_RATIONALE_MISSING", "Component needs responsibility, boundary rationale and explicit excludes.", ident)
+                if any(owned.get(action) != ident for action in node.get("interfaces", [])):
+                    issue("READINESS_CONTRACT_MISSING", "Public actions require a unique matching provider owner.", ident)
         elif kind == "screen" and ident in selected:
             interaction = node.get("interaction", {})
             if any(
@@ -489,6 +499,10 @@ def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
                     ident,
                 )
             contract_source(ref, ident)
+    if bundle.model["format"] == "gdd/0.3":
+        for interaction in call_boundaries(bundle.model):
+            if interaction["source"] in closure and interaction["action"] in closure and interaction["status"] == "unresolved":
+                issue("PUBLIC_CONTRACT_UNRESOLVED", "Call needs unique consumer/provider owners and a specified public interface.", interaction["action"])
     for ident, question in bundle.model.get("questions", {}).items():
         if (
             not set(question["targets"]) & closure

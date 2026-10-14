@@ -41,3 +41,8 @@ CHECK_PLAN_MISSING,A required method lacks a unique active check plan.
 CHECK_REVISION_MISMATCH,Evidence does not match the check plan's immutable digest.
 EXTENSION_IDENTITY_MISMATCH,The extension asset namespace/version does not match the declaration.
 BINDING_REVISION_MISSING,A known mapping lacks a precise resource or code revision.
+BOUNDARY_RATIONALE_MISSING,Relevant component responsibility rationale or explicit exclusions are unspecified.
+INTERFACE_OWNER_MISMATCH,The public action belongs to a different provider component.
+PRIVATE_ACTION_CALL,A resolved cross-component call targets a private provider action.
+PUBLIC_CONTRACT_UNRESOLVED,Call consumer provider or public interface is unspecified at readiness.
+DESIGN_PRINCIPLE_INVALID,A broad principle rule is blocking or has the wrong category.

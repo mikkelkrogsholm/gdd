@@ -37,3 +37,33 @@ Frontend/community nodes are new sketches. A planned DESIGN.md reference field d
 The previous strict acceptance profile can be configured in a concrete project with required checks and gates. 0.2 does not impose a universal human approval mode on every project. Blocking rules can be accepted only with PASS or a visible policy-permitted exception; the results are not changed.
 
 The `check_spec.py` included in the zip file is a 0.1 linter and must not be called a 0.2 validator. A future migration must validate both formats with their own contracts and report loss, ambiguities and changed requirements.
+
+
+## Migration from gdd/0.2 to gdd/0.3
+
+The new format is explicit. The [0.2 contract](../archive/gdd-0.2/README.md) and
+existing examples/native executions remain preserved; the tool supports their
+original schemas and semantics. The new example is
+[concert-0.3.gdd.yaml](../examples/concert-0.3.gdd.yaml).
+
+1. Change the model and each included fragment to their respective 0.3 formats.
+2. Author responsibility, rationale and exclusions for every component boundary
+   needed by the selected slice. A tool must not invent rationales from clustering.
+3. Make each public action's owner match its exporting component and ensure resolved
+   cross-component calls use the provider's public interface. The migrated concert
+   example removes API's duplicate reservation exports; Reservations remains their
+   authoritative provider. Forwarding operations require separate action contracts.
+4. Add successful-return postconditions to relevant action contracts. Preserve errors,
+   effects, risk assessments, scenarios and parent obligations; new prose is intent,
+   not evidence of execution or semantic equivalence.
+5. Optionally label broad nonblocking design rules with a principle. Keep precise
+   architecture/design requirements and their blocking status intact.
+6. Regenerate current snapshots, planned record references, packets and views. Run
+   relevant conformance and regression checks. Old records and evidence retain their
+   original identities and revisions; do not rebind historical execution claims.
+
+Records, extensions, snapshots, reports, context and parallel-plan envelopes remain
+at 0.2; workflow request/plan/event envelopes remain at 0.1. The containing snapshot
+identifies the 0.3 model. New boundary and advisory review projections use explicit
+0.3 identifiers. Neither an old envelope number nor a review COMPLETE status supplies
+implementation acceptance. Unsupported model versions remain UNKNOWN.

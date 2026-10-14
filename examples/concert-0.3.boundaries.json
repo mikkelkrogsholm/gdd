@@ -1,0 +1,244 @@
+{
+  "format": "gdd-boundaries/0.3",
+  "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b",
+  "scope": [
+    "action.cancel",
+    "action.reserve",
+    "community.backend",
+    "community.frontend",
+    "community.reservation_feature",
+    "component.api",
+    "component.frontend",
+    "component.reservations",
+    "component.storage",
+    "entity.concert",
+    "entity.reservation",
+    "machine.reservation",
+    "rule.api_boundary",
+    "rule.atomicity",
+    "rule.authorization",
+    "rule.capacity",
+    "rule.design.dry",
+    "rule.design.kiss",
+    "rule.design.modularity",
+    "rule.design.separation_of_concerns",
+    "rule.idempotency",
+    "rule.state_machine",
+    "scenario.api_boundary",
+    "scenario.atomic_failure",
+    "scenario.cancel",
+    "scenario.cancel_concurrent",
+    "scenario.cancel_invalid",
+    "scenario.cancel_once",
+    "scenario.cancel_unauthenticated",
+    "scenario.concert_missing",
+    "scenario.concurrent_same_key",
+    "scenario.foreign_cancel",
+    "scenario.key_conflict",
+    "scenario.last_seat",
+    "scenario.replay",
+    "scenario.replay_after_cancel",
+    "scenario.reservation_missing",
+    "scenario.reserve",
+    "scenario.reserve_invalid",
+    "scenario.reserve_unauthenticated",
+    "scenario.sold_out",
+    "scenario.zero_capacity",
+    "screen.reserve"
+  ],
+  "components": {
+    "component.api": {
+      "boundary": {
+        "responsibility": "Translate transport requests and forward trusted authentication context.",
+        "rationale": "Keep transport changes separate from reservation and persistence decisions.",
+        "excludes": [
+          "Seat allocation and reservation lifecycle decisions.",
+          "Physical persistence operations."
+        ]
+      },
+      "interfaces_known": true,
+      "public_contracts": []
+    },
+    "component.frontend": {
+      "boundary": {
+        "responsibility": "Present reservation interactions and their user-visible states.",
+        "rationale": "Let presentation change while preserving the reservation operation contracts.",
+        "excludes": [
+          "Authoritative seat allocation and access-control decisions."
+        ]
+      },
+      "interfaces_known": true,
+      "public_contracts": []
+    },
+    "component.reservations": {
+      "boundary": {
+        "responsibility": "Own reservation rules, access control and transaction decisions.",
+        "rationale": "Keep availability, atomicity and cancellation rules consistent behind one public interface.",
+        "excludes": [
+          "Transport request/response translation.",
+          "Physical storage implementation."
+        ]
+      },
+      "interfaces_known": true,
+      "public_contracts": [
+        {
+          "project_id": "concert-reservations",
+          "provider": "component.reservations",
+          "action": "action.reserve",
+          "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b"
+        },
+        {
+          "project_id": "concert-reservations",
+          "provider": "component.reservations",
+          "action": "action.cancel",
+          "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b"
+        }
+      ]
+    },
+    "component.storage": {
+      "boundary": {
+        "responsibility": "Implement persistence and transactions selected by the reservation component.",
+        "rationale": "Isolate database-specific behavior behind the domain persistence boundary.",
+        "excludes": [
+          "Authentication and reservation policy decisions."
+        ]
+      },
+      "interfaces_known": true,
+      "public_contracts": []
+    }
+  },
+  "communities": {
+    "community.backend": {
+      "membership_basis": {
+        "component.api": [
+          "component.api"
+        ],
+        "component.reservations": [
+          "action.cancel",
+          "action.reserve",
+          "component.reservations",
+          "entity.concert",
+          "entity.reservation",
+          "machine.reservation"
+        ],
+        "component.storage": [
+          "component.storage"
+        ]
+      },
+      "omitted_components": [],
+      "omitted_calls": [],
+      "unresolved_members": [],
+      "public_contracts": [
+        {
+          "project_id": "concert-reservations",
+          "provider": "component.reservations",
+          "action": "action.reserve",
+          "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b"
+        },
+        {
+          "project_id": "concert-reservations",
+          "provider": "component.reservations",
+          "action": "action.cancel",
+          "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b"
+        }
+      ],
+      "calls": {
+        "inbound": [
+          "edge.screen.reserve.calls"
+        ],
+        "outbound": [],
+        "internal": [
+          "edge.api_calls_cancel",
+          "edge.api_calls_reserve"
+        ],
+        "unresolved": []
+      }
+    },
+    "community.frontend": {
+      "membership_basis": {
+        "component.frontend": [
+          "component.frontend",
+          "screen.reserve"
+        ]
+      },
+      "omitted_components": [],
+      "omitted_calls": [],
+      "unresolved_members": [],
+      "public_contracts": [],
+      "calls": {
+        "inbound": [],
+        "outbound": [
+          "edge.screen.reserve.calls"
+        ],
+        "internal": [],
+        "unresolved": []
+      }
+    },
+    "community.reservation_feature": {
+      "membership_basis": {
+        "component.frontend": [
+          "component.frontend"
+        ],
+        "component.reservations": [
+          "action.reserve"
+        ]
+      },
+      "omitted_components": [],
+      "omitted_calls": [],
+      "unresolved_members": [],
+      "public_contracts": [
+        {
+          "project_id": "concert-reservations",
+          "provider": "component.reservations",
+          "action": "action.reserve",
+          "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b"
+        },
+        {
+          "project_id": "concert-reservations",
+          "provider": "component.reservations",
+          "action": "action.cancel",
+          "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b"
+        }
+      ],
+      "calls": {
+        "inbound": [
+          "edge.api_calls_cancel",
+          "edge.api_calls_reserve"
+        ],
+        "outbound": [],
+        "internal": [
+          "edge.screen.reserve.calls"
+        ],
+        "unresolved": []
+      }
+    }
+  },
+  "calls": [
+    {
+      "edge": "edge.api_calls_cancel",
+      "source": "component.api",
+      "consumer": "component.api",
+      "provider": "component.reservations",
+      "action": "action.cancel",
+      "status": "public"
+    },
+    {
+      "edge": "edge.api_calls_reserve",
+      "source": "component.api",
+      "consumer": "component.api",
+      "provider": "component.reservations",
+      "action": "action.reserve",
+      "status": "public"
+    },
+    {
+      "edge": "edge.screen.reserve.calls",
+      "source": "screen.reserve",
+      "consumer": "component.frontend",
+      "provider": "component.reservations",
+      "action": "action.reserve",
+      "status": "public"
+    }
+  ],
+  "omitted_calls": [],
+  "unresolved": []
+}

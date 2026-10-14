@@ -63,3 +63,20 @@ Community folding, filters and aggregates must be visible. Direction and all par
 Evidence overlays must show scope and revisions; stale results must not appear as current PASS. Zoom, layout and highlighting are view state and do not change model semantics. Labels, source content and pseudocode are rendered as data, not active HTML or instructions.
 
 HTML, SVG, GraphML and other exports are possible implementation choices, not a requirement for a particular viewer. The [GDD viewer](../VIEWER.md) now implements a concrete offline HTML profile; other renderers can fulfill the contract through their own documented profiles.
+
+
+## 6. GDD 0.3 boundaries and reviews
+
+Derived community boundaries MUST preserve canonical action/provider identities,
+model revision, membership basis, unresolved inputs and scoped omissions, including
+known calls outside the selected context. They MUST NOT become new authoritative
+contracts. The viewer displays responsibilities/rationales and public contract links.
+
+Graphify extraction can reveal actual code dependencies for comparison; absent scan
+edges do not prove conformance. The current adapter continues to produce explicit
+unaccepted 0.2 sketches. A transition to 0.3 requires authored boundary descriptions
+and postconditions under the normal model-change mandate.
+
+An advisory review artifact MUST retain scope and its submitted revisions when
+compared with the host's current identities. Structural COMPLETE cannot establish
+review execution, code quality or acceptance. See [DESIGN-PRINCIPLES](DESIGN-PRINCIPLES.md).

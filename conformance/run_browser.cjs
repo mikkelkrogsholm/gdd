@@ -626,6 +626,32 @@ const results = [],
     }
     await page.setViewportSize({ width: 1440, height: 1000 });
   });
+  await test("component-boundary-rationale-and-contract-navigation", async () => {
+    await page.goto(pathToFileURL(path.join(root, "examples/concert-0.3.graph.html")).href);
+    await selectNode("component.reservations");
+    const section = page.locator(".detail-section").filter({
+      has: page.getByRole("heading", { name: "Component responsibility and boundary rationale", exact: true }),
+    });
+    assert.match(await section.textContent(), /Keep availability, atomicity and cancellation rules consistent/);
+    const contracts = page.locator(".detail-section").filter({
+      has: page.getByRole("heading", { name: "Authoritative public action contracts", exact: true }),
+    });
+    await contracts.getByRole("button", { name: "action.reserve", exact: true }).click();
+    assert.match(await page.locator("#detail").textContent(), /postconditions/);
+    await page.screenshot({ path: path.join(folder, "gdd-0.3-contract.png") });
+  });
+  await test("overlapping-community-public-boundary", async () => {
+    await selectNode("community.reservation_feature");
+    const section = page.locator(".detail-section").filter({
+      has: page.getByRole("heading", { name: "Derived public boundary", exact: true }),
+    });
+    const text = await section.textContent();
+    assert.match(text, /Membership grants no permissions/);
+    assert.match(text, /component.reservations/);
+    assert.match(text, /edge.screen.reserve.calls/);
+    assert.match(text, /internal/);
+    await page.screenshot({ path: path.join(folder, "gdd-0.3-community.png") });
+  });
   await test("no-script-errors-or-network", async () => {
     assert.deepEqual(errors, []);
     assert.deepEqual(consoleErrors, []);

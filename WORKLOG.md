@@ -75,3 +75,26 @@ Phase 7: English repository presentation.
 - Completed: 1,328 pytest cases, 58 standard / 18 Graphify / 16 artifact / 20 workflow expectations, and 23 English browser checks pass. An installed 0.5.1 wheel outside the checkout passes 18 CLI steps; all 38 runtime/asset/schema files match the current source bytes.
 - The independent final audit reviewed all 463 original tracked text files, five viewer assets, 249 original local Markdown links/anchors and all 14 ZIP members. All 33 original PNG paths now contain explicitly identified fresh English captures. Intentional Unicode payloads, proper names and IDs retain their technical purpose.
 - Current verification and presentation provenance are collected in evidence/english-review.md. The original pre-English source state remains available at Git commit 2ced75a.
+
+
+Phase 8: GDD 0.3 component boundaries, public contracts and design principles.
+
+- Incorporated the October 14 scratchpad direction and the agreed short rationale
+  for every component boundary. Responsibility/rationale/exclusions apply to scoped
+  implementation readiness; incomplete unrelated sketches remain usable.
+- Kept canonical action contracts, added postconditions, and enforced own public
+  exports and public cross-component calls. Derived community boundaries preserve
+  ownership, overlap, unresolved inputs and scoped omitted calls.
+- Added four advisory design-review topics/rule labels, revision-bound raw review
+  envelopes and a structure/applicability checker. Broad judgments stay separate
+  from precise blocking constraints and implementation acceptance.
+- Preserved archived normative 0.2 bytes, version-dispatched old schemas/semantics,
+  all native execution artifacts and Graphify raw assets. Ancillary and workflow
+  envelope versions remain unchanged. Package 0.6.0 and renderer 0.2.0 identify delivery.
+- Four read-only workers handled standards, implementation surfaces, workflow and
+  independent conformance review; the lead integrated every checkout change.
+- Verification: full pytest 1378 PASS, final design 52 instances/32 named assertions,
+  old conformance 58+18+16+20, offline browser 25, installed-wheel 13 CLI operations,
+  actual legacy replay and 44 matching runtime files. Two final refinement instances
+  supplement the earlier full pytest count. No reservation application execution or
+  automatic KISS/DRY proof is claimed. See evidence/gdd-0.3-review.md.

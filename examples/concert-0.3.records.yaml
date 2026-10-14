@@ -1,0 +1,96 @@
+format: gdd-records/0.2
+project_id: concert-reservations
+records:
+  binding.component.api:
+    kind: binding
+    spec_revision: sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b
+    targets:
+    - component.api
+    implementation: implementation.example
+    role: code
+    resource: src/api/**
+    selector:
+      kind: whole-document
+    status: planned
+  binding.component.reservations:
+    kind: binding
+    spec_revision: sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b
+    targets:
+    - component.reservations
+    implementation: implementation.example
+    role: code
+    resource: src/reservations/**
+    selector:
+      kind: whole-document
+    status: planned
+  binding.component.storage:
+    kind: binding
+    spec_revision: sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b
+    targets:
+    - component.storage
+    implementation: implementation.example
+    role: code
+    resource: src/storage/**
+    selector:
+      kind: whole-document
+    status: planned
+  check.rule.capacity:
+    kind: check
+    spec_revision: sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b
+    scope:
+    - rule.capacity
+    method: database_concurrency_and_integration_tests
+    required_environment:
+    - The relevant actual implementation; this example has no application.
+    negative_controls:
+    - Inject a relevant violation and demonstrate detection.
+  check.rule.idempotency:
+    kind: check
+    spec_revision: sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b
+    scope:
+    - rule.idempotency
+    method: integration_tests
+    required_environment:
+    - The relevant actual implementation; this example has no application.
+    negative_controls:
+    - Inject a relevant violation and demonstrate detection.
+  check.rule.authorization:
+    kind: check
+    spec_revision: sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b
+    scope:
+    - rule.authorization
+    method: authorization_tests
+    required_environment:
+    - The relevant actual implementation; this example has no application.
+    negative_controls:
+    - Inject a relevant violation and demonstrate detection.
+  check.rule.atomicity:
+    kind: check
+    spec_revision: sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b
+    scope:
+    - rule.atomicity
+    method: database_fault_injection_tests
+    required_environment:
+    - The relevant actual implementation; this example has no application.
+    negative_controls:
+    - Inject a relevant violation and demonstrate detection.
+  check.rule.state_machine:
+    kind: check
+    spec_revision: sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b
+    scope:
+    - rule.state_machine
+    method: model_based_and_integration_tests
+    required_environment:
+    - The relevant actual implementation; this example has no application.
+    negative_controls:
+    - Inject a relevant violation and demonstrate detection.
+  check.rule.api_boundary:
+    kind: check
+    spec_revision: sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b
+    scope:
+    - rule.api_boundary
+    method: static_import_analysis
+    required_environment:
+    - The relevant actual implementation; this example has no application.
+    negative_controls:
+    - Inject a relevant violation and demonstrate detection.

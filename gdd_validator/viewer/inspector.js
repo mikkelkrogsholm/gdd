@@ -119,6 +119,15 @@
         data.text.nodes[id].fields.contract,
       );
     }
+    if (node.boundary) {
+      raw(section("Component responsibility and boundary rationale"),
+          "Responsibility, rationale and exclusions", node.boundary, true,
+          data.text.nodes[id].fields.boundary);
+    }
+    if (node.kind === "component" && node.interfaces) {
+      const box = section("Authoritative public action contracts");
+      node.interfaces.forEach((action) => button(box, label(action), "node", action));
+    }
     for (const key of [
       "fields",
       "rule",
@@ -136,6 +145,14 @@
           data.text.nodes[id].fields[key],
         );
     if (node.kind === "community") {
+      if (data.boundaries?.communities[id]) {
+        const boundary = data.boundaries.communities[id];
+        const box = section("Derived public boundary");
+        box.append(el("p", "Component ownership determines this view. Membership grants no permissions.", "notice"));
+        boundary.public_contracts.forEach((contract) =>
+          button(box, `${contract.provider} · ${label(contract.action)}`, "node", contract.action));
+        raw(box, "Membership basis, calls and omissions", boundary, true);
+      }
       const members = [...memberships]
         .filter(([, groups]) => groups.includes(id))
         .map(([member]) => member);

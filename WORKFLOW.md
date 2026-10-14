@@ -1,6 +1,6 @@
 # GDD agent workflow 0.1
 
-The workflow uses GDD 0.2 to prepare code work and track its
+The workflow uses GDD 0.2 or 0.3 to prepare code work and track its
 integration. Existing agents from any vendor can use it. The CLI
 and Python API start no LLM and execute no commands from the graph.
 
@@ -144,3 +144,17 @@ agent repairs from half-up to the graph's floor contract, actual red/green test 
 integration, and revision-bound acceptance. Python is only the example implementation.
 
 Run the workflow's 20 named conformance expectations with `uv run python conformance/run_workflow.py --output workflow-conformance.json`. The harness uses the pytest development dependency; the runtime package adds no test or agent dependency.
+
+
+## GDD 0.3 boundary context
+
+Packets for 0.3 include relevant component responsibility/rationale/exclusions,
+authoritative action postconditions, `boundaries` (the scoped derived public view),
+and `design_review` (four advisory questions with applicable principle rules).
+Components join actions/screens in locked_contracts. Member_of adds community context
+without importing every member's internals. Omitted incoming calls remain visible.
+Workflow verification rejects missing or changed derived fields and stale revisions.
+Review execution and quality remain the host/agent's responsibility; existing
+integration review.evidence_uri can refer to the revision-bound advisory artifact.
+Precise blocking checks remain independent. Request/plan/event format remains 0.1,
+and preserved 0.2 plans/runs keep their original semantics.

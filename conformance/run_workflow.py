@@ -58,7 +58,7 @@ def run():
         )
     return {
         "format": "gdd-workflow-conformance/0.1",
-        "tool": "gdd-validator/0.5.1",
+        "tool": "gdd-validator/0.6.0",
         "cases": results,
         "case_count": len(results),
         "pytest_exit": executed.returncode,

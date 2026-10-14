@@ -1,6 +1,8 @@
-# Design decisions for the 0.2 draft
+# Design decisions for the 0.3 draft
 
 Informative decision rationale. The scratchpad's product direction is retained; the following are concrete technical choices within that direction.
+
+## Foundation established in 0.2
 
 1. **New format version.** The old 0.1 mixed registries and embedded relations. 0.2 makes all eight model concepts nodes and gives relations their own IDs. The change is visible and migrated; the 0.1 text is archived.
 2. **One authoritative relation.** Ownership and coverage relations are authored as edges. Parallel owner/obeys/members fields that could diverge are not maintained.
@@ -13,3 +15,23 @@ Informative decision rationale. The scratchpad's product direction is retained; 
 9. **No implemented engine in this phase.** The standard, schemas and conformance cases are the deliverable. The validator, import adapters, visualization, distribution and demonstration app are subsequent implementation work.
 
 These choices are reviewable draft decisions. No productivity benefit, practical universality across agents or unique invention has been demonstrated. A later tool must demonstrate conformance and the method's usefulness.
+
+
+## Additional decisions for 0.3
+
+- A short rationale for every component boundary is the user's explicit decision.
+  Required responsibility/rationale/exclusions apply at scoped readiness so sketches
+  and unrelated incomplete parts remain usable.
+- Canonical action contracts and owned_by remain the only authority; interfaces expose
+  the owner's operations. Postconditions add visible successful-return guarantees.
+- Communities derive public boundary views from explicit membership and ownership.
+  Overlap supplies navigation, never ownership or access permission. Scoped omissions
+  remain visible.
+- KISS, DRY, separation of concerns and modularity require concrete agent assessments.
+  Broad principle rules are advisory; precise constraints can remain blocking.
+- The review envelope uses existing check/evidence links. Its checker establishes
+  structure and applicability only, with no generic quality detector or new runtime.
+- Model/fragment versions change to 0.3, with frozen 0.2 schema dispatch. Other existing
+  envelopes keep their representation versions. Historical execution remains tied
+  to its original bytes. The 0.2 phase note about a future engine is historical;
+  current tools and their limits are documented in the root guides.

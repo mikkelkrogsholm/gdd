@@ -1,4 +1,4 @@
-"""GDD 0.2 validation. No application code or pseudocode is executed."""
+"""GDD 0.2 and 0.3 validation. No application code or pseudocode is executed."""
 
 from .validator import validate
 from .report import exit_code
@@ -23,4 +23,4 @@ __all__ = [
     "run_status",
     "advance_run",
 ]
-__version__ = "0.5.1"
+__version__ = "0.6.0"

@@ -1,6 +1,6 @@
 # Agent protocol
 
-Normative chapter for GDD 0.2. Different agents and tools can follow this protocol. It does not require a particular CLI or model.
+Normative chapter for GDD 0.3. Different agents and tools can follow this protocol. It does not require a particular CLI or model.
 
 ## 1. Input and iteration
 
@@ -26,7 +26,7 @@ Closure is computed to a fixed point from the semantics of the relations:
 
 1. Full seed contracts and their ancestors via refines.
 2. Owners, public component interfaces, calls/depends_on boundaries and declared read/create/change data.
-3. Entity type references, their stored_in persistence boundaries and machines that model affected entities, including relevant triggers. Relevant imports/architecture boundaries are included when an applicable constraint or the implementation depends on them.
+3. Entity type references, their stored_in persistence boundaries and machines that model affected entities, including relevant triggers. Component responsibilities, boundary rationales and exclusions are included. In 0.3 outgoing member_of adds community context without expanding to every member. Relevant imports/architecture boundaries are included when an applicable constraint or the implementation depends on them.
 4. All global rules and targeted rules that constrain the included owners, actions, data, machines, screens or ancestors.
 5. Scenarios that exercise the implementation scope or verify applicable rules, plus risk/error_cases references. The scenario's other actions are included as contract context, not automatically as write area.
 6. Questions, sources, design references and extension semantics on which these parts depend.
@@ -43,13 +43,15 @@ An action must have the readiness basis defined in [VALIDATION](VALIDATION.md). 
 
 The agent implements only within the task. It MUST NOT weaken requirements, remove negative scenarios or adjust expected results solely to obtain PASS. A discovered model problem is handled as a visible change proposal under the project's policy.
 
+Before implementing, the agent MUST assess whether the planned change fits the relevant component responsibilities and boundary rationales. It MUST use public action contracts for cross-component calls. It MUST consider KISS, DRY, separation of concerns and modularity through the concrete questions in [DESIGN-PRINCIPLES](DESIGN-PRINCIPLES.md). Work packets MUST preserve these review topics and relevant principle rules as advisory context.
+
 ## 5. Parallel development
 
 Two packages can be planned in parallel when they have compatible model/contract revisions, resolved prerequisites, non-overlapping write ownership or explicitly serialized overlap, and a plan for shared rules and integration. The absence of edges is not a declaration of independence.
 
 Calls/depends_on do not automatically prohibit concurrent code work. Frontend and backend can work against an established contract with declared stubs. Stub results must not be presented as realized integration or database evidence. Shared mutable domain data requires relevant implementation tests even when code work is separate.
 
-A parallel plan MUST list packages, read/write files or symbol areas, locked contracts, an integration owner and checks. Model changes are coordinated by one integrating authority against a known base. Concurrent writers use isolated workspaces, such as Git worktrees. The tool's actual capacity and permissions apply; the standard does not require a particular number of agents.
+A parallel plan MUST list packages, read/write files or symbol areas, locked contracts (including relevant component boundaries in 0.3), an integration owner and checks. Model changes are coordinated by one integrating authority against a known base. Concurrent writers use isolated workspaces, such as Git worktrees. The tool's actual capacity and permissions apply; the standard does not require a particular number of agents.
 
 After integration, the combined change MUST be assessed against shared contracts and relevant checks. A worker's own success is not integration evidence.
 
@@ -58,3 +60,5 @@ After integration, the combined change MUST be assessed against shared contracts
 If the model, policy or boundary contract changes, the agent MUST reconcile the change before delivery. Authorization can still apply; reconciliation does not automatically create a new approval round. Old results retain their historical meaning but must not be shown as current without a relevant revision match.
 
 The deliverable MUST identify scope, base/result revisions, changed IDs, bindings, executed checks, raw evidence, open questions and any exceptions. Planned checks and proposals must be marked as such. Completion must be bounded to the agreed task; the protocol does not authorize future or unattended work.
+
+Before delivery, the agent MUST record a concrete advisory assessment of all four principles for the combined change, including justified not-applicable or unknown assessments. Findings identify graph IDs, actual code locations, consequences and proportionate recommendations. Review, actual implementation checks and acceptance remain separate. Changed boundaries or contracts follow the existing model-change mandate; review does not create an additional universal manual approval gate.
