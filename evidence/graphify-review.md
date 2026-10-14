@@ -1,46 +1,46 @@
-# Graphify-adapter — udført kontrol, 13. oktober 2026
+# Graphify adapter — completed checks, October 13, 2026
 
-Leveret: Graphify-adapter 0.1.0 i gdd-validator 0.3.0 til GDD-standardformat 0.2. Adapteren indlæser to eksplicitte 0.9.75-profiler, bevarer rå bytes/metadata og hvert arrayrecord, validerer revision/projektion/retning og kan forberede en GDD-skitse gennem en eksplicit mapping.
+Delivered: Graphify adapter 0.1.0 in gdd-validator 0.3.0 for GDD standard format 0.2. The adapter loads two explicit 0.9.75 profiles, preserves raw bytes/metadata and every array record, validates revision/projection/direction, and can prepare a GDD sketch through an explicit mapping.
 
-## Faktiske resultater
+## Actual results
 
-| Kontrol | Resultat | Evidens |
+| Check | Result | Evidence |
 | --- | --- | --- |
-| Hele pytest-suiten | 143 tests består | [tests.txt](graphify/tests.txt) |
-| Oprindelige standardcases | 58/58 forventninger matcher; ingen forventninger svækket | [standard-conformance.json](graphify/standard-conformance.json) |
-| Nye Graphify-adaptercases | 18/18 forventninger matcher | [adapter-conformance.json](graphify/adapter-conformance.json) |
-| Faktisk Graphify 0.9.75-AST og eksport | 3 nodes / 5 edges; original_links bevarer 5; upstream simpel eksport har 3 | [producer-evidence.json](../examples/graphify/producer-evidence.json) |
-| Byte-roundtrip | Recovered AST er byteidentisk med originalfixture | [recovered.ast.json](graphify/recovered.ast.json), [rapport](graphify/roundtrip.report.json) |
-| Markerløs undirected eksport | Rå bevarelse/layout PASS, direction UNKNOWN | [undirected.report.json](graphify/undirected.report.json) |
-| Uaccepteret continuation | Gyldig GDD-kandidat med skitser, provenance, åbne spørgsmål og uverificerede bindingskandidater | [mapping](../examples/graphify/mapping.json), [proposal](../examples/graphify/observations/proposal.json) |
-| sdist og wheel | Bygger | [build.txt](graphify/build.txt) |
-| Installeret wheel uden for arbejdsområdet | Import/validate/eksakt export/eksplicit proposal består; ni schemaassets; ingen Graphify runtimeafhængighed | [wheel-smoke.json](graphify/wheel-smoke.json), [kørselskilde](graphify/wheel-smoke.source.py) |
+| Full pytest suite | 143 tests pass | [tests.txt](graphify/tests.txt) |
+| Original standard cases | 58/58 expectations match; no expectations weakened | [standard-conformance.json](graphify/standard-conformance.json) |
+| New Graphify adapter cases | 18/18 expectations match | [adapter-conformance.json](graphify/adapter-conformance.json) |
+| Actual Graphify 0.9.75 AST and export | 3 nodes / 5 edges; original_links preserves 5; upstream simple export has 3 | [producer-evidence.json](../examples/graphify/producer-evidence.json) |
+| Byte roundtrip | Recovered AST is byte-identical to the original fixture | [recovered.ast.json](graphify/recovered.ast.json), [report](graphify/roundtrip.report.json) |
+| Markerless undirected export | Raw preservation/layout PASS, direction UNKNOWN | [undirected.report.json](graphify/undirected.report.json) |
+| Unaccepted continuation | Valid GDD candidate with sketches, provenance, open questions, and unverified binding candidates | [mapping](../examples/graphify/mapping.json), [proposal](../examples/graphify/observations/proposal.json) |
+| sdist and wheel | Build | [build.txt](graphify/build.txt) |
+| Installed wheel outside the workspace | Import/validate/exact export/explicit proposal pass; nine schema assets; no Graphify runtime dependency | [wheel-smoke.json](graphify/wheel-smoke.json), [execution source](graphify/wheel-smoke.source.py) |
 
-Producentfixtures blev faktisk kørt gennem `extract_python`, `build_from_json` og `to_json` i den installerede Graphify 0.9.75. Inputkode, producer-/afhængighedsversioner, relevante packagekildehashes og outputhashes er registreret. Ingen LLM-pipeline eller forretningsapplikation blev kørt. Code_revision er ukendt; den erstattes ikke med artefaktets hash.
+Producer fixtures were actually run through `extract_python`, `build_from_json`, and `to_json` in the installed Graphify 0.9.75. Input code, producer/dependency versions, relevant package source hashes, and output hashes are recorded. No LLM pipeline or business application was run. Code_revision is unknown; it is not replaced with the artifact hash.
 
-## Parallelle reviews og rettelser
+## Parallel reviews and fixes
 
-Tre read-only underagenter undersøgte producentformat, observations-/modelkontrakt og conformance parallelt. De gennemgik derefter de konkrete ændringer. Lead skrev og integrerede alle filer.
+Three read-only subagents examined the producer format, observation/model contract, and conformance in parallel. They then reviewed the concrete changes. The lead wrote and integrated all files.
 
-Reviewfund blev rettet med regressioner:
+Review findings were fixed with regressions:
 
-- Numerisk afrunding kunne forbinde to forskellige producent-ID'er. Parseren kontrollerer nu decimalværdien før referenceopløsning; præcision uden for projektionen giver UNKNOWN med bevarede originalbytes.
-- Versions-/revisionspåstande under graph blev overset. Kendte claims opregnes nu med faktiske JSON Pointers på begge niveauer; uunderstøttede eller modstridende claims bliver UNKNOWN.
-- `_src/_tgt` kunne modsige en directed-grafs source/target. Konflikten afvises; markerrestaurering er fortsat mulig for undirected storage.
-- Generisk rapportoutput kunne overskrive input. CLI-resultatfiler oprettes nu eksklusivt, også over for symlink/hardlink-aliaser.
-- Projektionens rapporttekst lovede for meget om caller-metadata. Raw-afledte felter genberegnes; callerclaims er udtrykkeligt uverificerede inputs, ikke autentificerede receipts. Koordinerede ændringer af dem giver ingen verified binding eller implementeringsevidens.
-- Raw-path er fastlagt som graphify.raw.json i denne værktøjsversion; alternative/escaping paths afvises før læsning, og escaping symlinks afvises.
+- Numeric rounding could connect two different producer IDs. The parser now checks the decimal value before reference resolution; precision outside the projection yields UNKNOWN with original bytes preserved.
+- Version/revision claims under graph were overlooked. Known claims are now enumerated with actual JSON Pointers at both levels; unsupported or conflicting claims become UNKNOWN.
+- `_src/_tgt` could contradict a directed graph's source/target. The conflict is rejected; marker restoration remains possible for undirected storage.
+- Generic report output could overwrite input. CLI result files are now created exclusively, including protection against symlink/hardlink aliases.
+- The projection's report text promised too much about caller metadata. Raw-derived fields are recomputed; caller claims are explicitly unverified inputs, not authenticated receipts. Coordinated changes to them provide no verified binding or implementation evidence.
+- The raw path is fixed as graphify.raw.json in this tool version; alternative/escaping paths are rejected before reading, and escaping symlinks are rejected.
 
-Desuden er identiske multiedges, producer-ID-dubletter, typed IDs, arrays med både links/edges, hyperedges/communities, opaque fields, JSON-/Unicode-fejl, docs kontra code, tamper og no-clobber testet. Et manglende profilvalg eller manglende input giver UNKNOWN frem for en gættet fortolkning.
+Identical multiedges, duplicate producer IDs, typed IDs, arrays with both links/edges, hyperedges/communities, opaque fields, JSON/Unicode errors, docs versus code, tamper, and no-clobber were also tested. A missing profile choice or missing input yields UNKNOWN rather than a guessed interpretation.
 
-Agent-readable-code-linteren er kørt som advisory. [Output](graphify/agent-lint.json) viser korte nærduplikater i diagnose-/schemafelter; ingen runtimefil er over 800 linjer, og der er ingen AR004/AR006/AR008-fund. Der er ikke indført ekstra generiske abstraheringslag for at fjerne lokal lighed.
+The agent-readable-code linter was run as advisory. [Output](graphify/agent-lint.json) shows short near-duplicates in diagnostic/schema fields; no runtime file exceeds 800 lines, and there are no AR004/AR006/AR008 findings. No additional generic abstraction layers were introduced to eliminate local similarity.
 
-## Scope og begrænsninger
+## Scope and limitations
 
-Tabsfrihed gælder **det modtagne artefakt**. Adapteren kan ikke genskabe upstream-deduplicerede relationer eller bevise producentens fuldstændighed. Ukendte layouts/versioner, uklar originalretning, ukendt kodeklassifikation og numerisk præcision uden for den støttede projektion er synlige UNKNOWN-resultater.
+Losslessness applies to **the received artifact**. The adapter cannot reconstruct relations deduplicated upstream or prove producer completeness. Unknown layouts/versions, ambiguous original direction, unknown code classification, and numeric precision outside the supported projection are visible UNKNOWN results.
 
-`propose` laver et separat forslag med eksplicit rationale. Det ændrer ikke eksisterende accepteret intention og opretter ingen godkendelser, autonome workflowgates, observed/checked bindings eller udført kodeevidens. Promotion sker gennem projektets normale betroede mandat og modelændringsproces. Import-PASS er ikke en påstand om, at den eksisterende kode opfylder GDD-regler.
+`propose` creates a separate proposal with explicit rationale. It does not change existing accepted intent or create approvals, autonomous workflow gates, observed/checked bindings, or executed code evidence. Promotion takes place through the project's normal trusted mandate and model-change process. Import PASS is not a claim that the existing code satisfies GDD rules.
 
-De seks core-schemas og de 58 oprindelige forventninger er bevaret. De to gamle importconditions materialiseres nu med faktiske JSON-layouts; yderligere 18 cases er tilføjet separat. Nye observations-/mappingschemas er værktøjskontrakter uden for GDD-kernen. Renderer og produktionsapp ligger fortsat uden for denne opgave.
+The six core schemas and 58 original expectations are preserved. The two old import conditions are now materialized with actual JSON layouts; a further 18 cases were added separately. New observation/mapping schemas are tool contracts outside the GDD core. The renderer and production app remain outside this task.
 
-[GRAPHIFY.md](../GRAPHIFY.md) er bruger-/agentindgangen. [graphify-assets.json](graphify-assets.json) registrerer de konkrete leverance-, fixture- og kontrolbytes. Tidligere 0.2.0-evidens og distributioner er bevaret som historik.
+[GRAPHIFY.md](../GRAPHIFY.md) is the entry point for users/agents. [graphify-assets.json](graphify-assets.json) records the concrete delivery, fixture, and check bytes. Earlier 0.2.0 evidence and distributions are retained as history.

@@ -1,0 +1,12 @@
+{
+  "format": "gdd-english-distribution/0.1",
+  "package_version": "0.5.1",
+  "source_files_verified": 514,
+  "wheel_runtime_files_verified": 38,
+  "archives_match_reviewed_sources": true,
+  "archives": {
+    "gdd_validator-0.5.1-py3-none-any.whl": "c11e6e087c24b85995b31286c420b4124d36cf17a3067b58bd955aefd494938c",
+    "gdd_validator-0.5.1.tar.gz": "f24d90b3a90c14d89cc902c0b37bfa492743ce9ef2af4b10d8137892f09ddf6b"
+  },
+  "passed": true
+}

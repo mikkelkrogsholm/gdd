@@ -1,8 +1,8 @@
-# GDD-validator 0.5.0 — standardformat GDD 0.2
+# GDD validator 0.5.1 — standard format GDD 0.2
 
-Validatoren indlæser GDD 0.2, kontrollerer modellen og vurderer et valgt udsnits strukturelle parathed. Den har Python-API og CLI og skriver rapporter efter `gdd-report/0.2`. Pseudokode, extensionkode og applikationstests bliver ikke eksekveret.
+The validator loads GDD 0.2, checks the model, and assesses the structural readiness of a selected scope. It has a Python API and CLI and writes reports in `gdd-report/0.2`. Pseudocode, extension code, and application tests are not executed.
 
-Python 3.11 eller nyere kræves. `uv.lock` låser installationen. Kør fra projektmappen:
+Python 3.11 or newer is required. `uv.lock` pins the installation. Run from the project directory:
 
 ```sh
 uv sync --locked
@@ -13,32 +13,32 @@ uv run gdd validate examples/concert.gdd.yaml --profile records
 uv run gdd validate examples/concert.gdd.yaml --profile records --activity implementation --scope action.reserve
 ```
 
-De fem valideringer giver henholdsvis model-PASS, backend-readiness-PASS, screen-readiness-FAIL, implementation-UNKNOWN og authorization-UNRESOLVED. Skærmens manglende designkilde bevares samtidig som UNKNOWN. Records indeholder planer, ingen udført applikationsevidens.
+The five validations yield model-PASS, backend-readiness-PASS, screen-readiness-FAIL, implementation-UNKNOWN, and authorization-UNRESOLVED, respectively. The screen's missing design source is also retained as UNKNOWN. Records contain plans, not executed application evidence.
 
-Gentag `--scope` og `--profile` for flere valg. `--output report.json` gemmer rapporten i en ny fil; eksisterende filer overskrives ikke. Exit 0 betyder, at alle rapporterede anmodede checks er PASS/GRANTED; 1 betyder mindst én FAIL/DENIED; 2 betyder UNKNOWN/UNRESOLVED uden kendt fejl. Dimensionerne er separate; `aggregate(report['checks'], 'readiness')` i `gdd_validator.report` samler én dimension med FAIL før UNKNOWN før PASS.
+Repeat `--scope` and `--profile` for multiple selections. `--output report.json` saves the report in a new file; existing files are not overwritten. Exit 0 means all reported requested checks are PASS/GRANTED; 1 means at least one FAIL/DENIED; 2 means UNKNOWN/UNRESOLVED without a known failure. Dimensions are separate; `aggregate(report['checks'], 'readiness')` in `gdd_validator.report` aggregates one dimension with FAIL before UNKNOWN before PASS.
 
-## Understøttede kontroller
+## Supported checks
 
-| Profil/operation | Implementeret |
+| Profile/operation | Implemented |
 | --- | --- |
-| representation | YAML 1.2 med JSON-scalars og JSON; sikre built-in tags; ingen custom tags, anchors, aliases, merge keys, duplicate keys, ugyldig Unicode eller uendelige tal; lokale schemas og indlæsning inden for bundle-root inklusive symlinks |
-| model | Rettet multigraf uden edge-collapse; identiteter/referencer, endpoints, ejerskab, refinement/realization, maskiner, abstrakte typer, source-lineage og deklarative extensions |
-| readiness | Fast-point closure; kontrakter, interfaces/data, fem risikovurderinger, fejludfald, scenarier, gældende regler, scoped spørgsmål samt normative lokale kontrakt-/designkilder |
-| records | Projekt/ID/supersession-kontrol; aktuelle checkplaner, immutable checkhash, scope, revisionsmatch, bindings, miljø og hostverificeret evidens; autorisation mod separat betroet hostinput |
-| context | Kandidatpakke sammenholdes med autoritativ closure, inkl. edge-ID'er, kilder/lineage, spørgsmål og extensions; strukturel readiness køres også |
-| parallel | Selvstændig planvurdering af fuldstændighedserklæringer, base, låste kontrakter, læse-/skrivefiler, deklareret isolation, integrationsejer/checks og serialisering |
-| import.graphify | [Graphify-adapteren](GRAPHIFY.md) validerer eksplicitte AST-/node-link-profiler, raw-integritet, multiedges, referencer, retning og observationsprojektion. Ukendte versioner/retninger er UNKNOWN |
-| visualization | [Offline renderer](VIEWER.md); `--view FILE` kontrollerer eksakt artifact/profil mod aktuel modelrevision. Uden input/med ukendt profil: UNKNOWN |
+| representation | YAML 1.2 with JSON scalars and JSON; safe built-in tags; no custom tags, anchors, aliases, merge keys, duplicate keys, invalid Unicode, or infinite numbers; local schemas and loading within the bundle root, including symlinks |
+| model | Directed multigraph without edge collapse; identities/references, endpoints, ownership, refinement/realization, machines, abstract types, source lineage, and declarative extensions |
+| readiness | Fixed-point closure; contracts, interfaces/data, five risk assessments, error outcomes, scenarios, applicable rules, scoped questions, and normative local contract/design sources |
+| records | Project/ID/supersession checks; current check plans, immutable check hash, scope, revision matching, bindings, environment, and host-verified evidence; authorization against separately trusted host input |
+| context | Candidate package compared with authoritative closure, including edge IDs, sources/lineage, questions, and extensions; structural readiness also runs |
+| parallel | Separate plan assessment of completeness declarations, base, locked contracts, read/write files, declared isolation, integration owner/checks, and serialization |
+| import.graphify | [The Graphify adapter](GRAPHIFY.md) validates explicit AST/node-link profiles, raw integrity, multiedges, references, direction, and observation projection. Unknown versions/directions are UNKNOWN |
+| visualization | [Offline renderer](VIEWER.md); `--view FILE` checks the exact artifact/profile against the current model revision. Without input/with an unknown profile: UNKNOWN |
 
-Extensions bruger præcise manifestversioner og bytehashes. Den generiske deklarative Draft 2020-12-profil kontrollerer `data_schema`, endpoints og context/dependency/effect, inklusive aktive lokale schema-referencers mål. Der er ingen implicit substituerbarhed med core-kinds. Custom implementation-readiness kræver en særskilt profil og giver derfor UNKNOWN. Remote schemareferencer hentes aldrig. Schema-/datadybde, som overstiger runtimevalidatorens kapacitet, giver UNKNOWN. `--unsupported-extension example.sensors` gør manglende consumerstøtte eksplicit.
+Extensions use exact manifest versions and byte hashes. The generic declarative Draft 2020-12 profile checks `data_schema`, endpoints, and context/dependency/effect, including targets of active local schema references. There is no implicit substitutability with core kinds. Custom implementation readiness requires a separate profile and therefore yields UNKNOWN. Remote schema references are never fetched. Schema/data depth exceeding the runtime validator's capacity yields UNKNOWN. `--unsupported-extension example.sensors` makes missing consumer support explicit.
 
-Numeriske inputs bruger Python-heltal og finite floats, hvis tallets decimalværdi kan bevares ved round-trip. Almindelige værdier som `0.1` understøttes. Kontraktgrænser, enumunicitet og lokale JSON Schema-assertions vurderes på præcise talværdier i midlertidige kopier, også når heltal blandes med decimaltal. Modeldata, snapshots og artefakter beholder almindelige JSON-værdier. Decimaler, der ville blive afrundet til en anden decimalværdi, underflow/overflow og heltal over runtimeparserens kapacitet giver `FORMAT_UNSUPPORTED`/UNKNOWN. Det gælder både JSON og YAML, inklusive eksplicitte built-in tags; der udledes ingen positiv vurdering af et ændret tal. Ugyldige NaN/Infinity-literals giver fortsat FAIL.
+Numeric inputs use Python integers and finite floats when the number's decimal value can be preserved through round-trip. Ordinary values such as `0.1` are supported. Contract bounds, enum uniqueness, and local JSON Schema assertions are assessed on exact numeric values in temporary copies, including when integers are mixed with decimal numbers. Model data, snapshots, and artifacts retain ordinary JSON values. Decimals that would be rounded to a different decimal value, underflow/overflow, and integers beyond the runtime parser's capacity yield `FORMAT_UNSUPPORTED`/UNKNOWN. This applies to both JSON and YAML, including explicit built-in tags; no positive assessment is inferred from a changed number. Invalid NaN/Infinity literals still yield FAIL.
 
-Deklarerede imports-edges kontrolleres mod architecture-constraints i modellen. Et direct-forbud rammer den konkrete edge; et transitive-forbud rammer ikke-tomme importstier, inklusive cyklusser. En modstrid giver CONSTRAINT_INVALID. Dette beviser ingen faktiske importforhold i implementationen og gør ikke grafen til en komplet allowlist.
+Declared imports edges are checked against architecture constraints in the model. A direct prohibition applies to the specific edge; a transitive prohibition applies to nonempty import paths, including cycles. A contradiction yields CONSTRAINT_INVALID. This proves no actual import relationships in the implementation and does not turn the graph into a complete allowlist.
 
-Readiness-scopes er implementationstargets: component, entity, action, screen eller machine. Rule/scenario/community kan ikke alene udgøre et implementeringsklart scope. Tomt almindeligt readiness-scope vurderer alle targets, inklusive custom-noder med ukendt parathedssemantik. Et barn medtager ancestors og nødvendige kontrakter; et parent-scope medtager sine dekomponerede børn. Fjerne regler kan udvide læsekonteksten. Community eller hop-tal afgrænser ikke forpligtelserne.
+Readiness scopes are implementation targets: component, entity, action, screen, or machine. Rule/scenario/community cannot alone constitute an implementation-ready scope. An empty ordinary readiness scope assesses all targets, including custom nodes with unknown readiness semantics. A child includes ancestors and necessary contracts; a parent scope includes its decomposed children. Distant rules can expand read context. Communities or hop counts do not limit obligations.
 
-## Revisioner og arbejdspakker
+## Revisions and work packages
 
 ```sh
 uv run gdd snapshot examples/concert.gdd.yaml --output snapshot.json
@@ -47,33 +47,33 @@ uv run gdd validate examples/concert.gdd.yaml --profile readiness --package cont
 uv run gdd validate examples/concert.gdd.yaml --profile readiness --parallel-plan plan.json
 ```
 
-Snapshot bruger rå bytes, normaliserede assetpaths og standardens SHA-256-profil. Records, rapporter og selve snapshotfilen ligger udenfor. Fejl i en recordfil ændrer ikke den beregnelige modelrevision. Manglende normative modelassets giver ukendt revision. Historiske recordtargets reboundes aldrig til den aktuelle model; historiske snapshots indlæses ikke af denne version, og afhængige checks bliver UNKNOWN.
+A snapshot uses raw bytes, normalized asset paths, and the standard's SHA-256 profile. Records, reports, and the snapshot file itself are excluded. Errors in a record file do not change the computable model revision. Missing normative model assets yield an unknown revision. Historical record targets are never rebound to the current model; this version does not load historical snapshots, and dependent checks become UNKNOWN.
 
-`context` udsender et ID-manifest med `format: gdd-context/0.2`, `spec_revision`, `scope`, `nodes`, `edges`, `sources`, `questions` og `extensions`. Det peger på komplette kontrakter i det oprindelige bundle. Det er contextdelen af en arbejdspakke; leverancer og den konkrete agentopgave skal stadig angives af orkestratoren.
+`context` emits an ID manifest with `format: gdd-context/0.2`, `spec_revision`, `scope`, `nodes`, `edges`, `sources`, `questions`, and `extensions`. It points to complete contracts in the original bundle. It is the context part of a work package; deliverables and the concrete agent task still need to be specified by the orchestrator.
 
-Parallelplanens værktøjsformat er `gdd-parallel-plan/0.2`. Hver package har `id`, `scope`, `base_revision`, `write_resources`, `read_resources`, `locked_contracts`, `workspace` og `integration_plan`. Top-level har `packages`, `serialized` med `[før, efter]`-par og `integration: {owner, checks}`. Manglende planforpligtelser giver UNKNOWN. Præcise POSIX-filpaths normaliseres før overlapkontrol; terminal `/`, `.` eller `..` ejer mappens undertræ. Globs beviser ikke disjunkthed. Deklareret workspace-isolation er en strukturel påstand, som orkestratoren skal etablere. Plan-PASS giver ingen autorisation, action-readiness eller runtimegaranti.
+The parallel plan's tool format is `gdd-parallel-plan/0.2`. Each package has `id`, `scope`, `base_revision`, `write_resources`, `read_resources`, `locked_contracts`, `workspace`, and `integration_plan`. The top level has `packages`, `serialized` with `[before, after]` pairs, and `integration: {owner, checks}`. Missing plan obligations yield UNKNOWN. Exact POSIX file paths are normalized before overlap checking; a terminal `/`, `.`, or `..` owns the directory's subtree. Globs do not prove disjointness. Declared workspace isolation is a structural claim that the orchestrator must establish. Plan-PASS grants no authorization, action readiness, or runtime guarantee.
 
-Værktøjets envelopes er lokale API-kontrakter, ikke nye corefelter i GDD. Deres schemas ligger i [validator-inputs.schema.json](schemas/validator-inputs.schema.json), afledt direkte af API'ets `input_schema`.
+The tool's envelopes are local API contracts, not new core fields in GDD. Their schemas are in [validator-inputs.schema.json](schemas/validator-inputs.schema.json), derived directly from the API's `input_schema`.
 
-## Hostens tillidsgrænse
+## The host's trust boundary
 
-Uden hostinput giver et accepted receipt ingen autoritet eller udførelsesbevis. CLI-flaget `--host-context host.json` er en **eksplicit attestationsgrænse**: kaldende bruger/host tager ansvar for de betroede claims i filen. Validatoren læser aldrig denne fil automatisk fra modellen. Brug ikke et host-context leveret af ubetroet model-/sourceindhold.
+Without host input, an accepted receipt provides no authority or proof of execution. The CLI flag `--host-context host.json` is an **explicit attestation boundary**: the calling user/host takes responsibility for the trusted claims in the file. The validator never reads this file automatically from the model. Do not use host context supplied by untrusted model/source content.
 
-Autorisation kræver en `policy` med `revision`, `actor`, `activity`, `spec_revision`, `scope`, `requirement`, `authorities` og `basis`. Tom policy-scope dækker projektet. Bounded scope kan ikke give hel-projekt grant. `requirement` er explicit, standing eller none. Aktuelle betroede afslag gælder også under standing/none. Acceptance kræver desuden hostens `implementation` og `code_revision`. `trusted_decisions` er de receipts, hvis identitet og autoritet hosten faktisk har verificeret. Urelateret, ubetroet eller ugyldig supersession kan ikke ophæve et afslag. Ugyldige brugte record-identiteter eller aktuelle referencer kan ikke levere positive semantiske resultater; uvedkommende recordfejl rapporteres separat.
+Authorization requires a `policy` with `revision`, `actor`, `activity`, `spec_revision`, `scope`, `requirement`, `authorities`, and `basis`. An empty policy scope covers the project. A bounded scope cannot grant whole-project permission. `requirement` is explicit, standing, or none. Current trusted denials also apply under standing/none. Acceptance additionally requires the host's `implementation` and `code_revision`. `trusted_decisions` identifies receipts whose identity and authority the host has actually verified. Unrelated, untrusted, or invalid supersession cannot revoke a denial. Invalid used record identities or current references cannot provide positive semantic results; unrelated record errors are reported separately.
 
-Ved evidence-evaluering angiver hosten `implementation`, `code_revision`, `supported_methods`, `trusted_evidence`, `verified_bindings`, `environment` og `negative_controls`. Disse er attestationer af udførte kontroller, inklusive rå output/proveniens og faktisk miljø. De er ikke instruktioner om at udføre checks. Environmentnavne fra checkplanen skal findes med de samme hostverificerede værdier i evidensen. En frontendbinding opfylder ikke et backendchecks mappingskrav. Binding direkte til regel-ID kan angive eksplicit testmapping; ellers kræves regelmål og constraint-endpoints dækket.
+For evidence evaluation, the host supplies `implementation`, `code_revision`, `supported_methods`, `trusted_evidence`, `verified_bindings`, `environment`, and `negative_controls`. These are attestations of performed checks, including raw output/provenance and the actual environment. They are not instructions to execute checks. Environment names from the check plan must appear in the evidence with the same host-verified values. A frontend binding does not satisfy a backend check's mapping requirements. A binding directly to a rule ID can specify explicit test mapping; otherwise, rule targets and constraint endpoints must be covered.
 
-Flere aktive planer/evidensreceipts er tvetydige uden valg. `check_selection` er `{rule_id: {method: check_id}}`; `evidence_selection` er `{check_id: evidence_id}`. Betroet supersession af evidens skal matche check, implementation, spec-/koderevision og dække tidligere scope. Verificeret binding-supersession kræver samme implementation og revisioner samt dækkende targets. Aktuelt evidensscope skal referere til eksisterende model-ID'er; ekstra scope giver ingen ekstra verificering. Exceptions ændrer aldrig FAIL/UNKNOWN til PASS; værktøjet fortolker ikke en policybestemt exception som automatisk accept.
+Multiple active plans/evidence receipts are ambiguous without selection. `check_selection` is `{rule_id: {method: check_id}}`; `evidence_selection` is `{check_id: evidence_id}`. Trusted evidence supersession must match check, implementation, spec/code revision, and cover the previous scope. Verified binding supersession requires the same implementation and revisions, with covering targets. Current evidence scope must reference existing model IDs; extra scope provides no extra verification. Exceptions never change FAIL/UNKNOWN into PASS; the tool does not interpret a policy-defined exception as automatic acceptance.
 
-Separat recordfil kan vurderes med `gdd validate records.yaml --model model.yaml --profile records`. En fil, som allerede står i manifestets `record_files`, indlæses én gang.
+A separate record file can be assessed with `gdd validate records.yaml --model model.yaml --profile records`. A file already listed in the manifest's `record_files` is loaded once.
 
-## Kilder og kendte grænser
+## Sources and known limitations
 
-Whole-document og line-range understøttes for text/plain, text, markdown, text/markdown, JSON/YAML og DESIGN.md alpha samt hele OKF 0.2-tekstassets. JSON Pointer resolves i JSON/YAML eller DESIGN.md's YAML-frontmatter; alle rå DESIGN.md-bytes, inklusive prose, indgår i hash. Dette certificerer ikke det eksterne formats egen conformance. Markdown-heading og opaque selectors bevares med UNKNOWN. Ukendte kontraktformater giver UNKNOWN. Eksterne URI'er materialiseres ikke automatisk.
+Whole-document and line-range are supported for text/plain, text, markdown, text/markdown, JSON/YAML, and DESIGN.md alpha, as well as complete OKF 0.2 text assets. JSON Pointer resolves in JSON/YAML or DESIGN.md's YAML frontmatter; all raw DESIGN.md bytes, including prose, are included in the hash. This does not certify the external format's own conformance. Markdown-heading and opaque selectors are preserved with UNKNOWN. Unknown contract formats yield UNKNOWN. External URIs are not materialized automatically.
 
-Source-lineage følger source+revision-identiteter. Manglende historiske inputrevisioner giver UNKNOWN; ældre selvrevisioner er ikke automatisk cykler. ID-genbrug og immutable logændringer gennem tid kræver en bevaret historik, som denne filbaserede checker ikke alene etablerer. Faglig sandhed, faktisk scenariedækning, fuldstændige effektdeklarationer, autoritetens ægthed og applikationens adfærd kræver henholdsvis review eller betroede checkere.
+Source lineage follows source+revision identities. Missing historical input revisions yield UNKNOWN; earlier self-revisions are not automatically cycles. ID reuse and immutable log changes over time require preserved history, which this file-based checker does not establish on its own. Domain truth, actual scenario coverage, complete effect declarations, authenticity of authority, and application behavior require review or trusted checkers, respectively.
 
-## Verifikation og API
+## Verification and API
 
 ```sh
 uv run pytest -q
@@ -81,7 +81,7 @@ uv run python conformance/run.py --output evidence/validator-conformance.json
 uv build
 ```
 
-58 standardcases bliver faktisk eksekveret, inklusive konkrete condition-fixtures. Regressionstests dækker yderligere parser-, path-, extension-, context-, authority-, supersession-, evidence- og CLI-fejl. [Reviewrunderne](evidence/review-loops/README.md) dokumenterer 0.4.1. [Graphify-fasens kontrol](evidence/graphify-review.md) dokumenterer 0.3.0-kørslen, og [visualization-reviewet](evidence/visualization-review.md) dokumenterer 0.4.0. [Validatorrapporten fra 0.2.0](evidence/validator-conformance.json) og [det tidligere review](evidence/validator-review.md) bevares som historik. Syntetiske hostmandater og receipts er kun testinputs, aldrig faktiske godkendelser eller applikationsevidens.
+58 standard cases are actually executed, including concrete condition fixtures. Regression tests additionally cover parser, path, extension, context, authority, supersession, evidence, and CLI failures. [The review rounds](evidence/review-loops/README.md) document 0.4.1. [The Graphify phase checks](evidence/graphify-review.md) document the 0.3.0 run, and [the visualization review](evidence/visualization-review.md) documents 0.4.0. [The validator report from 0.2.0](evidence/validator-conformance.json) and [the earlier review](evidence/validator-review.md) are preserved as history. Synthetic host mandates and receipts are only test inputs, never actual approvals or application evidence.
 
 ```python
 from gdd_validator import validate, exit_code
@@ -91,6 +91,6 @@ report = validate("examples/concert.gdd.yaml",
 assert exit_code(report) == 0
 ```
 
-API'et returnerer et JSON-kompatibelt rapportobjekt. Ugyldige værktøjsargumenter giver `ValueError`; model-/filfejl giver rapportdiagnoser. Revisions- og rapportformat valideres internt. [Koden](gdd_validator/validator.py) er indgangen til orchestration; loading/model/readiness/planning/records indeholder de respektive kontroller.
+The API returns a JSON-compatible report object. Invalid tool arguments raise `ValueError`; model/file failures produce report diagnostics. Revision and report formats are validated internally. [The code](gdd_validator/validator.py) is the entry point for orchestration; loading/model/readiness/planning/records contain the respective checks.
 
-Version 0.5.0 tilføjer [agent-workflowet](WORKFLOW.md) som separat værktøjslag. Runtime-valideringen eksekverer stadig ingen applikationstests; det afgrænsede [tilbudseksempel](examples/agent-native/README.md) har faktiske, eksternt udførte checks og eksplicit hostverificeret evidens. [Workflow-reviewet](evidence/workflow-review.md) dokumenterer denne version.
+Version 0.5.0 adds [the agent workflow](WORKFLOW.md) as a separate tool layer. Runtime validation still executes no application tests; the bounded [quote example](examples/agent-native/README.md) has actual externally executed checks and explicitly host-verified evidence. [The workflow review](evidence/workflow-review.md) documents this version.

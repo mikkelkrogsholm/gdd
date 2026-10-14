@@ -1,5 +1,5 @@
-# Bevaret GDD 0.1-materiale
+# Preserved GDD 0.1 material
 
-Disse filer er bytekopier af projektets SPEC.md og concert.gdd.yaml før 0.2-arbejdet. Startpakken findes fortsat i rodens zip-fil.
+These files preserve the project's SPEC.md and concert.gdd.yaml from before the 0.2 work. They were originally copied byte-for-byte and are now presented in English. The starter package remains in the zip file at the repository root.
 
-De dokumenterer det tidligere format. [Migration](../../standard/MIGRATION.md) beskriver overgangen. Gamle linterresultater er ikke evidens for en 0.2-implementation.
+They document the previous format. [Migration](../../standard/MIGRATION.md) describes the transition. Old linter results are not evidence for a 0.2 implementation.

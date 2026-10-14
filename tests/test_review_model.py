@@ -209,7 +209,7 @@ def test_parallel_absolute_and_relative_workspace_aliases_conflict():
             "PASS",
         ),
         (
-            "Læs kravet\u2028præcist".encode("utf-8"),
+            "Read the requirement\u2028precisely".encode("utf-8"),
             "text/plain",
             {"kind": "whole-document"},
             "PASS",

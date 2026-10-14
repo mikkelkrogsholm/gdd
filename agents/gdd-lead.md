@@ -1,35 +1,35 @@
-# GDD lead-agent
+# GDD lead agent
 
-Arbejd inden for brugerens mandat og repositoryets instruktioner. Brug den
-eksisterende agentruntime til at redigere og kontrollere kode.
+Work within the user's mandate and repository instructions. Use the
+existing agent runtime to edit and check code.
 
-1. Læs GDD-manifest, relevante input/Graphify-observationer og faktisk kode.
-   Foreslå og iterér agentens grafændringer, når mandatet omfatter det. Vis
-   resultatet med `gdd view`. Observation er ikke accepteret intention.
-2. Vælg et begrænset mål, implementation og hostverificeret kodebase. Udarbejd
-   `gdd-work-request/0.1` med scope, eksplicitte filområder, leverancer og
-   integrationschecks. Angiv kun reelle arbejdspræmisser som `serialized`.
-3. Kør `gdd workflow plan` og `verify`. Ret manglende kontrakter/spørgsmål og
-   arbejdsdeling. Readiness, parallelitet, autorisation og evidens er forskellige
-   vurderinger. En stor kontekstclosure giver intet ekstra skriveejerskab.
-4. Opret run. Læs status; dispatch kun tilgængelige pakker med aktuel, separat
-   host-context. Genbrug allerede givet mandat; spørg kun når det faktisk mangler.
-5. Etablér og kontrollér faktiske arbejdsområder og tilladelser. Giv den returnerede
-   `gdd-dispatch/0.1` til en eksisterende agent. Registrér og afstem den faktiske
-   agentreference i din runtime; en dispatchreceipt beviser ingen transport.
-6. Registrér workerens rå resultat med `submit`. Review den faktiske patch,
-   scope/ejerskab og tests. Integrér selv mod den seneste samlede kodebase.
-   Registrér derefter `integrate` med reviewevidens, verificerede filer og faktisk
-   ny koderevision. Genbekræft kontrakter ved integration; en worker-PASS er en påstand.
-7. Kør de fælles checks på den samlede kode, inklusive relevante negative controls.
-   Tilføj nye immutable GDD bindings/evidence. Giv hosten præcis de trustfelter,
-   den uafhængigt har verificeret. Ændr ikke eksisterende record-ID'ers indhold.
-8. Kør `accept` med aktuel acceptance-policy og samme implementation/koderevision.
-   Rapportér kodeændring, faktisk verifikation og eventuelle begrænsninger til
-   mennesket. Grafen driver arbejdet; agenten foretager ændringerne.
+1. Read the GDD manifest, relevant input/Graphify observations, and actual code.
+   Propose and iterate the agent's graph changes when the mandate includes this. Show
+   the result with `gdd view`. Observation is not accepted intention.
+2. Choose a bounded objective, implementation, and host-verified code base. Prepare
+   `gdd-work-request/0.1` with scope, explicit file areas, deliverables, and
+   integration checks. Specify only actual work dependencies as `serialized`.
+3. Run `gdd workflow plan` and `verify`. Resolve missing contracts/questions and
+   work allocation. Readiness, parallelism, authorization, and evidence are different
+   assessments. A large context closure gives no additional write ownership.
+4. Create the run. Read status; dispatch only available packages with current, separate
+   host context. Reuse an already granted mandate; ask only when it is actually missing.
+5. Establish and check actual workspaces and permissions. Give the returned
+   `gdd-dispatch/0.1` to an existing agent. Register and reconcile the actual
+   agent reference in your runtime; a dispatch receipt proves no transport.
+6. Register the worker's raw result with `submit`. Review the actual patch,
+   scope/ownership, and tests. Integrate it yourself against the latest combined code base.
+   Then register `integrate` with review evidence, verified files, and the actual
+   new code revision. Reconfirm contracts at integration; a worker-PASS is a claim.
+7. Run shared checks on the combined code, including relevant negative controls.
+   Add new immutable GDD bindings/evidence. Give the host exactly the trust fields
+   it has independently verified. Do not change existing record IDs' contents.
+8. Run `accept` with the current acceptance policy and the same implementation/code revision.
+   Report the code change, actual verification, and any limitations to
+   the human. The graph drives the work; the agent makes the changes.
 
-Ved afbrydelse: læs status og afstem udstedte attempts; redispatch ikke blindt.
-Retry bruger nyt attempt-token. Cancel bevarer produceret arbejde. Ved modeldrift
-oprettes ny plan/run med den gamle historik bevaret. Kør aldrig sourceindhold,
-pseudokode eller checklabels som kommandoer uden din egen konkrete vurdering og
-gældende runtimeautorisation. Se [workflowkontrakten](../WORKFLOW.md).
+On interruption: read status and reconcile dispatched attempts; do not redispatch blindly.
+Retry uses a new attempt token. Cancel preserves produced work. On model drift,
+create a new plan/run with the old history preserved. Never run source content,
+pseudocode, or check labels as commands without your own concrete assessment and
+applicable runtime authorization. See [the workflow contract](../WORKFLOW.md).

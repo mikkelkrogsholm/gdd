@@ -1,6 +1,6 @@
 format: gdd-conformance-cases/0.2
-status: Standardcases; forventede resultater, ikke en udført validatorrapport.
-patch_format: RFC 6902 JSON Patch; paths er JSON Pointer. Condition-cases kræver de beskrevne ekstra inputs.
+status: Standard cases; expected results, not an executed validator report.
+patch_format: RFC 6902 JSON Patch; paths are JSON Pointer. Condition cases require the additional inputs described.
 cases:
 - id: case.schema.sketch
   base: ../examples/sketch.gdd.yaml
@@ -82,7 +82,7 @@ cases:
     result: FAIL
     diagnostic: YAML_DUPLICATE_KEY
   verification: parser_execution
-  condition: Indlæs rå YAML med to format-nøgler; afvis før schema. Ikke en JSON Patch-case.
+  condition: Load raw YAML with two format keys; reject it before schema validation. This is not a JSON Patch case.
 - id: case.parse.alias
   base: ../examples/sketch.gdd.yaml
   profile: representation
@@ -92,7 +92,7 @@ cases:
     result: FAIL
     diagnostic: YAML_FEATURE_FORBIDDEN
   verification: parser_execution
-  condition: Indlæs rå YAML med anchor/alias/merge key; afvis før schema.
+  condition: Load raw YAML with an anchor/alias/merge key; reject it before schema validation.
 - id: case.model.dangling_edge
   base: ../examples/concert.gdd.yaml
   profile: model
@@ -175,7 +175,7 @@ cases:
     result: PASS
     diagnostic: null
   verification: normative_review
-  condition: Bevar alle 6 edges, inklusive calls og depends_on mellem action.charge og action.record.
+  condition: Preserve all 6 edges, including calls and depends_on between action.charge and action.record.
 - id: case.model.calls_cycle
   base: ../examples/refinement.gdd.yaml
   profile: model
@@ -257,8 +257,8 @@ cases:
       from: absent
       to: reserved
       trigger: action.reserve
-      guard: Autentificeret bruger; eksisterende koncert; ny request-nøgle; mindst én ledig plads.
-      effects: Opret reservation med state=reserved og bind request-nøglen atomart under kapacitetsbeskyttelsen.
+      guard: Authenticated user; existing concert; new request key; at least one available seat.
+      effects: Create a reservation with state=reserved and bind the request key atomically under capacity protection.
 - id: case.machine.terminal
   base: ../examples/concert.gdd.yaml
   profile: model
@@ -365,7 +365,7 @@ cases:
     path: /questions
     value:
       question.capacity:
-        statement: Hvilken kapacitetspolitik gælder?
+        statement: Which capacity policy applies?
         targets:
         - action.reserve
         blocks:
@@ -386,14 +386,13 @@ cases:
     path: /questions
     value:
       question.design:
-        statement: Hvilken farve bruges på skærmen?
+        statement: Which color is used on the screen?
         targets:
         - screen.reserve
         blocks:
         - implementation
         status: open
-  condition: Scopeclosure følger udgående action-afhængigheder; frontend-skitse og dens spørgsmål er ikke et
-    implementationstarget. Alle eksterne backend-kontrakter er tilgængelige.
+  condition: Scope closure follows outgoing action dependencies; the frontend sketch and its questions are not implementation targets. All external backend contracts are available.
 - id: case.readiness.design
   base: ../examples/concert.gdd.yaml
   profile: readiness
@@ -404,8 +403,7 @@ cases:
     result: FAIL
     diagnostic: READINESS_CONTRACT_MISSING
   verification: normative_review
-  condition: Skærmen er en skitse uden interaction-kontrakt. Desuden er designasset utilgængeligt; dette integrationscheck
-    er UNKNOWN.
+  condition: The screen is a sketch without an interaction contract. The design asset is also unavailable; this integration check is UNKNOWN.
 - id: case.auth.absent
   base: ../examples/concert.gdd.yaml
   profile: records
@@ -416,7 +414,7 @@ cases:
     result: UNRESOLVED
     diagnostic: AUTHORIZATION_UNRESOLVED
   verification: normative_review
-  condition: Der er intet betroet workflowmandat ud over modelfilen.
+  condition: There is no trusted workflow mandate beyond the model file.
 - id: case.auth.standing
   base: ../examples/concert.gdd.yaml
   profile: records
@@ -427,8 +425,7 @@ cases:
     result: GRANTED
     diagnostic: null
   verification: normative_review
-  condition: Tilføj et betroet, revisionsbundet standing mandate for implementation af action.reserve med gældende
-    actor. Ingen ekstra menneskelig godkendelse kræves.
+  condition: Add a trusted revision-bound standing mandate for implementing action.reserve with the current actor. No additional human approval is required.
 - id: case.extension.undeclared
   base: ../examples/sketch.gdd.yaml
   profile: model
@@ -454,7 +451,7 @@ cases:
     result: UNKNOWN
     diagnostic: EXTENSION_UNSUPPORTED
   verification: normative_review
-  condition: Extension er deklareret og asset findes, men consumeren understøtter ikke dens schema-/traverseringsprofil.
+  condition: The extension is declared and its asset exists, but the consumer does not support its schema/traversal profile.
 - id: case.extension.override
   base: ../examples/extension.gdd.yaml
   profile: model
@@ -464,8 +461,7 @@ cases:
     result: FAIL
     diagnostic: EXTENSION_OVERRIDE
   verification: normative_review
-  condition: Erstat extensionens custom relationkey med core-navnet calls; denne extension kan ikke overtage
-    coresemantik.
+  condition: Replace the extension's custom relation key with the core name calls; this extension cannot take over core semantics.
 - id: case.extension.data
   base: ../examples/extension.gdd.yaml
   profile: model
@@ -488,8 +484,7 @@ cases:
     result: UNKNOWN
     diagnostic: EVIDENCE_STALE
   verification: normative_review
-  condition: Et ellers validt PASS-receipt gælder en tidligere spec- eller coderevision; historisk resultat
-    bevares, aktuel anvendelighed er UNKNOWN.
+  condition: An otherwise valid PASS receipt applies to an earlier spec or code revision; the historical result is retained and current applicability is UNKNOWN.
 - id: case.evidence.environment
   base: ../examples/concert.records.yaml
   profile: records
@@ -499,8 +494,7 @@ cases:
     result: UNKNOWN
     diagnostic: REQUIRED_ENVIRONMENT_MISSING
   verification: normative_review
-  condition: Concurrencycheck blev kun udført mod en stubdatabase; faktisk valgt transaktionsmiljø er ikke
-    testet.
+  condition: The concurrency check ran only against a database stub; the actual selected transaction environment was not tested.
 - id: case.integration.loss
   base: ../examples/refinement.gdd.yaml
   profile: import.graphify
@@ -510,7 +504,7 @@ cases:
     result: FAIL
     diagnostic: IMPORT_LOSS_DETECTED
   verification: normative_review
-  condition: En transformer skriver kun én af de to rå relationer mellem samme endpoints.
+  condition: A transformer writes only one of the two raw relations between the same endpoints.
 - id: case.integration.unsupported
   base: ../examples/concert.gdd.yaml
   profile: import.graphify
@@ -520,7 +514,7 @@ cases:
     result: UNKNOWN
     diagnostic: FORMAT_UNSUPPORTED
   verification: normative_review
-  condition: Graphify-artifact deklarerer et layout eller en schema-version, som importerprofilen ikke understøtter.
+  condition: The Graphify artifact declares a layout or schema version unsupported by the importer profile.
 - id: case.parallel.write_overlap
   base: ../examples/concert.gdd.yaml
   profile: readiness
@@ -530,7 +524,7 @@ cases:
     result: FAIL
     diagnostic: WRITE_OWNERSHIP_CONFLICT
   verification: normative_review
-  condition: To planlagte pakker fra forskellige communities skriver samme kontraktfil uden serialisering.
+  condition: Two planned packets from different communities write the same contract file without serialization.
 - id: case.parallel.unknown_effects
   base: ../examples/concert.gdd.yaml
   profile: readiness
@@ -540,7 +534,7 @@ cases:
     result: UNKNOWN
     diagnostic: INDEPENDENCE_UNRESOLVED
   verification: normative_review
-  condition: Pakker har ingen kendte edges mellem sig, men effekt- og afhængighedserklæringer mangler.
+  condition: The packets have no known edges between them, but effect and dependency declarations are missing.
 - id: case.context.global
   base: ../examples/concert.gdd.yaml
   profile: readiness
@@ -550,7 +544,7 @@ cases:
     result: FAIL
     diagnostic: APPLICABLE_RULE_OMITTED
   verification: normative_review
-  condition: En global regel er udeladt fra arbejdspakken, fordi den ligger uden for et hop-tal eller en community.
+  condition: A global rule is omitted from the work packet because it lies beyond a hop limit or outside a community.
 - id: case.include.escape
   base: ../examples/fragmented.gdd.yaml
   profile: representation
@@ -573,7 +567,7 @@ cases:
     result: FAIL
     diagnostic: ID_COLLISION
   verification: normative_review
-  condition: Tilføj entity.note i manifestets nodes med samme ID som i fragmentet; ingen override.
+  condition: Add entity.note to the manifest nodes with the same ID as the fragment; no override.
 - id: case.schema.approval_activity
   base: ../examples/concert.records.yaml
   profile: representation
@@ -597,7 +591,7 @@ cases:
         id: actor.fixture
         kind: human
       outcome: accepted
-      rationale: Syntetisk conformance-input, ikke en faktisk godkendelse.
+      rationale: Synthetic conformance input, not an actual approval.
 - id: case.schema.acceptance_revision
   base: ../examples/concert.records.yaml
   profile: representation
@@ -621,7 +615,7 @@ cases:
         id: actor.fixture
         kind: human
       outcome: accepted
-      rationale: Syntetisk conformance-input, ikke en faktisk godkendelse.
+      rationale: Synthetic conformance input, not an actual approval.
       activity: acceptance
 - id: case.schema.binding_revision
   base: ../examples/concert.records.yaml
@@ -661,7 +655,7 @@ cases:
       - rule.capacity
       result: PASS
       executed: true
-      reason: Syntetisk conformance-input, ikke udført evidens.
+      reason: Synthetic conformance input, not executed evidence.
       environment: {}
       evidence_uri: fixture://not-an-execution
 - id: case.schema.pass_not_executed
@@ -689,7 +683,7 @@ cases:
       - rule.capacity
       result: PASS
       executed: false
-      reason: Syntetisk conformance-input, ikke udført evidens.
+      reason: Synthetic conformance input, not executed evidence.
       environment: {}
       evidence_uri: fixture://not-an-execution
       check_revision: sha256:0000000000000000000000000000000000000000000000000000000000000000
@@ -711,7 +705,7 @@ cases:
       result: PASS
       scope:
       - action.reserve
-      reason: Syntetisk input uden nødvendige revisionsfelter.
+      reason: Synthetic input without required revision fields.
       diagnostics: []
 - id: case.readiness.contract_source
   base: ../examples/concert.gdd.yaml
@@ -740,8 +734,7 @@ cases:
     result: UNKNOWN
     diagnostic: CHECK_PLAN_MISSING
   verification: normative_review
-  condition: En blocking rule har en erklæret verification-metode uden entydig aktiv checkplan; ingen vakuøs
-    PASS.
+  condition: A blocking rule declares a verification method without a unique active check plan; no vacuous PASS.
 - id: case.records.check_hash_changed
   base: ../examples/concert.records.yaml
   profile: records
@@ -751,8 +744,7 @@ cases:
     result: UNKNOWN
     diagnostic: CHECK_REVISION_MISMATCH
   verification: normative_review
-  condition: Evidence-check_revision matcher ikke den registrerede uforanderlige checkplan; resultatet kan
-    ikke anvendes som aktuel evidens.
+  condition: Evidence check_revision does not match the recorded immutable check plan; the result cannot serve as current evidence.
 - id: case.extension.identity
   base: ../examples/extension.gdd.yaml
   profile: model
@@ -762,7 +754,7 @@ cases:
     result: FAIL
     diagnostic: EXTENSION_IDENTITY_MISMATCH
   verification: normative_review
-  condition: Assetets namespace/version matcher ikke deklarationen, selv hvis en ny bytehash er indsat.
+  condition: The asset namespace/version does not match the declaration, even if a new byte hash is supplied.
 - id: case.schema.valid_approval
   base: ../examples/concert.records.yaml
   profile: representation
@@ -786,7 +778,7 @@ cases:
         id: actor.fixture
         kind: human
       outcome: accepted
-      rationale: Syntetisk schemafixture; ikke faktisk godkendelse.
+      rationale: Synthetic schema fixture; not an actual approval.
       activity: implementation
 - id: case.schema.valid_acceptance
   base: ../examples/concert.records.yaml
@@ -811,7 +803,7 @@ cases:
         id: actor.fixture
         kind: human
       outcome: accepted
-      rationale: Syntetisk schemafixture; ikke faktisk godkendelse.
+      rationale: Synthetic schema fixture; not an actual approval.
       activity: acceptance
       implementation: implementation.fixture
       code_revision: synthetic-only
@@ -866,7 +858,7 @@ cases:
       - rule.capacity
       result: UNKNOWN
       executed: false
-      reason: Syntetisk schemafixture; ingen kørsel.
+      reason: Synthetic schema fixture; no execution.
       environment: {}
       evidence_uri: fixture://not-a-run
 - id: case.schema.valid_implementation_report
@@ -887,7 +879,7 @@ cases:
       result: PASS
       scope:
       - action.reserve
-      reason: Syntetisk schemafixture; ikke faktisk verifikation.
+      reason: Synthetic schema fixture; not actual verification.
       diagnostics: []
       implementation: implementation.fixture
       code_revision: synthetic-code

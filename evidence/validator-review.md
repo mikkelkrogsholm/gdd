@@ -1,22 +1,22 @@
-# Validatorreview — 13. oktober 2026
+# Validator review — October 13, 2026
 
-GDD-validator 0.2.0 er implementeret mod det eksisterende GDD 0.2-udkast. Standardens normative regler, seks core-schemas og de 58 caseforventninger er bevaret. Statusbeskrivelser i dokumentationen er ajourført. Værktøjets host/context/parallel/import-envelopes er særskilte informative API-kontrakter.
+GDD validator 0.2.0 is implemented against the existing GDD 0.2 draft. The standard's normative rules, six core schemas, and 58 case expectations are preserved. Status descriptions in the documentation have been updated. The tool's host/context/parallel/import envelopes are separate informative API contracts.
 
-## Faktisk udført
+## Actually performed
 
-| Kontrol | Resultat | Evidens |
+| Check | Result | Evidence |
 | --- | --- | --- |
-| Standardens 58 conformance-cases | 58/58 forventninger matcher faktisk validatorudførelse | [validator-conformance.json](validator-conformance.json) |
-| Pytest, inklusive conformance-harness og regressioner | 74 passed | [validator-tests.txt](validator-tests.txt) |
-| Source distribution og wheel | Bygget | [validator-build.txt](validator-build.txt) |
-| Installation af wheel i midlertidigt miljø uden for arbejdsområdet | CLI/readiness PASS; alle syv schemaassets med i pakken | [validator-wheel-smoke.json](validator-wheel-smoke.json) |
-| Koncerteksemplets backend, action.reserve | model PASS, readiness PASS | [validator-concert.readiness.json](validator-concert.readiness.json) |
-| Koncerteksemplets screen.reserve | readiness FAIL; utilgængeligt design bevares som UNKNOWN | [validator-concert.screen.json](validator-concert.screen.json) |
-| Koncerteksemplets implementation | UNKNOWN; planer alene giver ingen udførelsesevidens | [validator-concert.records.json](validator-concert.records.json) |
-| Implementation uden betroet mandat | authorization UNRESOLVED | [validator-concert.authorization.json](validator-concert.authorization.json) |
-| Snapshot og backend-context | Samme snapshotrevision som standardeksemplet; 34 noder og 73 kanoniske edges | [snapshot](validator-concert.snapshot.json), [context](validator-concert.context.json) |
+| The standard's 58 conformance cases | 58/58 expectations match actual validator execution | [validator-conformance.json](validator-conformance.json) |
+| Pytest, including the conformance harness and regressions | 74 passed | [validator-tests.txt](validator-tests.txt) |
+| Source distribution and wheel | Built | [validator-build.txt](validator-build.txt) |
+| Wheel installation in a temporary environment outside the workspace | CLI/readiness PASS; all seven schema assets included in the package | [validator-wheel-smoke.json](validator-wheel-smoke.json) |
+| Concert example backend, action.reserve | model PASS, readiness PASS | [validator-concert.readiness.json](validator-concert.readiness.json) |
+| Concert example screen.reserve | readiness FAIL; unavailable design remains UNKNOWN | [validator-concert.screen.json](validator-concert.screen.json) |
+| Concert example implementation | UNKNOWN; plans alone provide no execution evidence | [validator-concert.records.json](validator-concert.records.json) |
+| Implementation without a trusted mandate | authorization UNRESOLVED | [validator-concert.authorization.json](validator-concert.authorization.json) |
+| Snapshot and backend context | Same snapshot revision as the standard example; 34 nodes and 73 canonical edges | [snapshot](validator-concert.snapshot.json), [context](validator-concert.context.json) |
 
-Kommandoer fra projektroden:
+Commands from the project root:
 
 ```sh
 uv run pytest -q
@@ -26,29 +26,29 @@ uv run gdd validate examples/concert.gdd.yaml --profile readiness --scope action
 uv run gdd validate examples/concert.gdd.yaml --profile records
 ```
 
-Den installerede wheel blev prøvet med en separat midlertidig virtualenv og et working directory uden for repositorymappen. Ingen global installation eller publicering blev foretaget. [validator-assets.json](validator-assets.json) registrerer de konkrete implementation-/test-/standardassets og checksums for kontroloutputtet. Rapporter har normal versionsidentitet; denne separate manifestfil identificerer kontrolgrundlagets præcise bytes.
+The installed wheel was tested with a separate temporary virtualenv and a working directory outside the repository directory. No global installation or publication was performed. [validator-assets.json](validator-assets.json) records the concrete implementation/test/standard assets and checksums for the check output. Reports have normal version identity; this separate manifest identifies the exact bytes underlying the checks.
 
-## Reviewfund og rettelser
+## Review findings and fixes
 
-Tre read-only underagenter gennemgik modelsemantik, scoped protokol og integrationer parallelt. Lead skrev og integrerede alle ændringer. Reviewet førte til regressionstests for:
+Three read-only subagents reviewed model semantics, the scoped protocol, and integrations in parallel. The lead wrote and integrated all changes. The review led to regression tests for:
 
-- Dublerede JSON/YAML-keys, YAML 1.2-scalars, tilladte built-in tags, custom tags, aliases, ugyldig Unicode, uendelige tal og symlinkescapes.
-- Rekursive typereferencer og optional-placering, ownerdubletter, lange acykliske grafer, edge-source-selectors og core-constraints.
-- Extension-metaschemas før traversal; remote refs uden netværk; inert `$ref` under const og legitime datafelter som code.
-- Parentens børn i context; ingen context-bypass af readiness; canonical edges; community er ikke et tomt implementationsscope.
-- Aktuelle afslag under både explicit, standing og none; ubetroet/urelateret supersession kan ikke skjule dem; tilsvarende beskyttelse af failed evidens.
-- Evidensbinding til relevant scope; revisionsbundne checkhashes; faktiske hostattesterede miljøer, negative kontroller og checkerproveniens.
-- Manglende records påvirker ikke en beregnelig modelrevision; standalone records får ikke model-PASS alene på grund af schema-PASS; ugyldige API-scopes giver kontrolleret inputfejl.
-- Kendte/ukendte kontraktformater, DESIGN.md-frontmatter og normaliseret skriveoverlap med eksplicit serialisering.
+- Duplicate JSON/YAML keys, YAML 1.2 scalars, permitted built-in tags, custom tags, aliases, invalid Unicode, infinite numbers, and symlink escapes.
+- Recursive type references and optional placement, duplicate owners, long acyclic graphs, edge-source selectors, and core constraints.
+- Extension metaschemas before traversal; remote refs without networking; inert `$ref` under const and legitimate data fields such as code.
+- Parent children in context; no context bypass of readiness; canonical edges; a community is not an empty implementation scope.
+- Current rejections under explicit, standing, and none; untrusted/unrelated supersession cannot conceal them; corresponding protection of failed evidence.
+- Evidence binding to relevant scope; revision-bound check hashes; actual host-attested environments, negative controls, and checker provenance.
+- Missing records do not affect a computable model revision; standalone records do not gain model PASS merely from schema PASS; invalid API scopes produce controlled input errors.
+- Known/unknown contract formats, DESIGN.md frontmatter, and normalized write overlap with explicit serialization.
 
-Agent-readable-code-linteren er gennemgået. De resterende fire advisory-fund er korte lignende diagnoseblokke og den lokale source-lineageberegning i CLI/pakkecheck. De er gennemgået som advisory-fund. Der er ingen filer over 800 linjer eller linjer over 400 tegn i implementationen. Der er ikke indført en ekstra abstraktion for at fjerne disse lokale ligheder.
+The agent-readable-code linter was reviewed. The remaining four advisory findings are short, similar diagnostic blocks and the local source-lineage calculation in CLI/package checks. They were reviewed as advisory findings. No implementation file exceeds 800 lines or contains lines longer than 400 characters. No extra abstraction was introduced to eliminate these local similarities.
 
-## Scope og begrænsninger
+## Scope and limitations
 
-Dette er strukturel og revisionsmæssig validering. Faglig pseudokode, faktisk scenariedækning og erklæringers sandhed kræver review eller checkere. 58 matchede forventninger er ingen fuld certificering af alle mulige standardkrav.
+This is structural and revision validation. Domain pseudocode, actual scenario coverage, and the truth of declarations require review or checkers. 58 matching expectations do not fully certify all possible standard requirements.
 
-Condition-cases bruger syntetiske mandater, miljøattestationer og receipts. De dokumenterer validatorens adfærd; de er ikke faktisk autorisation eller evidens for en koncertapplikation. Ingen sådan applikation er bygget eller testet.
+Condition cases use synthetic mandates, environment attestations, and receipts. They document validator behavior; they are not actual authorization or evidence for a concert application. No such application was built or tested.
 
-Graphify-profilen påviser tab mellem originalt og rekonstrueret råinput, men en produktions-Graphify-adapter er ikke implementeret og giver UNKNOWN. Visualization, custom-kind readiness, historiske snapshots, markdown-heading/opaque-selectorresolution og automatiseret policybestemt exceptionaccept er heller ikke implementeret. Afhængige checks er UNKNOWN eller kræver særskilt betroet hostinput som beskrevet i [VALIDATOR.md](../VALIDATOR.md).
+The Graphify profile detects loss between original and reconstructed raw input, but a production Graphify adapter is not implemented and yields UNKNOWN. Visualization, custom-kind readiness, historical snapshots, markdown-heading/opaque-selector resolution, and automated policy-controlled exception acceptance are also not implemented. Dependent checks are UNKNOWN or require separate trusted host input as described in [VALIDATOR.md](../VALIDATOR.md).
 
-Fase 1's standardreview og authoring-hashes er bevaret som historiske artefakter. De angiver ikke længere de aktuelle bytes i dokumentationsfiler, hvis status er opdateret i denne fase.
+Phase 1's standard review and authoring hashes are retained as historical artifacts. They no longer identify the current bytes of documentation files whose status was updated in this phase.

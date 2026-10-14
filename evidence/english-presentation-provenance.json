@@ -1,0 +1,692 @@
+{
+  "format": "gdd-english-presentation/0.1",
+  "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+  "artifacts": [
+    {
+      "path": "GDD.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "2aff7f9aa8667ee23212e4e2a54c2c25a29a44854a2b2bf7bbc1d8030dbe523b",
+      "english_sha256": "06290c01a0b5015f3a056f70fc253b56a2e2036b7814f83e9bec29a7f1b7b322",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "GRAPHIFY.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "578b219b769944318f1790a9d178f0e45cb94aa0e472eb3ac029f558cc4ed630",
+      "english_sha256": "a1655b0e2cba42022d8c2a7d68b43cd50f4f057922cda4f9ff014d225325fb1f",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "README.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "6694a70ad5065db5634b56417ca4be29c0ba2ab503d9b78a2b1e23fc253ea2cd",
+      "english_sha256": "6fd7f0d617d522d43b63a9d495269e1b0551891d835d411aef5844c1df289645",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "SCRATCHPAD.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "9420dd54bce800d6ba5e44c86d3997795cf1a0e0096032e5a1464eb1b10e1c18",
+      "english_sha256": "f727907f2114b2c2ac431331c8ad055b99bb3592d65b153cf8ea610f69eede03",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "SPEC.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "76a496a404b9661636c3e707084ceb7cfd148b6e2952e1a7e7a6ef26d7c8bb08",
+      "english_sha256": "da05a5576ee1c40151cbc42284cd01aaea0cd95ee9996cd3cada2172ef0f7d32",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "VALIDATOR.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "758bc03fde3c2bfa6fb6db7b9e3f105790169fb319adee83ca14f20fe0601427",
+      "english_sha256": "b73371ad297c98697b387041b6e46725a0e298997ccaa22443c8e9fdd214ed0c",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "VIEWER.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "c5e536312a0616768263d76a62fa9b589ac45200923b4c967d0b680f0c9baaac",
+      "english_sha256": "3bf375ef3bc4f14ea440e8ed13fb8d1fa3f79b0739200a8f74d8ee097840443b",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "WORKFLOW.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "51483dda64462b1bef9caf7354e34a6d9a908d783c1dea7faab735a6dd3c67e7",
+      "english_sha256": "60fd1bc8482db4b8fa45c99c35e698730074bd8553fee4bab5834a57e3380a6e",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "WORKLOG.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "1bf123c8aac4c031af5135d9223c64c65b3c4700798e42c0eae064f0a21cee4a",
+      "english_sha256": "a40fdd862d95a971f4c08baff4367370dc77e155d3b40aefba7ab25dee52d5e3",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "agents/gdd-lead.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "a9ef782f9c4138792a8653faacd095b6c8f6306c1c1b57c98b45619d5763d90b",
+      "english_sha256": "f3388e0da02a6197dac80b3c7659d317fb53329de497c9d6fb798f960def4c5c",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "agents/gdd-worker.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "0e9732a07bf4055ee527e537176235a314c506682230569c8149c711018ba936",
+      "english_sha256": "91a768ff0c704f4ed6e9c85ad2c4b393a1ba48eb66e9c29349b407b09b00844e",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "archive/gdd-0.1/README.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "2190b4f8d173696472181230d5720a521d959608148b868ae95a8bcc97823096",
+      "english_sha256": "1005bf7011b39b675963ab8ae82d4abc7289a779b085be6f5064782bba013268",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "archive/gdd-0.1/SPEC.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "e0eba941ba53d0aa05d8816a8d8b2f2648456627ee6480c26acf141a5e783068",
+      "english_sha256": "543d9ec56c04c4badec7b5d58c4549c6ded716da3f078156f8dba81db909433a",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "archive/gdd-0.1/concert.gdd.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "8dfcf87613d59edce97d911e57ce1314c9d17356b53d48029d8eebe3b24bbc88",
+      "english_sha256": "f7b866db5d8e132b08044289ce35c82e65bef51d2833e0fb67806c3eebe682f5",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "concert.gdd.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "8dfcf87613d59edce97d911e57ce1314c9d17356b53d48029d8eebe3b24bbc88",
+      "english_sha256": "f7b866db5d8e132b08044289ce35c82e65bef51d2833e0fb67806c3eebe682f5",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "conformance/README.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "555b42e95196cc117dab95397c366af64254598634875f9be7d2442f864d1554",
+      "english_sha256": "b42dfda5f3dec67a59d50037893487f4f53fdd5dedf2ff74f36bc2147100c7b8",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "conformance/cases.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "eefad5c37f7d797ec1f185fcea772905b7cc5c699cef84e773e178481e709e6e",
+      "english_sha256": "102ad196af87fe6bf048edc64de20dd1e51e270f744df4b3d9604073c7d06191",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "conformance/diagnostics.csv",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "b856ca00e7bb3b74e1da86481912a073cc8a70caa18db46b07e224de2b47ccc2",
+      "english_sha256": "0d0d7f514bf5e8face4110c7dcdc45d1b181dd73c1b478b597bbbda9f29873ad",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "conformance/run.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "3fb5d8ec336ac8c3a76e92b08ca7c1257a2d500d69f89c3194d8d5bb2e328379",
+      "english_sha256": "08fca29f8af87b918270845a4a7c6895f88f4334d30497c6de2c3a40aca6f0c2",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "conformance/run_browser.cjs",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "bf4e003f22a4809af663dfe79d30b9933d0a8c059efedb39fdde1667434f04b7",
+      "english_sha256": "286de0c642d765e349b4989abf40959770e5370e80f02f87bf42c6791ca038c8",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "conformance/run_workflow.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "ea52d6de93639301d996a99aed448526def758e0b22901c02475611f038fb048",
+      "english_sha256": "fba47d063ea77ac555f04cee78d0aecfd9c3bc2b92aebb3a35fadebff6f6c957",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/authoring-check-command.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "14d1147047f3fded13b42d27f1763e590a0ff94acd7476e0e4e612859ccc71eb",
+      "english_sha256": "483d81516f992c35ce3d3387a27869976e1845b7d355520f70b808286ddcf9fc",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/graphify-review.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "7277f2f892e6b2a3a3bf32c712da4c59f06b9226539ed4df7cbdd8fa7506576e",
+      "english_sha256": "346f1a3b6d018bf10db6f90182e9b220fb677c269df817fc791d5719b9df26dc",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/graphify/standard-conformance.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "92931c7d96a353fcdd9c7a80e9dd7d6b807924c8641e3dce9443829aa4807a4e",
+      "english_sha256": "88290124f93ab0fa3528d4ed9d4659e3a525b1963c9b8102c822269af72b95a7",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/requirements-coverage.csv",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "5a3262f0bbe3b13556b51d56d8d594c9c396c45c57c03cfd7193dc2d1c7ab04d",
+      "english_sha256": "80bc2bd88cc0efc14a93810064de9f34a2465a85d7b8570b2608223f9ec0183a",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/revalidation-2026-10-13/README.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "5b08f0c4ebda2b2dafa0bec67d5973aca2eb7dcd721f4e02593ee390492f8d44",
+      "english_sha256": "e58baabd2a6f2141f52a154c352818c99348a6e697d5c00c0fa98caaf2dd5f2f",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/revalidation-2026-10-13/conformance.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "24b5a0efee0bf267b34dbbafaae8cfadbd92a89091e38bd5417ee5b65b03e6d7",
+      "english_sha256": "1209ea27a0030e49201a54091d6d34d0e1c54c5cf73590550b38b6b8c732d989",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/README.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "0ec6121a24472cb41ad02556e3e910336c06517c1c614641f06b944f58b37363",
+      "english_sha256": "f7e657f22ffad32fe4e22f4910f808dc160d6b306c4a1c5615d70b8d074e3bff",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/final-wheel-smoke.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "4685a491ddfa38f770fced1493bae40c3fd5ce3373e2ed20d6191fcfa1adbff7",
+      "english_sha256": "1d6f8e360a47a25665222243b9ef005f18250dc4b80295cd8f076ffec9b19674",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-01-model-protocol-before.txt",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f7b7e832586c103402b6cd5e63e40696944b62b694f6d12af4cb1eb6198d17e8",
+      "english_sha256": "cc10dc0b52b437a83122ac40e6f42dd30b04efa883a49bb073e7c3f5267cc517",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-01-standard.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "02307e6560830177658af24aa0bbba411693177d26d1a0f6fb3bdb9f603730a2",
+      "english_sha256": "20cb704a4bbaac8b688231eaad55463039ee444b2c2472d75b44590551ec9b96",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-01.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "12720d4a516e34ff20254fb857014a2be8b7700ccd537d3db6a10a25d5d9482c",
+      "english_sha256": "a330f63883ea51bf3d7df8ef4bf8d2e2eb96a00daac3837fbce3d5157e90c36f",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-02-standard.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "34486960b22142c984c61a109547fead6c55b3eb5100cf1472df1e54b4458519",
+      "english_sha256": "7194184459dfa28d3059faa8d0a3147647a9f0af4a9ef44d702f05e0dd9faff9",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-02.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "4cda965ec0f1a93090c5e2bd83fd36ac1719be629a13b37b043fdbe7141c3249",
+      "english_sha256": "80f338680ab3ebc7a938087feab3ea2c242efb7f39133913a0aa053f5521aae6",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-03-standard.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "1b125782e141b9a2b0832fce3429afc99fbf7b62b42e329371350b2f5e366588",
+      "english_sha256": "042669028b565b374dd2ae18a4e58cb63012048f810c3c34e1d448449047749f",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-03.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "fe5d364bea0e480268a1ef85c8bf57e51ecfb280425b50194cec5b6029b5b8f7",
+      "english_sha256": "56372d60bec9a67d7a72cfdcf79c3afae2b83371259083a1267ada3aaf538172",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-04-standard.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "bd82329a0b0ec4339d69515593325b15b527a36ca202b80f4014271c072be47b",
+      "english_sha256": "807c89adb02cd035d5319ad32167dc0d2f884e017096cdcb074be7f941c2d820",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-04.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "316d7e22146804d6d242276d279b35ee5a91481586851630ba5566833eba8a48",
+      "english_sha256": "1a5f3380dd56ecad65b39327da49b3f079eebdb660cdccf242d49ed42f85cdb5",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-05-standard.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "9bb72b83c0c7f1443af42f981d7e46444e4577efd590db96745a3ec10b8d9f14",
+      "english_sha256": "d10b6672c5ae9f3883a2864edd3903d4e170f32c3beee66d59f05b5f7082edcc",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-05.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "2739978a6234450ce468f55c54c23080d5a45ff6ba7b94d011cd829f53cd6835",
+      "english_sha256": "f34e131c77660486620e6430b813f57f4f1ae5b21983c1210528918f41c25d27",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-06-standard.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "2d358389968ba30846dd68f9eab9826a6a8ad6e9ca8457cc602f35c391989e1b",
+      "english_sha256": "7340dc919fc636668dcd91dca0e4380e9fda680219feaae09547173e0da466ad",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-06.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "0fd248360f7dca3b48900af5969a84ad086ecb83c129282b023709c57fbb0b11",
+      "english_sha256": "949764beec03dee953660f7ccc51e392a77a72663be7865d991eae6b7d5cf96f",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-07-standard.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f92581de592f05a8bffa7d18fab6377cd36913107e537827dde68f25b903c55d",
+      "english_sha256": "6befa90b70bb5a7c7bd0449fa33e5313be0d6d890601961d29b607a287e37c0d",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-07.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "3dc9e166ab8425d81add7048c85a44cebc26518e8253dba836f86a1c694e5537",
+      "english_sha256": "efe37c6624702db73496849930608e073b0e4040dcb0524ee1ee3ba8ef60a4cd",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-08-protocol.source.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "df77ec69ee10311fc78b0c0110e8f5e82321492bcab89c9590bbcf0e14f09462",
+      "english_sha256": "983a8d181c98c22cb663c970cd6489b84683dc3006d48cd177da288644d23ebc",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-08-standard.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "eed74b7162b70689f92ec921b0fa52e5fec1cb81166504021aa24647fd387036",
+      "english_sha256": "36212d407abbfd21300acfd9bbb774d8d37a698e8d8f030243cb6499f0351090",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-08.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "788d85972cd4255868d5ea7d4d65c7bdf0fee0107a45540357086cee9f14a8d8",
+      "english_sha256": "054cf6fff27f28246a02aa65d7ec79d6d653f29897bcc63b0102777e987f2909",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-09-standard.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "e7fc9d4dd7f4a8d4a6ee3ea423f66e884cbad4713a349e68115bbf499327da58",
+      "english_sha256": "248f2b9406d3a21bd405dcc6f6b739c1add090169fb588fc189109605f450c2f",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-09.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "325b28cdda3b29b55abca64e1adcae7be5522f7e116276aa44385a32d036bd6d",
+      "english_sha256": "f775642eb8f420346a4da8272b31d3b675c0a61748b4f33d9f0dd221e15ee864",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/review-loops/loop-10.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "344b93adb27c49a3e93b793c9b358093e738a42a697b24b3805295b62471faa7",
+      "english_sha256": "9ae820b950fb2c73b2fed3760d5815f4489d140d3a5b5ee9fe243a193ff7d39e",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/standard-review.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "8eacfc0c396ceddbe4d5d1882ec2e8e909b83fe7a990e9a27eb0f0c750bb9e3d",
+      "english_sha256": "b4870d0fd814f903ea7dfb85a5cf5effacc61f408edc7f37924fb9318926e24c",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/validator-conformance.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "fcd19578ef2fba83a2b025dd43ab1bc51a67692941151fb738963d1a944bcfac",
+      "english_sha256": "b5c086a32cbcd8ee0f8db5d9b607a394f9592312be23e48a0754c0ac30a8ffda",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/validator-review.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "17b7b545a2a85ebe8db768a334571508d33e9b536ce9738fa267eea5a3ebf7bc",
+      "english_sha256": "a2da340ea1abb9c1ce9449a15bfa02a40af8f574360deee6894e2476126c8a96",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/visualization-review.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "de91db037d01fe9eaa67be429c1f781fabb441367d0fc3e0097a4289121b0326",
+      "english_sha256": "7e9734d9ce91bf94bc5ed11bd3bc15d13b9f491e0ec90b4574090d662f2dc521",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/visualization/standard-conformance.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "014772f403447d049c301d789a9d438072822faccee81d731249a13e128b67e9",
+      "english_sha256": "a40a8382f01c4086efad030fe230b0d95f7fd80945b30466e33b3e62c3b76158",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/workflow-core-conformance.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "a80d42a07ba0b7b14989c185424d04ba350c585a3f995f11422c9cbd62335976",
+      "english_sha256": "170e8bfad6b551c1903b2380a217bebb73442a686628784daf1f0574eeb22619",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "evidence/workflow-review.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "d7ff95426179038494a2fe8c815633e5e8a521a02b1a028ab6be0f5e4b7add2b",
+      "english_sha256": "acfa8a3d8f7189f9bcadb85ab2dddc6efdcd9e66a536dc8b35b9abe56a486b8f",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/README.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "a59c2e689c360cb7c465011877d5cbf70a767ad87f757e190c0b7a9d7907bbd1",
+      "english_sha256": "d83d7478109fbf13487e83d8df70fbc979bff7674ae66554155616ad69c52e2d",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/agent-native/README.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "d07de2c61b228bd82c22bd90cae93602aa74bc65fa67dab67a1192d5ae62cb62",
+      "english_sha256": "37251c68c8f58189eb1c5b9e7bb18e3552f53077df30740d98dedf2eeaa853bc",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/concert.gdd.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "826d52effcc6b30b1585341d201cc03ef0a89501fffaf3b404fb1a339564239e",
+      "english_sha256": "3c736f81bea5e74454600cc1ae62ba7e784593b913f177d85e5996d1034a31c1",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/concert.graph.html",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "c18e62a54eb8b53383e00a36edf48633596a539d6a1d80d797b7deb54c365144",
+      "english_sha256": "928d078a835e93cc6b5404f6dfc420468f089655ca27f65fd011e2815d5f7cd8",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/concert.records.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "496a0525a5fcbf5ef4abf74a89c8bceb31ca0b1ab581355180b6e0641e54fbee",
+      "english_sha256": "827f3efb9a1efc4921c57072610c5a7dc88ce7bc73fb297db04457229b39884e",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/concert.snapshot.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "4e271aeb3e03d5e22f7f7f37e2f1d73158d3c572ca4d6c35f59e226d1a88a880",
+      "english_sha256": "fcab25e41e4ec1b5826481efab169970d9f15f2b6dbc4417cdf6041bb1b23eb1",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/extension.gdd.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "b877697b77ddcdde91c122f7393599c1a82676790bcd44eb4f25bf9ca23690c2",
+      "english_sha256": "b02bd146f66e7f7b13aa484dc7268b70d2449f32c73cfd63bbd6bc7c477c9381",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/extensions/sensors.extension.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "1822e580e00ef250f7e8a0b3b411fd501a75e37726fadb59d3246936ea971136",
+      "english_sha256": "456a9dc2a2abb8a59bcc2dd3283c043656bd812b5da6998ce10d7210786a23f8",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/fragmented.gdd.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "a2b8070721684aa36ed5e96be89b9255e8e97dd6d2a50af2096303c2b6ee2c90",
+      "english_sha256": "88de481f20a3184f718a9a6ff2e45937d11557a0762754e53e6d8aef529cf220",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/graphify/README.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "4ecfe5a321b2914a527cb48eb89035baf9a5f7c9acffc0b280ca472547341660",
+      "english_sha256": "f2ef75860d78233f1a593371f27a93c8f4fa558422df9740a688812c13182c1a",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/graphify/mapping.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "3e4b2936d529ad8c741dc3319b47c0ffdb73e3e3b70390f487c735755839015d",
+      "english_sha256": "ece6953e4df8cd2150942ccbb5bee49fed437aa2cea8be88823e27364eed5d7b",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/graphify/observations/proposal.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "5086b5b769fed00ad2b56629e00b34616c314db506bf0efc0c952ad198c930d6",
+      "english_sha256": "baf601266ab615a8cccdd72d02e392cf5eba668fdc2c36039237ae7a28fe3e2d",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/illustrative.report.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "8c1cdad2a076951581e2914c037fd0a64caa47e02f400b8eceb675abf6bd0520",
+      "english_sha256": "0bedf23a76093b044d5b81ac894f90d51cd9be62750ea03fd7c8aca00230b106",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/note.fragment.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "713978586061a7ffd9ff69d149068dc23e2a7befa9c52017cb2c2c750cbfcdb5",
+      "english_sha256": "c8f96397d460ffb716606179c949db55de1a4509b9277891870021717c270915",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/refinement.gdd.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "0911cf6c303d7db4a1919fe51ac75d522a60d1dfaeb1305bafc48e1dfe9b597b",
+      "english_sha256": "fa9d8da90a89cdb1bc5d852fcfa61bf6649b5913d6b5fd5b1e6cff8868149558",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/sketch.gdd.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "30f9af560ffc8b8d3bb409721e2719591a334a2a3124b6895ed7f20dbef05a7f",
+      "english_sha256": "f420d80295a55944692f25a997361e5d7bf6df9808cd97d070883513d855f6a9",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "examples/sources/legacy-concert.gdd.yaml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "8dfcf87613d59edce97d911e57ce1314c9d17356b53d48029d8eebe3b24bbc88",
+      "english_sha256": "f7b866db5d8e132b08044289ce35c82e65bef51d2833e0fb67806c3eebe682f5",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "gdd_validator/__init__.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "75467b43baf43559e759983f57cf946bfce6a6c66f712cc9e5866684a79e15ab",
+      "english_sha256": "6484ca8e42c9be9dcce64d81c32baf6e2e23206e6942b351ce8f7e2eba31aa1e",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "gdd_validator/graphify_proposal.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "36bf7c10aeb9d3c97ceb38153d376f453b750d5d82340617168f09d52abb0a65",
+      "english_sha256": "53b5ecebc402d71acbef8ad17fc81a8245326791fb11c51ed86e77d868d55098",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "gdd_validator/validator.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "98eeee20ccad1b31cdab3b19d68dcd59bd8158d5411c715cec4e1d20b5734636",
+      "english_sha256": "1c03a2365b69ce1406a97a83c5eaa5039ceb865f9f9932980daecd0fc792ad56",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "gdd_validator/viewer/app.js",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "ba39fd9fbbdfb00906c9966ec943469bb104c2186eb49f6fda2cdf670a1c7be3",
+      "english_sha256": "1ee571b95091b52a4a972682caf3abcf11c13839affd1de71dcc151798925b95",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "gdd_validator/viewer/graph.js",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "0227f9aad6eb648e25d56a2e5e7dd75c61e2509897f39c1c83cbbea65b5f1ccb",
+      "english_sha256": "b4fa44a8f822573b1548d5edec397f4f7afaae5c8e492ddc31c148247fa0b404",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "gdd_validator/viewer/inspector.js",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "b1847b659826797f999708975d1333182640be2172c383ccab2b4a1e1a951203",
+      "english_sha256": "145d2ce280788ff92e80280bfb9a7c10366a452d29d1a63a1e8c850d7765f2be",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "gdd_validator/viewer/shell.html",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "cf53014f365cf2a975c25623d8b5dee39473d86981d2a2a881741a7efd9b2bfb",
+      "english_sha256": "34ff3bb311c89e7823c2b2525d5a2c9b8728aa7730e58e060437769e80620dc6",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "gdd_validator/visualization.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "943796b72b1e9503f20ddfa532729f647e6459b733cfa96d7f83d5093c53cea3",
+      "english_sha256": "cb0068c8d55b77fa0346a3b976204591f814cf54df7913bca544c8d1ed7a5e21",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "gdd_validator/workflow_run.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "7c3bc1909fab15b56968cd5d23715b13bcbc5c7b4e914c9b19bc08417ee5ca85",
+      "english_sha256": "2f9b802139f157d9d0f6b78b3fae5e0e9ab913af7acbd7c9445968b9b19dbd97",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "pyproject.toml",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "ff08e1fd6a83d4084eacf893208669bb5271869d9bd841de10771c66c329aaab",
+      "english_sha256": "c8f19294a974d86bf8ab4e993bdae853ed489ff612faeb297f2decb6e72f9245",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "research/2026-10-13-existing-work.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "43b5e74ebdb2c76749b923d7242dbe6dda09279cfd9301e9dad204d06acd3b6a",
+      "english_sha256": "cb42f0b23f5d572e9e305a7721b07ca1e5064bd26f722b6acae3916c651f1328",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "schemas/README.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "70281e559fff999a5609b1aa8e14158f2dbb36784c12f7b7a628ede119d2142c",
+      "english_sha256": "f47051a4d00e9dae82bd0effac9d43424a14d66b5b27cf3a6d384c164c368b8e",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "schemas/view.schema.json",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "33899d4cdfc4092a595914207bd24fd90236f75f42bd059745c86f551b5b1ec4",
+      "english_sha256": "f60659bc71250e50fc9ec4d4ce1d36e8054bbc26a787e10bfcc5d839a8ae3c28",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "standard/AGENT-PROTOCOL.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "5b2bac83d2363bcf624bc42a819354b7c068a86e86aeadaf0c2042bf5001993c",
+      "english_sha256": "dc1aeb61307b527ea431ba3a0c00e7aea5b02121dcf5f84fbc14cd55a247f643",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "standard/DECISIONS.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "e92d10c0929a385f638e8104b9249bb60fe116621c1e391a7900f54872518fd4",
+      "english_sha256": "c717a27b3cde192af6f41f04aa1fd5f5d8f1b32400819ac2f01324da1cbdf5c8",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "standard/FORMAT.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "c308e219ddba65fc1bfdfd8b2202536e3833fba77bcbf97e6ae72dac9fcac609",
+      "english_sha256": "9fa3275233d3c6e17c95cba46e357f1823fc82e167aea14752e952eb6a7c86bc",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "standard/INTEGRATIONS.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "217091fe8674a3dc85efcf18fe388c63cdd6bb53975ec3fd82ca02db3c666eca",
+      "english_sha256": "b7a9656aefc5d78f7cdd0598b65f2acf6ee519e4161754154417b28ea4e5cdb9",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "standard/MIGRATION.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "c6c057cb72379c42e1287c29a83b0c4415f01c6099d5ab716bd180143c92f344",
+      "english_sha256": "d6d23439126639536c00c2ad23c558386f10b408e3a40c2fb202dad6caeabbea",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "standard/VALIDATION.md",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "beaee8fa0a45f5d254feb6b7a9c1d89138bbf5ed09608efbeeca7642e7dd19dd",
+      "english_sha256": "1d0d88e640f5d5e505bb8452d16397b7b8da736023a0d4170a6bc2797307587c",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "tests/test_review_graphify_loop2.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "cb9c3fd24cc0ebc28e426aeafd43090b6c364d4683d5562a29a2888f2d68df89",
+      "english_sha256": "954ed35b9ccdeb2b9085a5e5de25f17e9021dfdd2fe71e3089e0823983f9da1c",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "tests/test_review_graphify_loop5.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "814d416403a30416a4484e795eb80480a05ecfeb31bef9124733bf2c1c928648",
+      "english_sha256": "be5b1daa9fde85666c5cea33ac84245906a05ea296572a39a421d517911f343b",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "tests/test_review_model.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "21eb76486248244ff9f1399a1b226b9ea4e4832b5dad3d3e430fe3260f323427",
+      "english_sha256": "5e9415063b84d4d98f74455e55928d0f564064f09308fe9267370ae198ea7d2a",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "tests/test_visualization.py",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "20b07955bdcce2f3399ceaa60d46940e3de4c8ea5b9b1ffc035312d9b5d80dd1",
+      "english_sha256": "55c9224d99c581f05bcba5806943c019c4b6b52a80930dc68215b6446041c252",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    },
+    {
+      "path": "uv.lock",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "84bd97280c6b30ca8e79d0aeb80eff9c21dbf68e10e19ceadf0cd5fac4a96e46",
+      "english_sha256": "e56068fdf4e6a5a85a58f286090e22ada7687d113de356ab398559f1a13e02c0",
+      "presentation": "Current English artifact; historical execution claims remain tied to the original Git state where applicable."
+    }
+  ]
+}

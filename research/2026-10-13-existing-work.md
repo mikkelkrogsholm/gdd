@@ -1,70 +1,70 @@
-# Eksisterende arbejde før udvikling af GDD
+# Existing work before GDD development
 
-Undersøgt 13. oktober 2026. Udgangspunkt: brugerens SPEC.md, concert.gdd.yaml og vision om en redigerbar pseudo-graf med pseudokode som grundlag for AI-genereret software.
+Investigated October 13, 2026. Starting point: the user's SPEC.md, concert.gdd.yaml, and vision of an editable pseudo-graph with pseudocode as the basis for AI-generated software.
 
-## Konklusion
+## Conclusion
 
-Andre har allerede implementeret væsentlige dele af ideen, og der findes meget tæt konceptuelt overlap. Microsofts RPG/ZeroRepo og Spec Growth Engine er de vigtigste offentlige implementeringer at sammenligne med. grAIph ligger tæt på den samlede vision, men den aktuelle implementering beskrives som privat. Kenneth Tyler bruger allerede navnet Graph-Driven Development om et beslægtet koncept og har offentlig kode.
+Others have already implemented substantial parts of the idea, and there is very close conceptual overlap. Microsoft's RPG/ZeroRepo and Spec Growth Engine are the most important public implementations to compare with. grAIph is close to the overall vision, but its current implementation is described as private. Kenneth Tyler already uses the name Graph-Driven Development for a related concept and has public code.
 
-Undersøgelsen fastslår ikke, at nogen løsning opfylder alle vores ønsker. Den giver heller ikke grundlag for at hævde, at kombinationen er ny. Et muligt særkende skal demonstreres gennem en konkret notation og arbejdsgang.
+The investigation does not establish that any solution meets all our wishes. Nor does it provide a basis for claiming that the combination is new. A possible distinguishing feature must be demonstrated through concrete notation and a workflow.
 
 ## 1. Microsoft RPG / ZeroRepo / CoderMind
 
-ZeroRepo implementerer krav → Repository Planning Graph → repository. Grafen forbinder funktionalitet med implementeringsstruktur og afhængigheder; kodegenerering følger grafen og bruger testvalidering. RPG-Encoder går fra kode til graf. CoderMind stiller grafarbejdet til rådighed for coding agents. Der findes offentlig implementering og en ICLR 2026-publikation, oprindeligt publiceret september 2025. [Repository](https://github.com/microsoft/RPG-ZeroRepo), [paper](https://arxiv.org/abs/2509.16198).
+ZeroRepo implements requirements → Repository Planning Graph → repository. The graph connects functionality with implementation structure and dependencies; code generation follows the graph and uses test validation. RPG-Encoder goes from code to graph. CoderMind makes graph work available to coding agents. There is a public implementation and an ICLR 2026 publication, originally published in September 2025. [Repository](https://github.com/microsoft/RPG-ZeroRepo), [paper](https://arxiv.org/abs/2509.16198).
 
-Jeg har også læst udvalgte dele af kodegeneratoren og dens prompts ved commit `a4e6966c4ff59d84299bc56d6a47ae1f4f7b2885`. Der findes særskilte forløb for testgenerering, kodegenerering og testkørsel. [Kodegenerator](https://github.com/microsoft/RPG-ZeroRepo/blob/a4e6966c4ff59d84299bc56d6a47ae1f4f7b2885/zerorepo/code_gen/code_gen.py).
+I also read selected parts of the code generator and its prompts at commit `a4e6966c4ff59d84299bc56d6a47ae1f4f7b2885`. There are separate flows for test generation, code generation, and test execution. [Code generator](https://github.com/microsoft/RPG-ZeroRepo/blob/a4e6966c4ff59d84299bc56d6a47ae1f4f7b2885/zerorepo/code_gen/code_gen.py).
 
-Vurdering: den stærkeste direkte reference for graf → kode. Vi skal undersøge forskellen mellem deres planlægningsgraf og vores menneskeligt redigerbare pseudokode med eksplicitte adfærdsregler. Den forskel er endnu ikke påvist som en unik capability.
+Assessment: the strongest direct reference for graph → code. We should examine the difference between their planning graph and our human-editable pseudocode with explicit behavioral rules. That difference has not yet been demonstrated as a unique capability.
 
 ## 2. Spec Growth Engine
 
-Software beskrives som en graf af SPEC.md-filer med kontrakter og kodebindings. En agent kan implementere en node ud fra samlet kontekst. Deterministiske checks kontrollerer struktur, importafvigelser og evidensstatus. Der findes offentlig Python-implementering, CLI, cockpit og tests under Apache-2.0. [Repository](https://github.com/grabow/spec-growth-engine), [implementeringspaper fra 8. oktober 2026](https://arxiv.org/abs/2610.11725).
+Software is described as a graph of SPEC.md files with contracts and code bindings. An agent can implement a node from combined context. Deterministic checks validate structure, import deviations, and evidence status. There is a public Python implementation, CLI, cockpit, and tests under Apache-2.0. [Repository](https://github.com/grabow/spec-growth-engine), [implementation paper from October 8, 2026](https://arxiv.org/abs/2610.11725).
 
-Udvalgt kode er læst ved commit `e2319cb8a777242491e7bb8c3dfc535190c4c537`: parser, kontekstsamling, importobservationer, driftcheck og drift-tests. Imports analyseres med heuristik/regex, og de dokumenterede begrænsninger omfatter blandt andet TS-aliaser og kontrol af import gennem offentlige kontrakter. [Kontekstsamling](https://github.com/grabow/spec-growth-engine/blob/e2319cb8a777242491e7bb8c3dfc535190c4c537/cockpit/engine/context.py), [importanalyse](https://github.com/grabow/spec-growth-engine/blob/e2319cb8a777242491e7bb8c3dfc535190c4c537/cockpit/engine/evidence.py), [begrænsninger](https://github.com/grabow/spec-growth-engine/blob/e2319cb8a777242491e7bb8c3dfc535190c4c537/cockpit/README.md#not-yet-implemented).
+Selected code was read at commit `e2319cb8a777242491e7bb8c3dfc535190c4c537`: parser, context assembly, import observations, drift checking, and drift tests. Imports are analyzed with heuristics/regex, and documented limitations include TS aliases and checking imports through public contracts. [Context assembly](https://github.com/grabow/spec-growth-engine/blob/e2319cb8a777242491e7bb8c3dfc535190c4c537/cockpit/engine/context.py), [import analysis](https://github.com/grabow/spec-growth-engine/blob/e2319cb8a777242491e7bb8c3dfc535190c4c537/cockpit/engine/evidence.py), [limitations](https://github.com/grabow/spec-growth-engine/blob/e2319cb8a777242491e7bb8c3dfc535190c4c537/cockpit/README.md#not-yet-implemented).
 
-Vurdering: meget stort overlap med vores kontrakter, bindings, afgrænset agentkontekst og verifikation. Mulig base eller referenceimplementering; genbrug er ikke besluttet.
+Assessment: very substantial overlap with our contracts, bindings, scoped agent context, and verification. A possible base or reference implementation; reuse has not been decided.
 
 ## 3. grAIph
 
-Beskriver et visuelt udviklingsmiljø, hvor grafen styrer kontekst, genereringsrækkefølge, kontrakter, kodekandidater og kontrol. Den offentlige status angiver en privat udviklingsimplementation med lokal evidens og uafsluttet releasekvalifikation. Den er derfor ikke verificeret som en offentlig, genbrugelig implementering i denne undersøgelse. [Projekt](https://github.com/mateors1/grAIph), [status](https://github.com/mateors1/grAIph/blob/main/CURRENT_STATE.md).
+Describes a visual development environment in which the graph controls context, generation order, contracts, code candidates, and checking. Public status describes a private development implementation with local evidence and unfinished release qualification. It has therefore not been verified as a public, reusable implementation in this investigation. [Project](https://github.com/mateors1/grAIph), [status](https://github.com/mateors1/grAIph/blob/main/CURRENT_STATE.md).
 
-Vurdering: meget tæt konceptuelt overlap med en samlet grafbaseret arbejdsflade. Brug som designreference, og hold dens egen statusrapport adskilt fra uafhængig verifikation.
+Assessment: very close conceptual overlap with an integrated graph-based workspace. Use it as a design reference and keep its own status report separate from independent verification.
 
 ## 4. Kenneth Tyler: GraphDrivenDevelopment
 
-Forfatteren beskriver grafen som den autoritative repræsentation og kode, skema og tests som afledte projektioner. Der findes et offentligt Node/PostgreSQL-projekt med intent-operationer, afhængighedsnavigation, MCP og tests. [Forfatterens beskrivelse](https://thetimethatremains.substack.com/p/graph-driven-development), [repository](https://github.com/kentyler/GraphDrivenDevelopment).
+The author describes the graph as the authoritative representation and code, schema, and tests as derived projections. There is a public Node/PostgreSQL project with intent operations, dependency navigation, MCP, and tests. [The author's description](https://thetimethatremains.substack.com/p/graph-driven-development), [repository](https://github.com/kentyler/GraphDrivenDevelopment).
 
-Jeg har læst udvalgte operationer ved commit `30ad5713bae5d074e5ab877e54bbd5468c36d057`. `buildProjection` samler en grafkontekst; den er ikke i sig selv en kildekodegenerator. `recordExpression` registrerer artefakter og deres forbindelse til intentioner. [buildProjection](https://github.com/kentyler/GraphDrivenDevelopment/blob/30ad5713bae5d074e5ab877e54bbd5468c36d057/src/operations/buildProjection.js), [recordExpression](https://github.com/kentyler/GraphDrivenDevelopment/blob/30ad5713bae5d074e5ab877e54bbd5468c36d057/src/operations/recordExpression.js).
+I read selected operations at commit `30ad5713bae5d074e5ab877e54bbd5468c36d057`. `buildProjection` assembles graph context; it is not itself a source-code generator. `recordExpression` records artifacts and their connection to intentions. [buildProjection](https://github.com/kentyler/GraphDrivenDevelopment/blob/30ad5713bae5d074e5ab877e54bbd5468c36d057/src/operations/buildProjection.js), [recordExpression](https://github.com/kentyler/GraphDrivenDevelopment/blob/30ad5713bae5d074e5ab877e54bbd5468c36d057/src/operations/recordExpression.js).
 
-Vurdering: både navnet og den overordnede vision har en direkte forgænger. Det læste materiale dokumenterer ikke en komplet pseudo-graf/pseudokode-til-kode-compiler.
+Assessment: both the name and the overall vision have a direct predecessor. The material read does not document a complete pseudo-graph/pseudocode-to-code compiler.
 
-## 5. Intent Architect og JetBrains MPS
+## 5. Intent Architect and JetBrains MPS
 
-Intent Architect kombinerer modeller med deterministisk og AI-baseret kodegenerering. Dokumentationen beskriver eksempelvis modellering af Angular-navigation og services, efterfulgt af AI-genererede views, samt AI-implementering af handlers. [Angular-workflow](https://docs.intentarchitect.com/application-development/modelling/ui-designer/angular-modeling/angular-modeling.html), [AI-handlergenerering](https://docs.intentarchitect.com/whats-new/2025/06/index.html).
+Intent Architect combines models with deterministic and AI-based code generation. Its documentation describes, for example, modeling Angular navigation and services followed by AI-generated views, as well as AI implementation of handlers. [Angular workflow](https://docs.intentarchitect.com/application-development/modelling/ui-designer/angular-modeling/angular-modeling.html), [AI handler generation](https://docs.intentarchitect.com/whats-new/2025/06/index.html).
 
-JetBrains MPS er en etableret reference for egne sprog, strukturerede modeller og transformation fra domænemodeller til kildekode. [MPS-koncept](https://www.jetbrains.com/mps/concepts/).
+JetBrains MPS is an established reference for custom languages, structured models, and transformation from domain models to source code. [MPS concept](https://www.jetbrains.com/mps/concepts/).
 
-Vurdering: model → kode er veletableret. Vores mulige bidrag er en enklere, gradvist præciseret notation og dens samspil med agenter og kontroller; det skal afprøves.
+Assessment: model → code is well established. Our possible contribution is a simpler, progressively refined notation and its interaction with agents and checks; this must be tested.
 
-## 6. Andre relevante projekter
+## 6. Other relevant projects
 
-- **Intent Framework:** eksperimentelt TypeScript-framework med en semantisk applikationsgraf og materialisering af UI/runtime. Dets README angiver alpha-status og at det endnu ikke er en compiler. [Repository](https://github.com/intent-framework/intent).
-- **NaCl:** offentlig metode og værktøjer, der forbinder analyse, arkitektur, udvikling og verifikation omkring en Neo4j-graf. [Repository](https://github.com/ITSalt/NaCl).
-- **AINL:** et konkret sprog med canonical graph IR, runtime og adapters til AI-workflows. Relevant for at lære om eksplicit semantik; anvendelsesområdet er primært AI-workers og workflows. [Produktbeskrivelse](https://www.ainativelang.com/product), [repository](https://github.com/sbhooley/ainativelang).
-- **Proof:** leverandøren beskriver en software intent graph med forbindelser til kode, tests og evidens samt analyse af ændringers konsekvenser. Funktionaliteten er ikke afprøvet her. [Produktbeskrivelse](https://reqproof.com/product).
-- **Graphito:** npm-pakken beskriver GDD som en dokumentationsgraf med afhængighedsresolution og validering. Den angivne GitHub-kilde gav 404 ved undersøgelsen; en aktuel offentlig repositoryimplementation blev derfor ikke verificeret. [npm](https://www.npmjs.com/package/@graphito/core).
-- **Atomic og Grafema:** bruger også betegnelsen graph-driven development, med fokus på henholdsvis ændrings-/intent-sporbarhed og kodeanalyse. [Atomic](https://atomic.dev/index.html), [Grafema](https://grafema.dev/).
+- **Intent Framework:** experimental TypeScript framework with a semantic application graph and materialization of UI/runtime. Its README states alpha status and that it is not yet a compiler. [Repository](https://github.com/intent-framework/intent).
+- **NaCl:** public method and tools connecting analysis, architecture, development, and verification around a Neo4j graph. [Repository](https://github.com/ITSalt/NaCl).
+- **AINL:** a concrete language with canonical graph IR, runtime, and adapters for AI workflows. Relevant for learning about explicit semantics; its primary scope is AI workers and workflows. [Product description](https://www.ainativelang.com/product), [repository](https://github.com/sbhooley/ainativelang).
+- **Proof:** the vendor describes a software intent graph with links to code, tests, and evidence, and analysis of the consequences of changes. The functionality has not been tested here. [Product description](https://reqproof.com/product).
+- **Graphito:** the npm package describes GDD as a documentation graph with dependency resolution and validation. The specified GitHub source returned 404 during the investigation; a current public repository implementation was therefore not verified. [npm](https://www.npmjs.com/package/@graphito/core).
+- **Atomic and Grafema:** also use the term graph-driven development, focusing on change/intent traceability and code analysis, respectively. [Atomic](https://atomic.dev/index.html), [Grafema](https://grafema.dev/).
 
-Et vivaxy-plugin med GDD-navnet blev fundet i kataloger, men de angivne GitHub-repositories gav 404. Det tæller som et ubekræftet spor, ikke en verificeret aktuel løsning.
+A vivaxy plugin with the GDD name was found in directories, but the listed GitHub repositories returned 404. This counts as an unconfirmed lead, not a verified current solution.
 
-## Betydning for vores framework
+## Implications for our framework
 
-Anbefalingen er at sammenligne især ZeroRepo og Spec Growth Engine med ét identisk eksempel, før vi beslutter at bygge alle mekanismer selv. Eksemplet kan være den eksisterende reservationsmodel og en efterfølgende ændring af en regel.
+The recommendation is to compare ZeroRepo and Spec Growth Engine in particular with one identical example before deciding to build all mechanisms ourselves. The example could be the existing reservation model and a subsequent rule change.
 
-Vores ønskede brugeroplevelse er fortsat: mennesket redigerer pseudo-graf og pseudokode; agenten implementerer en afgrænset ændring; resultater og evidens forbindes til modellen. Det væsentlige forsøg bliver, om den oplevelse kan gøres enklere og mere præcis end de eksisterende tilgange.
+Our desired user experience remains: the human edits the pseudo-graph and pseudocode; the agent implements a scoped change; results and evidence are linked to the model. The central experiment is whether that experience can be made simpler and more precise than existing approaches.
 
-Der er ikke udpeget en vinder, installeret konkurrentværktøjer eller ændret den accepterede GDD-specifikation. Næste tekniske beslutning bør være genbrug, adapter eller egen implementering pr. mekanisme.
+No winner has been selected, competitor tools installed, or accepted GDD specification changed. The next technical decision should be reuse, adapter, or custom implementation for each mechanism.
 
-## Undersøgelsens afgrænsning
+## Scope of the investigation
 
-Grundlag: websøgninger, primære repositories, officielle produktdokumenter, forskningspapers, GitHub-metadata og udvalgt kildekode. Projekternes tests og kodegenereringsforløb er ikke kørt. Testfiler og forfatterrapporter er ikke behandlet som uafhængigt bevis for korrekthed. Feltet ændrer sig hurtigt; negative søgeresultater dokumenterer ikke fravær af en løsning.
+Basis: web searches, primary repositories, official product documentation, research papers, GitHub metadata, and selected source code. The projects' tests and code-generation flows have not been run. Test files and author reports have not been treated as independent proof of correctness. The field changes quickly; negative search results do not document the absence of a solution.

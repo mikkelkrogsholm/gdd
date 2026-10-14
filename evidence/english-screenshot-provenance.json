@@ -1,0 +1,271 @@
+{
+  "format": "gdd-english-screenshots/0.1",
+  "renderer": "0.1.4",
+  "browser": "155.0.8059.41",
+  "reconstructions": [
+    {
+      "path": "evidence/review-loops/loop-01-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "d6019347926dc4a6c9cedcfaf73efa2d4341e307c27de23549f19a284530b0a7",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-01-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f45eded2d2adf5b8ff1092806ff854e4fa683e33d9e93fc78f7e2a08106fb1eb",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-01-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "694946c93447c405bc5d0c6efa5e94a70742d614ac6ec4ffa0d19427eb279534",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-02-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "d6019347926dc4a6c9cedcfaf73efa2d4341e307c27de23549f19a284530b0a7",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-02-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f45eded2d2adf5b8ff1092806ff854e4fa683e33d9e93fc78f7e2a08106fb1eb",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-02-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "82a1d9e5fd5e242af6a045096919d7ec3a6f0ba910b4a49c65ba2fdd02cfbd6a",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-03-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "91bcfa6bc9c3cc0f9eff485fb0a16378bfe6edc5130b6990b9811bf81eec0237",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-03-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "9cb64b071fae7febd6cbd89b2889a8f3b471ed153fc4288dbc725eddfa34038b",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-03-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "d105f9ac2906f1fbd3cbfda22bacdf0974d165007ed316748f92cf26a8cbcfe8",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-04-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "696c79d393f63445a7922f3ec4c034c2550a7583593b030b8685d083b0e4a4f0",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-04-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f7a7cec1a9eb9de18bc82e3de9c55b982f26ef1f00741b3773f48499319fee4f",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-04-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "c61e78f6c45ab358186bea3ff1728b90505c27659facd19d8276861a9777d9c9",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-05-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "696c79d393f63445a7922f3ec4c034c2550a7583593b030b8685d083b0e4a4f0",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-05-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f7a7cec1a9eb9de18bc82e3de9c55b982f26ef1f00741b3773f48499319fee4f",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-05-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "c61e78f6c45ab358186bea3ff1728b90505c27659facd19d8276861a9777d9c9",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-06-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "696c79d393f63445a7922f3ec4c034c2550a7583593b030b8685d083b0e4a4f0",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-06-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f7a7cec1a9eb9de18bc82e3de9c55b982f26ef1f00741b3773f48499319fee4f",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-06-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "3beffc420836ddba4a966c0a580cc8e9effc5b1d7bbced8ebd995a2dd4a342cf",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-07-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "696c79d393f63445a7922f3ec4c034c2550a7583593b030b8685d083b0e4a4f0",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-07-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f7a7cec1a9eb9de18bc82e3de9c55b982f26ef1f00741b3773f48499319fee4f",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-07-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "c61e78f6c45ab358186bea3ff1728b90505c27659facd19d8276861a9777d9c9",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-08-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "696c79d393f63445a7922f3ec4c034c2550a7583593b030b8685d083b0e4a4f0",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-08-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f7a7cec1a9eb9de18bc82e3de9c55b982f26ef1f00741b3773f48499319fee4f",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-08-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "c61e78f6c45ab358186bea3ff1728b90505c27659facd19d8276861a9777d9c9",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-09-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "696c79d393f63445a7922f3ec4c034c2550a7583593b030b8685d083b0e4a4f0",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-09-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f7a7cec1a9eb9de18bc82e3de9c55b982f26ef1f00741b3773f48499319fee4f",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/review-loops/loop-09-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "3beffc420836ddba4a966c0a580cc8e9effc5b1d7bbced8ebd995a2dd4a342cf",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/visualization/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "2c06673808c8b782d284a6c1a4493171717c605ed705513a4325ab4a9184d65c",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/visualization/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "51acfdd526d0086ae64c65858b768356287f4b80e0468db05b4a3defbff05183",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/visualization/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "0f679864b99de92426da57fcb71fc33bc8fb703a6b39514ea27616c37186d419",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/workflow-browser/concert-dark.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "696c79d393f63445a7922f3ec4c034c2550a7583593b030b8685d083b0e4a4f0",
+      "english_capture": "evidence/english-browser-release/concert-dark.png",
+      "english_sha256": "701154b79dc7d80dd8a8bd5ee82bcc7d40891adfc54c3cbff376bfe722f93cd3",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/workflow-browser/concert-desktop.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "f7a7cec1a9eb9de18bc82e3de9c55b982f26ef1f00741b3773f48499319fee4f",
+      "english_capture": "evidence/english-browser-release/concert-desktop.png",
+      "english_sha256": "30771689f0269c048910bf2f1949dfe239883d83a7b03006664b18e3ed1aaee1",
+      "status": "English reconstruction; not an original historical capture"
+    },
+    {
+      "path": "evidence/workflow-browser/concert-mobile.png",
+      "original_commit": "2ced75a5cdd4e5521282c5e9c596da7c2dc83aac",
+      "original_sha256": "c61e78f6c45ab358186bea3ff1728b90505c27659facd19d8276861a9777d9c9",
+      "english_capture": "evidence/english-browser-release/concert-mobile.png",
+      "english_sha256": "ea45c14346884619a66ebd41ce9d6a74397afbbecca3af5ca90ccaa6b1df007e",
+      "status": "English reconstruction; not an original historical capture"
+    }
+  ]
+}

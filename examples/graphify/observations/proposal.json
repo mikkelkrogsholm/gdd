@@ -6,30 +6,30 @@
     "format": "gdd-graphify-mapping/0.2",
     "project": {
       "id": "example.existing_code",
-      "title": "GDD fra eksisterende kode",
-      "goal": "Demonstrér tabsfri Graphify-import og eksplicit review af et model-forslag."
+      "title": "GDD from existing code",
+      "goal": "Demonstrate lossless Graphify import and explicit review of a model proposal."
     },
     "nodes": [
       {
         "observation": "observation.node.hb6a93b673b52e572e8a672ea82c843c57487b5e0161f35ac0d3c91bfb075d2ff",
         "target": "component.reservations",
         "kind": "component",
-        "description": "Kandidatgrænse for modulet reservation.py.",
-        "rationale": "Eksplicit reviewforslag: et kodefile er foreslået som komponentgrænse, ikke automatisk accepteret arkitektur."
+        "description": "Candidate boundary for the reservation.py module.",
+        "rationale": "Explicit review proposal: a code file is proposed as a component boundary, not an automatically accepted architecture."
       },
       {
         "observation": "observation.node.hd7bcd426d880664d43f76ec4fbaeddef4ad769a11b008b850bfae52135a598e8",
         "target": "action.construct_reservation",
         "kind": "action",
-        "description": "Kandidat for oprettelse af et Reservation-objekt; kontrakten skal afklares.",
-        "rationale": "Klassen fortolkes i dette afgrænsede forslag som en constructor-handling, fordi reserve kalder den. Dette er et eksplicit valg, ikke en generisk class-til-action regel."
+        "description": "Candidate creation action for a Reservation object; the contract needs clarification.",
+        "rationale": "This bounded proposal interprets the class as a constructor action because reserve calls it. This is an explicit choice, not a generic class-to-action rule."
       },
       {
         "observation": "observation.node.hec9472631a3042a1e2c0984541e984a68a2319bc56f164ba28ebe708b61bc308",
         "target": "action.reserve",
         "kind": "action",
-        "description": "Kandidat for reserve-funktionen; ønsket adfærd og kontrakt er uafklaret.",
-        "rationale": "Eksplicit agent-/menneskevalg af en mulig handlingsgrænse; koden er alene observation."
+        "description": "Candidate reserve function; the intended behavior and contract are unresolved.",
+        "rationale": "Explicit agent/human choice of a possible action boundary; the code is observation only."
       }
     ],
     "edges": [
@@ -39,7 +39,7 @@
         "from": "action.reserve",
         "to": "action.construct_reservation",
         "relation": "calls",
-        "rationale": "Bevar denne observerede retning som et foreslået calls-forhold; accept kræver projektets normale mandat og review."
+        "rationale": "Preserve this observed direction as a proposed calls relation; acceptance requires the project's normal mandate and review."
       }
     ]
   },
@@ -47,13 +47,13 @@
     "format": "gdd/0.2",
     "project": {
       "id": "example.existing_code",
-      "title": "GDD fra eksisterende kode",
-      "goal": "Demonstrér tabsfri Graphify-import og eksplicit review af et model-forslag."
+      "title": "GDD from existing code",
+      "goal": "Demonstrate lossless Graphify import and explicit review of a model proposal."
     },
     "nodes": {
       "component.reservations": {
         "kind": "component",
-        "description": "Kandidatgrænse for modulet reservation.py.",
+        "description": "Candidate boundary for the reservation.py module.",
         "maturity": "sketch",
         "source_refs": [
           {
@@ -69,7 +69,7 @@
       },
       "action.construct_reservation": {
         "kind": "action",
-        "description": "Kandidat for oprettelse af et Reservation-objekt; kontrakten skal afklares.",
+        "description": "Candidate creation action for a Reservation object; the contract needs clarification.",
         "maturity": "sketch",
         "source_refs": [
           {
@@ -85,7 +85,7 @@
       },
       "action.reserve": {
         "kind": "action",
-        "description": "Kandidat for reserve-funktionen; ønsket adfærd og kontrakt er uafklaret.",
+        "description": "Candidate reserve function; the intended behavior and contract are unresolved.",
         "maturity": "sketch",
         "source_refs": [
           {
@@ -132,7 +132,7 @@
     },
     "questions": {
       "question.graphify_contracts": {
-        "statement": "Afklar ønsket adfærd, kontrakter, regler og scenarier; kodeobservationer beskriver den eksisterende implementation og er ikke automatisk intention.",
+        "statement": "Clarify the intended behavior, contracts, rules and scenarios; code observations describe the existing implementation and do not automatically define intent.",
         "targets": [
           "component.reservations",
           "action.construct_reservation",

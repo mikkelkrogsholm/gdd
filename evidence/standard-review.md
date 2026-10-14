@@ -1,49 +1,49 @@
-# Review og kontrol af GDD 0.2-udkastet
+# Review and checks of the GDD 0.2 draft
 
-Dato: 13. oktober 2026. Scope: standardtekster, repræsentationsschemas, illustrative eksempler og conformance-definitioner. Ingen applikation eller referencevalidator er implementeret eller verificeret.
+Date: October 13, 2026. Scope: standard texts, representation schemas, illustrative examples, and conformance definitions. No application or reference validator has been implemented or verified.
 
-## Udførte kontroller
+## Checks performed
 
-- Seks JSON Schemas er kontrolleret mod Draft 2020-12-metaschemaet med jsonschema 4.24.0.
-- Ti eksempelartefakter er repræsentationsvalideret med deres respektive schemas.
-- Fem modelmanifesters IDs, centrale referencer, state-transitions, dekomposition og kendte source-/extensionhashes er kontrolleret gennem et afgrænset authoring-script. Det er ikke fuld modelconformance eller readiness.
-- Oprindelige IDs, imports/calls-edges, actionkrav, rule-statements og scenarioforventninger i reservationsmaterialet er sammenlignet med det migrerede eksempel. Legacy-YAML-kopier matcher i bytes; den tidligere SPEC er arkiveret.
-- Koncert-eksemplets modelsnapshot er genberegnet, og planlagte bindings/checks refererer til det. Der findes ingen udført applikationsevidens.
-- Seksten positive og negative schema-cases er udført mod biblioteket og matcher forventningerne. Negative kontroller omfatter ukendte felter/typer, manglende godkendelsesaktivitet, accept uden koderevision, observed binding uden revision og implementerings-PASS uden evidensreferencer.
-- To parser-negative kontroller afviser duplicate keys og YAML-anchors/aliases i det midlertidige authoring-script. Dette er ikke en komplet afprøvning af en YAML 1.2-consumer.
-- Lokale dokumentlinks er kontrolleret. Eksemplets planlagte DESIGN.md er en eksplicit uafklaret modelkilde, ikke et broken deliverable-link, der er skjult af kontrollen.
+- Six JSON Schemas were checked against the Draft 2020-12 metaschema using jsonschema 4.24.0.
+- Ten example artifacts were representation-validated using their respective schemas.
+- Five model manifests' IDs, central references, state transitions, decomposition, and known source/extension hashes were checked through a bounded authoring script. This is not full model conformance or readiness.
+- Original IDs, imports/calls edges, action requirements, rule statements, and scenario expectations in the reservation material were compared with the migrated example. Legacy YAML copies match byte for byte; the former SPEC is archived.
+- The concert example's model snapshot was recomputed, and planned bindings/checks reference it. No executed application evidence exists.
+- Sixteen positive and negative schema cases were run against the library and match expectations. Negative controls cover unknown fields/types, missing approval activity, acceptance without a code revision, an observed binding without a revision, and implementation PASS without evidence references.
+- Two negative parser controls reject duplicate keys and YAML anchors/aliases in the temporary authoring script. This is not a complete test of a YAML 1.2 consumer.
+- Local document links were checked. The example's planned DESIGN.md is an explicitly unresolved model source, rather than a broken deliverable link concealed by the check.
 
-Faktiske detaljer og tællinger findes i [authoring-checks.json](authoring-checks.json) og [raw output](authoring-check-output.txt). Kommando og script er bevaret som [eksekveringsnotat](authoring-check-command.md) og [scripttekst](authoring-check.source.txt).
+Actual details and counts are in [authoring-checks.json](authoring-checks.json) and [raw output](authoring-check-output.txt). The command and script are retained as an [execution note](authoring-check-command.md) and [script text](authoring-check.source.txt).
 
-De aftalte krav er sporet i [requirements-coverage.csv](requirements-coverage.csv) med 20 poster. Slutkontrollen fandt 47 resolvable lokale dokumentlinks. Disse tal er artefaktkontrol, ikke produkt- eller applikationsaccept.
+The agreed requirements are traced in [requirements-coverage.csv](requirements-coverage.csv), with 20 entries. The final check found 47 resolvable local document links. These counts are artifact checks, not product or application acceptance.
 
-## Uafhængigt review
+## Independent review
 
-Tre read-only underagenter gennemgik henholdsvis model/schema, agentprotokol/readiness og integrationer. Lead integrerede resultaterne og beholdt ansvaret for leverancen. Reviewet er AI-review af et udkast; det er ikke ekspertgodkendelse eller bevis for korrekthed.
+Three read-only subagents reviewed model/schema, agent protocol/readiness, and integrations respectively. The lead integrated the results and retained responsibility for delivery. This is AI review of a draft; it is not expert approval or proof of correctness.
 
-Konkrete defects blev rettet:
+Concrete defects were fixed:
 
-1. Approval-receipts fik activity; accept og undtagelser fik implementation/code_revision.
-2. Checkplaner og øvrige records blev uforanderlige med eksplicit supersession; evidens fik check_revision.
-3. Alle rule.verification-metoder blev krævede med entydig planmapping; manglende plan/evidens giver UNKNOWN.
-4. Parent-readiness blev rettet til at kræve specificerede child-kontrakter, ikke allerede implementerede børn.
-5. Closure blev udvidet med stored_in og relevante persistence-/arkitekturgrænser.
-6. Conformanceprofiler blev afstemt med rapportens deklarerede capability-navne.
-7. Implementation-/authorizationrapporter fik strukturerede revisions- og autorisationsreferencer.
-8. YAML-aliases fra testdatagenerering blev fjernet.
-9. Faktisk anvendte kontrakt-/designsources blev normative snapshotassets.
-10. Source-derivation fik faktisk anvendte inputrevisioner; senere source-opdatering må ikke rebindes skjult.
-11. Observed/checked bindings fik krav om ressource-/koderevision; historiske refs resolves mod deres modelsnapshot.
-12. Bundle-root, feltfravær/null, extensionidentitet og selectorfejl blev gjort eksplicitte.
+1. Approval receipts gained activity; acceptance and exceptions gained implementation/code_revision.
+2. Check plans and other records became immutable with explicit supersession; evidence gained check_revision.
+3. All rule.verification methods became required with unambiguous plan mapping; missing plans/evidence yield UNKNOWN.
+4. Parent readiness was corrected to require specified child contracts, rather than already implemented children.
+5. Closure was expanded with stored_in and relevant persistence/architecture boundaries.
+6. Conformance profiles were aligned with the report's declared capability names.
+7. Implementation/authorization reports gained structured revision and authorization references.
+8. YAML aliases from test-data generation were removed.
+9. Contract/design sources actually used became normative snapshot assets.
+10. Source derivation gained the input revisions actually used; later source updates must not be silently rebound.
+11. Observed/checked bindings gained resource/code revision requirements; historical refs resolve against their model snapshot.
+12. Bundle root, field absence/null, extension identity, and selector errors were made explicit.
 
-## Hvad der fortsat er UNKNOWN eller efterfølgende arbejde
+## What remains UNKNOWN or subsequent work
 
-De 58 conformance-cases er en testspecifikation. Seksten schema-cases og to parsercases er kørt; de øvrige 40 er normativt gennemgåede forventninger til kommende værktøjer. De er ikke en grøn conformance-suite for et eksisterende GDD-produkt.
+The 58 conformance cases are a test specification. Sixteen schema cases and two parser cases were run; the other 40 are normatively reviewed expectations for future tools. They are not a passing conformance suite for an existing GDD product.
 
-Der er ingen udført readiness-/autorisationsmotor, Graphify-importer, runtime, renderer, ekstern OKF-/DESIGN.md-validering, frontend eller reservationsdatabase. Koncertfrontend er en skitse uden faktisk DESIGN.md. Metodens effekt på produktivitet, fejlrate og forskellige agenters adfærd er ikke målt.
+There is no executed readiness/authorization engine, Graphify importer, runtime, renderer, external OKF/DESIGN.md validation, frontend, or reservation database. The concert frontend is a sketch without an actual DESIGN.md. The method's effect on productivity, error rates, and the behavior of different agents has not been measured.
 
-Distributionsform, CLI-navne, SDK, MCP-eksponering og konkret implementationssprog er efterfølgende valg. Standardens normative begreber og kontrakter er formuleret, så disse kan implementeres uden at genåbne den aftalte produktretning.
+Distribution format, CLI names, SDK, MCP exposure, and the concrete implementation language are subsequent choices. The standard's normative concepts and contracts have been formulated so these can be implemented without reopening the agreed product direction.
 
-## Revisionsgrundlag
+## Revision basis
 
-[standard-assets.json](standard-assets.json) registrerer de kontrollerede standard-/schema-/eksempel-/conformance-filer med SHA-256. Evidensrapport, raw output, worklog og scratchpad er udenfor dette manifest, så kontrollen ikke bliver selvrefererende. Koncertmodellens separate revision står i [concert.snapshot.json](../examples/concert.snapshot.json).
+[standard-assets.json](standard-assets.json) records the checked standard/schema/example/conformance files with SHA-256. The evidence report, raw output, worklog, and scratchpad are outside this manifest so the check does not become self-referential. The concert model's separate revision is in [concert.snapshot.json](../examples/concert.snapshot.json).

@@ -421,7 +421,7 @@ def validate(
             )
     report = {
         "format": "gdd-report/0.2",
-        "tool": {"name": "gdd-validator", "version": "0.5.0"},
+        "tool": {"name": "gdd-validator", "version": "0.5.1"},
         "spec_revision": bundle.revision,
         "profiles": profiles,
         "scope": scope,

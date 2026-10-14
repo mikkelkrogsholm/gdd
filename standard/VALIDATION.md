@@ -1,92 +1,92 @@
-# Valideringskontrakt
+# Validation contract
 
-Normativt kapitel til GDD 0.2. Den konkrete implementations støtte og begrænsninger står i [VALIDATOR.md](../VALIDATOR.md); kravene i dette kapitel er ikke i sig selv udførelsesevidens.
+Normative chapter for GDD 0.2. The concrete implementation's support and limitations are documented in [VALIDATOR.md](../VALIDATOR.md); the requirements in this chapter are not themselves execution evidence.
 
-## 1. Fire uafhængige vurderinger
+## 1. Four independent assessments
 
-| Dimension | Spørgsmål | Resultater |
+| Dimension | Question | Results |
 | --- | --- | --- |
-| model | Kan repræsentation, referencer og kendt grafsemantik valideres? | PASS / FAIL / UNKNOWN |
-| readiness | Er et bestemt udsnit strukturelt specificeret til implementation? | PASS / FAIL / UNKNOWN |
-| authorization | Tillader det aktuelle mandat denne aktivitet? | GRANTED / DENIED / UNRESOLVED |
-| implementation | Hvad viser et konkret udført check af en implementation? | PASS / FAIL / UNKNOWN |
+| model | Can representation, references and known graph semantics be validated? | PASS / FAIL / UNKNOWN |
+| readiness | Is a particular slice structurally specified for implementation? | PASS / FAIL / UNKNOWN |
+| authorization | Does the current mandate allow this activity? | GRANTED / DENIED / UNRESOLVED |
+| implementation | What does a concrete executed check of an implementation show? | PASS / FAIL / UNKNOWN |
 
-Integrationchecks har PASS/FAIL/UNKNOWN og deklareret scope. En gyldig skitse kan være uparat. Parathed giver ikke autorisation. Godkendelse giver ikke evidens. Et schema-PASS er alene et representation-resultat.
+Integration checks have PASS/FAIL/UNKNOWN and a declared scope. A valid sketch can be unready. Readiness does not grant authorization. Approval does not provide evidence. A schema PASS is solely a representation result.
 
-PASS kræver, at checket er gennemført med tilstrækkeligt input, kendt semantik og opfyldt kriterium. FAIL kræver en kendt overtrædelse. UNKNOWN betyder, at det krævede forhold ikke kan afgøres: unsupported version, manglende analyseinput, utilgængelig ekstern kontrakt eller manglende kørsel. Hvis en dimension både har en kendt fejl og uafklarede checks, er aggregatet FAIL, og de uafklarede resultater bevares. Ellers medfører et påkrævet UNKNOWN et UNKNOWN-aggregat.
+PASS requires the check to be completed with sufficient input, known semantics and a satisfied criterion. FAIL requires a known violation. UNKNOWN means the required condition cannot be determined: an unsupported version, missing analysis input, an unavailable external contract or missing execution. If a dimension has both a known error and unresolved checks, the aggregate is FAIL and the unresolved results are preserved. Otherwise, a required UNKNOWN produces an UNKNOWN aggregate.
 
-Ingen implicit samlet "projektet er verificeret"-status. En assertion om verificering SKAL navngive scope, implementation, revisioner og de krævede checks.
+There is no implicit combined "the project is verified" status. A verification assertion MUST name scope, implementation, revisions and the required checks.
 
-## 2. Profiler og indlæsningsrækkefølge
+## 2. Profiles and loading order
 
-1. Identificér formatversion; unknown version giver FORMAT_UNSUPPORTED/UNKNOWN. Forsøg ikke at validere den som en kendt version.
-2. Sikker parsing, duplicate-key-kontrol, JSON-kompatible values, pathgrænser og includes.
-3. Valider hver inputfil mod relevant lokalt JSON Schema.
-4. Saml registries uden override; kontrollér identitet og alle interne referencer.
-5. Kontrollér endpoints, dekomposition, maskiner, constraints og erklærede udvidelser.
-6. Beregn valgt context closure og scoped readiness, hvis dette er anmodet.
-7. Vurder autorisation mod betroet policy/mandat, hvis en aktivitet er anmodet.
-8. Læs records og integrationsresultater separat; udfør ikke applikationschecks som en skjult del af modelvalideringen.
+1. Identify the format version; an unknown version produces FORMAT_UNSUPPORTED/UNKNOWN. Do not attempt to validate it as a known version.
+2. Safe parsing, duplicate-key checks, JSON-compatible values, path boundaries and includes.
+3. Validate each input file against the relevant local JSON Schema.
+4. Assemble registries without overrides; check identity and all internal references.
+5. Check endpoints, decomposition, machines, constraints and declared extensions.
+6. Compute selected context closure and scoped readiness if requested.
+7. Assess authorization against trusted policy/mandate if an activity is requested.
+8. Read records and integration results separately; do not execute application checks as a hidden part of model validation.
 
-Ukendt extensionsemantik må ikke droppes ved trin 5/6. En consumer kan bestå representation og samtidig have model-UNKNOWN. Et modelcheck SKAL opregne understøttede core/extension-regler. Ukendte annotations er ikke normative og kan ignoreres semantisk.
+Unknown extension semantics must not be dropped at steps 5/6. A consumer can pass representation while having model UNKNOWN. A model check MUST list supported core/extension rules. Unknown annotations are non-normative and can be ignored semantically.
 
-## 3. Semantiske modelchecks ud over schemas
+## 3. Semantic model checks beyond schemas
 
-SKAL-kontroller:
+MUST checks:
 
-- Global ID-unikhed, inklusive transitions og recordkollisioner; alle interne ref-typer og endpoint-kinds.
-- Source-/question-/designreferencer samt revisionkrav for normative sources. Utilgængelig ekstern source er integration-UNKNOWN, ikke en dangling intern reference.
-- Højst én owned_by-edge til en component pr. action/entity/screen/machine, når ownership er angivet. To edges med forskellige ID'er og identisk ownersemantik er en ejer-ambiguitet, ikke en ekstra ejer.
-- Refines uden cykler, selvloops eller flere parents. Realization-children er descendants af den erklærende parent.
-- Member_of til en community fra en ikke-community; overlapping membership er tilladt.
-- Targeted rule har constrains-targets; global rule gælder uanset lokal graph-distance. Architecture-constraint endpoints skal være components, og relation er imports i denne coreprofil. Andre constraintsemantikker kræver extension.
-- Machine-states er unikke; initial/terminal/from/to findes; trigger er action; `(from,trigger)` er unik; terminal state har ingen udgående mutation. State_of skal være entydig, når den angives.
-- Typereferencer målretter entity. Required-objectfelter findes i properties, constraints passer til typen, og minimum må ikke overstige maximum.
-- Kilde-derivation er acyklisk over source+revision-identiteter; referenced sources eksisterer. Ældre historiske revisioner må ikke rebindes til nye. Unknown relation/kind uden extensiondeklaration er fejl.
-- Custom kinds/relations tilhører deklareret namespace; assetets namespace/version skal præcist matche manifestet, og bytehash skal stemme. Der må højst være én version pr. namespace og ingen navnekollisioner. Data følger extensionens schema. Core semantics må ikke omdefineres. Extension-schemas må ikke hente remote refs eller executable code.
+- Global ID uniqueness, including transitions and record collisions; all internal reference types and endpoint kinds.
+- Source/question/design references and revision requirements for normative sources. An unavailable external source is integration UNKNOWN, not a dangling internal reference.
+- At most one owned_by edge to a component per action/entity/screen/machine when ownership is specified. Two edges with different IDs and identical owner semantics are ownership ambiguity, not an additional owner.
+- Refines without cycles, self-loops or multiple parents. Realization children are descendants of the declaring parent.
+- Member_of to a community from a non-community; overlapping membership is allowed.
+- A targeted rule has constrains targets; a global rule applies regardless of local graph distance. Architecture constraint endpoints must be components, and relation is imports in this core profile. Other constraint semantics requires an extension.
+- Machine states are unique; initial/terminal/from/to exist; trigger is an action; `(from,trigger)` is unique; a terminal state has no outgoing mutation. State_of must be unambiguous when specified.
+- Type references target an entity. Required object fields exist in properties, constraints match the type, and minimum must not exceed maximum.
+- Source derivation is acyclic over source+revision identities; referenced sources exist. Older historical revisions must not be rebound to new ones. An unknown relation/kind without an extension declaration is an error.
+- Custom kinds/relations belong to the declared namespace; the asset's namespace/version must exactly match the manifest, and the byte hash must match. There must be at most one version per namespace and no name collisions. Data follows the extension's schema. Core semantics must not be redefined. Extension schemas must not fetch remote refs or executable code.
 
-Calls-/navigationcycles og flere forskellige relationer mellem samme endpoints er positive kontroller. Et værktøj, som kaster dem væk for at gøre grafen acyklisk eller simpel, er ikke modelkonformant.
+Calls/navigation cycles and multiple distinct relations between the same endpoints are positive controls. A tool that discards them to make the graph acyclic or simple is not model-conformant.
 
-## 4. Scoped readiness-profil
+## 4. Scoped readiness profile
 
-Readiness-scope er en liste af implementationstargets; læsekontekst holdes separat. Uvedkommende skitser blokkerer ikke et udsnit. Alle angivne dele skal fortsat være gyldige; kendte modeldefekter i en anden del skal vises og forhindre et fuldt model-PASS. Scoped readiness kan rapporteres separat, hvis defecten beviseligt er uden for dens closure.
+Readiness scope is a list of implementation targets; read context is kept separate. Unrelated sketches do not block a slice. All specified parts must still be valid; known model defects elsewhere must be shown and prevent a full model PASS. Scoped readiness can be reported separately if the defect is demonstrably outside its closure.
 
-For hver valgt action kræves:
+Each selected action requires:
 
-- Præcis én owned_by-component og adgang til relevante interfaces/grænsekontrakter.
-- Input, context, output, errors, preconditions, external_effects, effects_complete=true, dependencies_complete=true og ikke-tom behavior. Tomme maps/lister kan være bevidste erklæringer.
-- Typespecifikationer og refererede entiteters relevante felter er tilgængelige.
-- Alle fem riskvurderinger med rationale. Relevant risk kræver scenarier; de skal exercises handlingen. Authorization/idempotency/boundaries/atomicity kræver negative eller boundary-scenarier, concurrency kræver concurrency-scenarie. Et scenarie kan dække flere risks.
-- Hvert erklæret fejludfald har mindst én error_cases-reference til et negative/boundary-scenarie, som exercises handlingen.
-- Mindst ét normal-scenarie, som exercises handlingen. Faglig dækning er fortsat et reviewspørgsmål.
-- Alle gældende blocking rules har planlagt scenario-dækning gennem verifies. Arkitekturregler kan bruge architecture-scenarier uden at kalde en action.
-- Ingen open question i closure, som blokkerer implementation. Resolved questions kræver en gyldig accepteret decision-receipt eller må behandles som uafklarede.
-- Nødvendige kontrakt-/designsources er normative=true, lokalt materialiserede, resolved og pinned med verificeret bytehash og medtaget i modelsnapshot; unknown extensionsemantik må ikke påvirke closure.
+- Exactly one owned_by component and access to relevant interfaces/boundary contracts.
+- Input, context, output, errors, preconditions, external_effects, effects_complete=true, dependencies_complete=true and non-empty behavior. Empty maps/lists can be deliberate declarations.
+- Type specifications and the relevant fields of referenced entities are available.
+- All five risk assessments with rationale. A relevant risk requires scenarios; they must exercise the action. Authorization/idempotency/boundaries/atomicity require negative or boundary scenarios; concurrency requires a concurrency scenario. A scenario can cover multiple risks.
+- Each declared error outcome has at least one error_cases reference to a negative/boundary scenario that exercises the action.
+- At least one normal scenario that exercises the action. Domain coverage remains a review question.
+- All applicable blocking rules have planned scenario coverage through verifies. Architecture rules can use architecture scenarios without calling an action.
+- No open question in closure that blocks implementation. Resolved questions require a valid accepted decision receipt or must be treated as unresolved.
+- Necessary contract/design sources are normative=true, locally materialized, resolved and pinned with a verified byte hash, and included in the model snapshot; unknown extension semantics must not affect closure.
 
-For screen kræves interaction.states, behavior, accessibility og responsive; relevante calls/navigationgrænser; et normal-scenarie og resolved design_refs. Vurdering af relevant fejl-/grænseforløb registreres som readiness_review-decision. Entity/machine/component skal have tilstrækkelige relevante felter/tilstande/interfaces, når udsnittet afhænger af dem. En top-level komponent kan kun være parat som implementeringsscope, når dens realization-forpligtelser og nødvendige child-kontrakter er specificerede og strukturelt dækkede. Børn behøver ikke allerede være implementeret. "Skitse" på en parent gør ikke et fuldt parent-scope parat.
+A screen requires interaction.states, behavior, accessibility and responsive; relevant calls/navigation boundaries; a normal scenario and resolved design_refs. Assessment of relevant error/boundary flows is recorded as a readiness_review decision. Entity/machine/component must have sufficient relevant fields/states/interfaces when the slice depends on them. A top-level component can be ready as implementation scope only when its realization obligations and necessary child contracts are specified and structurally covered. Children need not already be implemented. "Sketch" on a parent does not make a full parent scope ready.
 
-`maturity`, en håndskrevet ready-markering, planlagte bindings eller tekstligt "reviewed" er ikke readiness-evidens. Den første validator kontrollerer denne strukturelle profil. Et semantisk review kan udfordre erklæringerne, men må ikke maskeres som en deterministisk kontrol.
+`maturity`, a handwritten ready marker, planned bindings or textual "reviewed" is not readiness evidence. The first validator checks this structural profile. A semantic review can challenge declarations but must not be disguised as a deterministic check.
 
-## 5. Autorisation og accept
+## 5. Authorization and acceptance
 
-Aktivitet, scope og revision sammenholdes med projektets gates og betroet mandat. Et passende accepted approval-receipt giver GRANTED, hvis aktør og policy er gyldige. Standing mandate kan også give GRANTED. Manglende eller tvetydigt mandat giver UNRESOLVED; et eksplicit afslag eller scopebrud giver DENIED.
+Activity, scope and revision are compared with the project's gates and trusted mandate. An appropriate accepted approval receipt gives GRANTED if the actor and policy are valid. A standing mandate can also give GRANTED. A missing or ambiguous mandate gives UNRESOLVED; an explicit rejection or scope violation gives DENIED.
 
-Alle entries i rule.verification er krævede metoder, ikke implicitte alternativer. Hver blocking rule kræver en entydig aktiv checkplan for hver deklareret metode; checkplanen skal have regel-ID'et i scope og den præcise method-label. Manglende plan eller aktuel udført evidens giver UNKNOWN, aldrig vakuøs PASS. Planvalget og implementationen skal være eksplicitte.
+All entries in rule.verification are required methods, not implicit alternatives. Each blocking rule requires an unambiguous active check plan for each declared method; the check plan must include the rule ID in scope and the exact method label. A missing plan or current executed evidence gives UNKNOWN, never vacuous PASS. Plan selection and the implementation must be explicit.
 
-Implementeringsaccept kræver, at alle disse checks er aktuelle og PASS, medmindre projektets policy tillader en eksplicit exception. Exceptions identificerer ansvarlig actor, scope, implementation/code_revision, checks, begrundelse og udløb. De ændrer ikke checkets FAIL/UNKNOWN. Modelændringer og exceptions er forskellige handlinger.
+Implementation acceptance requires all these checks to be current and PASS unless the project's policy permits an explicit exception. Exceptions identify the responsible actor, scope, implementation/code_revision, checks, rationale and expiry. They do not change the check's FAIL/UNKNOWN. Model changes and exceptions are different actions.
 
-## 6. Bindings og evidens
+## 6. Bindings and evidence
 
-En planned binding beviser ikke file-/symbol-eksistens. En observed binding beviser ikke korrekthed. Et check skal erklære nødvendigt miljø og relevant scope. Concurrency i databasekrav kræver den faktisk valgte persistence/transaktionsadfærd; stubs kan ikke give dette check PASS.
+A planned binding does not prove file/symbol existence. An observed binding does not prove correctness. A check must declare the necessary environment and relevant scope. Concurrency in database requirements requires the persistence/transaction behavior actually selected; stubs cannot give this check PASS.
 
-Evidence SKAL referere til eksisterende uforanderlig checkplan og matchende check_revision, spec_revision, implementation og code_revision samt checkeridentitet/version og raw output. Evidence-scope skal dække checkplanens krævede scope; ekstra scope er ikke automatisk verificeret. Manglende miljø, manglende revisionsbundne bindings, ikke-understøttet metode eller ukendt observation-proveniens giver UNKNOWN.
+Evidence MUST refer to an existing immutable check plan and matching check_revision, spec_revision, implementation and code_revision, together with checker identity/version and raw output. Evidence scope must cover the check plan's required scope; extra scope is not automatically verified. A missing environment, missing revision-bound bindings, an unsupported method or unknown observation provenance gives UNKNOWN.
 
-Ældre evidens beholder sit historiske resultat. Under 0.2's konservative profil er dens anvendelighed UNKNOWN ved ændret model-, kode- eller normativ assetrevision. Der er ingen automatisk semantisk cache-invalidering. Negative kontroller erklæres i checkplanen og skal udføres, før den samlede kontrol kan påstå at demonstrere defektdetektion.
+Older evidence retains its historical result. Under 0.2's conservative profile, its applicability is UNKNOWN when the model, code or normative asset revision changes. There is no automatic semantic cache invalidation. Negative controls are declared in the check plan and must be executed before the combined check can claim to demonstrate defect detection.
 
-## 7. Rapport og diagnoser
+## 7. Report and diagnostics
 
-Rapporten følger [report.schema.json](../schemas/report.schema.json): format, tool(name/version), spec_revision, profiles, scope og checks. Hvert check har check_id, dimension, result, scope, reason og diagnostics. Implementation-PASS/FAIL skal også identificere implementation, code_revision og evidence_refs; reportens spec_revision skal være kendt. Authorization-GRANTED kræver activity, policy_revision og authority_basis, som kan identificere et receipt eller et betroet standing mandate. Diagnostics har code, severity (`error|warning|info`), message, location og related_ids. Location er projekt-relative file plus JSON Pointer; filen kan være null, hvis forholdet ikke er lokalt.
+The report follows [report.schema.json](../schemas/report.schema.json): format, tool(name/version), spec_revision, profiles, scope and checks. Each check has check_id, dimension, result, scope, reason and diagnostics. Implementation PASS/FAIL must also identify implementation, code_revision and evidence_refs; the report's spec_revision must be known. Authorization GRANTED requires activity, policy_revision and authority_basis, which can identify a receipt or a trusted standing mandate. Diagnostics have code, severity (`error|warning|info`), message, location and related_ids. Location is a project-relative file plus JSON Pointer; file can be null if the condition is not local.
 
-Ingen opdigtet hash: spec_revision kan være null, indtil snapshot kan beregnes. Checket må da ikke påstå revisionsbundet PASS. Exit codes for et CLI er anbefalet 0=alle anmodede krævede checks PASS/GRANTED, 1=kendt FAIL/DENIED, 2=UNKNOWN/UNRESOLVED uden kendt fejl. Et API kan bruge samme resultater uden procesexit.
+No fabricated hash: spec_revision can be null until the snapshot can be computed. The check must then not claim revision-bound PASS. Recommended CLI exit codes are 0=all requested required checks PASS/GRANTED, 1=known FAIL/DENIED, 2=UNKNOWN/UNRESOLVED without a known error. An API can use the same results without a process exit.
 
-Den maskinlæsbare [diagnoseoversigt](../conformance/diagnostics.csv) angiver stabile codes. [Cases](../conformance/cases.yaml) angiver forventet dimension/resultat og om kontrollen er schema-, semantik- eller readinessbaseret. En implementation skal deklarere hvilke cases/profiler den opfylder.
+The machine-readable [diagnostic catalog](../conformance/diagnostics.csv) lists stable codes. [Cases](../conformance/cases.yaml) specify the expected dimension/result and whether the check is based on schema, semantics or readiness. An implementation must declare which cases/profiles it satisfies.

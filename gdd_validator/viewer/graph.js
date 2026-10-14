@@ -342,7 +342,7 @@ const GDD = (() => {
         svg(
           "text",
           { class: "node-kind", y: 54 },
-          folded ? "foldet community" : node.kind,
+          folded ? "folded community" : node.kind,
         ),
       );
       group.append(svg("title", {}, `${glyph.id}\n${node.description}`));

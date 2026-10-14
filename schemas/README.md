@@ -1,26 +1,26 @@
 # GDD 0.2 JSON Schemas
 
-Alle schemas bruger JSON Schema Draft 2020-12 og kan anvendes med en eksisterende schema-validator. De definerer repræsentation, ikke en komplet GDD-validator.
+All schemas use JSON Schema Draft 2020-12 and can be used with an existing schema validator. They define representation, not a complete GDD validator.
 
-| Schema | Dokument |
+| Schema | Document |
 | --- | --- |
-| gdd.schema.json | Modelmanifest og sikkert indlæst YAML/JSON |
-| fragment.schema.json | Lokale node-/edgefragmenter |
-| extension.schema.json | Deklaration af custom kinds/relations og deres dataschemas |
-| records.schema.json | Bindings, decisions, checkplaner og evidens |
-| report.schema.json | Scoped checkresultater og diagnoser |
-| snapshot.schema.json | Byteassets og modelsnapshot-identitet |
+| gdd.schema.json | Model manifest and safely loaded YAML/JSON |
+| fragment.schema.json | Local node/edge fragments |
+| extension.schema.json | Declaration of custom kinds/relations and their data schemas |
+| records.schema.json | Bindings, decisions, check plans and evidence |
+| report.schema.json | Scoped check results and diagnostics |
+| snapshot.schema.json | Byte assets and model snapshot identity |
 
-[validator-inputs.schema.json](validator-inputs.schema.json) er et informativt værktøjsschema med `$defs` for host, package, parallel og import. Det beskriver [validatorens](../VALIDATOR.md) API-envelopes og er ikke et syvende normativt GDD-dokumentformat. Det afledes fra `gdd_validator.validator.input_schema`.
+[validator-inputs.schema.json](validator-inputs.schema.json) is an informative tool schema with `$defs` for host, package, parallel and import. It describes the [validator's](../VALIDATOR.md) API envelopes and is not a seventh normative GDD document format. It is derived from `gdd_validator.validator.input_schema`.
 
-[observations.schema.json](observations.schema.json) og [graphify-mapping.schema.json](graphify-mapping.schema.json) beskriver [Graphify-adapterens](../GRAPHIFY.md) observationsbundle og eksplicitte mapping til et forslag. De er værktøjsformater uden for de seks GDD-core-dokumenter. Originalen bevares ved siden af indexet; schema-PASS alene verificerer ikke integritet/projektion.
+[observations.schema.json](observations.schema.json) and [graphify-mapping.schema.json](graphify-mapping.schema.json) describe the [Graphify adapter's](../GRAPHIFY.md) observation bundle and explicit mapping to a proposal. These are tool formats outside the six GDD core documents. The original is preserved alongside the index; schema PASS alone does not verify integrity/projection.
 
-Duplicate YAML-keys, aliases, fragmentindlæsning, globale ID-kollisioner, referenceopløsning, endpoint-kinds, state semantics, extensionsemantik, readiness og autorisation kræver yderligere checks efter [VALIDATION](../standard/VALIDATION.md). Et schema-PASS må ikke præsenteres som model-PASS.
+Duplicate YAML keys, aliases, fragment loading, global ID collisions, reference resolution, endpoint kinds, state semantics, extension semantics, readiness and authorization require additional checks under [VALIDATION](../standard/VALIDATION.md). A schema PASS must not be presented as model PASS.
 
-Schemas har lokale identifier-URI'er under `https://gdd.example/`; dette er ikke en publiceret service. De har ingen remote `$ref`-afhængigheder. Validering skal kunne ske offline med de vedlagte filer. `format: date-time` skal valideres med format-assertion aktiveret, hvis undtagelsesudløb kontrolleres.
+Schemas have local identifier URIs under `https://gdd.example/`; this is not a published service. They have no remote `$ref` dependencies. Validation must be possible offline with the included files. `format: date-time` must be validated with format assertion enabled when checking exception expiry.
 
-Den valgte Draft 2020-12-kontrakt er beskrevet af [JSON Schema](https://json-schema.org/draft/2020-12). De konkrete GDD-felter og semantikker er dette udkasts egne forslag.
+The selected Draft 2020-12 contract is described by [JSON Schema](https://json-schema.org/draft/2020-12). The concrete GDD fields and semantics are this draft's own proposals.
 
-[view.schema.json](view.schema.json) og [view-state.schema.json](view-state.schema.json) beskriver [viewerens](../VIEWER.md) indlejrede payload og interaktive synlighedsmanifest. De er informative værktøjskontrakter. Modelfelter, præcise records/ID-partitioner og rendererbytes kontrolleres separat; snapshotidentiteten ændres ikke af visningstilstand.
+[view.schema.json](view.schema.json) and [view-state.schema.json](view-state.schema.json) describe the [viewer's](../VIEWER.md) embedded payload and interactive visibility manifest. They are informative tool contracts. Model fields, exact records/ID partitions and renderer bytes are checked separately; view state does not change snapshot identity.
 
-[workflow.schema.json](workflow.schema.json) beskriver agent-workflowets request-, workplan-, packet- og event-envelopes. Det er et informativt værktøjsformat (`0.1`), ikke en ændring af GDD 0.2. Hele afledte planer verificeres mod aktuelle modelbytes og valgte checkplaner; schema alene beviser ingen pakkeintegritet, autorisation eller udførelse.
+[workflow.schema.json](workflow.schema.json) describes the agent workflow's request, workplan, packet and event envelopes. It is an informative tool format (`0.1`), not a change to GDD 0.2. Complete derived plans are verified against current model bytes and selected check plans; schema alone proves neither package integrity, authorization nor execution.

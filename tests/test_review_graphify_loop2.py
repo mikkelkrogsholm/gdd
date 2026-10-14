@@ -228,7 +228,7 @@ def test_proposal_api_keeps_valid_unicode_and_materializes_a_valid_candidate(
     proposal_inputs,
 ):
     folder, mapping = proposal_inputs
-    text = "Review æøå 😀\u2028next\u2029last"
+    text = "Review \u00e6\u00f8\u00e5 😀\u2028next\u2029last"
     mapping["project"]["title"] = text
     mapping["nodes"][0]["description"] = text
     mapping["nodes"][0]["rationale"] = text

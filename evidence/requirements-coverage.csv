@@ -1,21 +1,21 @@
 requirement_id,agreed_requirement,locations,status
-req.method_first,Standard og koncept før runtime/app,README.md;SPEC.md;standard/DECISIONS.md,specified
-req.agent_neutral,Fælles standard for alle agentleverandører,SPEC.md;GDD.md;standard/AGENT-PROTOCOL.md,specified
-req.agent_edits,Agenten redigerer; mennesket ser resultatet,SPEC.md;standard/INTEGRATIONS.md,specified_renderer_deferred
-req.new_project,Input til nyt projekt,standard/AGENT-PROTOCOL.md;standard/INTEGRATIONS.md,specified
-req.existing_project,Eksisterende Graphify-observationer til videre modellering,standard/INTEGRATIONS.md,specified_importer_deferred
-req.knowledge,Vedligeholdt wiki/OKF med kildeproveniens,standard/INTEGRATIONS.md;standard/FORMAT.md,specified_adapter_deferred
-req.architecture_behavior,Struktur og adfærd i samme graf,SPEC.md;schemas/gdd.schema.json,specified
-req.communities,Overlappende communities,SPEC.md;examples/concert.gdd.yaml,specified
-req.parallel,Afklarede grænser og koordineret parallelitet,standard/AGENT-PROTOCOL.md,specified_scheduler_deferred
-req.design,Brugeroplevelse og DESIGN.md,standard/INTEGRATIONS.md;schemas/gdd.schema.json,specified_design_asset_deferred
-req.project_policy,Projektet vælger modes og gates,standard/FORMAT.md;standard/AGENT-PROTOCOL.md,specified
-req.language_independent,Abstrakte kontrakter og separate kodebindings,SPEC.md;standard/FORMAT.md,specified
-req.validator,Valideringsværktøjets kontrakt og afgrænsning,standard/VALIDATION.md;schemas/report.schema.json,specified_program_deferred
-req.hierarchy,Heterogene undergrafer og parentkontrakter,SPEC.md;examples/refinement.gdd.yaml,specified
-req.hybrid,Faste kontraktfelter med fri pseudokode,standard/FORMAT.md;schemas/gdd.schema.json,specified
-req.extensions,Lille kerne med deklarerede udvidelser,SPEC.md;schemas/extension.schema.json;examples/extension.gdd.yaml,specified
-req.scenarios,Normalforløb og relevante fejl-/grænsetilfælde,standard/VALIDATION.md;examples/concert.gdd.yaml,specified
-req.revision_evidence,Særskilt modelsnapshot og immutable evidens/checkplan,standard/FORMAT.md;schemas/records.schema.json;schemas/snapshot.schema.json,specified
-req.preserve_legacy,Eksplicit migration og stabile IDs,standard/MIGRATION.md;archive/gdd-0.1/SPEC.md,checked
-req.existing_research,Synligt forhold til eksisterende arbejde,research/2026-10-13-existing-work.md;standard/DECISIONS.md,documented
+req.method_first,Standard and concept before runtime/application,README.md;SPEC.md;standard/DECISIONS.md,specified
+req.agent_neutral,Shared standard for all agent providers,SPEC.md;GDD.md;standard/AGENT-PROTOCOL.md,specified
+req.agent_edits,The agent edits; the human sees the result,SPEC.md;standard/INTEGRATIONS.md,specified_renderer_deferred
+req.new_project,Input for a new project,standard/AGENT-PROTOCOL.md;standard/INTEGRATIONS.md,specified
+req.existing_project,Existing Graphify observations for further modeling,standard/INTEGRATIONS.md,specified_importer_deferred
+req.knowledge,Maintained wiki/OKF with source provenance,standard/INTEGRATIONS.md;standard/FORMAT.md,specified_adapter_deferred
+req.architecture_behavior,Structure and behavior in the same graph,SPEC.md;schemas/gdd.schema.json,specified
+req.communities,Overlapping communities,SPEC.md;examples/concert.gdd.yaml,specified
+req.parallel,Clarified boundaries and coordinated parallelism,standard/AGENT-PROTOCOL.md,specified_scheduler_deferred
+req.design,User experience and DESIGN.md,standard/INTEGRATIONS.md;schemas/gdd.schema.json,specified_design_asset_deferred
+req.project_policy,The project chooses modes and gates,standard/FORMAT.md;standard/AGENT-PROTOCOL.md,specified
+req.language_independent,Abstract contracts and separate code bindings,SPEC.md;standard/FORMAT.md,specified
+req.validator,Validator contract and scope,standard/VALIDATION.md;schemas/report.schema.json,specified_program_deferred
+req.hierarchy,Heterogeneous subgraphs and parent contracts,SPEC.md;examples/refinement.gdd.yaml,specified
+req.hybrid,Fixed contract fields with free-form pseudocode,standard/FORMAT.md;schemas/gdd.schema.json,specified
+req.extensions,Small core with declared extensions,SPEC.md;schemas/extension.schema.json;examples/extension.gdd.yaml,specified
+req.scenarios,Normal flow and relevant error/boundary cases,standard/VALIDATION.md;examples/concert.gdd.yaml,specified
+req.revision_evidence,Separate model snapshot and immutable evidence/check plan,standard/FORMAT.md;schemas/records.schema.json;schemas/snapshot.schema.json,specified
+req.preserve_legacy,Explicit migration and stable IDs,standard/MIGRATION.md;archive/gdd-0.1/SPEC.md,checked
+req.existing_research,Visible relationship to existing work,research/2026-10-13-existing-work.md;standard/DECISIONS.md,documented

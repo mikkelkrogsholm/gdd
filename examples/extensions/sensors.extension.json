@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "node_kinds": {
     "example.sensors.sensor": {
-      "description": "Et sensorbegreb som domæneudvidelse.",
+      "description": "A sensor concept as a domain extension.",
       "data_schema": {
         "type": "object",
         "properties": {
@@ -22,7 +22,7 @@
   },
   "relations": {
     "example.sensors.measures": {
-      "description": "Sensoren leverer en måling om den modellerede entitet.",
+      "description": "The sensor provides a measurement of the modeled entity.",
       "from": [
         "example.sensors.sensor"
       ],

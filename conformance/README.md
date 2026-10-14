@@ -1,20 +1,20 @@
-# Conformance-cases
+# Conformance cases
 
-`cases.yaml` beskriver 58 positive og negative forventninger til standardens profiler. `diagnostics.csv` indeholder stabile diagnosecodes. Case-ID'er er identiteter for testsuiten, ikke noder i eksempelmodellen.
+`cases.yaml` describes 58 positive and negative expectations for the standard's profiles. `diagnostics.csv` contains stable diagnostic codes. Case IDs identify tests in the suite, not nodes in the example model.
 
-En case vælger baseartifact og profile, angiver eventuel scope og ændringer samt forventet dimension/resultat. `patches` bruger [RFC 6902 JSON Patch](https://www.rfc-editor.org/rfc/rfc6902). [run.py](run.py) opretter konkrete lokale fixtures for condition-cases og udfører validatoren i midlertidige bundles. Originaleksemplerne ændres ikke.
+A case selects a base artifact and profile, specifies any scope and changes, and states the expected dimension/result. `patches` uses [RFC 6902 JSON Patch](https://www.rfc-editor.org/rfc/rfc6902). [run.py](run.py) creates concrete local fixtures for condition cases and executes the validator in temporary bundles. The original examples are not changed.
 
-`verification` bevarer kategoriseringen fra standardfasen. Den historiske authoring-kontrol er dokumenteret i [standardreviewet](../evidence/standard-review.md). Den aktuelle validatorudførelse findes separat i [validator-conformance.json](../evidence/validator-conformance.json). `expected` bruges kun til assertionen efter faktisk kørsel, aldrig som resultat i validatoren.
+`verification` preserves the classification from the standard phase. The historical authoring check is documented in the [standard review](../evidence/standard-review.md). Current validator execution is recorded separately in [validator-conformance.json](../evidence/validator-conformance.json). `expected` is used only for the assertion after actual execution, never as a result inside the validator.
 
 ```sh
 uv run python conformance/run.py --output evidence/validator-conformance.json
 uv run pytest -q
 ```
 
-Harnesset kontrollerer forventet dimension/resultat og krævet diagnose. Det bevarer alle rapportchecks, også når FAIL og UNKNOWN optræder sammen. Parallel-cases vurderer den særskilte planoperation; den hævder ikke action-readiness. Import-casene kontrollerer påviseligt datatab og eksplicit UNKNOWN ved uunderstøttet profile/version. Derfor er 58 matchende forventninger ikke en certificering af alle mulige standardkrav.
+The harness checks the expected dimension/result and required diagnostic. It preserves all report checks, including when FAIL and UNKNOWN occur together. Parallel cases assess the separate plan operation; it does not claim action readiness. Import cases check demonstrable data loss and explicit UNKNOWN for unsupported profiles/versions. Therefore, 58 matching expectations are not certification of every possible standard requirement.
 
-Synthetic receipts i casepatches er testinputs til repræsentationsschemaet. De er ikke registrerede godkendelser, observerede kodefiler eller udført applikationsevidens.
+Synthetic receipts in case patches are test inputs to the representation schema. They are not registered approvals, observed code files or executed application evidence.
 
-[graphify-cases.yaml](graphify-cases.yaml) tilføjer 18 adaptercases. Kør `uv run python conformance/run_graphify.py`; de oprindelige 58 forventninger er bevaret. Importconditions i den oprindelige runner materialiseres nu som egentlige Graphify-JSON-inputs. Den faktisk producerede AST-/eksportfixture og dens hashes findes under [examples/graphify](../examples/graphify/README.md). Pytest kontrollerer også tamper, CLI, typed IDs og unaccepted proposals.
+[graphify-cases.yaml](graphify-cases.yaml) adds 18 adapter cases. Run `uv run python conformance/run_graphify.py`; the original 58 expectations are preserved. Import conditions in the original runner are now materialized as actual Graphify JSON inputs. The actually produced AST/export fixture and its hashes are under [examples/graphify](../examples/graphify/README.md). Pytest also checks tampering, the CLI, typed IDs and unaccepted proposals.
 
-[visualization-cases.yaml](visualization-cases.yaml) tilføjer 16 artifactcases for `gdd-viewer-html/0.1`. Kør `uv run python conformance/run_visualization.py`. [run_browser.cjs](run_browser.cjs) tester desuden faktiske offline browserhandlinger, grafidentitet, hostile tekst, numerisk præcision, foldning, download og responsivitet. Se [VIEWER.md](../VIEWER.md) for runtime og verifikationsscope.
+[visualization-cases.yaml](visualization-cases.yaml) adds 16 artifact cases for `gdd-viewer-html/0.1`. Run `uv run python conformance/run_visualization.py`. [run_browser.cjs](run_browser.cjs) also tests actual offline browser actions, graph identity, hostile text, numeric precision, folding, downloads and responsiveness. See [VIEWER.md](../VIEWER.md) for runtime and verification scope.

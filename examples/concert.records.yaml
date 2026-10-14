@@ -3,7 +3,7 @@ project_id: concert-reservations
 records:
   binding.component.api:
     kind: binding
-    spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+    spec_revision: sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a
     targets:
     - component.api
     implementation: implementation.example
@@ -14,7 +14,7 @@ records:
     status: planned
   binding.component.reservations:
     kind: binding
-    spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+    spec_revision: sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a
     targets:
     - component.reservations
     implementation: implementation.example
@@ -25,7 +25,7 @@ records:
     status: planned
   binding.component.storage:
     kind: binding
-    spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+    spec_revision: sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a
     targets:
     - component.storage
     implementation: implementation.example
@@ -36,61 +36,61 @@ records:
     status: planned
   check.rule.capacity:
     kind: check
-    spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+    spec_revision: sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a
     scope:
     - rule.capacity
     method: database_concurrency_and_integration_tests
     required_environment:
-    - Den relevante faktiske implementation; ingen app findes i dette eksempel.
+    - The relevant actual implementation; this example has no application.
     negative_controls:
-    - Injicér en relevant overtrædelse og demonstrér detektion.
+    - Inject a relevant violation and demonstrate detection.
   check.rule.idempotency:
     kind: check
-    spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+    spec_revision: sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a
     scope:
     - rule.idempotency
     method: integration_tests
     required_environment:
-    - Den relevante faktiske implementation; ingen app findes i dette eksempel.
+    - The relevant actual implementation; this example has no application.
     negative_controls:
-    - Injicér en relevant overtrædelse og demonstrér detektion.
+    - Inject a relevant violation and demonstrate detection.
   check.rule.authorization:
     kind: check
-    spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+    spec_revision: sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a
     scope:
     - rule.authorization
     method: authorization_tests
     required_environment:
-    - Den relevante faktiske implementation; ingen app findes i dette eksempel.
+    - The relevant actual implementation; this example has no application.
     negative_controls:
-    - Injicér en relevant overtrædelse og demonstrér detektion.
+    - Inject a relevant violation and demonstrate detection.
   check.rule.atomicity:
     kind: check
-    spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+    spec_revision: sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a
     scope:
     - rule.atomicity
     method: database_fault_injection_tests
     required_environment:
-    - Den relevante faktiske implementation; ingen app findes i dette eksempel.
+    - The relevant actual implementation; this example has no application.
     negative_controls:
-    - Injicér en relevant overtrædelse og demonstrér detektion.
+    - Inject a relevant violation and demonstrate detection.
   check.rule.state_machine:
     kind: check
-    spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+    spec_revision: sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a
     scope:
     - rule.state_machine
     method: model_based_and_integration_tests
     required_environment:
-    - Den relevante faktiske implementation; ingen app findes i dette eksempel.
+    - The relevant actual implementation; this example has no application.
     negative_controls:
-    - Injicér en relevant overtrædelse og demonstrér detektion.
+    - Inject a relevant violation and demonstrate detection.
   check.rule.api_boundary:
     kind: check
-    spec_revision: sha256:68cef3a59791ebf866c4fd601aca5e2e70a23716b95ee4989e7bd3efd75e6210
+    spec_revision: sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a
     scope:
     - rule.api_boundary
     method: static_import_analysis
     required_environment:
-    - Den relevante faktiske implementation; ingen app findes i dette eksempel.
+    - The relevant actual implementation; this example has no application.
     negative_controls:
-    - Injicér en relevant overtrædelse og demonstrér detektion.
+    - Inject a relevant violation and demonstrate detection.

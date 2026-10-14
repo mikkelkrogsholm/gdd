@@ -60,7 +60,7 @@ for variant,expected in [('direct-rule','PASS'),('entity-target','PASS'),('wrong
  inspect('mapping '+variant,c,'implementation',expected)
 
 # Unicode and JSON representation order do not alter the prescribed immutable plan digest.
-c=dataset('unicode');p,r,h,w=c;r['check.x']['description']='æøå — 𝄞\nCanonical check';r['evidence.x']['check_revision']=digest(r['check.x']);w(r);canonical_hash=r['evidence.x']['check_revision'];r['check.x']=dict(reversed(list(r['check.x'].items())));inspect('immutable hash is canonical',c,'implementation','PASS');assert digest(r['check.x'])==canonical_hash;passed.append('check hash key order')
+c=dataset('unicode');p,r,h,w=c;r['check.x']['description']='\u00e6\u00f8\u00e5 — 𝄞\nCanonical check';r['evidence.x']['check_revision']=digest(r['check.x']);w(r);canonical_hash=r['evidence.x']['check_revision'];r['check.x']=dict(reversed(list(r['check.x'].items())));inspect('immutable hash is canonical',c,'implementation','PASS');assert digest(r['check.x'])==canonical_hash;passed.append('check hash key order')
 
 # No implicit merger of active alternatives; explicit choices remain scoped.
 for variant,expected in [('ambiguous','UNKNOWN'),('missing-selection','UNKNOWN'),('pass-selection','PASS'),('fail-selection','FAIL')]:

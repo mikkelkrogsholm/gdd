@@ -1,16 +1,16 @@
-# Genkontrol af GDD-validator 0.2.0
+# Revalidation of GDD validator 0.2.0
 
-Brugerens gentagne validatoropgave er afstemt med den allerede afsluttede implementation. Alle 60 filer registreret i [leverancemanifestet](../validator-assets.json) har uændrede bytehashes. Eksisterende kode og leverancer er bevaret; denne omgang tilføjer frisk kontroloutput.
+The user's repeated validator task was reconciled with the already completed implementation. All 60 files recorded in the [delivery manifest](../validator-assets.json) have unchanged byte hashes. Existing code and deliverables are preserved; this round adds fresh check output.
 
-| Kontrol | Faktisk resultat | Output |
+| Check | Actual result | Output |
 | --- | --- | --- |
-| Hele pytest-suiten | 74 beståede tests | [tests.txt](tests.txt) |
-| Standardens conformance-cases | 58/58 forventninger matcher | [conformance.json](conformance.json) |
+| Full pytest suite | 74 passed tests | [tests.txt](tests.txt) |
+| The standard's conformance cases | 58/58 expectations match | [conformance.json](conformance.json) |
 | CLI, action.reserve | readiness PASS, exit 0 | [backend.json](backend.json) |
-| CLI, implementation uden udført evidens | UNKNOWN, exit 2 | [implementation.json](implementation.json) |
-| CLI, implementation uden betroet mandat | authorization UNRESOLVED, exit 2 | [authorization.json](authorization.json) |
+| CLI, implementation without executed evidence | UNKNOWN, exit 2 | [implementation.json](implementation.json) |
+| CLI, implementation without a trusted mandate | authorization UNRESOLVED, exit 2 | [authorization.json](authorization.json) |
 
-Kommandoer fra projektroden:
+Commands from the project root:
 
 ```sh
 uv run pytest -q
@@ -20,8 +20,8 @@ uv run gdd validate examples/concert.gdd.yaml --profile records
 uv run gdd validate examples/concert.gdd.yaml --profile records --activity implementation --scope action.reserve
 ```
 
-To read-only underagenter har parallelt genkontrolleret de tidligere konkrete reviewfund. Modelreviewet bekræftede edge-selectors, metaschema før traversal, inert const/$ref og adskillelsen mellem records og modelrevision. Protokolreviewet bekræftede context/readiness, parentbørn, beskyttelse mod urelateret supersession, parallelplanens deklarationer og community-scope. Ingen reproducerbar restfejl blev fundet inden for den afgrænsede genkontrol. Lead har verificeret den integrerede testkørsel og CLI-resultaterne.
+Two read-only subagents rechecked the previous concrete review findings in parallel. Model review confirmed edge selectors, metaschema before traversal, inert const/$ref, and the separation of records from model revision. Protocol review confirmed context/readiness, parent children, protection against unrelated supersession, parallel-plan declarations, and community scope. No reproducible remaining defect was found within the bounded revalidation. The lead verified the integrated test run and CLI results.
 
-Den tidligere build-/installationskontrol er bevaret i [validatorreviewet](../validator-review.md). Pakke- og kodehashes er uændrede. Der er ikke udført en ny global installation eller publicering.
+The previous build/installation check is preserved in the [validator review](../validator-review.md). Package and code hashes are unchanged. No new global installation or publication was performed.
 
-[VALIDATOR.md](../../VALIDATOR.md) beskriver profiler og begrænsninger. Matchende conformance-forventninger omfatter også forventede FAIL/UNKNOWN-resultater; de er ikke applikationsevidens eller fuld certificering af alle mulige standardkrav. Produktions-Graphify-import og rendering er fortsat UNKNOWN.
+[VALIDATOR.md](../../VALIDATOR.md) describes profiles and limitations. Matching conformance expectations also include expected FAIL/UNKNOWN results; they are not application evidence or full certification of all possible standard requirements. Production Graphify import and rendering remain UNKNOWN.

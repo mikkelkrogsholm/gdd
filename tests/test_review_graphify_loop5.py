@@ -85,7 +85,7 @@ def test_cli_duplicate_surrogate_key_returns_json_fail(tmp_path, key, adapter):
 
 @pytest.mark.parametrize("adapter", [False, True])
 def test_valid_unicode_duplicate_key_remains_readable_failure(tmp_path, adapter):
-    key = "møde/🔥"
+    key = "café/🔥"
     raw = duplicate_raw(key.encode("utf-8"))
     if adapter:
         report = observe_graphify(raw, profile=PROFILE)[1]
@@ -119,7 +119,7 @@ def test_ordinary_unicode_graph_import_is_unchanged(tmp_path):
         "nodes": [
             {
                 "id": "🔥",
-                "label": "møde",
+                "label": "café",
                 "file_type": "code",
                 "source_file": "app.py",
             }

@@ -1,54 +1,54 @@
-# Agent-workflow 0.1 — pakke 0.5.0
+# Agent workflow 0.1 — package 0.5.0
 
-Leveret et værktøjslag oven på GDD 0.2: komplette agentpakker, særskilt
-implementeringsscope og læsekontekst, deklareret parallelitet, afhængighedskø,
-atomiske events, genoptagelse og gated integration/accept. Eksisterende native
-agenter udfører kodearbejdet. Der er ingen ny runtimeafhængighed eller ændring af
-GDD coreformatet. [Kontrakt og brug](../WORKFLOW.md).
+Delivered a tool layer on top of GDD 0.2: complete agent packets, separate
+implementation scope and reading context, declared parallelism, a dependency queue,
+atomic events, resume, and gated integration/acceptance. Existing native
+agents perform the code work. There is no new runtime dependency or change to
+the GDD core format. [Contract and usage](../WORKFLOW.md).
 
-| Faktisk kontrol | Resultat | Evidens |
+| Actual check | Result | Evidence |
 | --- | --- | --- |
-| Fuld pytest-suite | 1.328 PASS, 0 fejl | [JUnit](workflow-pytest.xml) |
-| GDD-standard | 58/58 | [JSON](workflow-core-conformance.json) |
+| Full pytest suite | 1,328 PASS, 0 errors | [JUnit](workflow-pytest.xml) |
+| GDD standard | 58/58 | [JSON](workflow-core-conformance.json) |
 | Graphify | 18/18 | [JSON](workflow-graphify-conformance.json) |
-| Viewerartifact | 16/16 | [JSON](workflow-visualization-conformance.json) |
-| Nye workflow-forventninger | 20/20 | [JSON](workflow-conformance.json) |
-| Offline Chrome | 23/23, ingen netværkskald/scriptfejl | [JSON](workflow-browser/browser-conformance.json) |
-| Installeret wheel uden for checkout | 18 CLI-trin; 38 runtime-/asset-/schemafiler byteidentiske | [JSON](workflow-wheel-smoke.json), [reproducerbar kontrol](workflow-wheel-smoke.source.py) |
-| Faktisk native kodearbejde | 18 tests/7 fejl → 19 PASS; 10 events; aktuel accept | [Demo](../examples/agent-native/README.md), [summary](../examples/agent-native/evidence/summary.json) |
+| Viewer artifact | 16/16 | [JSON](workflow-visualization-conformance.json) |
+| New workflow expectations | 20/20 | [JSON](workflow-conformance.json) |
+| Offline Chrome | 23/23, no network calls/script errors | [JSON](workflow-browser/browser-conformance.json) |
+| Installed wheel outside checkout | 18 CLI steps; 38 runtime/asset/schema files byte-identical | [JSON](workflow-wheel-smoke.json), [reproducible check](workflow-wheel-smoke.source.py) |
+| Actual native code work | 18 tests/7 failures → 19 PASS; 10 events; current acceptance | [Demo](../examples/agent-native/README.md), [summary](../examples/agent-native/evidence/summary.json) |
 
-Fire read-only underagenter undersøgte model/planning, protokol/persistens,
-CLI/demo og adversarial inputs parallelt. Root var eneste checkoutwriter.
-Workers leverede testforslag og senere faktiske kodeændringer i tempkopier.
-Tre udstedte pakker blev udført: discount og tax parallelt, quote efter begge
-integrationer. De oprindelige floor-assertions blev bevaret. Den nye regression
-kontrollerer faktisk CLI-output for `10**30+1` uden flydende afrundingsfejl.
+Four read-only subagents examined model/planning, protocol/persistence,
+CLI/demo, and adversarial inputs in parallel. Root was the sole checkout writer.
+Workers provided test proposals and later actual code changes in temporary copies.
+Three issued packets were executed: discount and tax in parallel, quote after both
+integrations. The original floor assertions were preserved. The new regression
+checks actual CLI output for `10**30+1` without floating-point rounding errors.
 
-Bekræftede fund er rettet med regressioner: codebase/spec-base blev adskilt;
-uparat scope kan ikke skjules af parallel-PASS; fulde pakker autentificeres mod
-modellen før run-publicering; falsey hostinputs og newline-ID'er afvises;
-dispatch/integration bindes til hostens konkrete implementation/kodebase;
-dangling modelreferencer afvises før slicing; historiske record-only diagnoser
-blokerer ikke gyldige scoped gates; cancellation og sene submissions bevares
-ved en utilgængelig model. Idempotency kontrolleres før stale-head-afvisning,
-attempts genbruges ikke, og konkurrerende publishers kan kun committe én event.
+Confirmed findings were fixed with regressions: codebase/spec base were separated;
+unready scope cannot be concealed by parallel PASS; complete packets are authenticated against
+the model before run publication; falsey host inputs and newline IDs are rejected;
+dispatch/integration bind to the host's concrete implementation/codebase;
+dangling model references are rejected before slicing; historical record-only diagnostics
+do not block valid scoped gates; cancellation and late submissions are preserved
+when the model is unavailable. Idempotency is checked before stale-head rejection,
+attempts are not reused, and competing publishers can commit only one event.
 
-Accept kræver separat aktuel evidens og autorisation, præcis integreret
-implementation/koderevision, frosne checkvalg og afklarede acceptance-spørgsmål.
-Tests bruger syntetiske receipts til protokolnegative cases. Demoens
-application-evidence er derimod baseret på faktisk udført kode og CLI, med rå
-resultater, negative control og hostverificerede bindings. Worker-PASS blev ikke
-brugt som integrationsbevis. Installeret wheel gennemførte et nyt faktisk replay.
+Acceptance requires separate current evidence and authorization, the exact integrated
+implementation/code revision, frozen check selections, and resolved acceptance questions.
+Tests use synthetic receipts for negative protocol cases. The demo's
+application evidence, however, is based on actually executed code and CLI, with raw
+results, a negative control, and host-verified bindings. Worker PASS was not
+used as integration evidence. The installed wheel completed a new actual replay.
 
-Agent-readable-linteren finder 19 AR002-advisories i eksisterende kodeblokke og
-ingen nye stærke boundaryfund. [Rå advisoryliste](workflow-agent-readable.json).
-Den er en læsbarhedshjælp og ikke en implementationsevaluator.
+The agent-readable linter finds 19 AR002 advisories in existing code blocks and
+no new strong boundary findings. [Raw advisory list](workflow-agent-readable.json).
+It is a readability aid, not an implementation evaluator.
 
-V1 har et bevidst begrænset ansvar: hosten beskytter eventkald/filsystem,
-etablerer faktisk arbejdsisolation, transporterer agentopgaver, udfører review,
-merge og checks samt leverer eksplicit trust. Loghashes er tamper-detektion,
-ikke kryptografisk autentificering. Modeldrift kræver en ny plan/run med bevaret
-historik; integrerede jobs rebases eller invalideres ikke automatisk.
+V1 has a deliberately limited responsibility: the host protects event calls/the filesystem,
+establishes actual work isolation, transports agent tasks, performs review,
+merge, and checks, and supplies explicit trust. Log hashes detect tampering;
+they are not cryptographic authentication. Model drift requires a new plan/run with history
+preserved; integrated jobs are not automatically rebased or invalidated.
 
-[Maskinlæsbar samlet status og kildehashes](workflow-review.json). Tidligere
-versioners evidens og distributioner er bevaret. Den aktuelle stopgrænse er nået.
+[Machine-readable aggregate status and source hashes](workflow-review.json). Evidence
+and distributions from earlier versions are preserved. The current stopping boundary is reached.

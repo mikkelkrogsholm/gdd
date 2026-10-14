@@ -42,10 +42,10 @@
     parent.append(row);
   }
   function location(id) {
-    const box = section("Kanonisk placering");
+    const box = section("Canonical location");
     const loc = data.locations[id];
-    if (loc) kv(box, "Fil / pointer", `${loc[0]}${loc[1]}`);
-    kv(box, "Modelrevision", data.spec_revision);
+    if (loc) kv(box, "File / pointer", `${loc[0]}${loc[1]}`);
+    kv(box, "Model revision", data.spec_revision);
   }
   function sourceReferences(node, id) {
     const references = [
@@ -53,29 +53,29 @@
       ...(node.design_refs || []),
     ];
     if (!references.length) return;
-    const box = section("Kilder og designreferencer");
+    const box = section("Sources and design references");
     references.forEach((ref, index) => {
       button(box, ref.source, "source", ref.source);
       raw(box, "Reference", ref, false, data.text.references[id][index]);
     });
   }
   function edgeDetails(edge) {
-    heading("Kanonisk relation", edge.relation, edge.id, edge.description);
-    const box = section("Retning");
+    heading("Canonical relation", edge.relation, edge.id, edge.description);
+    const box = section("Direction");
     button(box, `${edge.from} →`, "node", edge.from);
     button(box, `→ ${edge.to}`, "node", edge.to);
     const peers = model.edges.filter(
       (e) => e.from === edge.from && e.to === edge.to,
     );
     if (peers.length > 1) {
-      const group = section(`${peers.length} parallelle relationer`);
+      const group = section(`${peers.length} parallel relations`);
       peers.forEach((e) =>
         button(group, `${e.id} · ${e.relation}`, "edge", e.id),
       );
     }
     sourceReferences(edge, edge.id);
     location(edge.id);
-    raw(detail, "Alle relationsfelter", edge, true, data.text.edges[edge.id]);
+    raw(detail, "All relation fields", edge, true, data.text.edges[edge.id]);
   }
   function nodeDetails(id) {
     const node = model.nodes[id];
@@ -83,37 +83,37 @@
     detail.append(
       el(
         "span",
-        node.maturity === "specified" ? "Specified" : "Sketch (standardværdi)",
+        node.maturity === "specified" ? "Specified" : "Sketch (default)",
         "badge",
       ),
     );
     detail.append(
       el(
         "p",
-        "Maturity beskriver modellens detaljering. Parathed og implementation vurderes separat.",
+        "Maturity describes the model's level of detail. Readiness and implementation are assessed separately.",
         "notice",
       ),
     );
     const memberOf = memberships.get(id);
     if (memberOf.length) {
-      const box = section("Medlem af communities");
+      const box = section("Member of communities");
       memberOf.forEach((c) => button(box, label(c), "node", c));
     }
     if (node.behavior !== undefined) {
-      const box = section("Pseudokode / adfærd");
+      const box = section("Pseudocode / behavior");
       raw(
         box,
-        "Vis adfærd",
+        "Show behavior",
         node.behavior,
         true,
         data.text.nodes[id].fields.behavior,
       );
     }
     if (node.contract) {
-      const box = section("Kontrakt");
+      const box = section("Contract");
       raw(
         box,
-        "Input, output, fejl og effekter",
+        "Input, output, errors and effects",
         node.contract,
         true,
         data.text.nodes[id].fields.contract,
@@ -130,7 +130,7 @@
       if (node[key] !== undefined)
         raw(
           section(key),
-          `Vis ${key}`,
+          `Show ${key}`,
           node[key],
           true,
           data.text.nodes[id].fields[key],
@@ -139,7 +139,7 @@
       const members = [...memberships]
         .filter(([, groups]) => groups.includes(id))
         .map(([member]) => member);
-      const box = section(`${members.length} medlemmer`);
+      const box = section(`${members.length} members`);
       members.forEach((member) =>
         button(
           box,
@@ -155,7 +155,7 @@
       );
       if (internals.length) {
         const internalBox = section(
-          `${internals.length} foldede interne relationer`,
+          `${internals.length} folded internal relations`,
         );
         internals.forEach((e) =>
           button(internalBox, `${e.id} · ${e.relation}`, "edge", e.id),
@@ -164,7 +164,7 @@
     }
     const related = model.edges.filter((e) => e.from === id || e.to === id);
     if (related.length) {
-      const box = section(`Relationer · ${related.length}`);
+      const box = section(`Relations · ${related.length}`);
       related.forEach((e) =>
         button(
           box,
@@ -178,18 +178,18 @@
       q.targets.includes(id),
     );
     if (questions.length) {
-      const box = section("Åbne spørgsmål / modeldata");
+      const box = section("Open questions / model data");
       questions.forEach(([qid, q]) =>
         raw(box, qid, q, true, data.text.questions[qid].full),
       );
     }
     sourceReferences(node, id);
     location(id);
-    raw(detail, "Alle nodefelter", node, false, data.text.nodes[id].full);
+    raw(detail, "All node fields", node, false, data.text.nodes[id].full);
   }
   function overview() {
     heading(
-      "Modeloversigt",
+      "Model overview",
       model.project.title,
       model.project.id,
       model.project.goal,
@@ -197,19 +197,19 @@
     detail.append(
       el(
         "p",
-        "Udforsk intention, kontrakter og pseudokode. Denne visning skriver aldrig tilbage til modellen.",
+        "Explore intent, contracts and pseudocode. This view never writes back to the model.",
         "notice",
       ),
     );
-    const counts = section("Grafen");
-    kv(counts, "Noder", Object.keys(model.nodes).length);
-    kv(counts, "Relationer", model.edges.length);
+    const counts = section("The graph");
+    kv(counts, "Nodes", Object.keys(model.nodes).length);
+    kv(counts, "Relations", model.edges.length);
     kv(
       counts,
       "Scope",
-      data.scope.length ? data.scope.join(", ") : "Hele modellen",
+      data.scope.length ? data.scope.join(", ") : "Entire model",
     );
-    const legend = section("Nodetyper");
+    const legend = section("Node types");
     for (const kind of [
       ...new Set(Object.values(model.nodes).map((n) => n.kind)),
     ].sort()) {
@@ -225,22 +225,22 @@
     legend.append(
       el(
         "p",
-        "Stiplet node: sketch eller foldet community. Pile viser relationens retning. ×N er et inspecterbart relationsbundt.",
+        "Dashed node: sketch or folded community. Arrows show relation direction. ×N is an inspectable relation bundle.",
       ),
     );
     const sources = Object.keys(model.sources || {});
     if (sources.length) {
-      const box = section("Kilder · separat fra intention");
+      const box = section("Sources · separate from intent");
       sources.forEach((id) => button(box, id, "source", id));
     }
     const questions = Object.entries(model.questions || {});
     if (questions.length) {
-      const box = section("Spørgsmål");
+      const box = section("Questions");
       questions.forEach(([id, q]) =>
         raw(box, id, q, false, data.text.questions[id].full),
       );
     }
-    const revisions = section("Sporbarhed");
+    const revisions = section("Traceability");
     kv(revisions, "Revision", data.spec_revision);
     kv(
       revisions,
@@ -249,24 +249,24 @@
     );
     kv(
       revisions,
-      "Observationer",
-      "Ingen observationsinputs i denne projektion",
+      "Observations",
+      "No observation inputs in this projection",
     );
     revisions.append(
       el(
         "p",
-        "Visningen viser modeldata. Den beregner ingen parathed eller implementeringsevidens.",
+        "The view displays model data. It does not calculate readiness or implementation evidence.",
       ),
     );
-    raw(detail, "Modelsnapshot", data.snapshot, false, data.text.snapshot);
-    raw(detail, "Aktuelt visningsmanifest", GDD.manifest());
-    raw(detail, "Projektfelter", model.project, false, data.text.project);
+    raw(detail, "Model snapshot", data.snapshot, false, data.text.snapshot);
+    raw(detail, "Current view manifest", GDD.manifest());
+    raw(detail, "Project fields", model.project, false, data.text.project);
   }
   GDD.select = (type, id) => {
     state.selected = type ? { type, id } : null;
     $("selection-status").textContent = type
-      ? `Valgt ${type}: ${id}`
-      : "Modeloversigt";
+      ? `Selected ${type}: ${id}`
+      : "Model overview";
     for (const item of $("object-list").children) {
       if (item.tagName === "BUTTON")
         item.setAttribute(
@@ -282,18 +282,18 @@
     else if (type === "bundle") {
       const bundle = GDD.projection.bundles.find((b) => b.key === id);
       heading(
-        "Rettet relationsbundt",
-        `${bundle.edges.length} relationer`,
+        "Directed relation bundle",
+        `${bundle.edges.length} relations`,
         `${bundle.from} → ${bundle.to}`,
       );
       detail.append(
         el(
           "p",
-          "Hvert ID er en selvstændig kanonisk relation. Bundtet ændrer kun tegningen.",
+          "Each ID is an independent canonical relation. The bundle changes only the drawing.",
           "notice",
         ),
       );
-      const box = section("Alle relationer");
+      const box = section("All relations");
       bundle.edges.forEach((e) =>
         button(
           box,
@@ -303,17 +303,17 @@
         ),
       );
     } else if (type === "source") {
-      heading("Kilde · separat fra intention", id, id);
+      heading("Source · separate from intent", id, id);
       detail.append(
         el(
           "p",
-          "Kildepåstande og planlagte referencer er ikke verificeret implementeringsevidens.",
+          "Source claims and planned references are not verified implementation evidence.",
           "notice",
         ),
       );
       raw(
         detail,
-        "Kildedata",
+        "Source data",
         model.sources[id],
         true,
         data.text.sources[id].full,

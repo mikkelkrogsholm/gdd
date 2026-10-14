@@ -502,7 +502,7 @@ result = 'UNKNOWN'
             (b"\xff\xfe\x80", "text/plain", {"kind": "whole-document"}, "UNKNOWN"),
             (b'{"requirements":"do X"}', "application/json", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
             (b"requirements: do X\n", "application/yaml", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
-            ("Læs kravet\u2028præcist".encode("utf-8"), "text/plain", {"kind": "whole-document"}, "PASS"),
+            ("Read the requirement\u2028precisely".encode("utf-8"), "text/plain", {"kind": "whole-document"}, "PASS"),
         ],
     )
     def test_contract_source_format_and_encoding(examples, raw, format, selector, result):
@@ -544,7 +544,7 @@ result = 'UNKNOWN'
             (b"\xff\xfe\x80", "text/plain", {"kind": "whole-document"}, "UNKNOWN"),
             (b'{"requirements":"do X"}', "application/json", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
             (b"requirements: do X\n", "application/yaml", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
-            ("Læs kravet\u2028præcist".encode("utf-8"), "text/plain", {"kind": "whole-document"}, "PASS"),
+            ("Read the requirement\u2028precisely".encode("utf-8"), "text/plain", {"kind": "whole-document"}, "PASS"),
         ],
     )
     def test_contract_source_format_and_encoding(examples, raw, format, selector, result):
@@ -586,7 +586,7 @@ selector = {'kind': 'whole-document'}, result = 'UNKNOWN'
             (b"\xff\xfe\x80", "text/plain", {"kind": "whole-document"}, "UNKNOWN"),
             (b'{"requirements":"do X"}', "application/json", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
             (b"requirements: do X\n", "application/yaml", {"kind": "json-pointer", "value": "/requirements"}, "PASS"),
-            ("Læs kravet\u2028præcist".encode("utf-8"), "text/plain", {"kind": "whole-document"}, "PASS"),
+            ("Read the requirement\u2028precisely".encode("utf-8"), "text/plain", {"kind": "whole-document"}, "PASS"),
         ],
     )
     def test_contract_source_format_and_encoding(examples, raw, format, selector, result):

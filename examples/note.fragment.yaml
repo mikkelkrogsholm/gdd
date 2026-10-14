@@ -2,5 +2,5 @@ format: gdd-fragment/0.2
 nodes:
   entity.note:
     kind: entity
-    description: En node i et separat lokalt fragment.
+    description: A node in a separate local fragment.
 edges: []

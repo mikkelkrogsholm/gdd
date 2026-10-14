@@ -4,7 +4,7 @@
   $("project-title").textContent = model.project.title;
   $("renderer-meta").textContent = `${data.generator.name} ${data.generator.version} · Offline`;
   document.title = `${model.project.title} · GDD`;
-  $("total-count").textContent = `${Object.keys(model.nodes).length} noder`;
+  $("total-count").textContent = `${Object.keys(model.nodes).length} nodes`;
   $("revision").textContent = `Model ${data.spec_revision}`;
   $("revision").title = data.spec_revision;
   function option(select, value, title) {
@@ -56,7 +56,7 @@
         el(
           "span",
           node
-            ? `${node.kind}${hidden ? " · foldet medlem" : ""}`
+            ? `${node.kind}${hidden ? " · folded member" : ""}`
             : `${edge.from} → ${edge.to} · ${edge.relation}`,
           "row-meta",
         ),
@@ -64,7 +64,7 @@
       item.onclick = () => GDD.select(node ? "node" : "edge", id);
       box.append(item);
     }
-    if (!objects.length) box.append(el("p", "Ingen match.", "hint"));
+    if (!objects.length) box.append(el("p", "No matches.", "hint"));
     $("tab-nodes").setAttribute("aria-pressed", state.tab === "nodes");
     $("tab-edges").setAttribute("aria-pressed", state.tab === "edges");
   }
@@ -77,13 +77,13 @@
       totalNodes = Object.keys(model.nodes).length,
       totalEdges = model.edges.length;
     $("view-count").textContent =
-      `${p.nodes.length}/${totalNodes} noder · ${p.edges.length}/${totalEdges} relationer`;
+      `${p.nodes.length}/${totalNodes} nodes · ${p.edges.length}/${totalEdges} relations`;
     $("projection-status").textContent = state.fold
-      ? `${p.glyphs.length} figurer · ${p.internal.length} foldede interne relationer`
-      : `${totalNodes - p.nodes.length} noder og ${totalEdges - p.edges.length} relationer udeladt`;
+      ? `${p.glyphs.length} glyphs · ${p.internal.length} folded internal relations`
+      : `${totalNodes - p.nodes.length} nodes and ${totalEdges - p.edges.length} relations omitted`;
     $("fold-hint").textContent = state.fold
-      ? "Overlap repræsenteres i første synlige community efter ID. Alle medlemskaber kan inspiceres."
-      : "Medlemskab er gruppering, ikke ejerskab.";
+      ? "Overlap is represented in the first visible community by ID. All memberships can be inspected."
+      : "Membership is grouping, not ownership.";
     $("empty").hidden = Boolean(p.nodes.length);
     GDD.showOverview();
     GDD.fit();

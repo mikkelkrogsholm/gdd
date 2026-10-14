@@ -1,156 +1,156 @@
 # GDD — scratchpad
 
-Dato: 13. oktober 2026.
+Date: October 13, 2026.
 
-Samlede arbejdsnoter fra samtalen frem til 13. oktober 2026. Notatet skelner mellem aftalt retning, undersøgelsesfund, forslag og åbne valg. Det ændrer ikke i sig selv SPEC.md eller concert.gdd.yaml.
+Collected working notes from the conversation through October 13, 2026. These notes distinguish between the agreed direction, research findings, proposals, and open choices. They do not themselves change SPEC.md or concert.gdd.yaml.
 
-**Efterfølgende status:** Aftalerne er nu omsat til [GDD 0.2-standardudkastet](SPEC.md) med normative kapitler, schemas og illustrative eksempler. Den tidligere 0.1-specifikation er arkiveret eksplicit. Se [README](README.md) for læsevej og [reviewrapport](evidence/standard-review.md) for udførte kontroller. Denne scratchpad bevares som historisk beslutningsgrundlag; dens oprindelige åbne spørgsmål nedenfor beskriver udgangspunktet for det nu afsluttede standardarbejde.
+**Subsequent status:** The agreements have now been incorporated into the [GDD 0.2 draft standard](SPEC.md), with normative chapters, schemas, and illustrative examples. The former 0.1 specification is explicitly archived. See the [README](README.md) for a reading guide and the [review report](evidence/standard-review.md) for completed checks. This scratchpad is retained as the historical basis for decisions; its original open questions below describe the starting point for the now completed standards work.
 
-## Aftalt retning og beslutninger
+## Agreed direction and decisions
 
-- **Metoden først.** Vi udvikler GDD-metoden, før vi omsætter den til et framework.
-- **En standard for alle agenter.** GDD skal være agentuafhængig; det afgrænses ikke til Codex eller Claude Code. Konkrete værktøjer implementerer standarden.
-- **Gennem agenter.** Den primære arbejdsgang er gennem eksisterende AI-agenter, ligesom Graphify. Agenten læser, ændrer og anvender modellen.
-- **Mennesket ser resultatet.** Grafvisningen bruges til overblik, navigation og feedback. Redigering af noder og relationer sker gennem agenten, ikke direkte i visualiseringen.
-- **To indgange.** Vi skal kunne begynde med input til et nyt projekt og arbejde videre fra en eksisterende Graphify-graf over kode.
-- **Et vedligeholdt videnslag.** Frameworket skal kunne opbygge og vedligeholde en LLM-wiki/OKF ud fra inputmaterialet. Den præcise formatintegration er endnu åben.
-- **Pseudo-graf med pseudokode.** Den fælles model beskriver både struktur og adfærd og præciseres gennem iterationer.
-- **Communities og parallelitet.** Grafen kan grupperes, eksempelvis i backend og frontend, og bruges til at finde uafhængige udviklingsopgaver.
-- **Brugeroplevelse og design.** Modellen skal også beskrive skærmbilleder, navigation, brugerhandlinger og visuelle ønsker. DESIGN.md skal indgå.
-- **Projektet vælger arbejdsmåde.** Både godkendelse før implementering og automatisk fortsættelse inden for den aftalte opgave skal understøttes. Brugeren eller projektet sætter selv arbejdsmåde og godkendelsesregler; der er ikke aftalt én universel standardmode.
-- **Sproguafhængig intention.** Samme abstrakte model skal kunne danne grundlag for implementering i forskellige kodesprog.
-- **Et valideringsværktøj.** Der skal være et værktøj, analogt med valideringsværktøjer omkring OKF og DESIGN.md, som agenter kan bruge til at validere grafen.
-- **Første validator afgrænses.** Den kontrollerer grafmodellens gyldighed og den strukturelle del af implementeringsparathed. Standardens forbindelser til kode og test-evidens skal tænkes ind fra starten; bred implementeringskontrol kommer senere gennem særskilte checkere.
-- **Flere detaljeringsniveauer.** Modellen begynder med funktioner, domænebegreber, skærme og kontrakter. En node kan foldes ud i en undergraf, når mere præcision er nødvendig. Filer, klasser og funktioner forbindes gennem kodebindings.
-- **Faste kontrakter og fri pseudokode.** Strukturerede felter beskriver input, output, fejl, afhængigheder og regler. Selve forløbet kan beskrives i fri pseudokode. Den konkrete serialisering er stadig et formatforslag.
-- **Lille kerne med udvidelser.** Standarden skal kunne udvides med deklarerede nodetyper og relationer, hvis felter og forbindelser kan valideres.
-- **Konkrete scenarier.** Et implementeringsklart udsnit skal indeholde et normalforløb og relevante fejl- eller grænsetilfælde. Scenarier kan udtrykkes som given/when/then og forbindes til handlinger og regler.
+- **The method first.** We are developing the GDD method before turning it into a framework.
+- **A standard for all agents.** GDD must be agent independent; it is not limited to Codex or Claude Code. Concrete tools implement the standard.
+- **Through agents.** The primary workflow uses existing AI agents, as Graphify does. The agent reads, changes, and applies the model.
+- **The human sees the result.** The graph view provides an overview, navigation, and feedback. Nodes and relationships are edited through the agent, rather than directly in the visualization.
+- **Two entry points.** We must be able to begin with input for a new project and continue from an existing Graphify graph of code.
+- **A maintained knowledge layer.** The framework must be able to build and maintain an LLM wiki/OKF from the input material. The precise format integration remains open.
+- **Pseudo-graph with pseudocode.** The shared model describes both structure and behavior and becomes more precise through iterations.
+- **Communities and parallelism.** The graph can be grouped, for example into backend and frontend, and used to find independent development tasks.
+- **User experience and design.** The model must also describe screens, navigation, user actions, and visual preferences. DESIGN.md must be included.
+- **The project chooses its working mode.** Both approval before implementation and automatic continuation within the agreed task must be supported. The user or project sets the working mode and approval rules; no universal default mode has been agreed.
+- **Language-independent intent.** The same abstract model must be able to serve as the basis for implementation in different programming languages.
+- **A validation tool.** There must be a tool, analogous to the validation tools around OKF and DESIGN.md, that agents can use to validate the graph.
+- **A bounded first validator.** It checks graph model validity and the structural part of implementation readiness. The standard's links to code and test evidence must be considered from the start; broad implementation checks come later through separate checkers.
+- **Multiple levels of detail.** The model starts with features, domain concepts, screens, and contracts. A node can be expanded into a subgraph when greater precision is needed. Files, classes, and functions are connected through code bindings.
+- **Fixed contracts and free-form pseudocode.** Structured fields describe inputs, outputs, errors, dependencies, and rules. The flow itself can be described in free-form pseudocode. The concrete serialization is still a format proposal.
+- **A small core with extensions.** The standard must support extensions with declared node types and relationships whose fields and connections can be validated.
+- **Concrete scenarios.** An implementation-ready slice must contain a normal flow and relevant error or boundary cases. Scenarios can be expressed as given/when/then and linked to actions and rules.
 
-## Aktuel arbejdsgrænse
+## Current work boundary
 
-Afklaringen af den overordnede retning er afsluttet for nu. Næste skridt er at udvikle standarden og konceptet ud fra det materiale og de aftaler, vi allerede har.
+Clarification of the overall direction is complete for now. The next step is to develop the standard and concept from the material and agreements we already have.
 
-Vi skal nu formulere en sammenhængende standard for modellens begreber, relationer, kontrakter, udvidelser, agentprotokol og validering. Det er specifikationsarbejde, før vi implementerer frameworket eller valideringsværktøjet.
+We must now formulate a coherent standard for the model's concepts, relationships, contracts, extensions, agent protocol, and validation. This is specification work, before implementing the framework or validation tool.
 
-Forslaget om at vælge og bygge et konkret demonstrationprojekt nu blev ikke valgt. Reservationsmodellen kan bruges som eksisterende illustrativt materiale under standardarbejdet. Et senere praktisk forsøg, frontendimplementering og afprøvning på en eksisterende kodebase er ikke næste opgave i denne fase.
+The proposal to choose and build a concrete demonstration project now was not selected. The reservation model can serve as existing illustrative material during the standards work. A later practical experiment, frontend implementation, and trial on an existing codebase are not the next task in this phase.
 
-De åbne detaljer nedenfor er designarbejde til standarden. De betyder ikke, at der nu skal gennemføres endnu en spørgerunde om hovedretningen.
+The open details below are design work for the standard. They do not mean that another round of questions about the main direction must now take place.
 
-## Retning
+## Direction
 
-Vi vil udvikle metoden før frameworket.
+We want to develop the method before the framework.
 
-Et menneske eller en agent leverer input om det ønskede system. Input bliver gennem iterationer omsat til en pseudo-graf med pseudokode. Når den relevante del af modellen er afklaret, driver grafen udviklingen: AI-agenter omsætter afgrænsede dele til kode og tests, og uafhængige opgaver kan udføres parallelt. Kontroller og evidens forbinder implementeringen tilbage til modellen.
+A human or an agent supplies input about the desired system. Through iterations, the input becomes a pseudo-graph with pseudocode. Once the relevant part of the model is clarified, the graph drives development: AI agents translate bounded parts into code and tests, and independent tasks can run in parallel. Checks and evidence connect the implementation back to the model.
 
-Grafen beskriver både systemets struktur og dets adfærd. Den er det primære arbejdsgrundlag, når vi udtrykker og ændrer systemets intention.
+The graph describes both the system's structure and its behavior. It is the primary working basis for expressing and changing the system's intent.
 
-## Fra input til udvikling
+## From input to development
 
-**Input → LLM-wiki/OKF → pseudo-graf med pseudokode → iteration og afklaring → grafstyret udvikling → evidens og videre ændringer.**
+**Input → LLM wiki/OKF → pseudo-graph with pseudocode → iteration and clarification → graph-driven development → evidence and further changes.**
 
-Input kan være ideer, samtaler, dokumenter, eksempler, eksisterende viden og begrænsninger. Både mennesker og agenter kan bidrage.
+Input can include ideas, conversations, documents, examples, existing knowledge, and constraints. Both humans and agents can contribute.
 
-En LLM-wiki/OKF organiserer og forbinder materialet, så det er tilgængeligt under modelleringen. Agenten skal kunne opbygge og vedligeholde dette lag som del af processen. Om alle projekter skal have samme vidensstruktur, og præcis hvordan OKF indgår, er endnu ikke fastlagt.
+An LLM wiki/OKF organizes and connects the material so it is available during modeling. The agent must be able to build and maintain this layer as part of the process. Whether all projects must have the same knowledge structure, and exactly how OKF is involved, has not yet been established.
 
-Omsætningen til pseudo-graf er et modelleringsarbejde: identificér ønskede egenskaber, handlinger, data, regler og sammenhænge. Bevar referencer tilbage til kilderne. Modstridende input og agentens egne antagelser skal fremstå som spørgsmål eller forslag, indtil de er afklaret.
+Translation into a pseudo-graph is a modeling task: identify desired properties, actions, data, rules, and relationships. Preserve references back to the sources. Conflicting input and the agent's own assumptions must remain questions or proposals until clarified.
 
-Grafen udvikles gennem nogle iterationer mellem menneske og agent. Antallet af iterationer er ikke fastlagt. Den relevante del er klar til udvikling, når dens adfærd, grænser, kontrakter og væsentlige åbne spørgsmål er tilstrækkeligt afklaret. Resten kan fortsat være grov.
+The graph develops through several iterations between human and agent. The number of iterations is not fixed. The relevant part is ready for development when its behavior, boundaries, contracts, and significant open questions have been sufficiently clarified. The rest can remain rough.
 
-## To indgange til samme metode
+## Two entry points to the same method
 
-**Nyt projekt:** input og viden omsættes til en pseudo-graf, som itereres og derefter driver udviklingen.
+**New project:** input and knowledge become a pseudo-graph, which is iterated and then drives development.
 
-**Eksisterende projekt:** en Graphify-graf over den eksisterende kode bruges som udgangspunkt for forståelse og videre modellering. Observationer om den aktuelle implementation og krav til den ønskede løsning skal fortsat kunne skelnes. En observeret relation bliver ikke automatisk en godkendt arkitekturregel.
+**Existing project:** a Graphify graph of the existing code serves as the starting point for understanding and further modeling. Observations about the current implementation and requirements for the desired solution must remain distinguishable. An observed relationship does not automatically become an approved architectural rule.
 
-Den fælles model skal kunne forbinde det eksisterende med det ønskede: hvad findes, hvad skal bevares, hvad ønskes ændret, og hvad mangler stadig afklaring eller evidens. Det konkrete importformat og reglerne for omsætning fra Graphify er endnu ikke designet.
+The shared model must connect what exists with what is desired: what is present, what must be retained, what should change, and what still needs clarification or evidence. The concrete import format and rules for conversion from Graphify have not yet been designed.
 
-## Agentuafhængig standard og værktøjer
+## Agent-independent standard and tools
 
-GDD skal være en fælles standard, som alle relevante AI-agenter kan følge. Codex og Claude Code er eksempler på forbrugere af standarden; ingen bestemt model eller agent er valgt som nødvendig runtime.
+GDD must be a shared standard that all relevant AI agents can follow. Codex and Claude Code are examples of consumers of the standard; no particular model or agent has been selected as a required runtime.
 
-Den primære oplevelse er agentbaseret. Et menneske giver input og feedback; agenten vedligeholder viden og model, bruger validatoren og driver udviklingen. Målet omfatter visualiseringsmuligheder i stil med Graphify.
+The primary experience is agent based. A human supplies input and feedback; the agent maintains knowledge and the model, uses the validator, and drives development. The goal includes visualization capabilities similar to Graphify.
 
-Det er besluttet, at et valideringsværktøj skal findes. Det er endnu åbent, om værktøjet skal være obligatorisk for alle former for GDD-brug, og hvordan agenter finder og kalder det. Et konkret CLI, SDK, MCP-interface, installationsformat eller implementeringssprog er ikke valgt.
+It has been decided that a validation tool must exist. Whether the tool must be mandatory for all forms of GDD use, and how agents find and call it, remains open. No concrete CLI, SDK, MCP interface, installation format, or implementation language has been selected.
 
-## Visualisering og redigering
+## Visualization and editing
 
-Agenten ændrer modellen. Mennesket ser resultatet og giver feedback gennem agenten.
+The agent changes the model. The human sees the result and gives feedback through the agent.
 
-Visningen skal kunne støtte udforskning af noder, relationer og communities. Interaktive grafvisninger som hos Graphify er ønsket. De præcise eksporttyper, filtre, layouts og statusmarkeringer er endnu åbne.
+The view must support exploration of nodes, relationships, and communities. Interactive graph views like Graphify's are desired. The precise export types, filters, layouts, and status markers remain open.
 
-Visningen skal være afledt af den fælles model. Den må ikke udvikle sin egen konkurrerende version af kravene. Første retning omfatter ikke en grafeditor, hvor mennesket redigerer modellen ved at flytte eller forbinde noder direkte.
+The view must be derived from the shared model. It must not develop a competing version of the requirements. The initial direction does not include a graph editor where the human edits the model by moving or connecting nodes directly.
 
-## Godkendelse og automatisk fortsættelse
+## Approval and automatic continuation
 
-Begge arbejdsmåder skal understøttes:
+Both working modes must be supported:
 
-- Agenten præsenterer den relevante pseudo-graf og venter på menneskets godkendelse før kodearbejdet.
-- Agenten fortsætter automatisk inden for den aftalte opgave og eksisterende autorisation.
+- The agent presents the relevant pseudo-graph and waits for human approval before working on code.
+- The agent continues automatically within the agreed task and existing authorization.
 
-Brugeren eller projektet sætter selv arbejdsmåde og godkendelsesregler. Forslaget om en fælles standardmode med menneskelig godkendelse af første graf og væsentlige ændringer blev ikke vedtaget som universel regel.
+The user or project sets the working mode and approval rules. The proposed shared default mode with human approval of the first graph and significant changes was not adopted as a universal rule.
 
-Automatisk fortsættelse gælder inden for projektets aftalte mandat. Den gør ikke uklarheder til accepterede krav og giver ikke i sig selv mandat til at svække kontrakter. Hvordan konfigurationen repræsenteres, og hvordan skift og relevante beslutninger registreres, skal beskrives i standardarbejdet.
+Automatic continuation applies within the project's agreed mandate. It does not turn ambiguities into accepted requirements and does not itself grant authority to weaken contracts. How the configuration is represented, and how changes and relevant decisions are recorded, must be described during the standards work.
 
-## Communities og parallel udvikling
+## Communities and parallel development
 
-Grafen kan have communities, eksempelvis backend og frontend. De giver overblik, afgrænser agentens kontekst og kan bruges til at fordele ansvar. De kan også grupperes efter domæne eller funktion. Hvordan medlemskab og eventuelle overlap repræsenteres, er endnu åbent.
+The graph can have communities, for example backend and frontend. They provide an overview, bound the agent's context, and can allocate responsibility. They can also be grouped by domain or feature. How membership and possible overlaps are represented remains open.
 
-Communities er grupperinger i den fælles model. Relationer og kontrakter på tværs af grupper skal fortsat være synlige. En gruppering eller et automatisk fundet cluster er ikke i sig selv bevis for uafhængighed.
+Communities are groupings in the shared model. Relationships and contracts across groups must remain visible. A grouping or an automatically detected cluster is not itself evidence of independence.
 
-Parallelle arbejdsopgaver afledes af grafens relevante afhængigheder, fælles data, globale regler og implementeringsansvar. Backend og frontend kan eksempelvis arbejde samtidigt, når deres fælles kontrakt er afklaret, og der er en plan for integration.
+Parallel work tasks are derived from the graph's relevant dependencies, shared data, global rules, and implementation ownership. Backend and frontend can, for example, work simultaneously when their shared contract is clarified and an integration plan exists.
 
-En arbejdsopgave bør identificere graf-ID'er, nødvendige kontrakter, forudsætninger, ejerskab over implementeringsfiler og forventet evidens. Uafhængige Git-writers skal have isolerede worktrees; parallel udvikling kræver også koordination omkring ændringer af fælles kontrakter og modellen selv.
+A work task should identify graph IDs, necessary contracts, prerequisites, ownership of implementation files, and expected evidence. Independent Git writers must use isolated worktrees; parallel development also requires coordination of changes to shared contracts and the model itself.
 
-Parallelitet er en del af visionen. En konkret scheduler, et bestemt antal agenter eller krav om altid at bruge flere agenter er ikke besluttet.
+Parallelism is part of the vision. A concrete scheduler, a particular number of agents, or a requirement to always use multiple agents has not been decided.
 
-## Detaljeringsniveauer og undergrafer
+## Levels of detail and subgraphs
 
-Grafen skal kunne forfines i flere niveauer. Den kan begynde med funktioner, domænebegreber, skærme og kontrakter. Når en del kræver mere præcision, kan en node foldes ud i en undergraf.
+The graph must support refinement at multiple levels. It can start with features, domain concepts, screens, and contracts. When a part needs more precision, a node can be expanded into a subgraph.
 
-En undergraf skal fortsat være del af den samme model med sporbarhed til den overordnede node. Konkrete filer, klasser og funktioner forbindes til modellen gennem kodebindings.
+A subgraph must remain part of the same model, with traceability to the parent node. Concrete files, classes, and functions connect to the model through code bindings.
 
-Detaljeringsniveau og communities er forskellige begreber: en undergraf udfolder en del af modellen, mens en community grupperer relaterede elementer. De præcise relationer og regler for grænser, referencer og kontrakter på tværs af niveauer skal fastlægges.
+Levels of detail and communities are different concepts: a subgraph expands a part of the model, while a community groups related elements. The precise relationships and rules for boundaries, references, and contracts across levels must be established.
 
-## Brugeroplevelse og DESIGN.md
+## User experience and DESIGN.md
 
-Pseudo-grafen skal også kunne beskrive brugeroplevelsen: skærmbilleder, navigation, brugerhandlinger og visuelle ønsker. Frontend-agenter skal kunne udvikle ud fra denne del af modellen.
+The pseudo-graph must also describe the user experience: screens, navigation, user actions, and visual preferences. Frontend agents must be able to develop from this part of the model.
 
-DESIGN.md skal indgå som fælles designgrundlag med visuel retning, tokens, komponentvejledning og relevante tilstande. Grafens UI-elementer skal kunne referere til det, så designbeslutninger kan genbruges på tværs af skærme og agenter.
+DESIGN.md must serve as the shared design basis, with visual direction, tokens, component guidance, and relevant states. The graph's UI elements must be able to reference it so design decisions can be reused across screens and agents.
 
-Forslaget er at lade grafen beskrive produktets interaktion og forbinde den til DESIGN.md frem for at kopiere hele designgrundlaget ind i hver node. Det præcise bindingsformat og eventuelle designchecks er endnu åbne.
+The proposal is for the graph to describe the product's interaction and connect it to DESIGN.md rather than copy the entire design basis into every node. The precise binding format and any design checks remain open.
 
-Der er endnu ikke valgt en visuel identitet eller skrevet et DESIGN.md til GDD-værktøjet eller reservations-eksemplet. Integration af DESIGN.md-formatet og design-md-skillen er ønsket; de konkrete integrationsmekanismer er ikke implementeret.
+No visual identity has yet been chosen, and no DESIGN.md has been written for the GDD tool or the reservation example. Integration of the DESIGN.md format and the design-md skill is desired; the concrete integration mechanisms have not been implemented.
 
-## Kodesprogsuafhængighed
+## Programming-language independence
 
-Målet er en sprog- og teknologiuafhængig intent-model. Den beskriver domæne, adfærd og kontrakter med abstrakte typer og pseudokode. Teknologivalg, konkrete typer, frameworkdetaljer og kodebindings ligger i et særskilt implementeringslag, der refererer til modellens ID'er.
+The goal is an intent model independent of language and technology. It describes the domain, behavior, and contracts using abstract types and pseudocode. Technology choices, concrete types, framework details, and code bindings belong to a separate implementation layer that references the model's IDs.
 
-Dermed kan samme model være udgangspunkt for forskellige implementeringer, eksempelvis en backend i Python eller TypeScript. Hver implementering skal verificeres for sig; evidens fra én implementering overføres ikke automatisk til en anden.
+The same model can therefore be the starting point for different implementations, for example a backend in Python or TypeScript. Each implementation must be verified separately; evidence from one implementation does not automatically transfer to another.
 
-Sproguafhængigheden kommer fra den valgte semantik og abstraktion. En graf kan også indeholde sprogspecifikke detaljer, så grafstrukturen alene giver ikke denne egenskab. Vi skal derfor holde pseudokode og kontrakter fri af utilsigtede teknologibindinger, samtidig med at krav om eksempelvis atomicitet og adgangskontrol er præcise.
+Language independence comes from the chosen semantics and abstraction. A graph can also contain language-specific details, so the graph structure alone does not provide this property. We must therefore keep pseudocode and contracts free from unintended technology bindings, while precisely expressing requirements such as atomicity and access control.
 
-## Hvad betyder native for AI-agenter?
+## What does native to AI agents mean?
 
-Arbejdshypotesen er, at agenten skal kunne finde, følge og ændre modellens elementer gennem eksplicitte referencer. En handling skal kunne læses sammen med dens kontrakt, data, afhængigheder, relevante regler og scenarier.
+The working hypothesis is that the agent must be able to find, follow, and change the model's elements through explicit references. An action must be readable together with its contract, data, dependencies, relevant rules, and scenarios.
 
-Det afgørende er læsekontrakten mellem modellen og agenten. Filformatet er repræsentationen. At en model kan læse YAML er ikke i sig selv dokumentation for, at metoden giver bedre resultater.
+The essential element is the reading contract between model and agent. The file format is the representation. A model's ability to read YAML does not itself demonstrate that the method produces better results.
 
-## Aftalt udtryksform: faste kontrakter og fri pseudokode
+## Agreed expression: fixed contracts and free-form pseudocode
 
-Modellen bruger en hybrid:
+The model uses a hybrid:
 
-- Faste felter til input, output, fejl, afhængigheder og regler, så værktøjet kan kontrollere deres struktur og referencer.
-- Fri pseudokode til forløbet, som agenten fortolker og implementerer inden for kontrakten.
+- Fixed fields for inputs, outputs, errors, dependencies, and rules, allowing the tool to check their structure and references.
+- Free-form pseudocode for the flow, which the agent interprets and implements within the contract.
 
-Det giver plads til naturligt udtrykte ideer og gradvis præcisering. En strukturel validering af felterne udfører ikke pseudokoden og dokumenterer ikke dens faglige korrekthed.
+This allows naturally expressed ideas and gradual clarification. Structural validation of the fields does not execute the pseudocode or demonstrate its domain correctness.
 
-Enkelte pseudokodebegreber kan senere få standardiseret semantik, hvis erfaringerne viser et behov. Vi har ikke besluttet at begynde med et fuldt eksekverbart programmeringssprog.
+Individual pseudocode concepts may later receive standardized semantics if experience shows a need. We have not decided to start with a fully executable programming language.
 
-## Forslag: en tekstbaseret, typet graf
+## Proposal: a text-based, typed graph
 
-Brug YAML til modellens struktur og multiline-felter til pseudokode. Det bygger videre på det eksisterende eksempel.
+Use YAML for the model's structure and multiline fields for pseudocode. This builds on the existing example.
 
-Nedenstående er en skitse til notation, ikke et vedtaget skema eller en komplet kontrakt klar til implementering. ID'erne er forkortede for læsbarhed; en konkret revision skal bevare de eksisterende stabile ID'er.
+The following is a notation sketch, not an adopted schema or a complete implementation-ready contract. IDs are shortened for readability; a concrete revision must preserve the existing stable IDs.
 
 ```yaml
 format: gdd/0.1
@@ -200,140 +200,140 @@ rules:
       Repeating a successful request creates no new reservation.
 ```
 
-`creates`, `obeys` og `applies_to` udtrykker typede relationer i grafen. Pseudokoden beskriver handlingens forløb. En grafvisning skal udledes af den samme model.
+`creates`, `obeys`, and `applies_to` express typed relationships in the graph. The pseudocode describes the action's flow. A graph view must be derived from the same model.
 
-Pseudokoden må gerne være fleksibel. Modellens struktur og relationer skal være entydige. Betydningen af friteksten er endnu ikke maskinelt defineret; strukturel validering beviser ikke, at implementeringen følger den.
+Pseudocode may be flexible. The model's structure and relationships must be unambiguous. The meaning of the free text is not yet machine defined; structural validation does not prove that the implementation follows it.
 
-## Deklarerede udvidelser
+## Declared extensions
 
-GDD skal have en lille fælles kerne og mulighed for deklarerede udvidelser. Et projekt eller et domæne kan eksempelvis have brug for nodetyper som `sensor`, `robot` eller `training_job`.
+GDD must have a small shared core and support declared extensions. A project or domain may, for example, need node types such as `sensor`, `robot`, or `training_job`.
 
-Udvidelser skal beskrive deres felter og relationer, så validatoren kan kontrollere dem. De nævnte domænetyper er eksempler på udvidelser, ikke obligatoriske kernetyper.
+Extensions must describe their fields and relationships so the validator can check them. The domain types mentioned are examples of extensions, not mandatory core types.
 
-Namespace, versionsregler, distributionsform og håndtering af ukendte udvidelser skal fastlægges i standarden. Udvidelsesmuligheden må ikke gøre kernen unødigt stor eller kræve de samme domænebegreber i alle projekter.
+Namespaces, versioning rules, distribution format, and handling of unknown extensions must be established in the standard. Extension support must not make the core unnecessarily large or require the same domain concepts in every project.
 
-## Scenarier som del af implementeringsparathed
+## Scenarios as part of implementation readiness
 
-Et udsnit, der er klar til udvikling, skal have et konkret normalforløb og relevante fejl- eller grænsetilfælde. Scenarier kan beskrives som given/when/then og forbindes med handlinger og regler.
+A slice that is ready for development must have a concrete normal flow and relevant error or boundary cases. Scenarios can be described as given/when/then and connected to actions and rules.
 
-Reservationsmodellen illustrerer eksempelvis:
+The reservation model illustrates, for example:
 
-- Sidste ledige plads reserveres.
-- To brugere forsøger at reservere den sidste plads samtidigt.
-- En tidligere succesfuld request gentages.
+- The last available seat is reserved.
+- Two users try to reserve the last seat simultaneously.
+- A previously successful request is repeated.
 
-Scenarierne giver mennesket og agenten konkrete forventninger at vurdere adfærden ud fra. De beskriver planlagte checks; en beskrevet situation er ikke et bestået testresultat.
+Scenarios give the human and agent concrete expectations against which to assess behavior. They describe planned checks; a described situation is not a passing test result.
 
-Validatoren kan kontrollere deres felter og referencer. Om scenarierne faktisk dækker de væsentlige tilfælde, kræver stadig faglig vurdering.
+The validator can check their fields and references. Whether the scenarios actually cover the important cases still requires domain review.
 
-## Principper for metoden
+## Principles of the method
 
-1. **Stabile ID'er.** Handlinger, entiteter, komponenter, regler og scenarier beholder deres identitet, når navne eller implementering ændres.
-2. **Definerede relationer.** Mulige relationer som `calls`, `reads`, `creates`, `changes` og `obeys` skal have præcise betydninger og tilladte endpoint-typer. Flere relationer mellem samme elementer skal kunne bevares.
-3. **Synlige åbne spørgsmål.** Agenten skal kunne skelne mellem afklarede krav og forhold, der skal afklares før implementering. Designmodenhed og verificeringsstatus er forskellige akser.
-4. **Afgrænset læsning.** En opgave samler de relevante kontrakter, entiteter, regler, scenarier og globale krav. Arbejdspakken afledes fra modellen og skal bevare referencer og revision; den er ikke en særskilt specifikation.
-5. **Sporbare ændringer.** Agenten rapporterer berørte graf-ID'er, tilknyttet kode og konkret evidens. En observeret afvigelse ændrer ikke automatisk det accepterede krav.
+1. **Stable IDs.** Actions, entities, components, rules, and scenarios retain their identity when names or implementations change.
+2. **Defined relationships.** Possible relationships such as `calls`, `reads`, `creates`, `changes`, and `obeys` must have precise meanings and permitted endpoint types. Multiple relationships between the same elements must be preserved.
+3. **Visible open questions.** The agent must distinguish clarified requirements from matters that need clarification before implementation. Design maturity and verification status are different axes.
+4. **Bounded reading.** A task collects the relevant contracts, entities, rules, scenarios, and global requirements. The work packet is derived from the model and must preserve references and revision; it is not a separate specification.
+5. **Traceable changes.** The agent reports affected graph IDs, associated code, and concrete evidence. An observed deviation does not automatically change the accepted requirement.
 
-## Validering — aftalt første afgrænsning
+## Validation — agreed initial boundary
 
-Vi skelner mellem tre spørgsmål:
+We distinguish three questions:
 
-1. **Er modellen gyldig?** Kontroller eksempelvis unikke ID'er, gyldige referencer, relationernes endpoint-typer, tilstandsovergange og strukturelle referencer til design og kilder.
-2. **Er det valgte udsnit klar til implementering?** Kontroller, om nødvendige kontraktfelter og konkrete scenarier er til stede, om forudsætningerne er erklæret, og om væsentlige åbne spørgsmål er markeret. Den faglige tilstrækkelighed kræver stadig review.
-3. **Opfylder implementeringen kravene?** Brug passende kodeanalyse og tests; forbind resultater med graf-ID'er og den konkrete revision.
+1. **Is the model valid?** Check, for example, unique IDs, valid references, relationship endpoint types, state transitions, and structural references to design and sources.
+2. **Is the selected slice ready for implementation?** Check whether necessary contract fields and concrete scenarios are present, prerequisites are declared, and significant open questions are marked. Domain adequacy still requires review.
+3. **Does the implementation satisfy the requirements?** Use appropriate code analysis and tests; connect results to graph IDs and the concrete revision.
 
-Første validator håndterer punkt 1 og den strukturelle del af punkt 2. Den skal kunne give konkret feedback, som agenten kan handle på. Den kan opdage en manglende fejlkontrakt; den kan ikke alene fastslå, at en udfyldt kontrakt er fagligt korrekt.
+The first validator handles point 1 and the structural part of point 2. It must provide concrete feedback the agent can act on. It can detect a missing error contract; it cannot by itself establish that a completed contract is correct for the domain.
 
-Punkt 3 skal kunne kobles på gennem særskilte checkere, eksempelvis en Graphify-adapter til arkitektur, database-tests til samtidighed og checks af frontend mod designgrundlaget. Disse er senere muligheder, ikke allerede implementerede capabilities.
+Point 3 must be connectable through separate checkers, for example a Graphify adapter for architecture, database tests for concurrency, and checks of the frontend against the design basis. These are later possibilities, not capabilities already implemented.
 
-Standardens forbindelser mellem krav, kode og test-evidens skal tænkes ind fra begyndelsen. En gyldig graf, et implementeringsklart udsnit og beståede implementeringschecks er forskellige vurderinger. PASS, FAIL og UNKNOWN skal altid have et konkret scope.
+The standard's links between requirements, code, and test evidence must be considered from the start. A valid graph, an implementation-ready slice, and passing implementation checks are different assessments. PASS, FAIL, and UNKNOWN must always have a concrete scope.
 
-Illustrativt output — ikke et eksisterende værktøjsresultat:
+Illustrative output — not a result from an existing tool:
 
 ```text
-Model: gyldig
+Model: valid
 
 action.reserve:
-  Klar til implementering: nej
-  Mangler: forventet resultat ved ukendt koncert
+  Ready for implementation: no
+  Missing: expected result for an unknown concert
 
-Implementeringschecks:
+Implementation checks:
   rule.capacity: UNKNOWN
-  Ingen test-evidens registreret
+  No test evidence recorded
 ```
 
-CLI-navn, rapportformat, schemas og den præcise readiness-profil er endnu ikke fastlagt.
+The CLI name, report format, schemas, and precise readiness profile have not yet been established.
 
-## Agentprotokol — første forslag
+## Agent protocol — first proposal
 
-**Læs udsnit → afklar huller → implementér kontrakten → kontrollér resultatet → forbind evidens til modellen.**
+**Read slice → clarify gaps → implement the contract → check the result → connect evidence to the model.**
 
-- Læs den valgte handling og dens relevante kontrakter, globale regler, scenarier og bindings.
-- Gør væsentlige uklarheder synlige. Foreslå præciseringer før afhængig implementering; resten af projektet kan fortsat være skitseret.
-- Implementér inden for den accepterede kontrakt og det afgrænsede scope.
-- Kør de relevante strukturelle og adfærdsmæssige checks, inklusive negative kontroller hvor nødvendigt.
-- Registrér resultater som PASS, FAIL eller UNKNOWN med scope, revision og evidensplacering.
-- Forbind kode og evidens til modellens stabile ID'er. Foreslå kravændringer eksplicit.
+- Read the selected action and its relevant contracts, global rules, scenarios, and bindings.
+- Make significant ambiguities visible. Propose clarifications before dependent implementation; the rest of the project may remain sketched.
+- Implement within the accepted contract and bounded scope.
+- Run the relevant structural and behavioral checks, including negative controls where necessary.
+- Record results as PASS, FAIL, or UNKNOWN with scope, revision, and evidence location.
+- Connect code and evidence to the model's stable IDs. Propose requirement changes explicitly.
 
-## Hvad vi har lært af Graphify
+## What we learned from Graphify
 
-Den installerede version blev undersøgt som del af samtalen: Graphify 0.9.75. Udtrækning er adskilt fra grafopbygning, analyse og eksport. Det gør dens tilgang til navigation, kontekst, afhængighedsanalyse og visning relevant for GDD.
+The installed version was examined as part of the conversation: Graphify 0.9.75. Extraction is separate from graph construction, analysis, and export. This makes its approach to navigation, context, dependency analysis, and visualization relevant to GDD.
 
-En lille afprøvning i hukommelsen viste:
+A small in-memory experiment showed:
 
-- En håndskrevet extraction-lignende graf blev accepteret af skemavalideringen.
-- Stabile intent-ID'er og et ekstra pseudokodefelt på en node blev bevaret.
-- Grafen kunne bygges som rettet graf.
-- To forskellige relationer, `creates` og `returns`, mellem samme to noder blev slået sammen til én i den undersøgte build-rute.
+- A handwritten extraction-like graph was accepted by schema validation.
+- Stable intent IDs and an additional pseudocode field on a node were preserved.
+- The graph could be built as a directed graph.
+- Two different relationships, `creates` and `returns`, between the same two nodes were merged into one in the build route examined.
 
-Afprøvningen var en formatprobe. Den genererede ingen applikation og beviste ikke forretningsadfærd eller tabsløs kompatibilitet med hele GDD-modellen. Der blev ikke skrevet filer fra proben.
+The experiment was a format probe. It generated no application and did not prove business behavior or lossless compatibility with the entire GDD model. No files were written by the probe.
 
-Læringen er, at Graphify kan være en observer og en kilde til genbrugelige ideer eller adapters. GDD's model skal bevare egne stabile ID'er, relationer og normative betydning. Graf → kode kræver også intention, kontrakter og pseudokode; flere implementeringer kan opfylde den samme model.
+The lesson is that Graphify can be an observer and a source of reusable ideas or adapters. GDD's model must preserve its own stable IDs, relationships, and normative meaning. Graph → code also requires intent, contracts, and pseudocode; multiple implementations may satisfy the same model.
 
-## Eksisterende arbejde og vores mulige bidrag
+## Existing work and our possible contribution
 
-Undersøgelsen fandt væsentligt overlap, især:
+The research found significant overlap, particularly:
 
-- Microsoft RPG/ZeroRepo: krav → planlægningsgraf → repository, samt kode → graf gennem RPG-Encoder.
-- Spec Growth Engine: specifikationsgraf, afgrænset agentkontekst, kodebindings, driftchecks og evidens.
-- grAIph: tæt konceptuel lighed med et visuelt, grafstyret udviklingsmiljø; den aktuelle implementering beskrives som privat.
-- Kenneth Tylers GraphDrivenDevelopment: både navnet og ideen om grafen som autoritativ repræsentation er allerede i brug.
-- Intent Architect og JetBrains MPS: modeller og egne sprog som grundlag for kodegenerering.
+- Microsoft RPG/ZeroRepo: requirements → planning graph → repository, and code → graph through RPG-Encoder.
+- Spec Growth Engine: specification graph, bounded agent context, code bindings, drift checks, and evidence.
+- grAIph: close conceptual similarity to a visual, graph-driven development environment; the current implementation is described as private.
+- Kenneth Tyler's GraphDrivenDevelopment: both the name and the idea of the graph as an authoritative representation are already in use.
+- Intent Architect and JetBrains MPS: models and custom languages as the basis for code generation.
 
-En samlet [undersøgelse med kilder](research/2026-10-13-existing-work.md) og en [projektoversigt](research/2026-10-13-projects.csv) er gemt. Konkurrenternes tests og genereringsforløb er ikke kørt i undersøgelsen.
+A combined [research report with sources](research/2026-10-13-existing-work.md) and a [project overview](research/2026-10-13-projects.csv) have been saved. Competitors' tests and generation workflows were not run during the research.
 
-Vi har ikke dokumenteret, at den samlede GDD-idé er ny. Et muligt bidrag er den enkle pseudo-graf med pseudokode, den gradvise præcisering og en ensartet agentprotokol. Fordelene skal demonstreres. Genbrug, adapters eller egen implementation pr. mekanisme er endnu ikke valgt.
+We have not documented that the overall GDD idea is new. A possible contribution is the simple pseudo-graph with pseudocode, gradual clarification, and a consistent agent protocol. The benefits must be demonstrated. Reuse, adapters, or a custom implementation per mechanism have not yet been selected.
 
-## Eksisterende materiale i projektet
+## Existing project material
 
-- `gdd-codex-starter.zip` blev læst: 14 filer med metodetekst, agentregler, reservationsgraf, strukturel Python-linter, 15 linter-tests, prompts og gemte baseline-resultater.
-- `SPEC.md` og `concert.gdd.yaml` blev derefter tilføjet og læst. De konkretiserer kontrakter, scenarier, bindings og evidenspolitik.
-- De gemte baseline-resultater i zip-filen vedrører strukturel validering. De er ikke applikationsbevis og blev ikke genkørt ved læsningen.
-- Reservationssystemet er et muligt demonstrationseksempel. Der er ikke implementeret en reservationsapp, en GDD-kodegenerator eller et nyt valideringsværktøj i denne samtale.
-- Denne scratchpad samler den videre retning. Den eksisterende specifikation og eksempelgraf skal senere revideres eksplicit, hvis de nye metodebeslutninger skal indarbejdes der.
+- `gdd-codex-starter.zip` was read: 14 files containing method text, agent rules, a reservation graph, a structural Python linter, 15 linter tests, prompts, and saved baseline results.
+- `SPEC.md` and `concert.gdd.yaml` were subsequently added and read. They make contracts, scenarios, bindings, and evidence policy concrete.
+- The saved baseline results in the ZIP file concern structural validation. They are not application evidence and were not rerun when read.
+- The reservation system is a possible demonstration example. No reservation app, GDD code generator, or new validation tool has been implemented in this conversation.
+- This scratchpad collects the further direction. The existing specification and example graph must later be revised explicitly if the new method decisions are to be incorporated there.
 
-## Det næste metodearbejde
+## The next method work
 
-Find det mindste sæt begreber, som kan bære arbejdsgangen. Kandidater er komponent, entitet, handling, regel, scenarie, relation, binding og evidens.
+Find the smallest set of concepts that can support the workflow. Candidates are component, entity, action, rule, scenario, relationship, binding, and evidence.
 
-Præcisér derefter:
+Then clarify:
 
-- Hvilke relationer er nødvendige, og hvad betyder de?
-- Hvad skal være angivet, før en handling er klar til implementering?
-- Hvordan udtrykkes åbne spørgsmål og antagelser?
-- Hvordan findes et tilstrækkeligt udsnit uden at miste globale krav?
-- Hvordan ændres modellen og implementeringen sammen, mens kravets autoritet bevares?
-- Hvilke dele af pseudokoden kræver defineret semantik, og hvilke kan forblive reviewet fritekst?
-- Hvordan repræsenteres communities, UI-forløb og DESIGN.md-referencer?
-- Hvordan importeres Graphify-observationer uden at blande dem sammen med accepterede krav?
-- Hvordan opbygges og vedligeholdes videnslaget, og hvordan spores modellen tilbage til input?
-- Hvad er minimumskravene for at kalde et projekt eller et værktøj GDD-kompatibelt?
-- Hvordan repræsenteres projektets egne arbejdsmåder, godkendelsesregler og mandat til automatisk fortsættelse?
-- Hvordan defineres undergrafer og kontrakter mellem detaljeringsniveauer?
-- Hvordan deklareres, versioneres og valideres udvidelser til kernen?
-- Hvilke første validator-diagnoser og output skal agenter kunne regne med?
-- Hvilke visualiseringer og integrationsflader behøver den første referenceimplementation?
+- Which relationships are necessary, and what do they mean?
+- What must be specified before an action is ready for implementation?
+- How are open questions and assumptions expressed?
+- How can a sufficient slice be found without losing global requirements?
+- How are the model and implementation changed together while preserving the requirement's authority?
+- Which parts of the pseudocode need defined semantics, and which can remain reviewed free text?
+- How are communities, UI flows, and DESIGN.md references represented?
+- How are Graphify observations imported without mixing them with accepted requirements?
+- How is the knowledge layer built and maintained, and how is the model traced back to input?
+- What are the minimum requirements for calling a project or tool GDD compatible?
+- How are the project's own working modes, approval rules, and mandate for automatic continuation represented?
+- How are subgraphs and contracts between levels of detail defined?
+- How are extensions to the core declared, versioned, and validated?
+- Which initial validator diagnostics and outputs must agents be able to rely on?
+- Which visualizations and integration interfaces does the first reference implementation need?
 
-Reservationsmodellen bruges foreløbigt som illustrativt materiale til at formulere standarden. Et senere praktisk forsøg kan implementere en handling, ændre en regel gennem grafen og indføre en bevidst fejl for at udfordre kontrollen. Forsøget er ikke den aktuelle opgave, og der er endnu ikke valgt et demonstrationprojekt.
+For now, the reservation model serves as illustrative material for formulating the standard. A later practical experiment can implement an action, change a rule through the graph, and introduce a deliberate fault to challenge the checks. That experiment is not the current task, and no demonstration project has yet been selected.
 
-Eksisterende projekter som ZeroRepo og Spec Growth Engine skal indgå i sammenligningen. Se [undersøgelsen af eksisterende arbejde](research/2026-10-13-existing-work.md). Genbrug af deres mekanismer og valg af frameworkmotor er endnu ikke besluttet.
+Existing projects such as ZeroRepo and Spec Growth Engine must be included in the comparison. See the [research on existing work](research/2026-10-13-existing-work.md). Reuse of their mechanisms and selection of a framework engine have not yet been decided.

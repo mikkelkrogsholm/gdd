@@ -1,12 +1,12 @@
 format: gdd/0.2
 project:
   id: example.fragment
-  title: Fragmenteret model
-  goal: Illustrér én logisk model over flere filer.
+  title: Fragmented model
+  goal: Illustrate one logical model across multiple files.
 nodes:
   component.notes:
     kind: component
-    description: Ansvarlig komponent.
+    description: Responsible component.
 edges:
 - id: edge.note.owner
   from: entity.note

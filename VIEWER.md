@@ -1,6 +1,6 @@
-# Interaktiv GDD-graf
+# Interactive GDD graph
 
-`gdd view` laver en selvstændig HTML-fil med den validerede GDD 0.2-model. Åbn filen i en browser; den fungerer offline uden server, CDN, Graphify-installation eller JavaScript-pakker. Pakkeversionen er 0.4.1, rendereren 0.1.3 med profilen `gdd-viewer-html/0.1`; standardformatet er fortsat GDD 0.2.
+`gdd view` creates a standalone HTML file containing the validated GDD 0.2 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. The package version is 0.5.1, the renderer is 0.1.4 with profile `gdd-viewer-html/0.1`; the standard format remains GDD 0.2.
 
 ```sh
 uv run gdd view examples/concert.gdd.yaml --output concert.html
@@ -8,64 +8,64 @@ uv run gdd view examples/concert.gdd.yaml --scope action.reserve --output backen
 uv run gdd validate examples/concert.gdd.yaml --profile visualization --view concert.html
 ```
 
-Outputfilen skal være ny. En eksisterende fil eller symlink overskrives aldrig. Modellen skal kunne indlæses og valideres med kendt snapshot. Skitser kan vises, selv om de mangler implementeringskontrakter; uløste modelreferencer og utilgængelige extensions afvises.
+The output file must be new. An existing file or symlink is never overwritten. The model must load and validate with a known snapshot. Sketches can be displayed even when they lack implementation contracts; unresolved model references and unavailable extensions are rejected.
 
-Den færdige [koncertvisning](examples/concert.graph.html) viser modellen med 38 noder og 85 selvstændige relationer. Den indgår ikke i modelsnapshot. Agenten ændrer GDD-filerne og genererer en ny visning; browseren skriver aldrig tilbage.
+The generated [concert view](examples/concert.graph.html) displays the model with 38 nodes and 85 independent relations. It is not part of the model snapshot. The agent changes the GDD files and generates a new view; the browser never writes back.
 
-## Udforskning
+## Exploration
 
-Startvisningen viser et overblik uden scenarier. Checkboxen **Vis scenarier (20)**, de synlige/total-tællere og visningsmanifestet gør udeladelsen eksplicit. En søgning eller valg af nodetypen `scenario` kan også vise scenarier. **Nulstil filtre og foldning** viser alle noder inden for artifactets scope.
+The initial view provides an overview without scenarios. The **Show scenarios (20)** checkbox, visible/total counters, and view manifest make the omission explicit. A search or selecting the `scenario` node type can also reveal scenarios. **Reset filters and folding** displays all nodes within the artifact's scope.
 
-- Søg i node-ID'er, labels, beskrivelser, kontrakter, pseudokode og relationsrecords. Et relationsmatch medtager begge endpoints. Søgning kombineres med type- og communityfilter.
-- Vælg nodetype, relation eller community. Communityfilteret viser communitynoden og dens direkte medlemmer, også medlemmer af andre communities. Relationsfilteret begrænser edges og beholder de valgte noder.
-- Klik en node for at læse beskrivelse, maturity, kontrakt, pseudokode, maskine, kilder, spørgsmål og alle rå nodefelter. Inspectorens relationer kan åbnes og følges til deres endpoints, også hvis de er filtreret fra canvas.
-- Klik en forbindelse for at se hver selvstændig relation. Retningen vises med pil og med `from → to` i inspector. `×N` samler flere edges med samme projicerede retning; hvert kanonisk edge-ID bevares. Modsat rettede forbindelser og selvloops får egne spor.
-- Træk baggrunden for at panorere, træk noder for at flytte dem, rul eller brug zoomknapperne. **Tilpas** finder det aktuelle udsnit. Layout er visningstilstand.
-- Objektlisten har både noder og relationer og kan bruges med Tab og Enter/Space. Den er tastaturalternativet til grafen. Alle tekstdata kan markeres og kopieres.
+- Search node IDs, labels, descriptions, contracts, pseudocode, and relation records. A relation match includes both endpoints. Search combines with type and community filters.
+- Select a node type, relation, or community. The community filter displays the community node and its direct members, including members of other communities. The relation filter limits edges and retains the selected nodes.
+- Click a node to read its description, maturity, contract, pseudocode, machine, sources, questions, and all raw node fields. Inspector relations can be opened and followed to their endpoints, even when those endpoints are filtered out of the canvas.
+- Click a connection to see each independent relation. Direction is shown with an arrow and with `from → to` in the inspector. `×N` groups multiple edges with the same projected direction; every canonical edge ID is preserved. Opposite directions and self-loops have separate tracks.
+- Drag the background to pan, drag nodes to move them, and scroll or use the zoom buttons. **Fit** finds the current scope. Layout is view state.
+- The object list contains both nodes and relations and supports Tab and Enter/Space. It is the keyboard alternative to the graph. All text data can be selected and copied.
 
-På smalle skærme placeres graf, objektliste og detaljer efter hinanden. Visningen følger browserens lyse/mørke farvetema og bruger ingen kontinuerlig bevægelse.
+On narrow screens, the graph, object list, and details are arranged sequentially. The view follows the browser's light/dark color theme and uses no continuous motion.
 
-## Communities og scope
+## Communities and scope
 
-Foldning ændrer kun tegningen. En figur oplyser sine repræsenterede node-ID'er. Interne relationer, der ikke tegnes som særskilte forbindelser, tælles eksplicit og findes i communityinspector og relationslisten. Overlap bevares: en node repræsenteres én gang i den første synlige community efter kanonisk ID; inspector viser alle dens faktiske medlemskaber. Parallelle `member_of`-edges ændrer ikke antallet af forskellige communities.
+Folding changes only the drawing. A figure lists the node IDs it represents. Internal relations not drawn as separate connections are counted explicitly and remain available in the community inspector and relation list. Overlap is preserved: a node is represented once in the first visible community by canonical ID; the inspector shows all its actual memberships. Parallel `member_of` edges do not change the number of distinct communities.
 
-`--scope` bruger validatorens kontekstclosure. For `action.reserve` er 34 noder og 73 edges tilgængelige; 4 noder og 12 edges ligger udenfor. Browserfiltre kan indsnævre dette artifact-scope, og reset går tilbage til det. Generér uden `--scope` for at kunne tegne hele modellen. Hele den kanoniske model bevares i HTML-data til inspektion og verificering; scope er ikke redaktion eller adgangskontrol.
+`--scope` uses the validator's context closure. For `action.reserve`, 34 nodes and 73 edges are available; 4 nodes and 12 edges are outside the scope. Browser filters can narrow this artifact scope, and reset returns to it. Generate without `--scope` to draw the entire model. The complete canonical model is preserved in HTML data for inspection and verification; scope is not redaction or access control.
 
-Communities er gruppering. Foldning, søgematches og grafnaboer dokumenterer ikke uafhængige arbejdspakker eller implementeringsparathed. `refines` forbliver en eksplicit relation og bliver ikke automatisk communitymedlemskab.
+Communities are grouping. Folding, search matches, and graph neighbors do not demonstrate independent work packages or implementation readiness. `refines` remains an explicit relation and does not automatically become community membership.
 
-## Sporbarhed og datakontrakter
+## Traceability and data contracts
 
-Den indlejrede `#gdd-data` er et `gdd-view/0.2`-værktøjsobjekt:
+The embedded `#gdd-data` is a `gdd-view/0.2` tool object:
 
-| Felt | Betydning |
+| Field | Meaning |
 | --- | --- |
-| generator | Navn, version og eksakt rendererprofil |
-| spec_revision | Faktisk bytebaseret modelsnapshot |
-| observation_inputs | Tom liste i denne renderer; ingen eksterne observationslag vises |
-| scope | Context-closure seeds; tom liste betyder hele modellen |
-| model | Samlet model med alle kanoniske records og felter |
-| locations | Kanonisk ID → lokal fil og JSON Pointer, inklusive fragmenter |
-| snapshot | Assetpaths og hashes brugt til modellen |
-| text | Python-genereret eksakt inspectortekst, som også bevarer heltal uden for JavaScripts præcision |
-| manifest | Komplet, disjunkt partition af viste og udeladte node-/edge-ID'er for artifactets scope |
+| generator | Name, version, and exact renderer profile |
+| spec_revision | Actual byte-based model snapshot |
+| observation_inputs | Empty list in this renderer; no external observation layers are displayed |
+| scope | Context-closure seeds; an empty list means the entire model |
+| model | Combined model with all canonical records and fields |
+| locations | Canonical ID → local file and JSON Pointer, including fragments |
+| snapshot | Asset paths and hashes used for the model |
+| text | Exact inspector text generated by Python, preserving integers beyond JavaScript precision as well |
+| manifest | Complete, disjoint partition of displayed and omitted node/edge IDs for the artifact's scope |
 
-Browseren vedligeholder `#gdd-view-manifest` som `gdd-view-state/0.2`. **Hent visningsmanifest** gemmer samme JSON. Det identificerer model/generator/observationsinputs, artifact-scope, aktive filtre, foldningsregel, viste/udeladte kanoniske ID'er, figurernes repræsenterede noder, rettede relationsbundter og foldede interne edges. Her betyder “vist” repræsenteret af den aktuelle projektion; et foldet medlem tælles stadig med. Bundter og interne edges dækker tilsammen hver vist edge præcis én gang.
+The browser maintains `#gdd-view-manifest` as `gdd-view-state/0.2`. **Download view manifest** saves the same JSON. It identifies the model/generator/observation inputs, artifact scope, active filters, folding rule, displayed/omitted canonical IDs, nodes represented by figures, directed relation bundles, and folded internal edges. Here, “displayed” means represented by the current projection; a folded member is still counted. Bundles and internal edges together cover each displayed edge exactly once.
 
-Manifestet beskriver semantisk synlighed; kamerakoordinater og nodepositioner eksporteres ikke. De informative schemas [view.schema.json](schemas/view.schema.json) og [view-state.schema.json](schemas/view-state.schema.json) er værktøjskontrakter, ingen nye GDD-core-dokumenter. Schema-validering alene beviser ikke ID-partitioner eller korrekt grafprojektion.
+The manifest describes semantic visibility; camera coordinates and node positions are not exported. The informative schemas [view.schema.json](schemas/view.schema.json) and [view-state.schema.json](schemas/view-state.schema.json) are tool contracts, not new GDD core documents. Schema validation alone proves neither ID partitions nor correct graph projection.
 
-## Verifikation og tillidsgrænse
+## Verification and trust boundary
 
-`--profile visualization --view FILE` indlæser ingen aktiv HTML. Validatoren læser payloadet, sammenholder revision og kanoniske records/ID-partitioner, regenererer hele filen med den installerede renderer og sammenligner de præcise bytes. Kendt ændring eller revisionsmismatch giver FAIL; manglende input eller en ukendt rendererprofil/version giver UNKNOWN. PASS gælder dette konkrete artifact og denne profil. Interaktion og layout kræver de separate browsertests.
+`--profile visualization --view FILE` loads no active HTML. The validator reads the payload, compares the revision and canonical records/ID partitions, regenerates the entire file with the installed renderer, and compares exact bytes. A known change or revision mismatch yields FAIL; missing input or an unknown renderer profile/version yields UNKNOWN. PASS applies to this concrete artifact and profile. Interaction and layout require the separate browser tests.
 
-En gyldig model kan overstige rendererens JSON-serialiseringskapacitet. Det giver kontrolleret `FORMAT_UNSUPPORTED` og CLI-exit 2, før output åbnes. Den genererede payload prøves genindlæst før publicering. Parser-, serialiserings- eller regenereringskapacitet under verifikation giver UNKNOWN; det er ikke en konstateret artifactmodstrid.
+A valid model can exceed the renderer's JSON serialization capacity. This produces controlled `FORMAT_UNSUPPORTED` and CLI exit 2 before the output is opened. The generated payload is tested for reloading before publication. Parser, serialization, or regeneration capacity exhaustion during verification yields UNKNOWN; it is not an established artifact contradiction.
 
-Labels, kildemetadata og pseudokode indsættes med `textContent`. JSON escapes mod afsluttende script-tags; en indlejret CSP tillader kun rendererens kendte scriptdigest og blokerer netværk. URI'er i kilder bliver ikke automatisk aktive links. Dette er en revisionskontrol, ikke en signatur eller attestering af producentens troværdighed.
+Labels, source metadata, and pseudocode are inserted with `textContent`. JSON escapes closing script tags; an embedded CSP permits only the renderer's known script digest and blocks networking. Source URIs do not automatically become active links. This is a revision check, not a signature or attestation of producer trustworthiness.
 
-Visningen har ingen evidensoverlays og viser ingen modelgyldighed, readiness, autorisation eller implementation som et nodefarvet PASS. Maturity er forfatterens erklæring. Kilder inspiceres særskilt fra intention; rå Graphify-observationer, records og eksterne kildefilers indhold visualiseres ikke som ekstra vertices. Accepterede GDD-modeller, der er udviklet fra Graphify-forslag, kan vises på samme måde som andre GDD-modeller.
+The view has no evidence overlays and does not display model validity, readiness, authorization, or implementation as a node-colored PASS. Maturity is the author's declaration. Sources are inspected separately from intention; raw Graphify observations, records, and external source-file contents are not visualized as extra vertices. Accepted GDD models developed from Graphify proposals can be displayed like any other GDD model.
 
-Layoutet bruger et deterministisk, afgrænset spring-layout op til 200 synlige figurer og et deterministisk seed-layout derefter. SVG-visningen er afprøvet på de vedlagte eksempler; store repositorygrafer har ingen målt performancegaranti. Brug scope og filtre til et læsbart udsnit.
+The layout uses a deterministic, bounded spring layout up to 200 visible figures and a deterministic seed layout thereafter. The SVG view has been tested on the included examples; large repository graphs have no measured performance guarantee. Use scope and filters for a readable subset.
 
-## Python-API og checks
+## Python API and checks
 
 ```python
 from gdd_validator import render_view, verify_view, exit_code
@@ -76,15 +76,15 @@ report = verify_view("examples/concert.gdd.yaml", "concert.html")
 assert exit_code(report) == 0
 ```
 
-`render_view` og `verify_view` kræver en gyldig, resolved model; ugyldige model-/scopeargumenter giver `ValueError`, filskrivning giver `OSError`. Ved et gyldigt modelinput returnerer artifactkontrollen en `gdd-report/0.2`-rapport. CLI'en kontrollerer fejl uden traceback.
+`render_view` and `verify_view` require a valid, resolved model; invalid model/scope arguments raise `ValueError`, and file-writing failures raise `OSError`. For valid model input, artifact verification returns a `gdd-report/0.2` report. The CLI handles errors without a traceback.
 
 ```sh
 uv run pytest -q
 uv run python conformance/run_visualization.py
-# Separat dev-installation af Playwright + Chromium eller allerede tilgængelig runtime:
+# Separate development installation of Playwright + Chromium, or an already available runtime:
 node conformance/run_browser.cjs
 ```
 
-Browserharnesset bruger installeret `playwright`, starter Chromium headless, genererer nye fixtures i et midlertidigt directory og afprøver `file://` med netværket slået fra. `NODE_PATH` eller `GDD_PLAYWRIGHT_MODULE` kan angive en eksisterende Playwright-runtime; `GDD_BROWSER_EXECUTABLE` kan angive lokal Chrome, og `GDD_PYTHON` et miljø med denne pakke. Der installeres ingen browser fra harnesset. Rapporter og screenshots gemmes under `evidence/visualization/`; `GDD_BROWSER_OUTPUT` vælger en anden mappe ved nye reviewrunder.
+The browser harness uses installed `playwright`, starts headless Chromium, generates fresh fixtures in a temporary directory, and tests `file://` with networking disabled. `NODE_PATH` or `GDD_PLAYWRIGHT_MODULE` can specify an existing Playwright runtime; `GDD_BROWSER_EXECUTABLE` can specify local Chrome, and `GDD_PYTHON` an environment containing this package. The harness installs no browser. Reports and screenshots are saved under `evidence/visualization/`; `GDD_BROWSER_OUTPUT` selects another directory for new review rounds.
 
-[Reviewrunderne](evidence/review-loops/README.md) angiver aktuel verifikation. [Visualization-reviewet](evidence/visualization-review.md) bevarer resultaterne fra 0.4.0.
+[The review rounds](evidence/review-loops/README.md) describe current verification. [The visualization review](evidence/visualization-review.md) preserves the results from 0.4.0.

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gdd-validator"
-version = "0.5.0"
+version = "0.5.1"
 description = "Structural validator for Graph-Driven Development 0.2"
 requires-python = ">=3.11"
 dependencies = ["PyYAML==6.0.3", "jsonschema==4.24.0"]

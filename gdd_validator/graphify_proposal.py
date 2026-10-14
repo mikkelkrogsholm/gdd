@@ -135,7 +135,7 @@ def propose_graphify(
         "sources": {source_id: source},
         "questions": {
             "question.graphify_contracts": {
-                "statement": "Afklar ønsket adfærd, kontrakter, regler og scenarier; kodeobservationer beskriver den eksisterende implementation og er ikke automatisk intention.",
+                "statement": "Clarify the intended behavior, contracts, rules and scenarios; code observations describe the existing implementation and do not automatically define intent.",
                 "targets": list(nodes),
                 "blocks": ["implementation", "acceptance"],
                 "status": "open",

@@ -1,29 +1,29 @@
 format: gdd/0.2
 project:
   id: example.refinement
-  title: Dekomposition
-  goal: Illustrér heterogene børn og parallelle relationer.
+  title: Decomposition
+  goal: Illustrate heterogeneous children and parallel relations.
 nodes:
   component.checkout:
     kind: component
-    description: Overordnet checkout-grænse.
+    description: Parent checkout boundary.
   action.checkout:
     kind: action
-    description: Samlet checkout; stadig skitse.
+    description: Overall checkout; still a sketch.
     realization:
-    - obligation: Autoriser betaling og gem kvittering.
+    - obligation: Authorize payment and save the receipt.
       children:
       - action.charge
       - entity.receipt
   action.charge:
     kind: action
-    description: Betalingsdel; skitse.
+    description: Payment substep; sketch.
   entity.receipt:
     kind: entity
-    description: Kvitteringsdata; skitse.
+    description: Receipt data; sketch.
   action.record:
     kind: action
-    description: Gem kvittering; skitse.
+    description: Save receipt; sketch.
 edges:
 - id: edge.checkout.parent
   from: action.checkout

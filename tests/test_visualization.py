@@ -122,7 +122,7 @@ def test_stale_revision_and_unknown_renderer_are_distinct(tmp_path):
     data["generator"]["version"] = "99.0"
     output.write_text(html_document(data), encoding="utf-8")
     assert exit_code(verify_view(path, output)) == 2
-    data["generator"]["version"] = "0.1.3"
+    data["generator"]["version"] = "0.1.4"
     data["spec_revision"] = "sha256:" + "0" * 64
     output.write_text(html_document(data), encoding="utf-8")
     report = verify_view(path, output)

@@ -19,7 +19,7 @@
       "scope": [
         "action.reserve"
       ],
-      "reason": "Illustrativ rapport; en readiness-validator er ikke udført.",
+      "reason": "Illustrative report; no readiness validator was executed.",
       "diagnostics": []
     }
   ]

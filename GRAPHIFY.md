@@ -1,6 +1,6 @@
 # Graphify → GDD
 
-Adapter 0.1.2 i `gdd-validator` 0.4.1 importerer Graphify som et separat observationslag. Den bevarer det modtagne artefakts bytes og indekserer hver node og relation uden en Graph/DiGraph-builder. Agenten kan derefter vælge en eksplicit fortolkning og forberede et uaccepteret GDD-forslag. Kendte 0.1.0-/0.1.1-bundles genvalideres efter de aktuelle regler; importerens versionsfelt omgår ingen kontrol.
+Adapter 0.1.2 in `gdd-validator` 0.4.1 imports Graphify as a separate observation layer. It preserves the received artifact's bytes and indexes every node and relation without a Graph/DiGraph builder. The agent can then choose an explicit interpretation and prepare an unaccepted GDD proposal. Known 0.1.0/0.1.1 bundles are revalidated under the current rules; the importer's version field bypasses no checks.
 
 ```sh
 uv run gdd graphify import graphify-out/graph.json \
@@ -9,73 +9,73 @@ uv run gdd validate observations --profile import.graphify
 uv run gdd graphify export observations --output recovered.graph.json
 ```
 
-`recovered.graph.json` er byteidentisk med det importerede input, inklusive whitespace, unknown fields og rækkefølge. Outputfiler og bundles oprettes eksklusivt: eksisterende filer overskrives ikke. Vælg et nyt outputnavn ved genkørsel.
+`recovered.graph.json` is byte-identical to the imported input, including whitespace, unknown fields, and order. Output files and bundles are created exclusively: existing files are not overwritten. Choose a new output name when rerunning.
 
-## Bundle og identitet
+## Bundle and identity
 
-| Fil | Indhold |
+| File | Content |
 | --- | --- |
-| graphify.raw.json | Præcis kopi af det modtagne input; ingen normalisering eller sorting |
-| observations.json | Agentlæsbart indeks, rå payloadprojektioner, revisionsbundne identiteter, producentpåstande og bindingskandidater |
-| import.report.json | Faktiske checks i `gdd-report/0.2`; modelrevision er null, fordi import ikke skaber en autoritativ model |
-| README.md | Observationslagets betydning og tillidsgrænse |
+| graphify.raw.json | Exact copy of the received input; no normalization or sorting |
+| observations.json | Agent-readable index, raw payload projections, revision-bound identities, producer claims, and binding candidates |
+| import.report.json | Actual checks in `gdd-report/0.2`; model revision is null because import does not create an authoritative model |
+| README.md | Meaning and trust boundary of the observation layer |
 
-En observationsrecords kanoniske identitet er `(artifact_revision, JSON Pointer)`, eksempelvis `sha256:…` og `/links/4`. Det korte `observation.edge.h…`-ID afledes deterministisk af denne identitet. Producentens eget ID og dets JSON-type bevares separat. Nye bytes eller ny arrayrækkefølge giver nye snapshotidentiteter; de er ikke stabile symbol-ID'er gennem re-extraction.
+An observation record's canonical identity is `(artifact_revision, JSON Pointer)`, for example `sha256:…` and `/links/4`. The short `observation.edge.h…` ID is derived deterministically from this identity. The producer's own ID and its JSON type are preserved separately. New bytes or a new array order produce new snapshot identities; they are not stable symbol IDs across re-extraction.
 
-To identiske relationer får hver sin record. Et `multigraph:false`-flag bruges aldrig som begrundelse for at deduplikere et råt array. Communities, `community=0`, top-level/nested hyperedges og ukendte metadata bevares. Hyperedges ekspanderes ikke til en clique.
+Two identical relations each receive their own record. A `multigraph:false` flag is never used as a reason to deduplicate a raw array. Communities, `community=0`, top-level/nested hyperedges, and unknown metadata are preserved. Hyperedges are not expanded into a clique.
 
-## Eksplicit understøttede profiler
+## Explicitly supported profiles
 
-| Profil | Inputkontrakt |
+| Profile | Input contract |
 | --- | --- |
-| graphify-0.9.75-ast | `nodes` og `edges` fra den undersøgte extractor. Noder har id, label, file_type og source_file; edges har source, target, relation, confidence og source_file. Confidence-score er valgfri. Rå source→target-orden har den deklarerede AST-profils retning, når intet directed-flag modsiger den. |
-| graphify-0.9.75-node-link | `nodes`, `links`, boolean directed/multigraph og object graph fra JSON-eksporten. Hyperedges, communities, norm_label, ekstra felter og commitpåstande bevares. |
+| graphify-0.9.75-ast | `nodes` and `edges` from the examined extractor. Nodes have id, label, file_type, and source_file; edges have source, target, relation, confidence, and source_file. A confidence score is optional. Raw source→target order has the direction declared by the AST profile when no directed flag contradicts it. |
+| graphify-0.9.75-node-link | `nodes`, `links`, boolean directed/multigraph, and object graph from the JSON export. Hyperedges, communities, norm_label, extra fields, and commit claims are preserved. |
 
-Profilerne bygger på den faktisk installerede **Graphify 0.9.75** og dens kildehashes i [producer-evidence.json](examples/graphify/producer-evidence.json). De er ikke et løfte om alle Graphify-versioner eller alle upstream-ruter. [Den undersøgte exporter](https://github.com/Graphify-Labs/graphify/blob/48d7c0e832cd2d67d86850e716ddea16df6238ea/graphify/export.py) og [builder](https://github.com/Graphify-Labs/graphify/blob/48d7c0e832cd2d67d86850e716ddea16df6238ea/graphify/build.py) forklarer `original_links` og simpel grafstorage.
+The profiles are based on the actually installed **Graphify 0.9.75** and its source hashes in [producer-evidence.json](examples/graphify/producer-evidence.json). They do not promise support for all Graphify versions or all upstream routes. [The examined exporter](https://github.com/Graphify-Labs/graphify/blob/48d7c0e832cd2d67d86850e716ddea16df6238ea/graphify/export.py) and [builder](https://github.com/Graphify-Labs/graphify/blob/48d7c0e832cd2d67d86850e716ddea16df6238ea/graphify/build.py) explain `original_links` and simple graph storage.
 
-Den undersøgte exporter skriver ikke selv en Graphify-/schema-version. Derfor skal layoutprofilen vælges eksplicit; den opfinder ingen verificeret producentversion. Valgfri `--producer-version 0.9.75` og `--code-revision ...` gemmes som **uverificerede callerclaims**. Kendte producentclaims læses både på topniveau og under graph med deres faktiske JSON Pointers. Ukendte/konflikterende versions- eller revisionspåstande giver UNKNOWN. Inputs med både edges og links fortolkes ikke ved at vælge et array lydløst.
+The examined exporter does not itself write a Graphify/schema version. The layout profile must therefore be selected explicitly; it invents no verified producer version. Optional `--producer-version 0.9.75` and `--code-revision ...` are stored as **unverified caller claims**. Known producer claims are read both at the top level and under graph with their actual JSON Pointers. Unknown/conflicting version or revision claims yield UNKNOWN. Inputs containing both edges and links are not interpreted by silently choosing one array.
 
-Strenge, heltal og sikkert bevarede finite numeriske identiteter understøttes uden stringcoercion; `1` og `"1"` er forskellige. Bool/null/object-identiteter er ugyldige. Tal, som den anvendte JSON-projektion ville afrunde til en anden decimalværdi eller ikke kan konvertere, giver UNKNOWN før referenceopløsning; originalbytes bevares og kan stadig eksporteres. JSON-konstanterne NaN/Infinity er ugyldige og giver FAIL.
+Strings, integers, and safely preserved finite numeric identities are supported without string coercion; `1` and `"1"` are different. Bool/null/object identities are invalid. Numbers that the JSON projection would round to a different decimal value or cannot convert yield UNKNOWN before reference resolution; original bytes are preserved and can still be exported. The JSON constants NaN/Infinity are invalid and yield FAIL.
 
-Raw-projektionen understøtter JSON-containerdybde op til 256: root-object/array tæller 1, hvert indlejret object/array yderligere 1, scalars og keys tæller ikke. Større dybde eller udtømt runtimekapacitet giver UNKNOWN/FORMAT_UNSUPPORTED med et kompakt byteidentitetsindeks uden producerrecords. Originalen bevares til hashkontrolleret eksport; kompakte dybdeindeks giver ingen verificeret producerprojektion eller brugbare model-forslag. Læsbare historiske fulde dybe indekser vurderes som UNKNOWN i projektionskontrollen. Et indeks, som runtime slet ikke kan indlæse, kan ikke levere en verificeret originalhash til eksport.
+The raw projection supports JSON container depth up to 256: the root object/array counts as 1, each nested object/array adds 1, and scalars and keys do not count. Greater depth or exhausted runtime capacity yields UNKNOWN/FORMAT_UNSUPPORTED with a compact byte-identity index without producer records. The original is preserved for hash-checked export; compact depth indexes provide no verified producer projection or usable model proposals. Readable historical full deep indexes are assessed as UNKNOWN in the projection check. An index that the runtime cannot load at all cannot provide a verified original hash for export.
 
-## Hvad PASS betyder
+## What PASS means
 
-Rapporten holder rå integritet, layout, noder/referencer, retning, kodekandidater og projektion adskilt. Intakte originalbytes kan have PASS, mens retningen er UNKNOWN. FAIL vinder i aggregatet, men uafklarede checks bevares.
+The report keeps raw integrity, layout, nodes/references, direction, code candidates, and projection separate. Intact original bytes can have PASS while direction is UNKNOWN. FAIL takes precedence in the aggregate, but unresolved checks are retained.
 
-Ved `directed:false` i en node-link-export bevares stored source/target-orden. Uden intakte `_src`/`_tgt` kan denne profil ikke fastslå den oprindelige retning og rapporterer UNKNOWN. Markører kan genfinde retningen i undirected storage; modstridende markører i en eksplicit directed graf afvises. Der dannes ingen syntetiske reverse edges.
+With `directed:false` in a node-link export, stored source/target order is preserved. Without intact `_src`/`_tgt`, this profile cannot determine the original direction and reports UNKNOWN. Markers can recover direction in undirected storage; contradictory markers in an explicitly directed graph are rejected. No synthetic reverse edges are created.
 
-Exit 0 betyder beståede anmodede importchecks. Exit 2 betyder, at inputtet er bevaret, men noget krævet ikke kan afgøres, eksempelvis retning eller layout. Exit 1 betyder kendt fejl, eksempelvis tvetydige endpoints, korrupte bytes eller ændret index. Eksport kan genskabe intakte bytes fra et input med ukendt/ugyldigt layout; den medfølgende rapport beholder det oprindelige semantiske resultat. Et korrupt index/originalhash kan ikke eksporteres gennem denne operation.
+Exit 0 means the requested import checks passed. Exit 2 means the input is preserved but a required property cannot be determined, such as direction or layout. Exit 1 means a known failure, such as ambiguous endpoints, corrupt bytes, or a modified index. Export can reconstruct intact bytes from input with an unknown/invalid layout; the accompanying report retains the original semantic result. A corrupt index/original hash cannot be exported through this operation.
 
-Kodekandidater kræver producentens file_type=code og en understøttet kodefilendelse. Dokumenter/papers/images/viden er separate observationer. Dette er en kandidatsortering, ikke verificeret kildeeksistens eller implementationsevidens. `source_file/source_location` er uverificerede locatorpåstande; artifacthash er hverken sourcefilehash, Git-revision eller GDD-modelrevision.
+Code candidates require the producer's file_type=code and a supported code-file extension. Documents/papers/images/knowledge are separate observations. This is candidate classification, not verified source existence or implementation evidence. `source_file/source_location` are unverified locator claims; an artifact hash is neither a source-file hash, Git revision, nor GDD model revision.
 
-Raw-afledte indexfelter bliver genberegnet ved validering. Ændringer i records, klassifikationer, Pointers eller producentclaims opdages mod originalen. Callerclaims er derimod aktuelle inputs til projektionen og autentificeres ikke; heller ikke koordinerede ændringer af dem giver verificeret kode eller autoritet. `input_claims.trust` og bindingskandidaternes status er altid unverified. Bevar/pin artifactrevisionen gennem projektets betroede proces, når identiteten skal kunne sammenholdes med en tidligere accepteret snapshot.
+Raw-derived index fields are recomputed during validation. Changes to records, classifications, Pointers, or producer claims are detected against the original. Caller claims, however, are current inputs to the projection and are not authenticated; even coordinated changes to them provide no verified code or authority. `input_claims.trust` and binding-candidate status are always unverified. Preserve/pin the artifact revision through the project's trusted process when its identity must be compared with a previously accepted snapshot.
 
-Adapteren kan bevare alt i det modtagne input. Den kan ikke genskabe information, som Graphify allerede har fjernet før eksport. Den faktiske fixture viser 5 rå AST-edges og 5 ved eksport med original_links, men kun 3 gennem den simple builder/eksportvej. Dette er dokumenteret i [eksemplet](examples/graphify/README.md).
+The adapter can preserve everything in the received input. It cannot reconstruct information that Graphify already removed before export. The actual fixture shows 5 raw AST edges and 5 in export with original_links, but only 3 through the simple builder/export path. This is documented in [the example](examples/graphify/README.md).
 
-## Arbejd videre gennem agenter
+## Continue through agents
 
-Agenten læser observations.json og originalen, afklarer ønsket adfærd og vælger fortolkningen i et separat mappingdokument:
+The agent reads observations.json and the original, clarifies desired behavior, and chooses the interpretation in a separate mapping document:
 
 ```sh
 uv run gdd graphify propose examples/graphify/observations \
   --mapping examples/graphify/mapping.json --output reviewed-proposal.json
 ```
 
-Mappingen opregner projektets id/title/goal, valgte observationer, ønskede model-ID'er/kernetyper og rationale. Relationer kræver eksplicit relation, ID og endpoints. Typer som function/class bliver ikke automatisk til action/entity. En observeret calls-edge bliver ikke automatisk en normativ GDD-edge.
+The mapping lists the project's id/title/goal, selected observations, desired model IDs/core types, and rationale. Relations require an explicit relation, ID, and endpoints. Types such as function/class do not automatically become action/entity. An observed calls edge does not automatically become a normative GDD edge.
 
-Resultatet er `gdd-graphify-proposal/0.2` med `status: proposed`, `model_candidate`, den eksplicitte mapping, udeladte observations-ID'er og uverificerede bindingskandidater. Kandidaten er en gyldig GDD-skitse med provenance-ref til råinput, role=observation/normative=false og blokerende kontraktspørgsmål. Den får ingen workflowtilstand, accepted receipt, checkevidens eller opdigtet spec_revision.
+The result is `gdd-graphify-proposal/0.2` with `status: proposed`, `model_candidate`, the explicit mapping, omitted observation IDs, and unverified binding candidates. The candidate is a valid GDD sketch with a provenance reference to raw input, role=observation/normative=false, and blocking contract questions. It receives no workflow state, accepted receipt, check evidence, or invented spec_revision.
 
-Agenten kan derefter anvende forslaget som en almindelig autoriseret modelændring under projektets eksisterende mandat. Source-promotion/model-change skal være synlig; eksisterende accepterede krav ændres ikke ved import/propose. Source-URI'en peger relativt fra proposalfilens placering; materialisér model_candidate dér eller justér locatoren eksplicit. Først når targets, implementation, modelsnapshot og faktiske kilde-/koderevisioner kendes, kan en binding registreres som observed/checked.
+The agent can then apply the proposal as an ordinary authorized model change under the project's existing mandate. Source promotion/model change must be visible; existing accepted requirements are not changed by import/propose. The source URI is relative to the proposal file's location; materialize model_candidate there or adjust the locator explicitly. A binding can only be registered as observed/checked once targets, implementation, model snapshot, and actual source/code revisions are known.
 
 ```sh
 uv run gdd validate examples/concert.gdd.yaml --profile model \
   --profile import.graphify --graphify examples/graphify/observations
 ```
 
-Den sidste kommando samler separate model- og importchecks. Den beviser ikke, at koncerteksemplet er implementeret af den importerede fixture, eller at importerede codeclaims opfylder GDD-regler. Sådanne mappings og checks kræver revisionsbundne bindings og faktiske checkere.
+The last command combines separate model and import checks. It does not prove that the concert example is implemented by the imported fixture or that imported code claims satisfy GDD rules. Such mappings and checks require revision-bound bindings and actual checkers.
 
-## API og verifikation
+## API and verification
 
 ```python
 from gdd_validator import import_graphify, verify_graphify, export_graphify, propose_graphify
@@ -87,7 +87,7 @@ export_graphify("observations", "recovered.json")
 proposal = propose_graphify("observations", explicit_mapping)
 ```
 
-Observations- og mappingschemas er [observations.schema.json](schemas/observations.schema.json) og [graphify-mapping.schema.json](schemas/graphify-mapping.schema.json). De er værktøjskontrakter uden for GDD-kernen. `source_uri` i proposal-API'et er en eksplicit locator; default er graphify.raw.json ved en model materialiseret i observationsmappen. Mapping og locator skal kunne materialiseres som JSON med gyldig UTF-8. Forslag kræver tilgængelige originalbytes og bestået integritets-/projektionskontrol.
+The observation and mapping schemas are [observations.schema.json](schemas/observations.schema.json) and [graphify-mapping.schema.json](schemas/graphify-mapping.schema.json). They are tool contracts outside the GDD core. `source_uri` in the proposal API is an explicit locator; its default is graphify.raw.json for a model materialized in the observations directory. The mapping and locator must be materializable as JSON with valid UTF-8. Proposals require available original bytes and passed integrity/projection checks.
 
 ```sh
 uv run pytest -q
@@ -96,4 +96,4 @@ uv run python conformance/run_graphify.py
 uv build
 ```
 
-De oprindelige 58 forventninger er bevaret. De to oprindelige importconditions har nu konkrete Graphify-JSON-fixtures. Yderligere [18 adaptercases](conformance/graphify-cases.yaml) og pytest kontrollerer positive/negative imports, raw roundtrip, metadata, dubletter, precision, direction, tamper, CLI og eksplicit continuation. [Graphify-reviewet](evidence/graphify-review.md) indeholder faktiske resultater og resterende begrænsninger.
+The original 58 expectations are preserved. The two original import conditions now have concrete Graphify JSON fixtures. A further [18 adapter cases](conformance/graphify-cases.yaml) and pytest check positive/negative imports, raw round-trip, metadata, duplicates, precision, direction, tampering, CLI, and explicit continuation. [The Graphify review](evidence/graphify-review.md) contains actual results and remaining limitations.

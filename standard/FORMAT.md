@@ -1,97 +1,97 @@
-# Filformat og revisionsprofil
+# File format and revision profile
 
-Normativt kapitel til GDD 0.2. Felters maskinlæsbare form er specificeret i [schemas](../schemas/README.md). Semantiske regler gælder ud over JSON Schema.
+Normative chapter for GDD 0.2. The machine-readable form of fields is specified in [schemas](../schemas/README.md). Semantic rules apply in addition to JSON Schema.
 
-## 1. Dokumenter og indlæsning
+## 1. Documents and loading
 
-Et modelmanifest er JSON eller YAML med `format: gdd/0.2`, `project`, `nodes` og `edges`. Øvrige registries er valgfrie. Det anbefalede navn er `gdd.yaml`; navnet er ikke en semantisk identitet.
+A model manifest is JSON or YAML with `format: gdd/0.2`, `project`, `nodes` and `edges`. Other registries are optional. The recommended name is `gdd.yaml`; the name is not a semantic identity.
 
-En YAML-consumer SKAL bruge YAML 1.2 JSON-kompatible scalars og sikre loaders. Kun JSON-værdier er tilladt: objekter med stringkeys, arrays, strings med gyldige Unicode-scalarværdier, endelige numbers, boolean og null. Duplicate mapping keys, brugerdefinerede tags, anchors, aliases og merge keys er forbudt. Der må ikke udføres constructors eller kode. En consumer, der kun understøtter JSON, SKAL deklarere dette.
+A YAML consumer MUST use YAML 1.2 JSON-compatible scalars and safe loaders. Only JSON values are allowed: objects with string keys, arrays, strings with valid Unicode scalar values, finite numbers, booleans and null. Duplicate mapping keys, custom tags, anchors, aliases and merge keys are forbidden. Constructors or code must not be executed. A consumer that supports only JSON MUST declare this.
 
-Lokale `includes` peger på `gdd-fragment/0.2`-filer, som alene kan bidrage med nodes og edges. Fragmenter må ikke selv inkludere filer. Registry-ID'er og edge-ID'er må ikke overskrives. I 0.2 er bundle-root manifestets mappe. Includes, record_files, normative lokale sources og extensionpaths er relativt til manifestet og SKAL holde sig inden for denne root efter normalisering og symlinkresolution. Hvert asset indlæses én gang; cykler, dubletter og path escapes er fejl. Eksterne kilder bruger særskilte `sources`.
+Local `includes` refer to `gdd-fragment/0.2` files, which can contribute only nodes and edges. Fragments must not include files themselves. Registry IDs and edge IDs must not be overwritten. In 0.2, the bundle root is the manifest's directory. Includes, record_files, normative local sources and extension paths are relative to the manifest and MUST stay within this root after normalization and symlink resolution. Each asset is loaded once; cycles, duplicates and path escapes are errors. External sources use separate `sources`.
 
-Node-, source-, question- og extension-ID'er er objektnøgler. Edges og transitions har `id`. ID-syntaks er små ASCII-bogstaver, cifre, underscore samt punktum/bindestreg mellem segmenter; første tegn er et bogstav. Unicode er tilladt i labels og tekst.
+Node, source, question and extension IDs are object keys. Edges and transitions have `id`. ID syntax consists of lowercase ASCII letters, digits, underscores and periods/hyphens between segments; the first character is a letter. Unicode is allowed in labels and text.
 
 ## 2. Manifest
 
-| Felt | Betydning |
+| Field | Meaning |
 | --- | --- |
-| format | Præcis formatversion, `gdd/0.2` |
-| project | id, title, goal; valgfrit scope, assumptions, workflow |
-| nodes | Map fra stabilt ID til node |
-| edges | Liste af eksplicitte relationsrecords |
-| includes | Relative lokale fragmentpaths |
-| sources | Map over viden, input, design og observationskilder |
-| questions | Map over scoped åbne eller løste spørgsmål |
-| extensions | Map over deklarerede extensionassets |
-| record_files | Relative paths til separate operational-records |
+| format | Exact format version, `gdd/0.2` |
+| project | id, title, goal; optional scope, assumptions, workflow |
+| nodes | Map from stable ID to node |
+| edges | List of explicit relation records |
+| includes | Relative local fragment paths |
+| sources | Map of knowledge, input, design and observation sources |
+| questions | Map of scoped open or resolved questions |
+| extensions | Map of declared extension assets |
+| record_files | Relative paths to separate operational records |
 
-Workflow har `mode: manual|autonomous|custom`, et tekstligt `mandate` og gates for `model_changes`, `implementation` og `acceptance`. Hver gate har `requirement: explicit|standing|none`, `authorities` med actor-ID'er og `scope` med node-ID'er; tom scope betyder hele projektet. `none` betyder ingen særskilt GDD-gate, ikke ingen platform-/brugergrænser. `standing` kræver en udtrykkelig afgrænset autorisation i mandatet. Mode er en beskrivende label; gates og betroet mandat afgør handlingen. Der må ikke udledes ekstra tilladelser eller godkendelseskrav fra labelen.
+Workflow has `mode: manual|autonomous|custom`, a textual `mandate` and gates for `model_changes`, `implementation` and `acceptance`. Each gate has `requirement: explicit|standing|none`, `authorities` containing actor IDs and `scope` containing node IDs; an empty scope means the entire project. `none` means no separate GDD gate, not the absence of platform/user boundaries. `standing` requires explicit bounded authorization in the mandate. Mode is a descriptive label; gates and the trusted mandate determine the action. Additional permissions or approval requirements must not be inferred from the label.
 
-Et manglende workflow er tilladt i en skitse. Afhængige autorisationsbeslutninger er UNRESOLVED, indtil betroet mandat foreligger. En fil i ubetroet input kan ikke tildele sig selv autoritet.
+A missing workflow is allowed in a sketch. Dependent authorization decisions are UNRESOLVED until a trusted mandate is available. A file in untrusted input cannot grant itself authority.
 
-## 3. Noder og kontraktfelter
+## 3. Nodes and contract fields
 
-Alle noder: `kind`, `description`; valgfrit `label`, `maturity: sketch|specified`, `source_refs`, `annotations` og `realization`. Ukendte strukturelle felter afvises; ikke-normative udvidelser ligger i namespacede annotations.
+All nodes: `kind`, `description`; optional `label`, `maturity: sketch|specified`, `source_refs`, `annotations` and `realization`. Unknown structural fields are rejected; non-normative extensions belong in namespaced annotations.
 
-- Component: `interfaces` er en liste af offentlige action-ID'er. En readiness-vurdering kræver, at relevante grænsekontrakter er tilgængelige.
-- Entity: `fields` mapper feltnavne til abstrakte typespecifikationer.
-- Action: `contract` og `behavior`. Contract har input/context fieldmaps, output-type, errors-map fra fejlnavn til beskrivelse, preconditions, external_effects, effects_complete, dependencies_complete, risks og error_cases.
-- Screen: `interaction` beskriver states, accessibility, responsive og behavior; `design_refs` henviser til sources med `purpose: contract`. `calls` og `navigates_to` beskrives som edges.
-- Rule: `rule` har category, statement, scope (`global|targeted`), blocking og verification (liste af metode-ID'er). En architecture-rule kan have constraint med relation/from/to/reach (`direct|transitive`)/policy (`forbid`). Metode-ID'er er labels til checkere, ikke kode der eksekveres.
-- Scenario: `scenario` har category (`normal|negative|boundary|concurrency|architecture`), given, when og then.
-- Machine: `machine` har states, initial, terminal og transitions. Hver transition har id/from/to/trigger/guard/effects. Alle transitions er muterende i denne profil.
-- Community: fælles felter er tilstrækkelige; medlemskab beskrives kun i edges.
+- Component: `interfaces` is a list of public action IDs. A readiness assessment requires relevant boundary contracts to be available.
+- Entity: `fields` maps field names to abstract type specifications.
+- Action: `contract` and `behavior`. Contract has input/context field maps, an output type, an errors map from error name to description, preconditions, external_effects, effects_complete, dependencies_complete, risks and error_cases.
+- Screen: `interaction` describes states, accessibility, responsive and behavior; `design_refs` refers to sources with `purpose: contract`. `calls` and `navigates_to` are described as edges.
+- Rule: `rule` has category, statement, scope (`global|targeted`), blocking and verification (a list of method IDs). An architecture rule can have a constraint with relation/from/to/reach (`direct|transitive`)/policy (`forbid`). Method IDs are labels for checkers, not code that is executed.
+- Scenario: `scenario` has category (`normal|negative|boundary|concurrency|architecture`), given, when and then.
+- Machine: `machine` has states, initial, terminal and transitions. Each transition has id/from/to/trigger/guard/effects. All transitions are mutating in this profile.
+- Community: the common fields suffice; membership is described only in edges.
 
-En contract SKAL i readiness-profilen opregne alle fem risikokategorier: authorization, idempotency, boundaries, concurrency og atomicity. Hver vurdering har relevant (boolean), rationale og scenarios (ID-liste). Når relevant er true, kræves mindst ét passende scenarie. Fravalg har en ikke-tom rationale. `error_cases` mapper hvert erklæret fejlnavn til mindst ét scenarie. Tilstedeværelse og referencer kan valideres; relevans og dækning kræver review.
+In the readiness profile, a contract MUST list all five risk categories: authorization, idempotency, boundaries, concurrency and atomicity. Each assessment has relevant (boolean), rationale and scenarios (an ID list). When relevant is true, at least one appropriate scenario is required. An exclusion has a non-empty rationale. `error_cases` maps each declared error name to at least one scenario. Presence and references can be validated; relevance and coverage require review.
 
-Abstrakte typespecifikationer er objekter med `type`. Typer: string, integer, number, boolean, object, array, reference, enum og any. String kan have min_length; tal kan have minimum/maximum. Reference kræver target (entity-ID) og betegner en logisk entity-identitet, ikke et automatisk indlejret entity-objekt; fysisk ID-type mappes ved implementation. Enum kræver ikke-tom unik values-liste; array kræver items. Object kan have properties og required (navne skal findes i properties); manglende required betyder ingen obligatoriske properties. `origin: authenticated_context` kan markere trusted runtime-identitet. Det er et krav til implementationen, ikke en autentificeringsmekanisme. Typespecifikationer er deklarative; constraints skal være konsistente og gælde den valgte type.
+Abstract type specifications are objects with `type`. Types: string, integer, number, boolean, object, array, reference, enum and any. String can have min_length; numbers can have minimum/maximum. Reference requires target (an entity ID) and denotes a logical entity identity, not an automatically embedded entity object; the physical ID type is mapped during implementation. Enum requires a non-empty list of unique values; array requires items. Object can have properties and required (names must exist in properties); missing required means no mandatory properties. `origin: authenticated_context` can mark trusted runtime identity. This is an implementation requirement, not an authentication mechanism. Type specifications are declarative; constraints must be consistent and apply to the selected type.
 
-Entries i contract.input, contract.context og entity.fields er obligatoriske, medmindre de har `optional: true`. Nullable vedrører værdien null, ikke feltfravær: `nullable: true` tillader null ud over typen. Default er optional=false og nullable=false. `any` betyder enhver ikke-null JSON-værdi, med null tilladt ved nullable=true. Optional må kun bruges på de tre navngivne fieldmaps; i object.properties styrer parentens required-liste feltfravær, og optional må ikke angives der. Optional må heller ikke stå på selvstændig output-type eller array.items. Output er altid én returneret værdi, medmindre en erklæret error indtræffer.
+Entries in contract.input, contract.context and entity.fields are mandatory unless they have `optional: true`. Nullable concerns the value null, not field absence: `nullable: true` allows null in addition to the type. The defaults are optional=false and nullable=false. `any` means any non-null JSON value, with null allowed when nullable=true. Optional can be used only in the three named field maps; in object.properties, the parent's required list controls field absence, and optional must not be specified there. Optional must not appear on a standalone output type or array.items either. Output is always one returned value unless a declared error occurs.
 
-## 3a. Extensionassets
+## 3a. Extension assets
 
-Manifestets extensionrecord har namespace, version, path og præcis sha256. Assetet er `gdd-extension/0.2` med samme namespace/version samt node_kinds og relations. Der må højst være én version pr. namespace i en model. Alle navne skal begynde med namespace plus punktum; kerneord må ikke overtages.
+The manifest's extension record has namespace, version, path and an exact sha256. The asset is `gdd-extension/0.2` with the same namespace/version, plus node_kinds and relations. There must be at most one version per namespace in a model. All names must start with the namespace followed by a period; core terms must not be taken over.
 
-En node-kind beskriver description og data_schema. En relation beskriver description, from/to-lister af præcise kindnavne, context, dependency, effect og data_schema. Endpointnavne skal være kendte core-kinds eller deklarerede extension-kinds.
+A node kind describes description and data_schema. A relation describes description, from/to lists of exact kind names, context, dependency, effect and data_schema. Endpoint names must be known core kinds or declared extension kinds.
 
-Context angiver bidrag til closure: outgoing følger relationen fra et inkluderet source til target; incoming følger fra inkluderet target til source; both gør begge dele; none tilføjer ingen closure. Dependency=true giver source en forudsætning til target for fuld realisering. Effect angiver source som læsende/oprettende/ændrende aktør på target (`read|create|change`), eller none. Det gør disse bidrag synlige i kontekst og parallelplanlægning; det eksekverer intet og gør ikke en custom kind substituerbar for en core-kind.
+Context specifies contributions to closure: outgoing follows the relation from an included source to the target; incoming follows from an included target to the source; both does both; none adds no closure. Dependency=true gives the source a prerequisite on the target for full realization. Effect identifies the source as an actor reading/creating/changing the target (`read|create|change`), or none. This makes these contributions visible in context and parallel planning; it executes nothing and does not make a custom kind substitutable for a core kind.
 
-Data_schema er et JSON Schema Draft 2020-12-objekt for datafeltet. Referencer skal være lokale inden for dette schemaobjekt; remote refs, eksekverbare hooks og mutable schemaopslag er ikke tilladt. En consumer, der ikke understøtter denne deklarative semantik, skal rapportere UNKNOWN på afhængige checks.
+Data_schema is a JSON Schema Draft 2020-12 object for the data field. References must be local within this schema object; remote refs, executable hooks and mutable schema lookups are not allowed. A consumer that does not support these declarative semantics must report UNKNOWN for dependent checks.
 
-`realization` er en liste med obligation (tekst) og children (node-ID'er). Børnene SKAL være descendants af noden via refines. Feltet må ikke bruges som bevis på, at parentkontrakten faktisk er realiseret.
+`realization` is a list with obligation (text) and children (node IDs). The children MUST be descendants of the node via refines. The field must not be used as evidence that the parent contract has actually been realized.
 
-## 4. Kilder og spørgsmål
+## 4. Sources and questions
 
-Source har role (`input|knowledge|design|observation|code`), title, uri, format og normative (boolean). Revision kan indeholde sha256 og producer_revision. Producer kan have name/version. `derived_from` er records med source-ID og den faktisk anvendte revision (sha256 og/eller producer_revision). Ukendt revision udelades og giver UNKNOWN for lineagechecks; consumeren må ikke indsætte kildens senere revision som erstatning. Identiteten i en derivationssti er source+revision. En ældre revision af samme source kan være legitim; cykler mellem samme revisionsidentiteter afvises. Manglende historiske inputs giver UNKNOWN for afhængig lineagekontrol. En ekstern profilkontrakt kan pinnes i specification med uri/revision/sha256.
+Source has role (`input|knowledge|design|observation|code`), title, uri, format and normative (boolean). Revision can contain sha256 and producer_revision. Producer can have name/version. `derived_from` contains records with a source ID and the revision actually used (sha256 and/or producer_revision). An unknown revision is omitted and produces UNKNOWN for lineage checks; the consumer must not substitute the source's later revision. Identity in a derivation path is source+revision. An older revision of the same source can be legitimate; cycles among identical revision identities are rejected. Missing historical inputs produce UNKNOWN for dependent lineage checks. An external profile contract can be pinned in specification with uri/revision/sha256.
 
-Source-ref har source-ID, purpose (`provenance|contract`) og valgfri selector. Selectors er `whole-document`, `json-pointer`, `markdown-heading`, `line-range` eller `opaque`. Value-syntaks: JSON Pointer følger [RFC 6901](https://www.rfc-editor.org/rfc/rfc6901); Markdown-heading er den nøjagtige headingsti adskilt med ` / `, med valgfri 1-baseret ordinal; line-range er `Lstart-Lend` med end ≥ start og præcis kildehash; opaque er bevaret ufortolket tekst. Kendte men uunderstøttede selectors giver integrations-UNKNOWN; en ikke-konformant selector-kind er schema-FAIL. YAML tokens refereres gennem JSON Pointer efter sikker YAML-parsing; der defineres ikke et nyt ustandardiseret yaml-path-sprog.
+Source-ref has a source ID, purpose (`provenance|contract`) and an optional selector. Selectors are `whole-document`, `json-pointer`, `markdown-heading`, `line-range` or `opaque`. Value syntax: JSON Pointer follows [RFC 6901](https://www.rfc-editor.org/rfc/rfc6901); Markdown-heading is the exact heading path separated by ` / `, with an optional 1-based ordinal; line-range is `Lstart-Lend` with end ≥ start and an exact source hash; opaque is preserved uninterpreted text. Known but unsupported selectors produce integration UNKNOWN; a non-conformant selector kind is schema FAIL. YAML tokens are referenced through JSON Pointer after safe YAML parsing; no new unstandardized yaml-path language is defined.
 
-Et deklareret source-ID med ulæseligt eksternt mål er ikke en dangling intern reference. Det berørte source-check er UNKNOWN. Før readiness SKAL enhver faktisk anvendt purpose=contract-reference, inklusive design_refs, bruge normative=true, lokal materialiseret source og en verificeret revision.sha256, så assetet indgår i modelsnapshot. Planlagte nonnormative kontraktrefs er tilladt i skitser. Provenienskilder kan bevares som utilgængelige med synlig diagnose.
+A declared source ID with an unreadable external target is not a dangling internal reference. The affected source check is UNKNOWN. Before readiness, every purpose=contract reference actually used, including design_refs, MUST use normative=true, a locally materialized source and a verified revision.sha256 so that the asset is included in the model snapshot. Planned non-normative contract refs are allowed in sketches. Provenance sources can be retained as unavailable with a visible diagnostic.
 
-Question har statement, targets, blocks (`modeling|implementation|acceptance`), status (`open|resolved`) og ved resolved en resolution med decision-record-ID. En resolution er ikke tilstrækkelig, hvis beslutningen mangler eller ikke gælder den aktuelle ændring.
+Question has statement, targets, blocks (`modeling|implementation|acceptance`), status (`open|resolved`) and, when resolved, a resolution with a decision-record ID. A resolution is insufficient if the decision is missing or does not apply to the current change.
 
 ## 5. Operational records
 
-`gdd-records/0.2` har project_id og records-map. Det er adskilt fra autoritativt modelsnapshot. Recordkind er:
+`gdd-records/0.2` has project_id and a records map. It is separate from the authoritative model snapshot. Record kinds are:
 
-- binding: spec_revision, targets, implementation, role (`code|test|design`), resource, selector og status (`planned|observed|checked`). Planned kan mangle ressourcerevision. Observed/checked kræver præcis ressourcerevision, og ved code/test også code_revision for den konkrete implementation. Overlap mellem bindings kan være legitimt; tvetydig mapping og konkurrerende skriveejerskab er forskellige fejl.
-- decision: topic (`model_change|approval|readiness_review|exception|source_promotion`), scope, spec_revision, policy_revision, actor (id/kind), outcome (`proposed|accepted|rejected`) og rationale. Approval kræver activity (`model_changes|implementation|acceptance`). Acceptancereceipts og exceptions kræver også implementation og code_revision. Exceptions kræver expires_at og henvisning til de berørte checks. Receipt-identitet er en registreret påstand; hosten skal kontrollere aktørens autoritet.
-- check: spec_revision, scope, method, required_environment og negative_controls. Det er en plan; method skal være understøttet af den udførende checker.
-- evidence: check-ID og check_revision, implementation, spec_revision, code_revision, checker(name/version), scope, result, executed, reason, environment og evidence_uri. PASS kræver executed=true og tilstrækkeligt input. Skemaet beviser ikke, at en oplyst kørsel fandt sted.
+- binding: spec_revision, targets, implementation, role (`code|test|design`), resource, selector and status (`planned|observed|checked`). Planned can lack a resource revision. Observed/checked requires an exact resource revision and, for code/test, also code_revision for the specific implementation. Overlap between bindings can be legitimate; ambiguous mapping and competing write ownership are different errors.
+- decision: topic (`model_change|approval|readiness_review|exception|source_promotion`), scope, spec_revision, policy_revision, actor (id/kind), outcome (`proposed|accepted|rejected`) and rationale. Approval requires activity (`model_changes|implementation|acceptance`). Acceptance receipts and exceptions also require implementation and code_revision. Exceptions require expires_at and references to affected checks. Receipt identity is a recorded claim; the host must check the actor's authority.
+- check: spec_revision, scope, method, required_environment and negative_controls. This is a plan; method must be supported by the executing checker.
+- evidence: check ID and check_revision, implementation, spec_revision, code_revision, checker(name/version), scope, result, executed, reason, environment and evidence_uri. PASS requires executed=true and sufficient input. The schema does not prove that a reported execution took place.
 
-Records er uforanderlige efter registrering. Ændring kræver et nyt record-ID; `supersedes` kan referere til det tidligere record af samme kind og skal være acyklisk. Checkplanens check_revision er `sha256:` plus hash af recordværdien serialiseret som UTF-8 JSON med sorterede objectkeys, ensure_ascii=false, separators=(',', ':') og uden newline. Evidens SKAL matche denne hash. Flere aktive planer for samme rule/metode kræver eksplicit valg; de må ikke sammensmeltes stiltiende.
+Records are immutable after registration. A change requires a new record ID; `supersedes` can refer to the previous record of the same kind and must be acyclic. The check plan's check_revision is `sha256:` plus the hash of the record value serialized as UTF-8 JSON with sorted object keys, ensure_ascii=false, separators=(',', ':') and no newline. Evidence MUST match this hash. Multiple active plans for the same rule/method require explicit selection; they must not be silently merged.
 
-Check- og binding-targets SKAL referere til model-ID'er i deres spec_revision-snapshot. Historiske records skal ikke resolves mod den seneste model, når noder er slettet. Bindingrevisionen identificerer ressource/kodegrundlaget. Decision-checks og evidence-check SKAL referere til check-records i samme projekt. Evidens og checkplan skal have samme spec_revision. Model-/code-revisioner, checkhash og raw evidence skal kontrolleres, før resultater bruges til accept.
+Check and binding targets MUST refer to model IDs in their spec_revision snapshot. Historical records must not be resolved against the latest model when nodes have been deleted. The binding revision identifies the resource/code basis. Decision checks and evidence-check MUST refer to check records in the same project. Evidence and the check plan must have the same spec_revision. Model/code revisions, the check hash and raw evidence must be checked before results are used for acceptance.
 
-## 6. Revisioner uden selvreference
+## 6. Revisions without self-reference
 
-Den portable profil `gdd-snapshot/0.2` indeholder assets: en liste af `{path, sha256}`. Paths er normaliserede relative POSIX-paths, sorteret stigende efter Unicode code point. Listen omfatter manifestet, alle fragmenter, anvendte extensionassets og sources med normative=true. Alle er lokale snapshotassets; nødvendige eksterne normative kilder skal først materialiseres eller give UNKNOWN. Der må ikke være dubletpaths.
+The portable profile `gdd-snapshot/0.2` contains assets: a list of `{path, sha256}`. Paths are normalized relative POSIX paths, sorted in ascending Unicode code point order. The list includes the manifest, all fragments, extension assets used and sources with normative=true. All are local snapshot assets; necessary external normative sources must first be materialized or produce UNKNOWN. Duplicate paths are not allowed.
 
-Manifestidentiteten er `sha256:` efterfulgt af SHA-256 over UTF-8-bytes af en JSON-liste af `[path, sha256]`-par med `ensure_ascii=false`, ingen whitespace (`separators=(',', ':')`) og ingen newline. Assethashes er over de præcise filbytes. Rapportfilen, operational records og selve snapshotmanifestet er ikke i assetlisten. Paths og modelbyteændringer giver ny revision; graf-ID'er bevares. Dette er en reproducerbar byteprofil, ikke semantisk ækvivalens eller en digital signatur.
+Manifest identity is `sha256:` followed by SHA-256 over the UTF-8 bytes of a JSON list of `[path, sha256]` pairs with `ensure_ascii=false`, no whitespace (`separators=(',', ':')`) and no newline. Asset hashes cover the exact file bytes. The report file, operational records and the snapshot manifest itself are not in the asset list. Paths and changes to model bytes produce a new revision; graph IDs are preserved. This is a reproducible byte profile, not semantic equivalence or a digital signature.
 
-Et label eller en Git-commit MÅ være ekstra locator, men må ikke erstatte identifikation af relevante lokale ændringer. Kodesnapshot bruger særskilt implementation-ID og revision; flere implementationer må ikke dele evidens implicit.
+A label or Git commit MAY be an additional locator but must not replace identification of relevant local changes. A code snapshot uses a separate implementation ID and revision; multiple implementations must not implicitly share evidence.
 
-## 7. Versionering
+## 7. Versioning
 
-0.2 er eksplicit uforenelig med 0.1. Ingen silent upgrade. En consumer SKAL deklarere understøttede formater og extensionversioner. Fremtidige ændringer med nye krav til tolkning skal have ny formatversion. Schema-ID'ernes `https://gdd.example/` er et lokalt identifier-namespace, ikke en publiceret tjeneste; schemas skal resolves fra denne pakke uden netværk.
+0.2 is explicitly incompatible with 0.1. No silent upgrade. A consumer MUST declare supported formats and extension versions. Future changes with new interpretation requirements must have a new format version. The schema IDs' `https://gdd.example/` is a local identifier namespace, not a published service; schemas must be resolved from this package without network access.

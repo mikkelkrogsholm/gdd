@@ -1,20 +1,20 @@
 format: gdd/0.2
 project:
   id: concert-reservations
-  title: Reservation af koncertpladser
-  goal: En bruger kan reservere og annullere en plads uden overbooking.
-  scope: En modulær applikation og én transaktionel database; ikke mikroservices.
+  title: Concert seat reservations
+  goal: A user can reserve and cancel a seat without overbooking.
+  scope: A modular application and one transactional database; no microservices.
   assumptions:
-  - Én plads pr. reservation. Flere reservationer med forskellige request-nøgler er tilladt.
-  - Koncerter findes på forhånd, og kapaciteten ændres ikke i dette eksempel.
-  - Identitet leveres af serverens autentificeringslag, ikke af et user_id i request-body.
-  - Reservationer udløber ikke automatisk i denne første model.
-  - Betaling, billetudstedelse, venteliste og eksterne events er uden for dette eksempel.
-  - Reservationshistorik og succesfulde request-nøgler bevares; sletning er uden for eksemplet.
+  - One seat per reservation. Multiple reservations with different request keys are allowed.
+  - Concerts already exist, and capacity does not change in this example.
+  - Identity comes from the server authentication layer, not a user_id in the request body.
+  - Reservations do not expire automatically in this initial model.
+  - Payment, ticket issuance, waiting lists and external events are outside this example.
+  - Reservation history and successful request keys are retained; deletion is outside this example.
 nodes:
   component.api:
     kind: component
-    description: Validerer transportinput og videresender autentificeret kontekst.
+    description: Validates transport input and forwards authenticated context.
     maturity: specified
     source_refs:
     - source: source.legacy
@@ -24,7 +24,7 @@ nodes:
     - action.cancel
   component.reservations:
     kind: component
-    description: Ejer reservationsregler, adgangskontrol og transaktionsgrænser.
+    description: Owns reservation rules, access control and transaction boundaries.
     maturity: specified
     source_refs:
     - source: source.legacy
@@ -34,7 +34,7 @@ nodes:
     - action.cancel
   component.storage:
     kind: component
-    description: Persistence-adapter til databasen; indeholder ikke beslutninger om adgangsrettigheder.
+    description: Database persistence adapter; contains no access-control decisions.
     maturity: specified
     source_refs:
     - source: source.legacy
@@ -42,7 +42,7 @@ nodes:
     interfaces: []
   entity.concert:
     kind: entity
-    description: En koncert med en fast, ikke-negativ heltalskapacitet.
+    description: A concert with a fixed nonnegative integer capacity.
     maturity: specified
     source_refs:
     - source: source.legacy
@@ -56,7 +56,7 @@ nodes:
         minimum: 0
   entity.reservation:
     kind: entity
-    description: Én reserveret plads med ejer og permanent request-nøgle.
+    description: One reserved seat with an owner and permanent request key.
     maturity: specified
     source_refs:
     - source: source.legacy
@@ -81,7 +81,7 @@ nodes:
         - cancelled
   action.reserve:
     kind: action
-    description: Reservér præcis én plads eller genfind resultatet af en tidligere succes.
+    description: Reserve exactly one seat or retrieve an earlier successful result.
     maturity: specified
     source_refs:
     - source: source.legacy
@@ -120,37 +120,37 @@ nodes:
         SoldOut: SoldOut
         IdempotencyConflict: IdempotencyConflict
       preconditions:
-      - Valider autentificeret identitet og input før opslag eller mutation.
+      - Validate authenticated identity and input before lookup or mutation.
       external_effects: []
       effects_complete: true
       dependencies_complete: true
       risks:
         authorization:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.reserve_unauthenticated
         idempotency:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.replay
           - scenario.key_conflict
         boundaries:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.zero_capacity
           - scenario.sold_out
         concurrency:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.last_seat
           - scenario.concurrent_same_key
         atomicity:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.atomic_failure
       error_cases:
@@ -164,32 +164,28 @@ nodes:
         - scenario.sold_out
         IdempotencyConflict:
         - scenario.key_conflict
-    behavior: 'Valider identitet og input før opslag eller mutation.
+    behavior: 'Validate identity and input before lookup or mutation.
 
-      Request-nøglen er scoped til principal_id og action.reserve.
+      The request key is scoped to principal_id and action.reserve.
 
-      Bind en succesfuld nøgle til concert_id og reservations-id; samme nøgle med andet concert_id giver IdempotencyConflict.
+      Bind a successful key to concert_id and reservation ID; reusing the key with another concert_id yields IdempotencyConflict.
 
-      En identisk gentagelse returnerer samme reservations-id og AKTUEL tilstand, også efter annullering, uden
-      nye sideeffekter.
+      An identical retry returns the same reservation ID and CURRENT state, including after cancellation, without new side effects.
 
-      Slå en tidligere succes op FØR en ny kapacitetskontrol; et fuldt spillested må ikke gøre en succesfuld
-      gentagelse til SoldOut.
+      Look up an earlier success BEFORE checking new capacity; a full venue must not turn a successful retry into SoldOut.
 
-      Kun en ny nøgle forsøger at oprette en ny reservation.
+      Only a new key attempts to create a new reservation.
 
-      Afvis en ny reservation med SoldOut, når antallet af reservationer i reserved er lig kapaciteten.
+      Reject a new reservation with SoldOut when the number of reservations in reserved equals capacity.
 
-      Nøgleunikhed, kapacitetsbeskyttelse, oprettelse og nøglebinding skal indgå i samme atomare databaseoperation
-      eller transaktion.
+      Key uniqueness, capacity protection, creation and key binding must be part of the same atomic database operation or transaction.
 
-      Samtidige transaktioner skal give et resultat svarende til en gyldig sekventiel rækkefølge for disse
-      regler; en check-then-insert uden beskyttelse er ikke nok.
+      Concurrent transactions must produce a result equivalent to a valid sequential order under these rules; an unprotected check-then-insert is insufficient.
 
-      En mislykket oprettelse binder ikke request-nøglen og efterlader ingen reservation.'
+      A failed creation does not bind the request key and leaves no reservation.'
   action.cancel:
     kind: action
-    description: Ejeren kan annullere sin reservation; gentagelse er uden ekstra effekt.
+    description: The owner may cancel their reservation; repeating the request has no additional effect.
     maturity: specified
     source_refs:
     - source: source.legacy
@@ -222,35 +218,35 @@ nodes:
         InvalidInput: InvalidInput
         ReservationNotFound: ReservationNotFound
       preconditions:
-      - Valider autentificeret identitet og input før opslag eller mutation.
+      - Validate authenticated identity and input before lookup or mutation.
       external_effects: []
       effects_complete: true
       dependencies_complete: true
       risks:
         authorization:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.foreign_cancel
         idempotency:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.cancel
           - scenario.replay_after_cancel
         boundaries:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.reservation_missing
         concurrency:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.cancel_concurrent
         atomicity:
           relevant: true
-          rationale: Kontrakten omfatter denne risiko; scenarierne er planlagte checks.
+          rationale: The contract covers this risk; the scenarios are planned checks.
           scenarios:
           - scenario.atomic_failure
       error_cases:
@@ -261,85 +257,79 @@ nodes:
         ReservationNotFound:
         - scenario.reservation_missing
         - scenario.foreign_cancel
-    behavior: 'Valider identitet og input først.
+    behavior: 'Validate identity and input first.
 
-      Manglende reservation og en anden ejers reservation giver begge ReservationNotFound.
+      An absent reservation and another owner''s reservation both yield ReservationNotFound.
 
-      Kontrollér ejerskab før retur af data, også ved gentagelse på en allerede annulleret reservation.
+      Check ownership before returning data, including a retry for an already cancelled reservation.
 
-      reserved ændres atomart til cancelled, så reservationen ikke længere optager en plads.
+      Atomically change reserved to cancelled so the reservation no longer occupies a seat.
 
-      cancelled returneres uændret; frigiv ikke en plads igen.
+      Return cancelled unchanged; do not release a seat again.
 
-      Den gamle request-nøgle bevares, så en gentaget reserve-request ikke genopretter reservationen.'
+      Preserve the old request key so a repeated reserve request cannot recreate the reservation.'
   rule.capacity:
     kind: rule
-    description: For hver koncert er 0 <= count(reservationer med state=reserved) <= capacity efter hver committed
-      mutation.
+    description: For each concert, 0 <= count(reservations with state=reserved) <= capacity after every committed mutation.
     maturity: specified
     rule:
       category: invariant
-      statement: For hver koncert er 0 <= count(reservationer med state=reserved) <= capacity efter hver committed
-        mutation.
+      statement: For each concert, 0 <= count(reservations with state=reserved) <= capacity after every committed mutation.
       scope: targeted
       blocking: true
       verification:
       - database_concurrency_and_integration_tests
   rule.idempotency:
     kind: rule
-    description: Gentagelser må ikke oprette ekstra reservationer, genaktivere annullerede reservationer eller
-      frigive ekstra pladser.
+    description: Retries must not create extra reservations, reactivate cancelled reservations or release extra seats.
     maturity: specified
     rule:
       category: behavior
-      statement: Gentagelser må ikke oprette ekstra reservationer, genaktivere annullerede reservationer eller
-        frigive ekstra pladser.
+      statement: Retries must not create extra reservations, reactivate cancelled reservations or release extra seats.
       scope: targeted
       blocking: true
       verification:
       - integration_tests
   rule.authorization:
     kind: rule
-    description: Kun ejeren må annullere eller få reservationsdata retur; en request-body må ikke fastlægge
-      identiteten.
+    description: Only the owner may cancel or receive reservation data; the request body must not determine identity.
     maturity: specified
     rule:
       category: behavior
-      statement: Kun ejeren må annullere eller få reservationsdata retur; en request-body må ikke fastlægge
-        identiteten.
+      statement: Only the owner may cancel or receive reservation data; the request body must not determine identity.
       scope: targeted
       blocking: true
       verification:
       - authorization_tests
   rule.atomicity:
     kind: rule
-    description: Fejl før commit efterlader ingen delvist gennemført mutation eller request-nøglebinding.
+    description: Errors before commit leave no partially completed mutation or request-key binding.
     maturity: specified
     rule:
       category: behavior
-      statement: Fejl før commit efterlader ingen delvist gennemført mutation eller request-nøglebinding.
+      statement: Errors before commit leave no partially completed mutation or request-key binding.
       scope: targeted
       blocking: true
       verification:
       - database_fault_injection_tests
   rule.state_machine:
     kind: rule
-    description: Muterende forløb følger tilstandsmaskinen; annullerede reservations-id'er kan ikke genaktiveres.
+    description: Mutating flows follow the state machine; cancelled reservation IDs cannot be reactivated.
     maturity: specified
     rule:
       category: behavior
-      statement: Muterende forløb følger tilstandsmaskinen; annullerede reservations-id'er kan ikke genaktiveres.
+      statement: Mutating flows follow the state machine; cancelled reservation IDs cannot be reactivated.
       scope: targeted
       blocking: true
       verification:
       - model_based_and_integration_tests
   rule.api_boundary:
     kind: rule
-    description: API-modulet må ikke importere persistence-modulet direkte.
+    description: The API module must not import the persistence module directly.
     maturity: specified
     rule:
       category: architecture
-      statement: API-modulet må ikke importere persistence-modulet direkte.
+      statement: The API module must not import the persistence module directly.
       scope: targeted
       blocking: true
       verification:
@@ -352,7 +342,7 @@ nodes:
         policy: forbid
   machine.reservation:
     kind: machine
-    description: Reservations mutationslivscyklus; retries og fejl følger action-kontrakterne.
+    description: Reservation mutation lifecycle; retries and errors follow the action contracts.
     maturity: specified
     machine:
       states:
@@ -367,196 +357,186 @@ nodes:
         from: absent
         to: reserved
         trigger: action.reserve
-        guard: Autentificeret bruger; eksisterende koncert; ny request-nøgle; mindst én ledig plads.
-        effects: Opret reservation med state=reserved og bind request-nøglen atomart under kapacitetsbeskyttelsen.
+        guard: Authenticated user; existing concert; new request key; at least one available seat.
+        effects: Create a reservation with state=reserved and bind the request key atomically under capacity protection.
       - id: transition.cancel
         from: reserved
         to: cancelled
         trigger: action.cancel
-        guard: Den autentificerede bruger ejer reservationen.
-        effects: Skift atomart til cancelled; en eventuel materialiseret pladstæller opdateres i samme transaktion.
+        guard: The authenticated user owns the reservation.
+        effects: Atomically change to cancelled; any materialized seat counter is updated within the same transaction.
     annotations:
       gdd.notes:
-      - absent er en modelleringsmarkør for en reservation, der endnu ikke eksisterer; den lagres aldrig.
-      - Tilstandsmaskinen beskriver mutationer. Validering, fejl og idempotente returveje er defineret i action-kontrakterne.
-      - cancelled er terminal for mutationer, men må fortsat læses og returneres ved en autoriseret gentagelse.
+      - absent is a modeling marker for a reservation that does not yet exist; it is never stored.
+      - The state machine describes mutations. Validation, errors and idempotent return paths are defined in the action contracts.
+      - cancelled is terminal for mutations but may still be read and returned during an authorized retry.
   scenario.reserve:
     kind: scenario
-    description: Ét reservations-id i reserved til A, og præcis én plads optaget.
+    description: One reservation ID in reserved for A, and exactly one seat occupied.
     scenario:
       category: normal
-      given: Koncert C har capacity=1 og ingen reservationer; bruger A er autentificeret.
-      when: A reserverer C med nøgle K1.
-      then: Ét reservations-id i reserved til A, og præcis én plads optaget.
+      given: Concert C has capacity=1 and no reservations; user A is authenticated.
+      when: A reserves C using key K1.
+      then: One reservation ID in reserved for A, and exactly one seat occupied.
   scenario.last_seat:
     kind: scenario
-    description: Præcis én reservation lykkes; den anden giver SoldOut; højst én plads er optaget. Kør mod
-      den valgte databases reelle transaktionsadfærd.
+    description: Exactly one reservation succeeds; the other yields SoldOut; at most one seat is occupied. Run against the selected database's actual transaction behavior.
     scenario:
       category: concurrency
-      given: Koncert C har én ledig plads; A og B har hver sin nye request-nøgle.
-      when: To separate databaseforbindelser forsøger at reservere samtidigt med kontrolleret overlap.
-      then: Præcis én reservation lykkes; den anden giver SoldOut; højst én plads er optaget. Kør mod den valgte
-        databases reelle transaktionsadfærd.
+      given: Concert C has one available seat; A and B each have a new request key.
+      when: Two separate database connections attempt concurrent reservations with controlled overlap.
+      then: Exactly one reservation succeeds; the other yields SoldOut; at most one seat is occupied. Run against the selected database's actual transaction behavior.
   scenario.replay:
     kind: scenario
-    description: Samme reservations-id returneres hver gang; ingen ekstra plads optages; ingen SoldOut på gentagelsen.
+    description: The same reservation ID is returned every time; no extra seat is occupied; no SoldOut on a retry.
     scenario:
       category: boundary
-      given: C har capacity=1; A's reserve med K1 er lykkedes og har optaget den sidste plads.
-      when: A gentager samme request flere gange, også samtidigt.
-      then: Samme reservations-id returneres hver gang; ingen ekstra plads optages; ingen SoldOut på gentagelsen.
+      given: C has capacity=1; A's reserve request with K1 succeeded and took the last seat.
+      when: A repeats the same request several times, including concurrently.
+      then: The same reservation ID is returned every time; no extra seat is occupied; no SoldOut on a retry.
   scenario.concurrent_same_key:
     kind: scenario
-    description: Begge returnerer samme reservations-id; præcis én reservation oprettes.
+    description: Both return the same reservation ID; exactly one reservation is created.
     scenario:
       category: concurrency
-      given: C har capacity=2; K1 er endnu ikke brugt af A.
-      when: A sender to identiske reserve-requests med K1 samtidigt.
-      then: Begge returnerer samme reservations-id; præcis én reservation oprettes.
+      given: C has capacity=2; A has not yet used K1.
+      when: A sends two identical reserve requests with K1 concurrently.
+      then: Both return the same reservation ID; exactly one reservation is created.
   scenario.key_conflict:
     kind: scenario
-    description: IdempotencyConflict; ingen ny reservation eller kapacitetsændring i nogen koncert.
+    description: IdempotencyConflict; no new reservation or capacity change in any concert.
     scenario:
       category: negative
-      given: A har med K1 reserveret koncert C1.
-      when: A bruger K1 til koncert C2.
-      then: IdempotencyConflict; ingen ny reservation eller kapacitetsændring i nogen koncert.
+      given: A has reserved concert C1 using K1.
+      when: A uses K1 for concert C2.
+      then: IdempotencyConflict; no new reservation or capacity change in any concert.
   scenario.cancel:
     kind: scenario
-    description: Samme id i cancelled; nul aktive reservationer; aldrig flere ledige pladser end capacity.
+    description: Same ID in cancelled; zero active reservations; available seats never exceed capacity.
     scenario:
       category: boundary
-      given: A ejer en reserved reservation i en koncert med capacity=1.
-      when: A annullerer to gange, også med samtidige requests.
-      then: Samme id i cancelled; nul aktive reservationer; aldrig flere ledige pladser end capacity.
+      given: A owns a reserved reservation for a concert with capacity=1.
+      when: A cancels twice, including concurrent requests.
+      then: Same ID in cancelled; zero active reservations; available seats never exceed capacity.
   scenario.foreign_cancel:
     kind: scenario
-    description: ReservationNotFound; ingen ændring og ingen reservationsdata returneres.
+    description: ReservationNotFound; no change and no reservation data returned.
     scenario:
       category: negative
-      given: A ejer reservation R; B er autentificeret som B.
-      when: B forsøger at annullere R, også med et forfalsket owner_id i request-body. Gentag både når R er
-        reserved og cancelled.
-      then: ReservationNotFound; ingen ændring og ingen reservationsdata returneres.
+      given: A owns reservation R; B is authenticated as B.
+      when: B attempts to cancel R, including a forged owner_id in the request body. Repeat for both reserved and cancelled states.
+      then: ReservationNotFound; no change and no reservation data returned.
   scenario.atomic_failure:
     kind: scenario
-    description: Efter fejlen er vedvarende tilstand uændret; efter vellykket genforsøg er effekten udført
-      én gang. Kontrollér også evt. tæller og nøglebinding.
+    description: Persistent state is unchanged after the failure; a successful retry applies the effect once. Also verify any counter and key binding.
     scenario:
       category: negative
-      given: Et gyldigt reserve- eller cancel-forløb er klar til mutation.
-      when: Testadapteren injicerer fejl ved relevante persistensgrænser før commit og lader klienten genforsøge.
-      then: Efter fejlen er vedvarende tilstand uændret; efter vellykket genforsøg er effekten udført én gang.
-        Kontrollér også evt. tæller og nøglebinding.
+      given: A valid reserve or cancel flow is ready for mutation.
+      when: The test adapter injects failures at relevant persistence boundaries before commit and lets the client retry.
+      then: Persistent state is unchanged after the failure; a successful retry applies the effect once. Also verify any counter and key binding.
   scenario.replay_after_cancel:
     kind: scenario
-    description: K1 returnerer R i cancelled uden mutation. K2 kan oprette et nyt id, hvis der er plads; R
-      forbliver cancelled.
+    description: K1 returns R in cancelled without mutation. K2 may create a new ID if capacity is available; R remains cancelled.
     scenario:
       category: boundary
-      given: A har reserveret med K1 og derefter annulleret reservation R.
-      when: A gentager den oprindelige reserve-request med K1 og opretter derefter en ny med K2.
-      then: K1 returnerer R i cancelled uden mutation. K2 kan oprette et nyt id, hvis der er plads; R forbliver
-        cancelled.
+      given: A reserved using K1 and then cancelled reservation R.
+      when: A repeats the original reserve request with K1 and then creates a new one with K2.
+      then: K1 returns R in cancelled without mutation. K2 may create a new ID if capacity is available; R remains cancelled.
   scenario.api_boundary:
     kind: scenario
-    description: Den forbudte import skal give FAIL. En manglende scanning eller uafklaret mapping giver UNKNOWN,
-      ikke PASS.
+    description: The forbidden import must yield FAIL. An absent scan or unresolved mapping yields UNKNOWN, not PASS.
     scenario:
       category: architecture
-      given: Komponenternes bindings peger på det implementerede projekts moduler.
-      when: Importgrafen udtrækkes; indsæt desuden en midlertidig direkte API-til-storage-import som negativ
-        kontrol.
-      then: Den forbudte import skal give FAIL. En manglende scanning eller uafklaret mapping giver UNKNOWN,
-        ikke PASS.
+      given: Component bindings point to the implemented project's modules.
+      when: Extract the import graph; also insert a temporary direct API-to-storage import as a negative control.
+      then: The forbidden import must yield FAIL. An absent scan or unresolved mapping yields UNKNOWN, not PASS.
   scenario.reserve_unauthenticated:
     kind: scenario
-    description: Unauthenticated; ingen opslag eller mutation.
+    description: Unauthenticated; no lookup or mutation.
     scenario:
       category: negative
-      given: Ingen serverautentificeret principal.
-      when: Reserve kaldes med ellers gyldigt input.
-      then: Unauthenticated; ingen opslag eller mutation.
+      given: No server-authenticated principal.
+      when: Reserve is called with otherwise valid input.
+      then: Unauthenticated; no lookup or mutation.
   scenario.reserve_invalid:
     kind: scenario
-    description: InvalidInput; ingen mutation.
+    description: InvalidInput; no mutation.
     scenario:
       category: negative
-      given: Autentificeret bruger; tomt concert_id eller request_key.
+      given: Authenticated user; empty concert_id or request_key.
       when: Reserve kaldes.
-      then: InvalidInput; ingen mutation.
+      then: InvalidInput; no mutation.
   scenario.concert_missing:
     kind: scenario
-    description: ConcertNotFound; nøglen bindes ikke.
+    description: ConcertNotFound; the key is not bound.
     scenario:
       category: negative
-      given: Autentificeret bruger; ny nøgle; koncert findes ikke.
+      given: Authenticated user; new key; concert does not exist.
       when: Reserve kaldes.
-      then: ConcertNotFound; nøglen bindes ikke.
+      then: ConcertNotFound; the key is not bound.
   scenario.sold_out:
     kind: scenario
-    description: SoldOut; ingen mutation eller nøglebinding.
+    description: SoldOut; no mutation or key binding.
     scenario:
       category: negative
-      given: Koncerten er fuld; bruger har en ny nøgle.
+      given: The concert is full; the user has a new key.
       when: Reserve kaldes.
-      then: SoldOut; ingen mutation eller nøglebinding.
+      then: SoldOut; no mutation or key binding.
   scenario.zero_capacity:
     kind: scenario
-    description: SoldOut; nul aktive reservationer.
+    description: SoldOut; zero active reservations.
     scenario:
       category: boundary
-      given: Koncert har capacity=0.
-      when: En gyldig ny reservation forsøges.
-      then: SoldOut; nul aktive reservationer.
+      given: The concert has capacity=0.
+      when: A valid new reservation is attempted.
+      then: SoldOut; zero active reservations.
   scenario.cancel_once:
     kind: scenario
-    description: Samme id returneres cancelled; én plads frigives.
+    description: The same ID is returned as cancelled; one seat is released.
     scenario:
       category: normal
-      given: A ejer en reserved reservation.
-      when: A annullerer én gang.
-      then: Samme id returneres cancelled; én plads frigives.
+      given: A owns a reserved reservation.
+      when: A cancels once.
+      then: The same ID is returned as cancelled; one seat is released.
   scenario.cancel_concurrent:
     kind: scenario
-    description: Begge returnerer samme cancelled id; pladsen frigives kun én gang.
+    description: Both return the same cancelled ID; the seat is released only once.
     scenario:
       category: concurrency
       given: A ejer én reserved reservation.
-      when: To forbindelser annullerer samtidigt.
-      then: Begge returnerer samme cancelled id; pladsen frigives kun én gang.
+      when: Two connections cancel concurrently.
+      then: Both return the same cancelled ID; the seat is released only once.
   scenario.cancel_unauthenticated:
     kind: scenario
-    description: Unauthenticated; ingen opslag eller mutation.
+    description: Unauthenticated; no lookup or mutation.
     scenario:
       category: negative
-      given: Ingen serverautentificeret principal.
+      given: No server-authenticated principal.
       when: Cancel kaldes.
-      then: Unauthenticated; ingen opslag eller mutation.
+      then: Unauthenticated; no lookup or mutation.
   scenario.cancel_invalid:
     kind: scenario
-    description: InvalidInput; ingen mutation.
+    description: InvalidInput; no mutation.
     scenario:
       category: negative
-      given: Autentificeret bruger; tomt reservation_id.
+      given: Authenticated user; empty reservation_id.
       when: Cancel kaldes.
-      then: InvalidInput; ingen mutation.
+      then: InvalidInput; no mutation.
   scenario.reservation_missing:
     kind: scenario
-    description: ReservationNotFound uden reservationsdata.
+    description: ReservationNotFound without reservation data.
     scenario:
       category: negative
-      given: Autentificeret bruger; reservation findes ikke.
+      given: Authenticated user; reservation does not exist.
       when: Cancel kaldes.
-      then: ReservationNotFound uden reservationsdata.
+      then: ReservationNotFound without reservation data.
   component.frontend:
     kind: component
-    description: Planlagt brugerflade; skitse uden teknologistak.
+    description: Planned interface; a sketch without a technology stack.
     maturity: sketch
   screen.reserve:
     kind: screen
-    description: Planlagt reservationsskærm; interaktion og design mangler stadig.
+    description: Planned reservation screen; interaction and design are still missing.
     maturity: sketch
     design_refs:
     - source: source.design
@@ -565,10 +545,10 @@ nodes:
         kind: whole-document
   community.backend:
     kind: community
-    description: Backend-visning af den fælles model.
+    description: Backend view of the shared model.
   community.frontend:
     kind: community
-    description: Frontend-visning af den fælles model.
+    description: Frontend view of the shared model.
 edges:
 - id: edge.owner.entity.concert
   from: entity.concert
@@ -913,15 +893,15 @@ edges:
 sources:
   source.legacy:
     role: input
-    title: Bevaret gdd/0.1-intent til eksplicit migration
+    title: Preserved gdd/0.1 intent for explicit migration
     uri: sources/legacy-concert.gdd.yaml
     format: gdd/0.1
     normative: false
     revision:
-      sha256: 8dfcf87613d59edce97d911e57ce1314c9d17356b53d48029d8eebe3b24bbc88
+      sha256: f7b866db5d8e132b08044289ce35c82e65bef51d2833e0fb67806c3eebe682f5
   source.design:
     role: design
-    title: Planlagt DESIGN.md til frontend; ikke skrevet eller verified
+    title: Planned frontend DESIGN.md; not written or verified
     uri: DESIGN.md
     format: design-md/alpha
     normative: false

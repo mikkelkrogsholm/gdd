@@ -1,17 +1,17 @@
 format: gdd/0.2
 project:
   id: example.extension
-  title: Deklareret udvidelse
-  goal: Illustrér en custom nodetype og relation.
+  title: Declared extension
+  goal: Illustrate a custom node type and relation.
 nodes:
   sensor.room:
     kind: example.sensors.sensor
-    description: En temperaturføler.
+    description: A temperature sensor.
     data:
       unit: celsius
   entity.room:
     kind: entity
-    description: Rum som domænebegreb.
+    description: Room as a domain concept.
 edges:
 - id: edge.sensor.measures
   from: sensor.room
@@ -23,4 +23,4 @@ extensions:
     namespace: example.sensors
     version: 0.1.0
     path: extensions/sensors.extension.json
-    sha256: 1822e580e00ef250f7e8a0b3b411fd501a75e37726fadb59d3246936ea971136
+    sha256: 456a9dc2a2abb8a59bcc2dd3283c043656bd812b5da6998ce10d7210786a23f8

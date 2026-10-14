@@ -1,16 +1,16 @@
-# Loop 10 — afsluttende frisk review
+# Loop 10 — final fresh review
 
-Status: fuld runde afsluttet uden nye bekræftede fund eller uafklarede kandidater. Ingen runtime-, schema-, test- eller normative filer blev ændret under runden. De 121 hashede reviewfiler svarer til den integrerede kode, der bestod 1.230 tests, 58/58 standard-, 18/18 adapter-, 16/16 renderer-cases og 23/23 browserchecks efter loop 9.
+Status: full round completed without new confirmed findings or unresolved candidates. No runtime, schema, test, or normative files changed during the round. The 121 hashed review files correspond to the integrated code that passed 1,230 tests, 58/58 standard, 18/18 adapter, 16/16 renderer cases, and 23/23 browser checks after loop 9.
 
-Fire parallelle read-only reviewers genlæste deres aktuelle område og gennemførte almindelige og adversarial kontroller:
+Four parallel read-only reviewers reread their current area and performed ordinary and adversarial checks:
 
-| Område | Frisk verifikation |
+| Area | Fresh verification |
 | --- | --- |
-| Model, loading, readiness, planning, schemas | 573 regressioner og 709 uafhængige kontroller, inklusive alle 512 refinementgrafer på tre vertices, numeriske orakler, refs, uændrede modeller/snapshots, closure, metodecoverage og parserkapacitet. Alle 11 schemas er gyldige; seks fælles GDD/fragment-definitioner matcher. |
-| Records, autorisation, evidens, validator, rapport | 447 regressioner og 334 friske kontroller af primary-/secondary-identitet, parser-/viewergrænser, scope, trust, hashes, retirement, selection og uafhængige resultater. |
-| Graphify, CLI, filesystem | 417 regressioner og nye kontroller af unknown/missing/numeric primary, reelt projectmismatch, raw bytes, parallelle edges, symlinklocators, ikke-accepterede proposals, eksklusive outputs og uændrede bundlehashes. |
-| Viewer | 65 regressioner, 23 browserchecks, 35 uafhængige browserkontroller, 13 API-/schemakontroller, 16 numeriske grænsekontroller, fire fidelity-cases, 16 renderer-cases og fire ekstra kapacitetskontroller. Fem almindelige HTML-filer er byteidentiske. |
+| Model, loading, readiness, planning, schemas | 573 regressions and 709 independent checks, including all 512 refinement graphs on three vertices, numeric oracles, refs, unchanged models/snapshots, closure, method coverage, and parser capacity. All 11 schemas are valid; six shared GDD/fragment definitions match. |
+| Records, authorization, evidence, validator, report | 447 regressions and 334 fresh checks of primary/secondary identity, parser/viewer boundaries, scope, trust, hashes, retirement, selection, and independent results. |
+| Graphify, CLI, filesystem | 417 regressions and new checks of unknown/missing/numeric primary, real project mismatch, raw bytes, parallel edges, symlink locators, unaccepted proposals, exclusive outputs, and unchanged bundle hashes. |
+| Viewer | 65 regressions, 23 browser checks, 35 independent browser checks, 13 API/schema checks, 16 numeric boundary checks, four fidelity cases, 16 renderer cases, and four additional capacity checks. Five ordinary HTML files are byte-identical. |
 
-Browserkontrollerne bruger faktisk Chrome 155 offline uden script-/konsolfejl eller netværk. Den oprindelige kapacitetsrepro giver kontrolleret exit2 uden traceback/output; kendt ugyldig JSON giver fortsat FAIL. Syntetiske receipts og evidence er testinputs, ingen faktisk applikationskørsel eller autorisation.
+Browser checks use actual Chrome 155 offline without script/console errors or networking. The original capacity reproduction yields controlled exit2 without traceback/output; known invalid JSON still yields FAIL. Synthetic receipts and evidence are test inputs, not actual application execution or authorization.
 
-Maksimalt 10 aftalte runder er nu gennemført. De 57 fundgrupper fra loop 1–9 er rettet med regressioner. Denne friske sidste runde fandt ingen nye bekræftede fejl; det er et afgrænset reviewresultat, ikke et bevis for fravær af alle mulige fejl. Afsluttende distributions-/installationskontrol registreres separat.
+The maximum of 10 agreed rounds has now been completed. The 57 finding groups from loops 1–9 were fixed with regressions. This fresh final round found no new confirmed errors; this is a bounded review result, not proof of the absence of all possible errors. Final distribution/installation checks are recorded separately.

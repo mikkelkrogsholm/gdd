@@ -66,6 +66,7 @@ const results = [],
     const portable = path.join(portableDirectory, "graph.html");
     await fs.copyFile(path.join(fixtures, "fixture.html"), portable);
     await page.goto(pathToFileURL(portable).href);
+    assert.equal(await page.locator("html").getAttribute("lang"), "en");
     assert.equal(await page.title(), "Viewer fixture · GDD");
     assert.equal((await manifest()).shown_nodes.length, 6);
     assert.equal(await page.locator("[data-node-id]").count(), 6);
@@ -128,7 +129,7 @@ const results = [],
     });
     await page.mouse.click(point.x, point.y);
     const text = await page.locator("#detail").innerText();
-    assert.ok(text.includes("RETTET RELATIONSBUNDT"));
+    assert.ok(text.includes("DIRECTED RELATION BUNDLE"));
     forward.edge_ids.forEach((id) => assert.ok(text.includes(id)));
     assert.equal(
       await group.locator(".edge-path").getAttribute("marker-end"),
@@ -202,6 +203,10 @@ const results = [],
   await test("overlapping-community-folding-is-lossless", async () => {
     await page.locator("#reset").click();
     await page.locator("#fold").check();
+    assert.equal(
+      await page.locator('[data-node-id="community.backend"] .node-kind').textContent(),
+      "folded community",
+    );
     const m = await manifest();
     assert.equal(m.shown_nodes.length, 7);
     assert.equal(m.shown_edges.length, 9);
@@ -247,7 +252,7 @@ const results = [],
     assert.notEqual(await target.getAttribute("transform"), start);
     assert.equal(
       await page.locator("#detail .detail-tag").textContent(),
-      "Modeloversigt",
+      "Model overview",
     );
     const camera = await page.locator("#viewport").getAttribute("transform"),
       svg = await page.locator("#graph").boundingBox();
@@ -335,7 +340,7 @@ const results = [],
     await page.locator("#search").fill("action.reserve");
     await selectNode("action.reserve");
     assert.ok(
-      (await page.locator("#detail").innerText()).includes("Pseudokode"),
+      (await page.locator("#detail").innerText()).includes("Pseudocode"),
     );
     await page.screenshot({
       path: path.join(folder, "concert-mobile.png"),
@@ -417,7 +422,7 @@ const results = [],
     await page.locator("#search").fill("action.second");
     assert.equal(
       await page.locator("#detail .detail-tag").textContent(),
-      "Modeloversigt",
+      "Model overview",
     );
     const inspector = await page.locator("#inspector").boundingBox();
     assert.ok(inspector.y >= 844); // Filtering must not jump to details.

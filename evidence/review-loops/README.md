@@ -1,38 +1,38 @@
-# Review- og adversarial-loops
+# Review and adversarial loops
 
-Afsluttet 13. oktober 2026: **10 runder**, **57 bekræftede fundgrupper rettet med regressioner**. Den tiende friske samlede runde fandt ingen nye bekræftede fejl eller uafklarede kandidater. Brugerens maksimale ti runder er gennemført.
+Completed October 13, 2026: **10 rounds**, **57 confirmed finding groups fixed with regressions**. The tenth fresh combined round found no new confirmed errors or unresolved candidates. The user's maximum of ten rounds has been completed.
 
-Scope var hele det aktuelle GDD-framework: standardkontrakter, indlæsning/model/readiness/planlægning, records/autorisation/evidens, Graphify, viewer, CLI/API, schemas og pakning. Fire parallelle read-only underagenter gennemgik afgrænsede områder; lead reproducerede, triagerede og integrerede alle ændringer. Workerpatches blev forberedt i tempkopier. Arbejdsområdet er fortsat uden Git; historiske dokumenter, evidens og distributioner er bevaret.
+Scope was the entire current GDD framework: standard contracts, loading/model/readiness/planning, records/authorization/evidence, Graphify, viewer, CLI/API, schemas, and packaging. Four parallel read-only subagents reviewed bounded areas; the lead reproduced, triaged, and integrated all changes. Worker patches were prepared in temporary copies. The workspace remains without Git; historical documents, evidence, and distributions are preserved.
 
-| Runde | Nye fundgrupper | Samlede tests | Resultat |
+| Round | New finding groups | Total tests | Result |
 | --- | ---: | ---: | --- |
-| 1 | 19 | 310 | Rettet og verificeret |
-| 2 | 11 | 456 | Rettet og verificeret |
-| 3 | 10 | 542 | Rettet og verificeret |
-| 4 | 6 | 691 | Rettet og verificeret |
-| 5 | 3 | 777 | Rettet og verificeret |
-| 6 | 3 | 940 | Rettet og verificeret |
-| 7 | 2 | 1.072 | Rettet og verificeret |
-| 8 | 1 | 1.106 | Rettet og verificeret |
-| 9 | 2 | 1.230 | Rettet og verificeret |
-| 10 | 0 | 1.230 | Ren frisk runde |
+| 1 | 19 | 310 | Fixed and verified |
+| 2 | 11 | 456 | Fixed and verified |
+| 3 | 10 | 542 | Fixed and verified |
+| 4 | 6 | 691 | Fixed and verified |
+| 5 | 3 | 777 | Fixed and verified |
+| 6 | 3 | 940 | Fixed and verified |
+| 7 | 2 | 1,072 | Fixed and verified |
+| 8 | 1 | 1,106 | Fixed and verified |
+| 9 | 2 | 1,230 | Fixed and verified |
+| 10 | 0 | 1,230 | Clean fresh round |
 
-[loops.json](loops.json) registrerer hvert fund, område, prioritet, rettelsesstatus og kontroloutput. De enkelte [loopnoter](loop-10.md) beskriver årsag, afgrænsning og friske kontroller; loop-01.md til loop-10.md dækker forløbet. Før-logs er bevidste negative reproduktioner, ikke den aktuelle status.
+[loops.json](loops.json) records each finding, area, priority, fix status, and check output. The individual [loop notes](loop-10.md) describe causes, boundaries, and fresh checks; loop-01.md through loop-10.md cover the process. Before logs are deliberate negative reproductions, not the current status.
 
-## Aktuel verifikation
+## Current verification
 
-- **1.230 pytest-tests består**: [samlet output](loop-09-tests.txt).
-- **92/92 conformance-forventninger matcher**: [58 standardcases](loop-09-standard.json), [18 Graphify-cases](loop-09-graphify.json), [16 renderer-cases](loop-09-renderer.json).
-- **23/23 offline browserchecks består**: [Chrome-rapport](loop-09-browser/browser-conformance.json). Separate friske browserkontroller i loop 10 bestod også uden script-/konsolfejl eller netværk.
-- Den sidste runde ændrede ingen runtime-, schema-, test- eller normative filer. [121 filhashes](reviewed-state.json) binder den friske runde til den integrerede kode ovenfor; uændret status dokumenteres i [slutkontrollen](final-reviewed-state-proof.json). Derfor genbruges den beståede samlede kontrol fra loop 9 sammen med de friske områdekontroller fra [loop 10](loop-10.md).
-- Version **0.4.1**, standardformat **GDD 0.2**, Graphify-importer **0.1.2**, renderer **0.1.3**. Koncertdemoens HTML-bytes er uændrede efter de sidste rettelser.
+- **1,230 pytest tests pass**: [combined output](loop-09-tests.txt).
+- **92/92 conformance expectations match**: [58 standard cases](loop-09-standard.json), [18 Graphify cases](loop-09-graphify.json), [16 renderer cases](loop-09-renderer.json).
+- **23/23 offline browser checks pass**: [Chrome report](loop-09-browser/browser-conformance.json). Separate fresh browser checks in loop 10 also passed without script/console errors or networking.
+- The last round changed no runtime, schema, test, or normative files. [121 file hashes](reviewed-state.json) bind the fresh round to the integrated code above; unchanged status is documented in the [final check](final-reviewed-state-proof.json). The passing combined checks from loop 9 are therefore reused together with the fresh area checks from [loop 10](loop-10.md).
+- Version **0.4.1**, standard format **GDD 0.2**, Graphify importer **0.1.2**, renderer **0.1.3**. The concert demo's HTML bytes are unchanged after the final fixes.
 
-Den informative renderer-case viewer.deep_payload forventer nu UNKNOWN ved decoderkapacitet; den er en balanceret JSON-fixture. Kendte syntax-/payload-/assetmodstridscases forbliver FAIL. De oprindelige 58 normative caseforventninger er bevaret. Se [loop 9](loop-09.md).
+The informative renderer case viewer.deep_payload now expects UNKNOWN at decoder capacity; it is a balanced JSON fixture. Known syntax/payload/asset contradiction cases remain FAIL. The original 58 normative case expectations are preserved. See [loop 9](loop-09.md).
 
-## Distribution og installation
+## Distribution and installation
 
-Det aktuelle wheel er installeret i et nyt miljø uden for projektmappen. **17 CLI-kontroller består**, inklusive render/verify/readiness, Graphify import/verify/byteidentisk export/propose, raw-filnavnsprofil, unsupported Graphify-dybde med recovery/proposalrefusal, præcise mixed numeric bounds, numerisk/parserkapacitet og ukendt primær model med sekundær recordlog. Genereret HTML matcher den vedlagte demo præcist.
+The current wheel is installed in a new environment outside the project directory. **17 CLI checks pass**, including render/verify/readiness, Graphify import/verify/byte-identical export/propose, the raw-filename profile, unsupported Graphify depth with recovery/proposal refusal, exact mixed numeric bounds, numeric/parser capacity, and an unknown primary model with a secondary record log. Generated HTML exactly matches the included demo.
 
-[Installeret-wheel-kontrol](final-wheel-smoke.json), [reproducerbart script](final-wheel-smoke.source.py) og [package/source-match](final-package-source-match.json) dokumenterer den faktiske wheelhash og byteidentitet for alle 34 runtime-, viewer- og schemafiler. Wheel og sourcearkiv ligger i ../../dist/. Slutkontrol af sourcearkivet registreres i [sdist/source-match](final-sdist-source-match.json).
+[Installed-wheel check](final-wheel-smoke.json), [reproducible script](final-wheel-smoke.source.py), and [package/source match](final-package-source-match.json) document the actual wheel hash and byte identity of all 34 runtime, viewer, and schema files. The wheel and source archive are in ../../dist/. The final source-archive check is recorded in [sdist/source match](final-sdist-source-match.json).
 
-Den vejledende [agent-readability-lint](final-agent-lint.json) rapporterer 20 AR002-hints om nært ens kodefragmenter; de er ingen bekræftede adfærdsfejl eller hard release-gate. Reviewet tilføjer ingen applikationskørsel: hostmandater, receipts og evidens i testmaterialet er syntetiske. De understøttede profiler og deres faktiske begrænsninger beskrives i ../../VALIDATOR.md, ../../GRAPHIFY.md og ../../VIEWER.md.
+The advisory [agent-readability lint](final-agent-lint.json) reports 20 AR002 hints about closely similar code fragments; these are not confirmed behavioral errors or a hard release gate. The review adds no application execution: host mandates, receipts, and evidence in the test material are synthetic. Supported profiles and their actual limitations are described in ../../VALIDATOR.md, ../../GRAPHIFY.md, and ../../VIEWER.md.

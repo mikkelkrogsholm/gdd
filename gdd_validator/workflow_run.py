@@ -203,7 +203,7 @@ def _current_report(path: Path, plan: dict, host: dict) -> dict:
     except (ValueError, OSError) as error:
         return {
             "format": "gdd-report/0.2",
-            "tool": {"name": "gdd-validator", "version": "0.5.0"},
+            "tool": {"name": "gdd-validator", "version": "0.5.1"},
             "spec_revision": None,
             "profiles": ["readiness"],
             "scope": plan["scope"],
