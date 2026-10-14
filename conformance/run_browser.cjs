@@ -652,6 +652,48 @@ const results = [],
     assert.match(text, /internal/);
     await page.screenshot({ path: path.join(folder, "gdd-0.3-community.png") });
   });
+  for (const fixture of ["clusters", "ownership"]) {
+    await test(`${fixture}-stay-separated-with-readable-labels`, async () => {
+      await page.setViewportSize({width: 1600, height: 1000});
+      await navigate(fixture);
+      const collect = () => page.evaluate(() => [...document.querySelectorAll(".node-group")].map((node) => ({
+        id: node.dataset.nodeId,
+        x: node.transform.baseVal.getItem(0).matrix.e,
+        y: node.transform.baseVal.getItem(0).matrix.f,
+        boxes: [".node-glyph", ".node-label", ".node-kind"].map((selector) => node.querySelector(selector).getBoundingClientRect().toJSON()),
+      })));
+      const nodes = await collect();
+      assert.equal(nodes.length, fixture === "clusters" ? 30 : 27);
+      assert.ok(nodes.every((node) => Number.isFinite(node.x) && Number.isFinite(node.y)));
+      const groups = [0, 1, 2].map((group) => {
+        const members = nodes.filter((node) => node.id.startsWith(`action.group${group}.`));
+        const x = members.reduce((sum, node) => sum + node.x, 0) / members.length;
+        const y = members.reduce((sum, node) => sum + node.y, 0) / members.length;
+        const radius = Math.sqrt(members.reduce((sum, node) => sum + (node.x - x) ** 2 + (node.y - y) ** 2, 0) / members.length);
+        return {x, y, radius};
+      });
+      for (let i = 0; i < groups.length; i++)
+        for (let j = i + 1; j < groups.length; j++)
+          assert.ok(Math.hypot(groups[i].x - groups[j].x, groups[i].y - groups[j].y) > groups[i].radius + groups[j].radius,
+            "Community/component clusters collapsed into one mass");
+      for (let i = 0; i < nodes.length; i++)
+        for (let j = i + 1; j < nodes.length; j++)
+          for (const a of nodes[i].boxes)
+            for (const b of nodes[j].boxes)
+              assert.ok(Math.min(a.right, b.right) - Math.max(a.left, b.left) <= 0.5 || Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) <= 0.5,
+                `Visible node/label collision: ${nodes[i].id}, ${nodes[j].id}`);
+      await page.screenshot({path: path.join(folder, `${fixture}-layout.png`)});
+      const before = await manifest();
+      await page.reload();
+      assert.deepEqual((await collect()).map(({id, x, y}) => ({id, x, y})), nodes.map(({id, x, y}) => ({id, x, y})));
+      assert.deepEqual(await manifest(), before);
+      await page.locator("#search").fill("Group 0");
+      const filtered = await collect();
+      assert.ok(filtered.length < nodes.length);
+      assert.ok(filtered.every((node) => nodes.some((original) => original.id === node.id && original.x === node.x && original.y === node.y)),
+        "Filtering unexpectedly moved retained nodes");
+    });
+  }
   await test("no-script-errors-or-network", async () => {
     assert.deepEqual(errors, []);
     assert.deepEqual(consoleErrors, []);

@@ -1,0 +1,190 @@
+{
+  "format": "gdd-layout-review/1",
+  "git_base_revision": "b28cb0bdf2f2a76ff2a5648e6ca056b95907b26e",
+  "revision_basis": "Working-tree files after the recorded base; hashes identify tested bytes.",
+  "package": "0.7.1",
+  "renderer": "0.2.1",
+  "sources": {
+    "gdd_validator/viewer/graph.js": "926d045583fbf4bea3f033c09ad4879da6fd41dc089e642042420f49b6c4a121",
+    "gdd_validator/visualization.py": "c889a1c7d27711691ea4324d48a5ddbb96d5007da12e91d8179fad11799faf30",
+    "conformance/prepare_visualization.py": "0f1af163b4d15c807760502f7377ffb3dc0e67a5d31ae75518798165e30bf878",
+    "conformance/run_browser.cjs": "9e9592bc1b9201e1536439e80351e1e3055db62de67036cf6930f6fb5c3788ea",
+    "tests/test_visualization.py": "cbf894320c163c5ff3de16265af45b5070812c57e2d348f8a1aa46072329f8ae",
+    "schemas/view.schema.json": "4a1a6b314e4c2fde51dcaa378d1c483221ce2358a863d114cb294032f1ab8ebc",
+    "schemas/view-state.schema.json": "c3cc990cfac6ff71a30f3e321712ee243c24ec8c281f294f450ec0eafbab6e84"
+  },
+  "checks": {
+    "pytest": {
+      "command": ".venv/bin/python -m pytest tests/test_visualization.py tests/test_skill_assets.py -q",
+      "passed": 39
+    },
+    "visualization_conformance": {
+      "command": ".venv/bin/python conformance/run_visualization.py",
+      "matched": 16,
+      "total": 16
+    },
+    "downloaded_view_state_schema": "PASS",
+    "current_artifact_reports": {
+      "examples/concert.graph.html": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.2.1"
+        },
+        "spec_revision": "sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      },
+      "examples/concert-0.3.graph.html": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.2.1"
+        },
+        "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      },
+      "examples/concert-app/graph.html": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.2.1"
+        },
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    }
+  },
+  "comparison": {
+    "before_html_sha256": "31eb1165dac5a358d068f01f329b2f966e00a22a0eefedd80c77e939148da228",
+    "after_html_sha256": "707976fbeabadfd825da2b6d44138a0387b141c75097f987f73cdeea0ce50390",
+    "unchanged_payload_except_generator": true,
+    "unchanged_semantic_view_manifest": true,
+    "overlap_measure": "Pairs of distinct nodes whose glyph/title rectangles intersect by more than 0.5 CSS pixels in both dimensions.",
+    "before_overlapping_pairs": [
+      [
+        "action.cancel",
+        "action.current_session"
+      ],
+      [
+        "action.cancel",
+        "action.reserve"
+      ],
+      [
+        "action.catalog",
+        "component.storage"
+      ],
+      [
+        "action.catalog",
+        "rule.capacity"
+      ],
+      [
+        "action.current_session",
+        "community.reservation_feature"
+      ],
+      [
+        "action.current_session",
+        "component.storage"
+      ],
+      [
+        "action.current_session",
+        "entity.concert"
+      ],
+      [
+        "action.list_own_reservations",
+        "action.reserve"
+      ],
+      [
+        "action.list_own_reservations",
+        "component.frontend"
+      ],
+      [
+        "action.list_own_reservations",
+        "screen.reserve"
+      ],
+      [
+        "action.login",
+        "community.reservation_feature"
+      ],
+      [
+        "community.frontend",
+        "component.reservations"
+      ],
+      [
+        "community.frontend",
+        "entity.reservation"
+      ],
+      [
+        "community.reservation_feature",
+        "component.storage"
+      ],
+      [
+        "community.reservation_feature",
+        "entity.session"
+      ],
+      [
+        "community.reservation_feature",
+        "rule.ui_complete"
+      ],
+      [
+        "component.api",
+        "machine.reservation"
+      ],
+      [
+        "component.identity",
+        "rule.design.kiss"
+      ],
+      [
+        "entity.session",
+        "rule.state_machine"
+      ],
+      [
+        "rule.atomicity",
+        "rule.auth_context"
+      ]
+    ],
+    "after_overlapping_pairs": [],
+    "viewport": {
+      "width": 1600,
+      "height": 1000
+    }
+  }
+}

@@ -6,8 +6,9 @@ command. Install tagged source or the verified wheel from the
 You can also build a wheel locally; no package is published to PyPI. Package 0.7.0
 supports Python 3.11 and later. Local verification covers Python 3.11 and 3.12
 on macOS; no GitHub Actions CI is configured.
-The current standard is draft GDD 0.3, with explicit GDD 0.2 compatibility;
-the viewer renderer is 0.2.0.
+The current standard is draft GDD 0.3, with explicit GDD 0.2 compatibility.
+The published 0.7.0 package uses viewer renderer 0.2.0. Current `main` targets
+package 0.7.1 (unreleased), with the community-aware force layout in renderer 0.2.1.
 
 ## Install from source
 

@@ -28,6 +28,8 @@ active reservations for a person is refused without modifying history.
 Read [requirements](REQUIREMENTS.md), [HTTP contracts](HTTP.md), [design](DESIGN.md),
 and the [interactive graph](graph.html). [gdd.json](gdd.json) contains the current
 component rationales and public action contracts.
+The graph is regenerated with the current viewer; its layout is a current
+presentation of the model, separate from the original experiment's captures.
 
 | Component | Responsibility |
 | --- | --- |

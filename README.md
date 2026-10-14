@@ -13,7 +13,7 @@ work. Agents refine that description, use it to scope development, and show the
 result through interactive views. The implementation language and agent runtime
 remain project choices.
 
-**Current status:** GDD 0.3 draft · CLI/package 0.7.0 · viewer 0.2.0 · Python 3.11+ ·
+**Current development status:** GDD 0.3 draft · CLI/package 0.7.1 (unreleased) · viewer 0.2.1 · Python 3.11+ ·
 [MIT licensed](LICENSE). The repo includes the method, deterministic CLI, offline
 viewer, Graphify adapter, safe project starter and a portable agent skill.
 The first development release is [v0.7.0](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.7.0).
@@ -52,6 +52,8 @@ checker can verify the actual implementation.
 This source-checkout quickstart requires Python 3.11+ and
 [uv](https://docs.astral.sh/uv/). It needs no LLM credentials, Graphify installation
 or frontend build. The generated graph works offline. These commands use a POSIX shell.
+The quickstart uses the published release; use `main` instead of `v0.7.0` to try
+the latest development changes, including the community-aware force layout.
 
 ```sh
 git clone https://github.com/mikkelkrogsholm/gdd.git

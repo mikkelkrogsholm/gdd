@@ -14,7 +14,7 @@ from .report import check, diagnostic
 from .boundaries import boundary_view
 
 __all__ = ["render_view", "verify_view", "view_data", "html_document"]
-GENERATOR = {"name": "gdd-viewer", "version": "0.2.0", "profile": "gdd-viewer-html/0.1"}
+GENERATOR = {"name": "gdd-viewer", "version": "0.2.1", "profile": "gdd-viewer-html/0.1"}
 ASSETS = Path(__file__).parent / "viewer"
 PAYLOAD = re.compile(
     r'<script id="gdd-data" type="application/json">(.*?)</script>', re.S

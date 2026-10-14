@@ -66,6 +66,33 @@ def prepare(directory: Path) -> None:
     path = directory / "empty.gdd.json"
     path.write_text(json.dumps(empty), encoding="utf-8")
     render_view(path, directory / "empty.html")
+    # Dense real projections exercise label collisions and community separation.
+    clustered = {"format": "gdd/0.3", "project": {"id": "project.clusters", "title": "Cluster layout",
+                 "goal": "Keep dense groups readable without changing graph identity"}, "nodes": {}, "edges": []}
+    for group in range(3):
+        community = f"community.group{group}"
+        component = f"component.group{group}"
+        clustered["nodes"][community] = {"kind": "community", "label": f"Group {group}", "description": "Declared community"}
+        clustered["nodes"][component] = {"kind": "component", "label": f"Group {group} service", "description": "Owns the group actions"}
+        clustered["edges"].append({"id": f"edge.component{group}.member", "from": component, "to": community, "relation": "member_of"})
+        for index in range(8):
+            ident = f"action.group{group}.{index}"
+            clustered["nodes"][ident] = {"kind": "action", "label": f"Group {group} operation {index}", "description": "Dense connected action"}
+            clustered["edges"].extend([
+                {"id": f"edge.{group}.{index}.member", "from": ident, "to": community, "relation": "member_of"},
+                {"id": f"edge.{group}.{index}.owner", "from": ident, "to": component, "relation": "owned_by"},
+            ])
+            for other in range(index):
+                clustered["edges"].append({"id": f"edge.{group}.{index}.{other}", "from": ident, "to": f"action.group{group}.{other}", "relation": "calls"})
+    for group in range(3):
+        clustered["edges"].append({"id": f"edge.bridge.{group}", "from": f"action.group{group}.0", "to": f"action.group{(group + 1) % 3}.0", "relation": "calls"})
+    for name, model in [("clusters", clustered), ("ownership", json.loads(json.dumps(clustered)))]:
+        if name == "ownership":
+            model["nodes"] = {id: node for id, node in model["nodes"].items() if node["kind"] != "community"}
+            model["edges"] = [edge for edge in model["edges"] if edge["relation"] != "member_of"]
+        path = directory / (name + ".gdd.json")
+        path.write_text(json.dumps(model), encoding="utf-8")
+        render_view(path, directory / (name + ".html"))
 
 
 if __name__ == "__main__":

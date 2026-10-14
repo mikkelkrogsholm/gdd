@@ -14,7 +14,7 @@
           "const": "gdd-viewer"
         },
         "version": {
-          "const": "0.2.0"
+          "const": "0.2.1"
         },
         "profile": {
           "const": "gdd-viewer-html/0.1"

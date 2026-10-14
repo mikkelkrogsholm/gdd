@@ -1,6 +1,6 @@
 # Interactive GDD graph
 
-`gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. Package 0.7.0 uses renderer 0.2.0 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
+`gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. Development package 0.7.1 uses renderer 0.2.1 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
 
 ```sh
 uv run gdd view examples/concert.gdd.yaml --output concert.html
@@ -63,7 +63,21 @@ Labels, source metadata, and pseudocode are inserted with `textContent`. JSON es
 
 The view has no evidence overlays and does not display model validity, readiness, authorization, or implementation as a node-colored PASS. Maturity is the author's declaration. Sources are inspected separately from intention; raw Graphify observations, records, and external source-file contents are not visualized as extra vertices. Accepted GDD models developed from Graphify proposals can be displayed like any other GDD model.
 
-The layout uses a deterministic, bounded spring layout up to 200 visible figures and a deterministic seed layout thereafter. The SVG view has been tested on the included examples; large repository graphs have no measured performance guarantee. Use scope and filters for a readable subset.
+The layout combines node repulsion, connection springs and separate attraction
+centers for communities. Springs between groups are longer and weaker than
+springs within a group. Shared members are attracted toward the mean of their
+community centers, so they act as visual bridges. When explicit membership is
+absent, unique component ownership supplies a layout hint; related scenarios
+and rules follow the nodes they describe. These hints change only positions.
+
+Up to 200 visible figures, a bounded force simulation and collision passes reserve
+space for glyphs and both label lines. Larger projections use deterministic group
+seeds without collision resolution. Results are repeatable for the same graph,
+filters and browser font environment. Filtering preserves retained positions;
+revealing new figures reflows the visible layout. The SVG view has been tested
+on the included examples and dense synthetic groups; large repository graphs
+have no measured performance guarantee. Use scope, filters, folding and zoom
+for a readable subset.
 
 ## Python API and checks
 
@@ -92,7 +106,7 @@ The browser harness uses installed `playwright`, starts headless Chromium, gener
 
 ## GDD 0.3 boundary inspection
 
-Renderer 0.2.0 supports both model versions. For0.3 it shows component responsibility,
+Renderer 0.2.1 supports both model versions. For 0.3 it shows component responsibility,
 boundary rationale and exclusions, links to authoritative public actions, and derived
 community boundaries with ownership-based participation, overlap and omitted calls.
 These views are model context and grant no access or quality/acceptance status.

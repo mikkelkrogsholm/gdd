@@ -1,0 +1,1981 @@
+{
+  "nodes": [
+    {
+      "id": "action.cancel",
+      "transform": "translate(381.4530015398059,355.9435148994006)",
+      "label": {
+        "x": 611.5718383789062,
+        "y": 489.8489685058594,
+        "width": 39.890625,
+        "height": 14.999969482421875,
+        "top": 489.8489685058594,
+        "right": 651.4624633789062,
+        "bottom": 504.84893798828125,
+        "left": 611.5718383789062
+      },
+      "glyph": {
+        "x": 611.240966796875,
+        "y": 436.51446533203125,
+        "width": 40.5523681640625,
+        "height": 40.55242919921875,
+        "top": 436.51446533203125,
+        "right": 651.7933349609375,
+        "bottom": 477.06689453125,
+        "left": 611.240966796875
+      }
+    },
+    {
+      "id": "action.catalog",
+      "transform": "translate(274.42159905744535,469.9065772063799)",
+      "label": {
+        "x": 488.3259582519531,
+        "y": 618.223388671875,
+        "width": 45.249969482421875,
+        "height": 15,
+        "top": 618.223388671875,
+        "right": 533.575927734375,
+        "bottom": 633.223388671875,
+        "left": 488.3259582519531
+      },
+      "glyph": {
+        "x": 490.67474365234375,
+        "y": 564.888916015625,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 564.888916015625,
+        "right": 531.2271728515625,
+        "bottom": 605.4413452148438,
+        "left": 490.67474365234375
+      }
+    },
+    {
+      "id": "action.current_session",
+      "transform": "translate(376.1331613539566,259.94351490426754)",
+      "label": {
+        "x": 576.3214111328125,
+        "y": 381.70916748046875,
+        "width": 98.40625,
+        "height": 14.999969482421875,
+        "top": 381.70916748046875,
+        "right": 674.7276611328125,
+        "bottom": 396.7091369628906,
+        "left": 576.3214111328125
+      },
+      "glyph": {
+        "x": 605.2483520507812,
+        "y": 328.37469482421875,
+        "width": 40.55242919921875,
+        "height": 40.552398681640625,
+        "top": 328.37469482421875,
+        "right": 645.80078125,
+        "bottom": 368.9270935058594,
+        "left": 605.2483520507812
+      }
+    },
+    {
+      "id": "action.list_own_reservations",
+      "transform": "translate(363.4306592318099,565.5401885503564)",
+      "label": {
+        "x": 544.1220092773438,
+        "y": 725.9503784179688,
+        "width": 134.18756103515625,
+        "height": 15,
+        "top": 725.9503784179688,
+        "right": 678.3095703125,
+        "bottom": 740.9503784179688,
+        "left": 544.1220092773438
+      },
+      "glyph": {
+        "x": 590.9395751953125,
+        "y": 672.6159057617188,
+        "width": 40.5523681640625,
+        "height": 40.55242919921875,
+        "top": 672.6159057617188,
+        "right": 631.491943359375,
+        "bottom": 713.1683349609375,
+        "left": 590.9395751953125
+      }
+    },
+    {
+      "id": "action.login",
+      "transform": "translate(274.8361027774405,374.0835978178108)",
+      "label": {
+        "x": 496.4959716796875,
+        "y": 510.282958984375,
+        "width": 29.84375,
+        "height": 15,
+        "top": 510.282958984375,
+        "right": 526.3397216796875,
+        "bottom": 525.282958984375,
+        "left": 496.4959716796875
+      },
+      "glyph": {
+        "x": 491.14166259765625,
+        "y": 456.948486328125,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 456.948486328125,
+        "right": 531.694091796875,
+        "bottom": 497.50091552734375,
+        "left": 491.14166259765625
+      }
+    },
+    {
+      "id": "action.logout",
+      "transform": "translate(471.72225772496347,288.7442798442846)",
+      "label": {
+        "x": 713.7406005859375,
+        "y": 414.1519775390625,
+        "width": 38.921875,
+        "height": 14.999969482421875,
+        "top": 414.1519775390625,
+        "right": 752.6624755859375,
+        "bottom": 429.1519470214844,
+        "left": 713.7406005859375
+      },
+      "glyph": {
+        "x": 712.92529296875,
+        "y": 360.8175048828125,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 360.8175048828125,
+        "right": 753.4777221679688,
+        "bottom": 401.36993408203125,
+        "left": 712.92529296875
+      }
+    },
+    {
+      "id": "action.reserve",
+      "transform": "translate(474.06425218128976,576.58864302414)",
+      "label": {
+        "x": 712.9412231445312,
+        "y": 738.39599609375,
+        "width": 45.796875,
+        "height": 15,
+        "top": 738.39599609375,
+        "right": 758.7380981445312,
+        "bottom": 753.39599609375,
+        "left": 712.9412231445312
+      },
+      "glyph": {
+        "x": 715.5634765625,
+        "y": 685.0615234375,
+        "width": 40.5523681640625,
+        "height": 40.55242919921875,
+        "top": 685.0615234375,
+        "right": 756.1158447265625,
+        "bottom": 725.6139526367188,
+        "left": 715.5634765625
+      }
+    },
+    {
+      "id": "community.backend",
+      "transform": "translate(252.05538375214658,565.936731853072)",
+      "label": {
+        "x": 459.81890869140625,
+        "y": 726.3970947265625,
+        "width": 51.875,
+        "height": 15,
+        "top": 726.3970947265625,
+        "right": 511.69390869140625,
+        "bottom": 741.3970947265625,
+        "left": 459.81890869140625
+      },
+      "glyph": {
+        "x": 465.48016357421875,
+        "y": 673.0626220703125,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 673.0626220703125,
+        "right": 506.0325927734375,
+        "bottom": 713.6150512695312,
+        "left": 465.48016357421875
+      }
+    },
+    {
+      "id": "community.frontend",
+      "transform": "translate(826.0661461797763,181.86419294804043)",
+      "label": {
+        "x": 1106.0576171875,
+        "y": 293.7562255859375,
+        "width": 52.59375,
+        "height": 15,
+        "top": 293.7562255859375,
+        "right": 1158.6513671875,
+        "bottom": 308.7562255859375,
+        "left": 1106.0576171875
+      },
+      "glyph": {
+        "x": 1112.078125,
+        "y": 240.42173767089844,
+        "width": 40.552490234375,
+        "height": 40.55244445800781,
+        "top": 240.42173767089844,
+        "right": 1152.630615234375,
+        "bottom": 280.97418212890625,
+        "left": 1112.078125
+      }
+    },
+    {
+      "id": "community.reservation_feature",
+      "transform": "translate(764.2084511711818,609.4214206035147)",
+      "label": {
+        "x": 1002.4790649414062,
+        "y": 775.3807373046875,
+        "width": 120.39068603515625,
+        "height": 15,
+        "top": 775.3807373046875,
+        "right": 1122.8697509765625,
+        "bottom": 790.3807373046875,
+        "left": 1002.4790649414062
+      },
+      "glyph": {
+        "x": 1042.398193359375,
+        "y": 722.0462646484375,
+        "width": 40.552490234375,
+        "height": 40.55242919921875,
+        "top": 722.0462646484375,
+        "right": 1082.95068359375,
+        "bottom": 762.5986938476562,
+        "left": 1042.398193359375
+      }
+    },
+    {
+      "id": "component.api",
+      "transform": "translate(280.4272436898612,278.1690591763974)",
+      "label": {
+        "x": 508.512939453125,
+        "y": 402.23944091796875,
+        "width": 18.40625,
+        "height": 14.999969482421875,
+        "top": 402.23944091796875,
+        "right": 526.919189453125,
+        "bottom": 417.2394104003906,
+        "left": 508.512939453125
+      },
+      "glyph": {
+        "x": 497.4398193359375,
+        "y": 348.90496826171875,
+        "width": 40.552490234375,
+        "height": 40.55242919921875,
+        "top": 348.90496826171875,
+        "right": 537.9923095703125,
+        "bottom": 389.4573974609375,
+        "left": 497.4398193359375
+      }
+    },
+    {
+      "id": "component.frontend",
+      "transform": "translate(807.778106285939,400.5534640283611)",
+      "label": {
+        "x": 1085.456787109375,
+        "y": 540.10009765625,
+        "width": 52.59375,
+        "height": 15,
+        "top": 540.10009765625,
+        "right": 1138.050537109375,
+        "bottom": 555.10009765625,
+        "left": 1085.456787109375
+      },
+      "glyph": {
+        "x": 1091.4775390625,
+        "y": 486.765625,
+        "width": 40.5523681640625,
+        "height": 40.55242919921875,
+        "top": 486.765625,
+        "right": 1132.0299072265625,
+        "bottom": 527.3180541992188,
+        "left": 1091.4775390625
+      }
+    },
+    {
+      "id": "component.identity",
+      "transform": "translate(537.5608935461911,480.64841256682735)",
+      "label": {
+        "x": 784.1159057617188,
+        "y": 630.3235473632812,
+        "width": 46.5,
+        "height": 15,
+        "top": 630.3235473632812,
+        "right": 830.6159057617188,
+        "bottom": 645.3235473632812,
+        "left": 784.1159057617188
+      },
+      "glyph": {
+        "x": 787.0896606445312,
+        "y": 576.9890747070312,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 576.9890747070312,
+        "right": 827.64208984375,
+        "bottom": 617.54150390625,
+        "left": 787.0896606445312
+      }
+    },
+    {
+      "id": "component.reservations",
+      "transform": "translate(188.95187640096336,431.858671208702)",
+      "label": {
+        "x": 376.7355651855469,
+        "y": 575.3640747070312,
+        "width": 75.87496948242188,
+        "height": 14.99993896484375,
+        "top": 575.3640747070312,
+        "right": 452.61053466796875,
+        "bottom": 590.364013671875,
+        "left": 376.7355651855469
+      },
+      "glyph": {
+        "x": 394.3968505859375,
+        "y": 522.029541015625,
+        "width": 40.55242919921875,
+        "height": 40.552490234375,
+        "top": 522.029541015625,
+        "right": 434.94927978515625,
+        "bottom": 562.58203125,
+        "left": 394.3968505859375
+      }
+    },
+    {
+      "id": "component.storage",
+      "transform": "translate(280.4530535447978,182.16542038667282)",
+      "label": {
+        "x": 494.4638671875,
+        "y": 294.09552001953125,
+        "width": 46.5625,
+        "height": 15,
+        "top": 294.09552001953125,
+        "right": 541.0263671875,
+        "bottom": 309.09552001953125,
+        "left": 494.4638671875
+      },
+      "glyph": {
+        "x": 497.46893310546875,
+        "y": 240.7610626220703,
+        "width": 40.55242919921875,
+        "height": 40.55241394042969,
+        "top": 240.7610626220703,
+        "right": 538.0213623046875,
+        "bottom": 281.3134765625,
+        "left": 497.46893310546875
+      }
+    },
+    {
+      "id": "entity.concert",
+      "transform": "translate(355.1448419500913,661.5451074251541)",
+      "label": {
+        "x": 578.3822021484375,
+        "y": 834.0957641601562,
+        "width": 46.99993896484375,
+        "height": 15,
+        "top": 834.0957641601562,
+        "right": 625.3821411132812,
+        "bottom": 849.0957641601562,
+        "left": 578.3822021484375
+      },
+      "glyph": {
+        "x": 581.60595703125,
+        "y": 780.7612915039062,
+        "width": 40.5523681640625,
+        "height": 40.55242919921875,
+        "top": 780.7612915039062,
+        "right": 622.1583251953125,
+        "bottom": 821.313720703125,
+        "left": 581.60595703125
+      }
+    },
+    {
+      "id": "entity.reservation",
+      "transform": "translate(192.5986627298647,335.85867120874605)",
+      "label": {
+        "x": 384.257568359375,
+        "y": 467.2242736816406,
+        "width": 69.046875,
+        "height": 14.999969482421875,
+        "top": 467.2242736816406,
+        "right": 453.304443359375,
+        "bottom": 482.2242431640625,
+        "left": 384.257568359375
+      },
+      "glyph": {
+        "x": 398.5047912597656,
+        "y": 413.8897705078125,
+        "width": 40.552398681640625,
+        "height": 40.55242919921875,
+        "top": 413.8897705078125,
+        "right": 439.05718994140625,
+        "bottom": 454.44219970703125,
+        "left": 398.5047912597656
+      }
+    },
+    {
+      "id": "entity.session",
+      "transform": "translate(551.6984906617184,288.73059207880874)",
+      "label": {
+        "x": 800.1818237304688,
+        "y": 414.13653564453125,
+        "width": 46.21881103515625,
+        "height": 14.999969482421875,
+        "top": 414.13653564453125,
+        "right": 846.400634765625,
+        "bottom": 429.1365051269531,
+        "left": 800.1818237304688
+      },
+      "glyph": {
+        "x": 803.0150146484375,
+        "y": 360.80206298828125,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 360.80206298828125,
+        "right": 843.5674438476562,
+        "bottom": 401.3544921875,
+        "left": 803.0150146484375
+      }
+    },
+    {
+      "id": "machine.reservation",
+      "transform": "translate(169.3972570586777,527.8586712087039)",
+      "label": {
+        "x": 358.1221923828125,
+        "y": 683.5037841796875,
+        "width": 69.046875,
+        "height": 15,
+        "top": 683.5037841796875,
+        "right": 427.1690673828125,
+        "bottom": 698.5037841796875,
+        "left": 358.1221923828125
+      },
+      "glyph": {
+        "x": 372.3694152832031,
+        "y": 630.1693725585938,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 630.1693725585938,
+        "right": 412.9218444824219,
+        "bottom": 670.7218017578125,
+        "left": 372.3694152832031
+      }
+    },
+    {
+      "id": "rule.active_limit",
+      "transform": "translate(725.0833858149475,399.9698972494628)",
+      "label": {
+        "x": 983.3595581054688,
+        "y": 539.4427490234375,
+        "width": 70.48443603515625,
+        "height": 15,
+        "top": 539.4427490234375,
+        "right": 1053.843994140625,
+        "bottom": 554.4427490234375,
+        "left": 983.3595581054688
+      },
+      "glyph": {
+        "x": 998.3255004882812,
+        "y": 486.1082763671875,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 486.1082763671875,
+        "right": 1038.8779296875,
+        "bottom": 526.6607055664062,
+        "left": 998.3255004882812
+      }
+    },
+    {
+      "id": "rule.api_boundary",
+      "transform": "translate(633.1805737470027,410.2348820847976)",
+      "label": {
+        "x": 873.0616455078125,
+        "y": 551.005859375,
+        "width": 84.03125,
+        "height": 14.99993896484375,
+        "top": 551.005859375,
+        "right": 957.0928955078125,
+        "bottom": 566.0057983398438,
+        "left": 873.0616455078125
+      },
+      "glyph": {
+        "x": 894.8010864257812,
+        "y": 497.6713562011719,
+        "width": 40.55242919921875,
+        "height": 40.552398681640625,
+        "top": 497.6713562011719,
+        "right": 935.353515625,
+        "bottom": 538.2237548828125,
+        "left": 894.8010864257812
+      }
+    },
+    {
+      "id": "rule.atomicity",
+      "transform": "translate(631.6995028137572,314.24900909010535)",
+      "label": {
+        "x": 885.0338745117188,
+        "y": 442.8819274902344,
+        "width": 56.75006103515625,
+        "height": 14.999969482421875,
+        "top": 442.8819274902344,
+        "right": 941.783935546875,
+        "bottom": 457.88189697265625,
+        "left": 885.0338745117188
+      },
+      "glyph": {
+        "x": 893.1326904296875,
+        "y": 389.5474548339844,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 389.5474548339844,
+        "right": 933.6851196289062,
+        "bottom": 430.0998840332031,
+        "left": 893.1326904296875
+      }
+    },
+    {
+      "id": "rule.auth_context",
+      "transform": "translate(643.2863016080754,506.23078237561265)",
+      "label": {
+        "x": 886.2186889648438,
+        "y": 659.1409301757812,
+        "width": 80.48443603515625,
+        "height": 15,
+        "top": 659.1409301757812,
+        "right": 966.703125,
+        "bottom": 674.1409301757812,
+        "left": 886.2186889648438
+      },
+      "glyph": {
+        "x": 906.1846923828125,
+        "y": 605.8065185546875,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 605.8065185546875,
+        "right": 946.7371215820312,
+        "bottom": 646.3589477539062,
+        "left": 906.1846923828125
+      }
+    },
+    {
+      "id": "rule.authorization",
+      "transform": "translate(536.6567704391111,384.70653814819894)",
+      "label": {
+        "x": 765.941162109375,
+        "y": 522.249267578125,
+        "width": 80.81256103515625,
+        "height": 15,
+        "top": 522.249267578125,
+        "right": 846.7537231445312,
+        "bottom": 537.249267578125,
+        "left": 765.941162109375
+      },
+      "glyph": {
+        "x": 786.0712280273438,
+        "y": 468.9147644042969,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 468.9147644042969,
+        "right": 826.6236572265625,
+        "bottom": 509.4671936035156,
+        "left": 786.0712280273438
+      }
+    },
+    {
+      "id": "rule.capacity",
+      "transform": "translate(746.956042062498,303.9698972495194)",
+      "label": {
+        "x": 1017.2794189453125,
+        "y": 431.302978515625,
+        "width": 51.921875,
+        "height": 14.999969482421875,
+        "top": 431.302978515625,
+        "right": 1069.2012939453125,
+        "bottom": 446.3029479980469,
+        "left": 1017.2794189453125
+      },
+      "glyph": {
+        "x": 1022.964111328125,
+        "y": 377.9684753417969,
+        "width": 40.552490234375,
+        "height": 40.55242919921875,
+        "top": 377.9684753417969,
+        "right": 1063.5166015625,
+        "bottom": 418.5209045410156,
+        "left": 1022.964111328125
+      }
+    },
+    {
+      "id": "rule.design.dry",
+      "transform": "translate(554.4995103273196,576.649096793276)",
+      "label": {
+        "x": 793.9542846679688,
+        "y": 738.464111328125,
+        "width": 64.984375,
+        "height": 15,
+        "top": 738.464111328125,
+        "right": 858.9386596679688,
+        "bottom": 753.464111328125,
+        "left": 793.9542846679688
+      },
+      "glyph": {
+        "x": 806.1702880859375,
+        "y": 685.1296997070312,
+        "width": 40.5523681640625,
+        "height": 40.55242919921875,
+        "top": 685.1296997070312,
+        "right": 846.72265625,
+        "bottom": 725.68212890625,
+        "left": 806.1702880859375
+      }
+    },
+    {
+      "id": "rule.design.kiss",
+      "transform": "translate(568.9987457182735,192.71603744771184)",
+      "label": {
+        "x": 808.2713623046875,
+        "y": 305.9803466796875,
+        "width": 69.01568603515625,
+        "height": 15,
+        "top": 305.9803466796875,
+        "right": 877.2870483398438,
+        "bottom": 320.9803466796875,
+        "left": 808.2713623046875
+      },
+      "glyph": {
+        "x": 822.5029907226562,
+        "y": 252.64585876464844,
+        "width": 40.55242919921875,
+        "height": 40.55244445800781,
+        "top": 252.64585876464844,
+        "right": 863.055419921875,
+        "bottom": 293.19830322265625,
+        "left": 822.5029907226562
+      }
+    },
+    {
+      "id": "rule.design.modularity",
+      "transform": "translate(752.0106049015864,496.5613370460834)",
+      "label": {
+        "x": 993.73876953125,
+        "y": 648.248779296875,
+        "width": 110.390625,
+        "height": 15,
+        "top": 648.248779296875,
+        "right": 1104.12939453125,
+        "bottom": 663.248779296875,
+        "left": 993.73876953125
+      },
+      "glyph": {
+        "x": 1028.657958984375,
+        "y": 594.914306640625,
+        "width": 40.5523681640625,
+        "height": 40.55242919921875,
+        "top": 594.914306640625,
+        "right": 1069.2103271484375,
+        "bottom": 635.4667358398438,
+        "left": 1028.657958984375
+      }
+    },
+    {
+      "id": "rule.design.separation_of_concerns",
+      "transform": "translate(401.4730677239763,451.943514899609)",
+      "label": {
+        "x": 569.26416015625,
+        "y": 597.98876953125,
+        "width": 169.609375,
+        "height": 14.99993896484375,
+        "top": 597.98876953125,
+        "right": 738.87353515625,
+        "bottom": 612.9887084960938,
+        "left": 569.26416015625
+      },
+      "glyph": {
+        "x": 633.7926025390625,
+        "y": 544.654296875,
+        "width": 40.552490234375,
+        "height": 40.5523681640625,
+        "top": 544.654296875,
+        "right": 674.3450927734375,
+        "bottom": 585.2066650390625,
+        "left": 633.7926025390625
+      }
+    },
+    {
+      "id": "rule.idempotency",
+      "transform": "translate(658.847858818527,218.2487908714328)",
+      "label": {
+        "x": 904.3106079101562,
+        "y": 334.74188232421875,
+        "width": 79.359375,
+        "height": 15,
+        "top": 334.74188232421875,
+        "right": 983.6699829101562,
+        "bottom": 349.74188232421875,
+        "left": 904.3106079101562
+      },
+      "glyph": {
+        "x": 923.714111328125,
+        "y": 281.40740966796875,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 281.40740966796875,
+        "right": 964.2665405273438,
+        "bottom": 321.9598388671875,
+        "left": 923.714111328125
+      }
+    },
+    {
+      "id": "rule.state_machine",
+      "transform": "translate(647.2024188929038,602.2309569950014)",
+      "label": {
+        "x": 885.9815673828125,
+        "y": 767.2809448242188,
+        "width": 89.78125,
+        "height": 15,
+        "top": 767.2809448242188,
+        "right": 975.7628173828125,
+        "bottom": 782.2809448242188,
+        "left": 885.9815673828125
+      },
+      "glyph": {
+        "x": 910.5960083007812,
+        "y": 713.946533203125,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 713.946533203125,
+        "right": 951.1484375,
+        "bottom": 754.4989624023438,
+        "left": 910.5960083007812
+      }
+    },
+    {
+      "id": "rule.ui_complete",
+      "transform": "translate(481.08327973467664,192.73003926157594)",
+      "label": {
+        "x": 706.254150390625,
+        "y": 305.99609375,
+        "width": 74.98431396484375,
+        "height": 15,
+        "top": 305.99609375,
+        "right": 781.2384643554688,
+        "bottom": 320.99609375,
+        "left": 706.254150390625
+      },
+      "glyph": {
+        "x": 723.4700927734375,
+        "y": 252.66163635253906,
+        "width": 40.55242919921875,
+        "height": 40.55241394042969,
+        "top": 252.66163635253906,
+        "right": 764.0225219726562,
+        "bottom": 293.21405029296875,
+        "left": 723.4700927734375
+      }
+    },
+    {
+      "id": "screen.reserve",
+      "transform": "translate(746.0710172323669,207.96989724951698)",
+      "label": {
+        "x": 1019.344970703125,
+        "y": 323.16314697265625,
+        "width": 45.796875,
+        "height": 15,
+        "top": 323.16314697265625,
+        "right": 1065.141845703125,
+        "bottom": 338.16314697265625,
+        "left": 1019.344970703125
+      },
+      "glyph": {
+        "x": 1021.9672241210938,
+        "y": 269.82867431640625,
+        "width": 40.55242919921875,
+        "height": 40.55242919921875,
+        "top": 269.82867431640625,
+        "right": 1062.5196533203125,
+        "bottom": 310.381103515625,
+        "left": 1021.9672241210938
+      }
+    }
+  ],
+  "manifest": {
+    "format": "gdd-view-state/0.2",
+    "generator": {
+      "name": "gdd-viewer",
+      "profile": "gdd-viewer-html/0.1",
+      "version": "0.2.1"
+    },
+    "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+    "observation_inputs": [],
+    "scope": [],
+    "artifact_scope": {
+      "omitted_edges": [],
+      "omitted_nodes": [],
+      "shown_edges": [
+        "edge.api_calls_cancel",
+        "edge.api_calls_reserve",
+        "edge.api_imports_reservations",
+        "edge.app.action.catalog.owned_by.component.reservations",
+        "edge.app.action.catalog.reads.entity.concert",
+        "edge.app.action.catalog.reads.entity.reservation",
+        "edge.app.action.current_session.owned_by.component.identity",
+        "edge.app.action.current_session.reads.entity.session",
+        "edge.app.action.list_own_reservations.owned_by.component.reservations",
+        "edge.app.action.list_own_reservations.reads.entity.reservation",
+        "edge.app.action.login.creates.entity.session",
+        "edge.app.action.login.owned_by.component.identity",
+        "edge.app.action.logout.changes.entity.session",
+        "edge.app.action.logout.owned_by.component.identity",
+        "edge.app.component.api.calls.action.catalog",
+        "edge.app.component.api.calls.action.current_session",
+        "edge.app.component.api.calls.action.list_own_reservations",
+        "edge.app.component.api.calls.action.login",
+        "edge.app.component.api.calls.action.logout",
+        "edge.app.component.api.imports.component.identity",
+        "edge.app.component.identity.member_of.community.backend",
+        "edge.app.entity.session.owned_by.component.identity",
+        "edge.app.entity.session.stored_in.component.identity",
+        "edge.app.rule.active_limit.constrains.action.list_own_reservations",
+        "edge.app.rule.active_limit.constrains.action.reserve",
+        "edge.app.rule.active_limit.constrains.entity.reservation",
+        "edge.app.rule.auth_context.constrains.action.cancel",
+        "edge.app.rule.auth_context.constrains.action.list_own_reservations",
+        "edge.app.rule.auth_context.constrains.action.reserve",
+        "edge.app.rule.ui_complete.constrains.screen.reserve",
+        "edge.app.scenario.active_limit.exercises.action.cancel",
+        "edge.app.scenario.active_limit.exercises.action.list_own_reservations",
+        "edge.app.scenario.active_limit.exercises.action.reserve",
+        "edge.app.scenario.active_limit.verifies.rule.active_limit",
+        "edge.app.scenario.active_limit_concurrent.exercises.action.cancel",
+        "edge.app.scenario.active_limit_concurrent.exercises.action.list_own_reservations",
+        "edge.app.scenario.active_limit_concurrent.exercises.action.reserve",
+        "edge.app.scenario.active_limit_concurrent.verifies.rule.active_limit",
+        "edge.app.scenario.active_limit_replay.exercises.action.cancel",
+        "edge.app.scenario.active_limit_replay.exercises.action.list_own_reservations",
+        "edge.app.scenario.active_limit_replay.exercises.action.reserve",
+        "edge.app.scenario.active_limit_replay.verifies.rule.active_limit",
+        "edge.app.scenario.app.action.catalog.negative.exercises.action.catalog",
+        "edge.app.scenario.app.action.catalog.normal.exercises.action.catalog",
+        "edge.app.scenario.app.action.current_session.negative.exercises.action.current_session",
+        "edge.app.scenario.app.action.current_session.normal.exercises.action.current_session",
+        "edge.app.scenario.app.action.list_own_reservations.negative.exercises.action.list_own_reservations",
+        "edge.app.scenario.app.action.list_own_reservations.normal.exercises.action.list_own_reservations",
+        "edge.app.scenario.app.action.login.negative.exercises.action.login",
+        "edge.app.scenario.app.action.login.normal.exercises.action.login",
+        "edge.app.scenario.app.action.logout.negative.exercises.action.logout",
+        "edge.app.scenario.app.action.logout.normal.exercises.action.logout",
+        "edge.app.scenario.foreign_cancel.verifies.rule.auth_context",
+        "edge.app.scenario.ui_complete.exercises.screen.reserve",
+        "edge.app.scenario.ui_complete.verifies.rule.ui_complete",
+        "edge.app.scenario.ui_recovery.exercises.screen.reserve",
+        "edge.app.scenario.ui_session_change.exercises.action.cancel",
+        "edge.app.scenario.ui_session_change.exercises.action.list_own_reservations",
+        "edge.app.scenario.ui_session_change.exercises.action.logout",
+        "edge.app.scenario.ui_session_change.exercises.action.reserve",
+        "edge.app.scenario.ui_session_change.exercises.screen.reserve",
+        "edge.app.scenario.ui_session_change.verifies.rule.auth_context",
+        "edge.app.scenario.ui_session_change.verifies.rule.ui_complete",
+        "edge.app.screen.reserve.calls.action.cancel",
+        "edge.app.screen.reserve.calls.action.catalog",
+        "edge.app.screen.reserve.calls.action.current_session",
+        "edge.app.screen.reserve.calls.action.list_own_reservations",
+        "edge.app.screen.reserve.calls.action.login",
+        "edge.app.screen.reserve.calls.action.logout",
+        "edge.community.action.cancel",
+        "edge.community.action.reserve",
+        "edge.community.component.api",
+        "edge.community.component.frontend",
+        "edge.community.component.reservations",
+        "edge.community.component.storage",
+        "edge.community.entity.concert",
+        "edge.community.entity.reservation",
+        "edge.community.machine.reservation",
+        "edge.community.screen.reserve",
+        "edge.constraint.rule.api_boundary.component.api",
+        "edge.constraint.rule.api_boundary.component.storage",
+        "edge.constraint.rule.atomicity.action.cancel",
+        "edge.constraint.rule.atomicity.action.reserve",
+        "edge.constraint.rule.authorization.action.cancel",
+        "edge.constraint.rule.capacity.entity.concert",
+        "edge.constraint.rule.capacity.entity.reservation",
+        "edge.constraint.rule.idempotency.action.cancel",
+        "edge.constraint.rule.idempotency.action.reserve",
+        "edge.constraint.rule.state_machine.machine.reservation",
+        "edge.effect.action.cancel.changes.entity.reservation",
+        "edge.effect.action.cancel.reads.entity.reservation",
+        "edge.effect.action.reserve.creates.entity.reservation",
+        "edge.effect.action.reserve.reads.entity.concert",
+        "edge.effect.action.reserve.reads.entity.reservation",
+        "edge.exercise.scenario.atomic_failure.action.cancel",
+        "edge.exercise.scenario.atomic_failure.action.reserve",
+        "edge.exercise.scenario.cancel.action.cancel",
+        "edge.exercise.scenario.cancel.action.reserve",
+        "edge.exercise.scenario.cancel_concurrent.action.cancel",
+        "edge.exercise.scenario.cancel_invalid.action.cancel",
+        "edge.exercise.scenario.cancel_once.action.cancel",
+        "edge.exercise.scenario.cancel_unauthenticated.action.cancel",
+        "edge.exercise.scenario.concert_missing.action.reserve",
+        "edge.exercise.scenario.concurrent_same_key.action.reserve",
+        "edge.exercise.scenario.foreign_cancel.action.cancel",
+        "edge.exercise.scenario.key_conflict.action.reserve",
+        "edge.exercise.scenario.last_seat.action.reserve",
+        "edge.exercise.scenario.replay.action.reserve",
+        "edge.exercise.scenario.replay_after_cancel.action.cancel",
+        "edge.exercise.scenario.replay_after_cancel.action.reserve",
+        "edge.exercise.scenario.reservation_missing.action.cancel",
+        "edge.exercise.scenario.reserve.action.reserve",
+        "edge.exercise.scenario.reserve_invalid.action.reserve",
+        "edge.exercise.scenario.reserve_unauthenticated.action.reserve",
+        "edge.exercise.scenario.sold_out.action.reserve",
+        "edge.exercise.scenario.zero_capacity.action.reserve",
+        "edge.feature.action.reserve",
+        "edge.feature.component.frontend",
+        "edge.owner.action.cancel",
+        "edge.owner.action.reserve",
+        "edge.owner.entity.concert",
+        "edge.owner.entity.reservation",
+        "edge.owner.machine.reservation",
+        "edge.owner.screen.reserve",
+        "edge.reservations_imports_storage",
+        "edge.screen.reserve.calls",
+        "edge.state.machine.reservation",
+        "edge.storage.entity.concert",
+        "edge.storage.entity.reservation",
+        "edge.verify.scenario.api_boundary.rule.api_boundary",
+        "edge.verify.scenario.atomic_failure.rule.atomicity",
+        "edge.verify.scenario.cancel.rule.capacity",
+        "edge.verify.scenario.cancel.rule.idempotency",
+        "edge.verify.scenario.cancel.rule.state_machine",
+        "edge.verify.scenario.cancel_concurrent.rule.capacity",
+        "edge.verify.scenario.cancel_concurrent.rule.idempotency",
+        "edge.verify.scenario.cancel_once.rule.capacity",
+        "edge.verify.scenario.cancel_once.rule.state_machine",
+        "edge.verify.scenario.concurrent_same_key.rule.capacity",
+        "edge.verify.scenario.concurrent_same_key.rule.idempotency",
+        "edge.verify.scenario.foreign_cancel.rule.authorization",
+        "edge.verify.scenario.key_conflict.rule.idempotency",
+        "edge.verify.scenario.last_seat.rule.capacity",
+        "edge.verify.scenario.replay.rule.capacity",
+        "edge.verify.scenario.replay.rule.idempotency",
+        "edge.verify.scenario.replay_after_cancel.rule.capacity",
+        "edge.verify.scenario.replay_after_cancel.rule.idempotency",
+        "edge.verify.scenario.replay_after_cancel.rule.state_machine",
+        "edge.verify.scenario.reservation_missing.rule.authorization",
+        "edge.verify.scenario.reserve.rule.capacity",
+        "edge.verify.scenario.reserve.rule.state_machine",
+        "edge.verify.scenario.sold_out.rule.capacity",
+        "edge.verify.scenario.zero_capacity.rule.capacity"
+      ],
+      "shown_nodes": [
+        "action.cancel",
+        "action.catalog",
+        "action.current_session",
+        "action.list_own_reservations",
+        "action.login",
+        "action.logout",
+        "action.reserve",
+        "community.backend",
+        "community.frontend",
+        "community.reservation_feature",
+        "component.api",
+        "component.frontend",
+        "component.identity",
+        "component.reservations",
+        "component.storage",
+        "entity.concert",
+        "entity.reservation",
+        "entity.session",
+        "machine.reservation",
+        "rule.active_limit",
+        "rule.api_boundary",
+        "rule.atomicity",
+        "rule.auth_context",
+        "rule.authorization",
+        "rule.capacity",
+        "rule.design.dry",
+        "rule.design.kiss",
+        "rule.design.modularity",
+        "rule.design.separation_of_concerns",
+        "rule.idempotency",
+        "rule.state_machine",
+        "rule.ui_complete",
+        "scenario.active_limit",
+        "scenario.active_limit_concurrent",
+        "scenario.active_limit_replay",
+        "scenario.api_boundary",
+        "scenario.app.action.catalog.negative",
+        "scenario.app.action.catalog.normal",
+        "scenario.app.action.current_session.negative",
+        "scenario.app.action.current_session.normal",
+        "scenario.app.action.list_own_reservations.negative",
+        "scenario.app.action.list_own_reservations.normal",
+        "scenario.app.action.login.negative",
+        "scenario.app.action.login.normal",
+        "scenario.app.action.logout.negative",
+        "scenario.app.action.logout.normal",
+        "scenario.atomic_failure",
+        "scenario.cancel",
+        "scenario.cancel_concurrent",
+        "scenario.cancel_invalid",
+        "scenario.cancel_once",
+        "scenario.cancel_unauthenticated",
+        "scenario.concert_missing",
+        "scenario.concurrent_same_key",
+        "scenario.foreign_cancel",
+        "scenario.key_conflict",
+        "scenario.last_seat",
+        "scenario.replay",
+        "scenario.replay_after_cancel",
+        "scenario.reservation_missing",
+        "scenario.reserve",
+        "scenario.reserve_invalid",
+        "scenario.reserve_unauthenticated",
+        "scenario.sold_out",
+        "scenario.ui_complete",
+        "scenario.ui_recovery",
+        "scenario.ui_session_change",
+        "scenario.zero_capacity",
+        "screen.reserve"
+      ]
+    },
+    "filters": {
+      "search": "",
+      "kind": "",
+      "relation": "",
+      "community": "",
+      "scenarios": false
+    },
+    "folding": {
+      "enabled": false,
+      "overlap_policy": "first visible community by canonical ID; all memberships retained"
+    },
+    "shown_nodes": [
+      "action.cancel",
+      "action.catalog",
+      "action.current_session",
+      "action.list_own_reservations",
+      "action.login",
+      "action.logout",
+      "action.reserve",
+      "community.backend",
+      "community.frontend",
+      "community.reservation_feature",
+      "component.api",
+      "component.frontend",
+      "component.identity",
+      "component.reservations",
+      "component.storage",
+      "entity.concert",
+      "entity.reservation",
+      "entity.session",
+      "machine.reservation",
+      "rule.active_limit",
+      "rule.api_boundary",
+      "rule.atomicity",
+      "rule.auth_context",
+      "rule.authorization",
+      "rule.capacity",
+      "rule.design.dry",
+      "rule.design.kiss",
+      "rule.design.modularity",
+      "rule.design.separation_of_concerns",
+      "rule.idempotency",
+      "rule.state_machine",
+      "rule.ui_complete",
+      "screen.reserve"
+    ],
+    "shown_edges": [
+      "edge.api_calls_cancel",
+      "edge.api_calls_reserve",
+      "edge.api_imports_reservations",
+      "edge.app.action.catalog.owned_by.component.reservations",
+      "edge.app.action.catalog.reads.entity.concert",
+      "edge.app.action.catalog.reads.entity.reservation",
+      "edge.app.action.current_session.owned_by.component.identity",
+      "edge.app.action.current_session.reads.entity.session",
+      "edge.app.action.list_own_reservations.owned_by.component.reservations",
+      "edge.app.action.list_own_reservations.reads.entity.reservation",
+      "edge.app.action.login.creates.entity.session",
+      "edge.app.action.login.owned_by.component.identity",
+      "edge.app.action.logout.changes.entity.session",
+      "edge.app.action.logout.owned_by.component.identity",
+      "edge.app.component.api.calls.action.catalog",
+      "edge.app.component.api.calls.action.current_session",
+      "edge.app.component.api.calls.action.list_own_reservations",
+      "edge.app.component.api.calls.action.login",
+      "edge.app.component.api.calls.action.logout",
+      "edge.app.component.api.imports.component.identity",
+      "edge.app.component.identity.member_of.community.backend",
+      "edge.app.entity.session.owned_by.component.identity",
+      "edge.app.entity.session.stored_in.component.identity",
+      "edge.app.rule.active_limit.constrains.action.list_own_reservations",
+      "edge.app.rule.active_limit.constrains.action.reserve",
+      "edge.app.rule.active_limit.constrains.entity.reservation",
+      "edge.app.rule.auth_context.constrains.action.cancel",
+      "edge.app.rule.auth_context.constrains.action.list_own_reservations",
+      "edge.app.rule.auth_context.constrains.action.reserve",
+      "edge.app.rule.ui_complete.constrains.screen.reserve",
+      "edge.app.screen.reserve.calls.action.cancel",
+      "edge.app.screen.reserve.calls.action.catalog",
+      "edge.app.screen.reserve.calls.action.current_session",
+      "edge.app.screen.reserve.calls.action.list_own_reservations",
+      "edge.app.screen.reserve.calls.action.login",
+      "edge.app.screen.reserve.calls.action.logout",
+      "edge.community.action.cancel",
+      "edge.community.action.reserve",
+      "edge.community.component.api",
+      "edge.community.component.frontend",
+      "edge.community.component.reservations",
+      "edge.community.component.storage",
+      "edge.community.entity.concert",
+      "edge.community.entity.reservation",
+      "edge.community.machine.reservation",
+      "edge.community.screen.reserve",
+      "edge.constraint.rule.api_boundary.component.api",
+      "edge.constraint.rule.api_boundary.component.storage",
+      "edge.constraint.rule.atomicity.action.cancel",
+      "edge.constraint.rule.atomicity.action.reserve",
+      "edge.constraint.rule.authorization.action.cancel",
+      "edge.constraint.rule.capacity.entity.concert",
+      "edge.constraint.rule.capacity.entity.reservation",
+      "edge.constraint.rule.idempotency.action.cancel",
+      "edge.constraint.rule.idempotency.action.reserve",
+      "edge.constraint.rule.state_machine.machine.reservation",
+      "edge.effect.action.cancel.changes.entity.reservation",
+      "edge.effect.action.cancel.reads.entity.reservation",
+      "edge.effect.action.reserve.creates.entity.reservation",
+      "edge.effect.action.reserve.reads.entity.concert",
+      "edge.effect.action.reserve.reads.entity.reservation",
+      "edge.feature.action.reserve",
+      "edge.feature.component.frontend",
+      "edge.owner.action.cancel",
+      "edge.owner.action.reserve",
+      "edge.owner.entity.concert",
+      "edge.owner.entity.reservation",
+      "edge.owner.machine.reservation",
+      "edge.owner.screen.reserve",
+      "edge.reservations_imports_storage",
+      "edge.screen.reserve.calls",
+      "edge.state.machine.reservation",
+      "edge.storage.entity.concert",
+      "edge.storage.entity.reservation"
+    ],
+    "omitted_nodes": [
+      "scenario.active_limit",
+      "scenario.active_limit_concurrent",
+      "scenario.active_limit_replay",
+      "scenario.api_boundary",
+      "scenario.app.action.catalog.negative",
+      "scenario.app.action.catalog.normal",
+      "scenario.app.action.current_session.negative",
+      "scenario.app.action.current_session.normal",
+      "scenario.app.action.list_own_reservations.negative",
+      "scenario.app.action.list_own_reservations.normal",
+      "scenario.app.action.login.negative",
+      "scenario.app.action.login.normal",
+      "scenario.app.action.logout.negative",
+      "scenario.app.action.logout.normal",
+      "scenario.atomic_failure",
+      "scenario.cancel",
+      "scenario.cancel_concurrent",
+      "scenario.cancel_invalid",
+      "scenario.cancel_once",
+      "scenario.cancel_unauthenticated",
+      "scenario.concert_missing",
+      "scenario.concurrent_same_key",
+      "scenario.foreign_cancel",
+      "scenario.key_conflict",
+      "scenario.last_seat",
+      "scenario.replay",
+      "scenario.replay_after_cancel",
+      "scenario.reservation_missing",
+      "scenario.reserve",
+      "scenario.reserve_invalid",
+      "scenario.reserve_unauthenticated",
+      "scenario.sold_out",
+      "scenario.ui_complete",
+      "scenario.ui_recovery",
+      "scenario.ui_session_change",
+      "scenario.zero_capacity"
+    ],
+    "omitted_edges": [
+      "edge.app.scenario.active_limit.exercises.action.cancel",
+      "edge.app.scenario.active_limit.exercises.action.list_own_reservations",
+      "edge.app.scenario.active_limit.exercises.action.reserve",
+      "edge.app.scenario.active_limit.verifies.rule.active_limit",
+      "edge.app.scenario.active_limit_concurrent.exercises.action.cancel",
+      "edge.app.scenario.active_limit_concurrent.exercises.action.list_own_reservations",
+      "edge.app.scenario.active_limit_concurrent.exercises.action.reserve",
+      "edge.app.scenario.active_limit_concurrent.verifies.rule.active_limit",
+      "edge.app.scenario.active_limit_replay.exercises.action.cancel",
+      "edge.app.scenario.active_limit_replay.exercises.action.list_own_reservations",
+      "edge.app.scenario.active_limit_replay.exercises.action.reserve",
+      "edge.app.scenario.active_limit_replay.verifies.rule.active_limit",
+      "edge.app.scenario.app.action.catalog.negative.exercises.action.catalog",
+      "edge.app.scenario.app.action.catalog.normal.exercises.action.catalog",
+      "edge.app.scenario.app.action.current_session.negative.exercises.action.current_session",
+      "edge.app.scenario.app.action.current_session.normal.exercises.action.current_session",
+      "edge.app.scenario.app.action.list_own_reservations.negative.exercises.action.list_own_reservations",
+      "edge.app.scenario.app.action.list_own_reservations.normal.exercises.action.list_own_reservations",
+      "edge.app.scenario.app.action.login.negative.exercises.action.login",
+      "edge.app.scenario.app.action.login.normal.exercises.action.login",
+      "edge.app.scenario.app.action.logout.negative.exercises.action.logout",
+      "edge.app.scenario.app.action.logout.normal.exercises.action.logout",
+      "edge.app.scenario.foreign_cancel.verifies.rule.auth_context",
+      "edge.app.scenario.ui_complete.exercises.screen.reserve",
+      "edge.app.scenario.ui_complete.verifies.rule.ui_complete",
+      "edge.app.scenario.ui_recovery.exercises.screen.reserve",
+      "edge.app.scenario.ui_session_change.exercises.action.cancel",
+      "edge.app.scenario.ui_session_change.exercises.action.list_own_reservations",
+      "edge.app.scenario.ui_session_change.exercises.action.logout",
+      "edge.app.scenario.ui_session_change.exercises.action.reserve",
+      "edge.app.scenario.ui_session_change.exercises.screen.reserve",
+      "edge.app.scenario.ui_session_change.verifies.rule.auth_context",
+      "edge.app.scenario.ui_session_change.verifies.rule.ui_complete",
+      "edge.exercise.scenario.atomic_failure.action.cancel",
+      "edge.exercise.scenario.atomic_failure.action.reserve",
+      "edge.exercise.scenario.cancel.action.cancel",
+      "edge.exercise.scenario.cancel.action.reserve",
+      "edge.exercise.scenario.cancel_concurrent.action.cancel",
+      "edge.exercise.scenario.cancel_invalid.action.cancel",
+      "edge.exercise.scenario.cancel_once.action.cancel",
+      "edge.exercise.scenario.cancel_unauthenticated.action.cancel",
+      "edge.exercise.scenario.concert_missing.action.reserve",
+      "edge.exercise.scenario.concurrent_same_key.action.reserve",
+      "edge.exercise.scenario.foreign_cancel.action.cancel",
+      "edge.exercise.scenario.key_conflict.action.reserve",
+      "edge.exercise.scenario.last_seat.action.reserve",
+      "edge.exercise.scenario.replay.action.reserve",
+      "edge.exercise.scenario.replay_after_cancel.action.cancel",
+      "edge.exercise.scenario.replay_after_cancel.action.reserve",
+      "edge.exercise.scenario.reservation_missing.action.cancel",
+      "edge.exercise.scenario.reserve.action.reserve",
+      "edge.exercise.scenario.reserve_invalid.action.reserve",
+      "edge.exercise.scenario.reserve_unauthenticated.action.reserve",
+      "edge.exercise.scenario.sold_out.action.reserve",
+      "edge.exercise.scenario.zero_capacity.action.reserve",
+      "edge.verify.scenario.api_boundary.rule.api_boundary",
+      "edge.verify.scenario.atomic_failure.rule.atomicity",
+      "edge.verify.scenario.cancel.rule.capacity",
+      "edge.verify.scenario.cancel.rule.idempotency",
+      "edge.verify.scenario.cancel.rule.state_machine",
+      "edge.verify.scenario.cancel_concurrent.rule.capacity",
+      "edge.verify.scenario.cancel_concurrent.rule.idempotency",
+      "edge.verify.scenario.cancel_once.rule.capacity",
+      "edge.verify.scenario.cancel_once.rule.state_machine",
+      "edge.verify.scenario.concurrent_same_key.rule.capacity",
+      "edge.verify.scenario.concurrent_same_key.rule.idempotency",
+      "edge.verify.scenario.foreign_cancel.rule.authorization",
+      "edge.verify.scenario.key_conflict.rule.idempotency",
+      "edge.verify.scenario.last_seat.rule.capacity",
+      "edge.verify.scenario.replay.rule.capacity",
+      "edge.verify.scenario.replay.rule.idempotency",
+      "edge.verify.scenario.replay_after_cancel.rule.capacity",
+      "edge.verify.scenario.replay_after_cancel.rule.idempotency",
+      "edge.verify.scenario.replay_after_cancel.rule.state_machine",
+      "edge.verify.scenario.reservation_missing.rule.authorization",
+      "edge.verify.scenario.reserve.rule.capacity",
+      "edge.verify.scenario.reserve.rule.state_machine",
+      "edge.verify.scenario.sold_out.rule.capacity",
+      "edge.verify.scenario.zero_capacity.rule.capacity"
+    ],
+    "glyphs": [
+      {
+        "id": "action.cancel",
+        "node_ids": [
+          "action.cancel"
+        ]
+      },
+      {
+        "id": "action.catalog",
+        "node_ids": [
+          "action.catalog"
+        ]
+      },
+      {
+        "id": "action.current_session",
+        "node_ids": [
+          "action.current_session"
+        ]
+      },
+      {
+        "id": "action.list_own_reservations",
+        "node_ids": [
+          "action.list_own_reservations"
+        ]
+      },
+      {
+        "id": "action.login",
+        "node_ids": [
+          "action.login"
+        ]
+      },
+      {
+        "id": "action.logout",
+        "node_ids": [
+          "action.logout"
+        ]
+      },
+      {
+        "id": "action.reserve",
+        "node_ids": [
+          "action.reserve"
+        ]
+      },
+      {
+        "id": "community.backend",
+        "node_ids": [
+          "community.backend"
+        ]
+      },
+      {
+        "id": "community.frontend",
+        "node_ids": [
+          "community.frontend"
+        ]
+      },
+      {
+        "id": "community.reservation_feature",
+        "node_ids": [
+          "community.reservation_feature"
+        ]
+      },
+      {
+        "id": "component.api",
+        "node_ids": [
+          "component.api"
+        ]
+      },
+      {
+        "id": "component.frontend",
+        "node_ids": [
+          "component.frontend"
+        ]
+      },
+      {
+        "id": "component.identity",
+        "node_ids": [
+          "component.identity"
+        ]
+      },
+      {
+        "id": "component.reservations",
+        "node_ids": [
+          "component.reservations"
+        ]
+      },
+      {
+        "id": "component.storage",
+        "node_ids": [
+          "component.storage"
+        ]
+      },
+      {
+        "id": "entity.concert",
+        "node_ids": [
+          "entity.concert"
+        ]
+      },
+      {
+        "id": "entity.reservation",
+        "node_ids": [
+          "entity.reservation"
+        ]
+      },
+      {
+        "id": "entity.session",
+        "node_ids": [
+          "entity.session"
+        ]
+      },
+      {
+        "id": "machine.reservation",
+        "node_ids": [
+          "machine.reservation"
+        ]
+      },
+      {
+        "id": "rule.active_limit",
+        "node_ids": [
+          "rule.active_limit"
+        ]
+      },
+      {
+        "id": "rule.api_boundary",
+        "node_ids": [
+          "rule.api_boundary"
+        ]
+      },
+      {
+        "id": "rule.atomicity",
+        "node_ids": [
+          "rule.atomicity"
+        ]
+      },
+      {
+        "id": "rule.auth_context",
+        "node_ids": [
+          "rule.auth_context"
+        ]
+      },
+      {
+        "id": "rule.authorization",
+        "node_ids": [
+          "rule.authorization"
+        ]
+      },
+      {
+        "id": "rule.capacity",
+        "node_ids": [
+          "rule.capacity"
+        ]
+      },
+      {
+        "id": "rule.design.dry",
+        "node_ids": [
+          "rule.design.dry"
+        ]
+      },
+      {
+        "id": "rule.design.kiss",
+        "node_ids": [
+          "rule.design.kiss"
+        ]
+      },
+      {
+        "id": "rule.design.modularity",
+        "node_ids": [
+          "rule.design.modularity"
+        ]
+      },
+      {
+        "id": "rule.design.separation_of_concerns",
+        "node_ids": [
+          "rule.design.separation_of_concerns"
+        ]
+      },
+      {
+        "id": "rule.idempotency",
+        "node_ids": [
+          "rule.idempotency"
+        ]
+      },
+      {
+        "id": "rule.state_machine",
+        "node_ids": [
+          "rule.state_machine"
+        ]
+      },
+      {
+        "id": "rule.ui_complete",
+        "node_ids": [
+          "rule.ui_complete"
+        ]
+      },
+      {
+        "id": "screen.reserve",
+        "node_ids": [
+          "screen.reserve"
+        ]
+      }
+    ],
+    "bundles": [
+      {
+        "from": "entity.concert",
+        "to": "component.reservations",
+        "edge_ids": [
+          "edge.owner.entity.concert"
+        ]
+      },
+      {
+        "from": "entity.concert",
+        "to": "component.storage",
+        "edge_ids": [
+          "edge.storage.entity.concert"
+        ]
+      },
+      {
+        "from": "entity.reservation",
+        "to": "component.reservations",
+        "edge_ids": [
+          "edge.owner.entity.reservation"
+        ]
+      },
+      {
+        "from": "entity.reservation",
+        "to": "component.storage",
+        "edge_ids": [
+          "edge.storage.entity.reservation"
+        ]
+      },
+      {
+        "from": "action.reserve",
+        "to": "component.reservations",
+        "edge_ids": [
+          "edge.owner.action.reserve"
+        ]
+      },
+      {
+        "from": "action.cancel",
+        "to": "component.reservations",
+        "edge_ids": [
+          "edge.owner.action.cancel"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "component.reservations",
+        "edge_ids": [
+          "edge.api_imports_reservations"
+        ]
+      },
+      {
+        "from": "component.reservations",
+        "to": "component.storage",
+        "edge_ids": [
+          "edge.reservations_imports_storage"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "action.reserve",
+        "edge_ids": [
+          "edge.api_calls_reserve"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "action.cancel",
+        "edge_ids": [
+          "edge.api_calls_cancel"
+        ]
+      },
+      {
+        "from": "rule.capacity",
+        "to": "entity.concert",
+        "edge_ids": [
+          "edge.constraint.rule.capacity.entity.concert"
+        ]
+      },
+      {
+        "from": "rule.capacity",
+        "to": "entity.reservation",
+        "edge_ids": [
+          "edge.constraint.rule.capacity.entity.reservation"
+        ]
+      },
+      {
+        "from": "rule.idempotency",
+        "to": "action.reserve",
+        "edge_ids": [
+          "edge.constraint.rule.idempotency.action.reserve"
+        ]
+      },
+      {
+        "from": "rule.idempotency",
+        "to": "action.cancel",
+        "edge_ids": [
+          "edge.constraint.rule.idempotency.action.cancel"
+        ]
+      },
+      {
+        "from": "rule.authorization",
+        "to": "action.cancel",
+        "edge_ids": [
+          "edge.constraint.rule.authorization.action.cancel"
+        ]
+      },
+      {
+        "from": "rule.atomicity",
+        "to": "action.reserve",
+        "edge_ids": [
+          "edge.constraint.rule.atomicity.action.reserve"
+        ]
+      },
+      {
+        "from": "rule.atomicity",
+        "to": "action.cancel",
+        "edge_ids": [
+          "edge.constraint.rule.atomicity.action.cancel"
+        ]
+      },
+      {
+        "from": "rule.state_machine",
+        "to": "machine.reservation",
+        "edge_ids": [
+          "edge.constraint.rule.state_machine.machine.reservation"
+        ]
+      },
+      {
+        "from": "rule.api_boundary",
+        "to": "component.api",
+        "edge_ids": [
+          "edge.constraint.rule.api_boundary.component.api"
+        ]
+      },
+      {
+        "from": "rule.api_boundary",
+        "to": "component.storage",
+        "edge_ids": [
+          "edge.constraint.rule.api_boundary.component.storage"
+        ]
+      },
+      {
+        "from": "machine.reservation",
+        "to": "entity.reservation",
+        "edge_ids": [
+          "edge.state.machine.reservation"
+        ]
+      },
+      {
+        "from": "machine.reservation",
+        "to": "component.reservations",
+        "edge_ids": [
+          "edge.owner.machine.reservation"
+        ]
+      },
+      {
+        "from": "action.reserve",
+        "to": "entity.concert",
+        "edge_ids": [
+          "edge.effect.action.reserve.reads.entity.concert"
+        ]
+      },
+      {
+        "from": "action.reserve",
+        "to": "entity.reservation",
+        "edge_ids": [
+          "edge.effect.action.reserve.reads.entity.reservation",
+          "edge.effect.action.reserve.creates.entity.reservation"
+        ]
+      },
+      {
+        "from": "action.cancel",
+        "to": "entity.reservation",
+        "edge_ids": [
+          "edge.effect.action.cancel.reads.entity.reservation",
+          "edge.effect.action.cancel.changes.entity.reservation"
+        ]
+      },
+      {
+        "from": "screen.reserve",
+        "to": "component.frontend",
+        "edge_ids": [
+          "edge.owner.screen.reserve"
+        ]
+      },
+      {
+        "from": "screen.reserve",
+        "to": "action.reserve",
+        "edge_ids": [
+          "edge.screen.reserve.calls"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "community.backend",
+        "edge_ids": [
+          "edge.community.component.api"
+        ]
+      },
+      {
+        "from": "component.reservations",
+        "to": "community.backend",
+        "edge_ids": [
+          "edge.community.component.reservations"
+        ]
+      },
+      {
+        "from": "component.storage",
+        "to": "community.backend",
+        "edge_ids": [
+          "edge.community.component.storage"
+        ]
+      },
+      {
+        "from": "entity.concert",
+        "to": "community.backend",
+        "edge_ids": [
+          "edge.community.entity.concert"
+        ]
+      },
+      {
+        "from": "entity.reservation",
+        "to": "community.backend",
+        "edge_ids": [
+          "edge.community.entity.reservation"
+        ]
+      },
+      {
+        "from": "action.reserve",
+        "to": "community.backend",
+        "edge_ids": [
+          "edge.community.action.reserve"
+        ]
+      },
+      {
+        "from": "action.cancel",
+        "to": "community.backend",
+        "edge_ids": [
+          "edge.community.action.cancel"
+        ]
+      },
+      {
+        "from": "machine.reservation",
+        "to": "community.backend",
+        "edge_ids": [
+          "edge.community.machine.reservation"
+        ]
+      },
+      {
+        "from": "component.frontend",
+        "to": "community.frontend",
+        "edge_ids": [
+          "edge.community.component.frontend"
+        ]
+      },
+      {
+        "from": "screen.reserve",
+        "to": "community.frontend",
+        "edge_ids": [
+          "edge.community.screen.reserve"
+        ]
+      },
+      {
+        "from": "action.reserve",
+        "to": "community.reservation_feature",
+        "edge_ids": [
+          "edge.feature.action.reserve"
+        ]
+      },
+      {
+        "from": "component.frontend",
+        "to": "community.reservation_feature",
+        "edge_ids": [
+          "edge.feature.component.frontend"
+        ]
+      },
+      {
+        "from": "entity.session",
+        "to": "component.identity",
+        "edge_ids": [
+          "edge.app.entity.session.owned_by.component.identity",
+          "edge.app.entity.session.stored_in.component.identity"
+        ]
+      },
+      {
+        "from": "component.identity",
+        "to": "community.backend",
+        "edge_ids": [
+          "edge.app.component.identity.member_of.community.backend"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "component.identity",
+        "edge_ids": [
+          "edge.app.component.api.imports.component.identity"
+        ]
+      },
+      {
+        "from": "action.catalog",
+        "to": "component.reservations",
+        "edge_ids": [
+          "edge.app.action.catalog.owned_by.component.reservations"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "action.catalog",
+        "edge_ids": [
+          "edge.app.component.api.calls.action.catalog"
+        ]
+      },
+      {
+        "from": "screen.reserve",
+        "to": "action.catalog",
+        "edge_ids": [
+          "edge.app.screen.reserve.calls.action.catalog"
+        ]
+      },
+      {
+        "from": "action.list_own_reservations",
+        "to": "component.reservations",
+        "edge_ids": [
+          "edge.app.action.list_own_reservations.owned_by.component.reservations"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "action.list_own_reservations",
+        "edge_ids": [
+          "edge.app.component.api.calls.action.list_own_reservations"
+        ]
+      },
+      {
+        "from": "screen.reserve",
+        "to": "action.list_own_reservations",
+        "edge_ids": [
+          "edge.app.screen.reserve.calls.action.list_own_reservations"
+        ]
+      },
+      {
+        "from": "action.login",
+        "to": "component.identity",
+        "edge_ids": [
+          "edge.app.action.login.owned_by.component.identity"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "action.login",
+        "edge_ids": [
+          "edge.app.component.api.calls.action.login"
+        ]
+      },
+      {
+        "from": "screen.reserve",
+        "to": "action.login",
+        "edge_ids": [
+          "edge.app.screen.reserve.calls.action.login"
+        ]
+      },
+      {
+        "from": "action.logout",
+        "to": "component.identity",
+        "edge_ids": [
+          "edge.app.action.logout.owned_by.component.identity"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "action.logout",
+        "edge_ids": [
+          "edge.app.component.api.calls.action.logout"
+        ]
+      },
+      {
+        "from": "screen.reserve",
+        "to": "action.logout",
+        "edge_ids": [
+          "edge.app.screen.reserve.calls.action.logout"
+        ]
+      },
+      {
+        "from": "action.current_session",
+        "to": "component.identity",
+        "edge_ids": [
+          "edge.app.action.current_session.owned_by.component.identity"
+        ]
+      },
+      {
+        "from": "component.api",
+        "to": "action.current_session",
+        "edge_ids": [
+          "edge.app.component.api.calls.action.current_session"
+        ]
+      },
+      {
+        "from": "screen.reserve",
+        "to": "action.current_session",
+        "edge_ids": [
+          "edge.app.screen.reserve.calls.action.current_session"
+        ]
+      },
+      {
+        "from": "action.catalog",
+        "to": "entity.concert",
+        "edge_ids": [
+          "edge.app.action.catalog.reads.entity.concert"
+        ]
+      },
+      {
+        "from": "action.catalog",
+        "to": "entity.reservation",
+        "edge_ids": [
+          "edge.app.action.catalog.reads.entity.reservation"
+        ]
+      },
+      {
+        "from": "action.list_own_reservations",
+        "to": "entity.reservation",
+        "edge_ids": [
+          "edge.app.action.list_own_reservations.reads.entity.reservation"
+        ]
+      },
+      {
+        "from": "action.login",
+        "to": "entity.session",
+        "edge_ids": [
+          "edge.app.action.login.creates.entity.session"
+        ]
+      },
+      {
+        "from": "action.logout",
+        "to": "entity.session",
+        "edge_ids": [
+          "edge.app.action.logout.changes.entity.session"
+        ]
+      },
+      {
+        "from": "action.current_session",
+        "to": "entity.session",
+        "edge_ids": [
+          "edge.app.action.current_session.reads.entity.session"
+        ]
+      },
+      {
+        "from": "screen.reserve",
+        "to": "action.cancel",
+        "edge_ids": [
+          "edge.app.screen.reserve.calls.action.cancel"
+        ]
+      },
+      {
+        "from": "rule.auth_context",
+        "to": "action.reserve",
+        "edge_ids": [
+          "edge.app.rule.auth_context.constrains.action.reserve"
+        ]
+      },
+      {
+        "from": "rule.auth_context",
+        "to": "action.cancel",
+        "edge_ids": [
+          "edge.app.rule.auth_context.constrains.action.cancel"
+        ]
+      },
+      {
+        "from": "rule.auth_context",
+        "to": "action.list_own_reservations",
+        "edge_ids": [
+          "edge.app.rule.auth_context.constrains.action.list_own_reservations"
+        ]
+      },
+      {
+        "from": "rule.ui_complete",
+        "to": "screen.reserve",
+        "edge_ids": [
+          "edge.app.rule.ui_complete.constrains.screen.reserve"
+        ]
+      },
+      {
+        "from": "rule.active_limit",
+        "to": "action.reserve",
+        "edge_ids": [
+          "edge.app.rule.active_limit.constrains.action.reserve"
+        ]
+      },
+      {
+        "from": "rule.active_limit",
+        "to": "action.list_own_reservations",
+        "edge_ids": [
+          "edge.app.rule.active_limit.constrains.action.list_own_reservations"
+        ]
+      },
+      {
+        "from": "rule.active_limit",
+        "to": "entity.reservation",
+        "edge_ids": [
+          "edge.app.rule.active_limit.constrains.entity.reservation"
+        ]
+      }
+    ],
+    "folded_internal_edges": []
+  }
+}

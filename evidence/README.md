@@ -1,5 +1,9 @@
 # Verification evidence and English presentation
 
+The renderer 0.2.1 [layout review](viewer-layout-0.2.1/README.md) records
+community-aware force placement, collision checks, preserved graph identity and
+fresh before/after captures of the same concert model.
+
 The package 0.7.0 repository-readiness work is recorded in
 [the readiness review](repository-readiness.md): safe project start, installed
 skill/CLI journeys, host helpers, current installation and conformance checks,

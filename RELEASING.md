@@ -4,9 +4,9 @@ GDD has three independent version lines:
 
 | Surface | Current version | Meaning |
 | --- | --- | --- |
-| Python package and CLI | 0.7.0 | Distributed tool behavior and public Python APIs |
+| Python package and CLI | 0.7.1 (unreleased) | Distributed tool behavior and public Python APIs |
 | GDD standard | Draft 0.3; explicit 0.2 support | Document schemas and interpretation contracts |
-| Viewer renderer | 0.2.0 | Generated HTML renderer; profile remains `gdd-viewer-html/0.1` |
+| Viewer renderer | 0.2.1 | Generated HTML renderer; profile remains `gdd-viewer-html/0.1` |
 
 Git tags identify **package releases** and use `vMAJOR.MINOR.PATCH`, starting
 with `v0.7.0`. A tag does not change the standard's version or certify it.
@@ -53,11 +53,11 @@ not proof that this exact wheel was checked.
 
 ## Tag and publish on GitHub
 
-For package 0.7.0, after the checks above, create an annotated tag on the verified
+For a new package release, after the checks above, create an annotated tag on the verified
 commit and push the branch and tag together:
 
 ```sh
-GDD_TAG="v0.7.0"  # Replace with the new package version for later releases.
+GDD_TAG="v0.7.1"  # Set to the chosen package version; never reuse a published tag.
 GDD_COMMIT="$(git rev-parse HEAD)"
 git tag -a "$GDD_TAG" "$GDD_COMMIT" -m "GDD $GDD_TAG: draft standard 0.3; CLI and skill"
 git push --atomic origin main "$GDD_TAG"

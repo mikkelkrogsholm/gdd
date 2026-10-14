@@ -1,4 +1,4 @@
-# GDD validator 0.7.0 — GDD 0.2 and 0.3
+# GDD validator 0.7.1 — GDD 0.2 and 0.3
 
 The validator loads version-dispatched GDD 0.2 and 0.3, checks the model, and assesses the structural readiness of a selected scope. It has a Python API and CLI and writes reports in `gdd-report/0.2`. Pseudocode, extension code, and application tests are not executed.
 

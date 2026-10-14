@@ -2,7 +2,7 @@
   "format": "gdd-skill-assets/1",
   "origin": {
     "repository": "https://github.com/mikkelkrogsholm/gdd.git",
-    "git_base_revision": "e9359d1c10d1664b8c721a02b4cb8d198b9fb271",
+    "git_base_revision": "b28cb0bdf2f2a76ff2a5648e6ca056b95907b26e",
     "revision_basis": "Working tree based on the recorded Git base; per-file SHA-256 identifies copied bytes, including later edits."
   },
   "files": [
@@ -39,14 +39,14 @@
     {
       "path": "references/gdd/VALIDATOR.md",
       "source": "VALIDATOR.md",
-      "sha256": "13c2ab9e8ecad2e1a9822ff704ed17a1fdef19683f0085cc98b22db050895e8a",
+      "sha256": "59bcff8ad3f6cc6841815bdc2c9b9143fe40564ec73a6e82e5b0609519b014d5",
       "bytes": 15902
     },
     {
       "path": "references/gdd/VIEWER.md",
       "source": "VIEWER.md",
-      "sha256": "f7a31d64f3078c3e29cb3560cd5a92adf81ccd762f2bdf260b2415aad21b5c0a",
-      "bytes": 9585
+      "sha256": "5c3f83988c86d3f64981f8af140e1e543380f4dc59765891a5595b5fa9304891",
+      "bytes": 10352
     },
     {
       "path": "references/gdd/WORKFLOW.md",
@@ -153,13 +153,13 @@
     {
       "path": "references/gdd/schemas/view-state.schema.json",
       "source": "schemas/view-state.schema.json",
-      "sha256": "ca9ede44d2bda23b17ce8ad68bfb451ba688817c4a7dafd76f06634ef97337ea",
+      "sha256": "c3cc990cfac6ff71a30f3e321712ee243c24ec8c281f294f450ec0eafbab6e84",
       "bytes": 5555
     },
     {
       "path": "references/gdd/schemas/view.schema.json",
       "source": "schemas/view.schema.json",
-      "sha256": "a03774d1379de3f276c8c66526e573e88c32a5deac9025fb849ae91b28972d1d",
+      "sha256": "4a1a6b314e4c2fde51dcaa378d1c483221ce2358a863d114cb294032f1ab8ebc",
       "bytes": 12752
     },
     {

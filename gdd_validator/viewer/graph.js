@@ -189,60 +189,164 @@ const GDD = (() => {
     }
     item.textContent = JSON.stringify(manifest());
   }
-  function layout(reflow = true) {
-    const glyphs = projection.glyphs;
-    glyphs.forEach((g, i) => {
-      if (positions.has(g.id)) return;
-      const node = model.nodes[g.id],
-        typeIndex = Math.max(0, kinds.indexOf(node.kind));
-      const community = memberships.get(g.id)[0];
-      const sector = community ? communities.indexOf(community) : typeIndex;
-      const angle = i * 2.399963229728653,
-        radius = 65 + 26 * Math.sqrt(i + 1);
-      const base = (sector * 2 * Math.PI) / Math.max(communities.length, 8);
-      positions.set(g.id, {
-        x: 600 + Math.cos(base) * 170 + Math.cos(angle) * radius,
-        y: 400 + Math.sin(base) * 140 + Math.sin(angle) * radius,
-      });
-    });
-    if (!reflow || glyphs.length > 200) return; // Bounded layout work; larger graphs keep a deterministic seeded layout.
-    for (let iteration = 0; iteration < 160; iteration++) {
-      const forces = new Map(glyphs.map((g) => [g.id, { x: 0, y: 0 }]));
-      for (let i = 0; i < glyphs.length; i++)
-        for (let j = i + 1; j < glyphs.length; j++) {
-          const a = positions.get(glyphs[i].id),
-            b = positions.get(glyphs[j].id);
-          const dx = a.x - b.x,
-            dy = a.y - b.y,
-            d2 = Math.max(dx * dx + dy * dy, 1),
-            d = Math.sqrt(d2),
-            force = Math.min(2400 / d2, 9);
-          forces.get(glyphs[i].id).x += (dx / d) * force;
-          forces.get(glyphs[i].id).y += (dy / d) * force;
-          forces.get(glyphs[j].id).x -= (dx / d) * force;
-          forces.get(glyphs[j].id).y -= (dy / d) * force;
-        }
-      for (const b of projection.bundles) {
-        if (b.from === b.to) continue;
-        const a = positions.get(b.from),
-          z = positions.get(b.to),
-          dx = z.x - a.x,
-          dy = z.y - a.y,
-          d = Math.max(Math.hypot(dx, dy), 1),
-          force = (d - 135) * 0.012;
-        forces.get(b.from).x += (dx / d) * force;
-        forces.get(b.from).y += (dy / d) * force;
-        forces.get(b.to).x -= (dx / d) * force;
-        forces.get(b.to).y -= (dy / d) * force;
+  // Layout affinities are visual hints. They never add memberships or ownership.
+  function layoutGroups() {
+    const available = new Set(data.manifest.shown_nodes);
+    const groups = new Map();
+    for (const id of available) {
+      const node = model.nodes[id];
+      const explicit = memberships.get(id).filter((c) => available.has(c));
+      groups.set(id, node.kind === "community" ? [id] : explicit);
+    }
+    const candidates = new Map();
+    for (const edge of model.edges) {
+      if (edge.relation !== "owned_by" || !available.has(edge.to)) continue;
+      if (!candidates.has(edge.from)) candidates.set(edge.from, new Set());
+      candidates.get(edge.from).add(edge.to);
+    }
+    const owners = new Map([...candidates].filter(([, values]) => values.size === 1)
+      .map(([id, values]) => [id, [...values][0]]));
+    for (const id of available)
+      if (!groups.get(id).length && model.nodes[id].kind === "component" && !owners.has(id))
+        groups.set(id, [id]);
+    for (const id of available) {
+      const path = [], seen = new Set();
+      let current = id;
+      while (!groups.get(current)?.length && owners.has(current) && !seen.has(current)) {
+        path.push(current); seen.add(current); current = owners.get(current);
       }
-      for (const g of glyphs) {
-        const p = positions.get(g.id),
-          f = forces.get(g.id),
-          cool = 1 - iteration / 190;
-        p.x += (f.x + (600 - p.x) * 0.004) * cool;
-        p.y += (f.y + (400 - p.y) * 0.004) * cool;
+      const inherited = groups.get(current) || [];
+      if (inherited.length) path.forEach((child) => groups.set(child, inherited));
+    }
+    // Scenarios and rules follow the actual nodes they exercise/apply to.
+    // Resolve each wave together so input edge order cannot change the result.
+    for (let wave = 0; wave < 3; wave++) {
+      const additions = new Map();
+      for (const edge of model.edges) {
+        if (!["exercises", "applies_to", "changes"].includes(edge.relation)) continue;
+        if (!available.has(edge.from) || !available.has(edge.to) || groups.get(edge.from).length) continue;
+        if (!additions.has(edge.from)) additions.set(edge.from, new Set());
+        groups.get(edge.to).forEach((id) => additions.get(edge.from).add(id));
+      }
+      for (const [id, values] of additions) groups.set(id, [...values].sort());
+    }
+    return groups;
+  }
+  const affinities = layoutGroups();
+  function layout(reflow = true) {
+    const glyphs = [...projection.glyphs].sort((a, b) =>
+      a.id < b.id ? -1 : a.id > b.id ? 1 : 0,
+    );
+    const counts = new Map();
+    for (const glyph of glyphs) {
+      const groups = affinities.get(glyph.id);
+      for (const group of groups)
+        counts.set(group, (counts.get(group) || 0) + 1 / groups.length);
+    }
+    const keys = [...counts.keys()].sort();
+    const radii = keys.map((key) => Math.max(100, Math.sqrt(counts.get(key)) * 55));
+    const ring = keys.length < 2 ? 0 : radii.reduce((sum, radius) => sum + radius, 0) /
+      (keys.length * Math.sin(Math.PI / keys.length)) + 85;
+    const centers = new Map(keys.map((key, i) => {
+      const angle = Math.PI + i * 2 * Math.PI / keys.length;
+      return [key, {x: 600 + Math.cos(angle) * ring, y: 400 + Math.sin(angle) * ring}];
+    }));
+    const textMeasure = document.createElement("canvas").getContext("2d");
+    const family = getComputedStyle(document.body).fontFamily;
+    function width(text, font) {
+      if (!textMeasure) return text.length * 7;
+      textMeasure.font = `550 ${font}px ${family}`;
+      return textMeasure.measureText(text).width;
+    }
+    const seeds = new Map();
+    let added = false;
+    const nodes = glyphs.map((glyph) => {
+      const groups = affinities.get(glyph.id);
+      // Multiple memberships pull toward their mean, leaving shared nodes as bridges.
+      const target = groups.length ? {
+        x: groups.reduce((sum, key) => sum + centers.get(key).x, 0) / groups.length,
+        y: groups.reduce((sum, key) => sum + centers.get(key).y, 0) / groups.length,
+      } : {x: 600, y: 400};
+      const seedKey = JSON.stringify(groups);
+      const index = seeds.get(seedKey) || 0;
+      seeds.set(seedKey, index + 1);
+      const title = short(
+        model.nodes[glyph.id].label || glyph.id.split(".").slice(1).join(".") || glyph.id,
+      );
+      const kind = glyph.members.length > 1
+        ? "folded community" : model.nodes[glyph.id].kind;
+      const halfWidth = Math.max(28, width(title, 11) / 2, width(kind, 9) / 2) + 12;
+      if (!positions.has(glyph.id)) {
+        const angle = index * 2.399963229728653;
+        const radius = 70 * Math.sqrt(index);
+        positions.set(glyph.id, {
+          x: target.x + Math.cos(angle) * radius,
+          y: target.y + Math.sin(angle) * radius,
+        });
+        added = true;
+      }
+      return {
+        id: glyph.id, groups, target, halfWidth, p: positions.get(glyph.id),
+        vx: 0, vy: 0, fx: 0, fy: 0,
+      };
+    });
+    if (!nodes.length || (!reflow && !added)) return;
+    const indexed = new Map(nodes.map((node) => [node.id, node]));
+    const links = projection.bundles.filter((bundle) => bundle.from !== bundle.to).map((bundle) => {
+      const a = indexed.get(bundle.from), b = indexed.get(bundle.to);
+      const shared = a.groups.some((group) => b.groups.includes(group));
+      return {a, b, length: shared ? 125 : 280, strength: shared ? 0.018 : 0.004};
+    });
+    // Rectangle envelopes reserve room for both the glyph and its two text lines.
+    function collision(a, b, strength, direct = false) {
+      const dx = a.p.x - b.p.x, dy = a.p.y - b.p.y;
+      const x = a.halfWidth + b.halfWidth - Math.abs(dx), y = 96 - Math.abs(dy);
+      if (x <= 0 || y <= 0) return;
+      const axis = x < y ? "x" : "y";
+      const distance = axis === "x" ? dx : dy;
+      const shift = (axis === "x" ? x : y) * strength * (distance < 0 ? -1 : 1);
+      if (direct) {
+        a.p[axis] += shift;
+        b.p[axis] -= shift;
+      } else {
+        const forceAxis = axis === "x" ? "fx" : "fy";
+        a[forceAxis] += shift;
+        b[forceAxis] -= shift;
       }
     }
+    // Cap force work; larger projections retain separated, deterministic group seeds.
+    const iterations = nodes.length <= 200 ? 240 : 0;
+    for (let iteration = 0; iteration < iterations; iteration++) {
+      const alpha = Math.max(0.08, 1 - iteration / iterations);
+      for (const node of nodes) { node.fx = 0; node.fy = 0; }
+      for (let i = 0; i < nodes.length; i++)
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j];
+          let dx = a.p.x - b.p.x, dy = a.p.y - b.p.y;
+          if (dx === 0 && dy === 0) { dx = Math.cos(i + j); dy = Math.sin(i + j); }
+          const d = Math.max(Math.hypot(dx, dy), 1);
+          const force = Math.min(7200 / (d * d), 18);
+          a.fx += dx / d * force; a.fy += dy / d * force;
+          b.fx -= dx / d * force; b.fy -= dy / d * force;
+          collision(a, b, 0.4);
+        }
+      for (const {a, b, length, strength} of links) {
+        const dx = b.p.x - a.p.x, dy = b.p.y - a.p.y, d = Math.max(Math.hypot(dx, dy), 1);
+        const force = (d - length) * strength;
+        a.fx += dx / d * force; a.fy += dy / d * force;
+        b.fx -= dx / d * force; b.fy -= dy / d * force;
+      }
+      for (const node of nodes) {
+        node.vx = (node.vx + (node.fx + (node.target.x - node.p.x) * 0.045) * alpha) * 0.68;
+        node.vy = (node.vy + (node.fy + (node.target.y - node.p.y) * 0.045) * alpha) * 0.68;
+        const limit = Math.max(1, Math.hypot(node.vx, node.vy) / 16);
+        node.p.x += node.vx / limit; node.p.y += node.vy / limit;
+      }
+    }
+    if (iterations)
+      for (let pass = 0; pass < 18; pass++)
+        for (let i = 0; i < nodes.length; i++)
+          for (let j = i + 1; j < nodes.length; j++) collision(nodes[i], nodes[j], 0.51, true);
   }
   function edgeGeometry(bundle) {
     const a = positions.get(bundle.from),

@@ -7,7 +7,17 @@ imply a registry publication or a certified standard.
 
 ## Unreleased
 
-Record user-visible changes here for the next package release.
+Target package: 0.7.1. Standard: draft GDD 0.3 with explicit 0.2 support.
+Viewer renderer: 0.2.1.
+
+- Spread communities with separate attraction centers, node repulsion and
+  weaker, longer springs between groups. Component ownership supplies layout
+  hints when explicit communities are absent; shared members bridge groups.
+- Reserve collision space for node glyphs and both label lines in the bounded
+  force layout. Keep retained node positions stable when filtering and lay out
+  newly revealed nodes before fitting the view.
+- Add browser regression cases for dense communities and ownership groups,
+  including label collisions, deterministic reloads and stable filtering.
 
 ## 0.7.0 — October 14, 2026
 

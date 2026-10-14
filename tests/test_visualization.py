@@ -273,6 +273,14 @@ def test_view_payload_schema_is_packaged_and_offline(tmp_path):
     Draft202012Validator(schema("view"), registry=registry).validate(data)
 
 
+@pytest.mark.parametrize("schema_name", ["view", "view-state"])
+def test_renderer_identity_matches_informative_view_schemas(schema_name):
+    from jsonschema import Draft202012Validator
+    from gdd_validator.loading import schema
+
+    Draft202012Validator(schema(schema_name)["properties"]["generator"]).validate(GENERATOR)
+
+
 def test_shipped_demo_matches_current_renderer():
     assert (
         exit_code(
