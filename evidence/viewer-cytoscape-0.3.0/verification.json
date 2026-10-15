@@ -1,0 +1,253 @@
+{
+  "format": "gdd-viewer-migration-review/1",
+  "recorded_at": "2026-10-15T20:14:34.493049+00:00",
+  "git_base_revision": "7b2090727e6dab15f84dc5a56090e11a9ccd0af7",
+  "revision_basis": "Working-tree bytes after the recorded base. Per-file SHA-256 identifies the tested implementation; this record does not rebind historical evidence.",
+  "package": "0.8.0 (unreleased)",
+  "renderer": "0.3.0",
+  "runtime": {
+    "python": "3.12.2",
+    "node": "v25.9.0",
+    "chromium": "156.0.8078.4",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "sources": {
+    "pyproject.toml": "c497583e72b8b11e68ca7d1eaaa461a2215b233edc5378c002016cb0f04bee60",
+    "uv.lock": "1a09064b054aca95247352cc5f0e7348288a523012f57294ef54475bf878ac87",
+    "gdd_validator/visualization.py": "688a4316f9baafd5a8203827d6b82c0757a6544596a071390aebe5e88040aeec",
+    "gdd_validator/__init__.py": "3c509bf04a00eb69950aff4f327a716a18fd1a313c2847306084fec4d3821d05",
+    "gdd_validator/viewer/app.js": "8a42bb68d3699e7ae7d08d87bcc980f69945a40751ef435216b22e6f5dc93d1e",
+    "gdd_validator/viewer/communities.js": "d70cbe868be3bc45fc0aa16c0270fca416d78d52dc3af7a89733dbaba1e1e0d0",
+    "gdd_validator/viewer/graph.js": "30bfbe951d901c347953a5a8ab248c3f947abd36adfe9ef990ffaa2eb63e06f0",
+    "gdd_validator/viewer/inspector.js": "7a75f098d075ee760682b167b76aef1f86127a98dbf0cf18eef8c6286e46a566",
+    "gdd_validator/viewer/shell.html": "3ac110ef4c45d2b99e14f6b13bb0347bc22ef7f4eb5f4771e1919e484552c27a",
+    "gdd_validator/viewer/style.css": "e22b8701b2b157dbae575df681ece2d012ff72dca8ec23ad1c88df172bddcb8f",
+    "gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt": "cd5ad0fdd06f01432d35fcc8f827dea0cbf3edd54c462ca02352ef67695a824e",
+    "gdd_validator/viewer/vendor/cytoscape-fcose.js": "d1cf4ffc5cccb5d10564a8d3d7364b7b10a72e547b5000ec0232594522b3e4fe",
+    "gdd_validator/viewer/vendor/licenses/cose-base.txt": "5fb3cf4a14c3c5af6e473a192df8bca10c77754e3a0c6492c79fb92a76a5478a",
+    "gdd_validator/viewer/vendor/licenses/cytoscape-embedded-components.txt": "0a5559f0d03fb4cf19e95d02ab21135aaa97a20e3f94a2e16ac1225eee5d773b",
+    "gdd_validator/viewer/vendor/licenses/cytoscape-fcose.txt": "2837634f403949215760fcdd2fa1ed0c64875d02099ecc8318c704b852f1421d",
+    "gdd_validator/viewer/vendor/licenses/cytoscape.txt": "f7ebdc2a36c48b5413fe0b60f7a16b6163ff171d5bb35f27dfda432962dd4f49",
+    "gdd_validator/viewer/vendor/licenses/gl-matrix.txt": "a3b114f081227dd05a221a9cc74b8bb8afce6343b4c8ba84593fcab0fdb0c3da",
+    "gdd_validator/viewer/vendor/licenses/heap.txt": "e78f28382ac236a42dcbc16caaaaf2e76da55ddc67053a8bcb3aabdfc72df9cc",
+    "gdd_validator/viewer/vendor/licenses/jamajs-svd.txt": "2655c7f4c087134f1b7d349835320c033c99b7c474942740c8c2d2f7f4efdc22",
+    "gdd_validator/viewer/vendor/licenses/layout-base.txt": "eabb762d8a95109a39c9be3247325529a5239a7aca327d909c3ccdc41f3a06bf",
+    "gdd_validator/viewer/vendor/licenses/lodash.txt": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc",
+    "gdd_validator/viewer/vendor/manifest.json": "b7a7fcfbbc14c365c8abd0eec2a361e8c24cd2a6cd768238e692a3a94c3672da",
+    "conformance/run_browser.cjs": "9e0040ae41294fa52edcc288c64fc2e97fdaab49aeae73da111e665a3096bb11",
+    "conformance/prepare_visualization.py": "66a01565a926cedfe592cc5b492c3a54b5b236567e9721295829b8407a5731bb",
+    "tests/test_visualization.py": "5a47b4a590492da2d9c7e55d077b71781fe4c37c56463496b7cc5769e2b3ceec",
+    "schemas/view.schema.json": "66098bccf49bc607117cfc7e99bba7a488a6012e1a5f0ea0cfde9a28499537bb",
+    "schemas/view-state.schema.json": "bc68ed77373e12fc31782b4f8287347daa1425f62d02999b4bafd7dfab4640c7",
+    "skills/gdd/references/source-index.json": "5c6dd7d5539d9d311cc4deb3cd6c356f05ecb40c067bf0bbc63dc418a3bb78e2"
+  },
+  "checks": {
+    "python_full_suite": {
+      "command": ".venv/bin/python -m pytest -q",
+      "passed": 1472,
+      "exit_code": 0,
+      "elapsed_seconds": 273.76
+    },
+    "python_final_viewer_and_skill": {
+      "command": ".venv/bin/python -m pytest tests/test_visualization.py tests/test_skill_assets.py -q",
+      "passed": 40,
+      "exit_code": 0,
+      "output": "focused-pytest.txt"
+    },
+    "browser": {
+      "command": "GDD_PLAYWRIGHT_MODULE=<installed-playwright> PLAYWRIGHT_BROWSERS_PATH=<installed-browsers> GDD_BROWSER_OUTPUT=<fresh-directory> GDD_PYTHON=.venv/bin/python node conformance/run_browser.cjs",
+      "passed": 32,
+      "total": 32,
+      "output": "browser-conformance.json",
+      "offline": true,
+      "external_requests": 0,
+      "sibling_asset_requests": 0
+    },
+    "conformance": {
+      "standard": {
+        "format": "gdd-conformance-run/0.2",
+        "total": 58,
+        "matched": 58
+      },
+      "graphify": {
+        "format": "gdd-graphify-conformance-run/0.2",
+        "total": 18,
+        "matched": 18
+      },
+      "visualization": {
+        "format": "gdd-view-conformance/0.1",
+        "matched": 16,
+        "total": 16
+      },
+      "workflow": {
+        "format": "gdd-workflow-conformance/0.1",
+        "case_count": 20,
+        "pytest_exit": 0,
+        "passed": true
+      },
+      "design": {
+        "format": "gdd-design-conformance/0.3",
+        "case_count": 32,
+        "test_instances": 52,
+        "pytest_exit": 0,
+        "passed": true
+      }
+    },
+    "vendor": {
+      "commands": [
+        "npm ci --ignore-scripts",
+        "npm run check"
+      ],
+      "directory": "scripts/viewer-vendor",
+      "result": "PASS",
+      "bundle_sha256": "d1cf4ffc5cccb5d10564a8d3d7364b7b10a72e547b5000ec0232594522b3e4fe",
+      "bytes": 591944,
+      "rebuild_byte_equality": true,
+      "vm_dynamic_code_generation": false,
+      "vm_network_globals": false
+    },
+    "installed_wheel": {
+      "command": ".venv/bin/python conformance/verify_readiness_wheel.py <wheel> --output <fresh-output>",
+      "output": "installed-wheel.json",
+      "cli_checks": 20,
+      "legacy_replay": "PASS",
+      "exact_asset_count": 104,
+      "wheel_file": "gdd_validator-0.8.0-py3-none-any.whl",
+      "wheel_sha256": "df08dbfde0513dc61dd2a65db0bcb5abf884e9c431faac64e004e752a22d1b1d",
+      "license_members": [
+        "gdd_validator-0.8.0.dist-info/licenses/LICENSE",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/licenses/cose-base.txt",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/licenses/cytoscape-embedded-components.txt",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/licenses/cytoscape-fcose.txt",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/licenses/cytoscape.txt",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/licenses/gl-matrix.txt",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/licenses/heap.txt",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/licenses/jamajs-svd.txt",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/licenses/layout-base.txt",
+        "gdd_validator-0.8.0.dist-info/licenses/gdd_validator/viewer/vendor/licenses/lodash.txt"
+      ]
+    },
+    "agent_readable_lint": {
+      "files": [
+        "gdd_validator/viewer/graph.js",
+        "gdd_validator/viewer/communities.js"
+      ],
+      "result": "PASS",
+      "findings": 0
+    },
+    "portable_skill_sync": {
+      "command": ".venv/bin/python scripts/sync_skill.py --check",
+      "result": "PASS"
+    },
+    "payload_and_artifacts": {
+      "base": "6cb7fc2290bf7afebe11e9ae33f996da8ae69842",
+      "comparisons": {
+        "examples/concert.graph.html": {
+          "canonical_payload_equal_except_generator": true,
+          "projection_manifest_equal": true,
+          "spec_revision": "sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a",
+          "nodes": 38,
+          "edges": 85,
+          "html_sha256": "cae03ca5ecbb138cfcd048ff193bb9fbffcce813d7cf6d1c9d3950673ce236df"
+        },
+        "examples/concert-0.3.graph.html": {
+          "canonical_payload_equal_except_generator": true,
+          "projection_manifest_equal": true,
+          "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b",
+          "nodes": 43,
+          "edges": 87,
+          "html_sha256": "8175f865652701f71b819c096ad546abe5f2b6626969fc6ec330d83011f625ac"
+        },
+        "examples/concert-app/graph.html": {
+          "canonical_payload_equal_except_generator": true,
+          "projection_manifest_equal": true,
+          "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+          "nodes": 69,
+          "edges": 153,
+          "html_sha256": "edf1e096684dbbc9f8dfe23c2d8c4357279c1ebc543585be5da4d3011679da08"
+        }
+      },
+      "reports": {
+        "examples/concert.graph.html": {
+          "format": "gdd-report/0.2",
+          "tool": {
+            "name": "gdd-viewer",
+            "version": "0.3.0"
+          },
+          "spec_revision": "sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a",
+          "profiles": [
+            "visualization"
+          ],
+          "scope": [],
+          "checks": [
+            {
+              "check_id": "integration.visualization",
+              "dimension": "integration",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+              "diagnostics": []
+            }
+          ]
+        },
+        "examples/concert-0.3.graph.html": {
+          "format": "gdd-report/0.2",
+          "tool": {
+            "name": "gdd-viewer",
+            "version": "0.3.0"
+          },
+          "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b",
+          "profiles": [
+            "visualization"
+          ],
+          "scope": [],
+          "checks": [
+            {
+              "check_id": "integration.visualization",
+              "dimension": "integration",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+              "diagnostics": []
+            }
+          ]
+        },
+        "examples/concert-app/graph.html": {
+          "format": "gdd-report/0.2",
+          "tool": {
+            "name": "gdd-viewer",
+            "version": "0.3.0"
+          },
+          "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+          "profiles": [
+            "visualization"
+          ],
+          "scope": [],
+          "checks": [
+            {
+              "check_id": "integration.visualization",
+              "dimension": "integration",
+              "result": "PASS",
+              "scope": [],
+              "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+              "diagnostics": []
+            }
+          ]
+        }
+      },
+      "downloaded_view_state_schema": "PASS"
+    }
+  },
+  "captures": {
+    "clusters-layout.png": "ab08051cae08e701ca765c288405fd0d0941d0737657188fbb4b313270099f6e",
+    "concert-dark.png": "f6e88de0988b1c15d9d9a421ffa89c230feb9037fbf19853b7cf13dd9c5de291",
+    "concert-mobile.png": "e0fa638f8f5c237e6994cf9dd33c8744ae55c4a5d46f162c75359700fae8b6b7",
+    "overlapping-communities.png": "011660e73e8d1f80d47d509fc2e945be9e83fc6d7aa54f7d000312ce212a6383"
+  },
+  "limits": [
+    "Functional browser coverage is bounded to the retained fixtures, including 300 nodes and 1,173 relations; no universal large-graph performance claim.",
+    "Community envelopes show spatial extent and can enclose nonmembers. Only explicit membership relations establish membership.",
+    "This review verifies the viewer migration and packaging, not application behavior or architectural quality."
+  ]
+}

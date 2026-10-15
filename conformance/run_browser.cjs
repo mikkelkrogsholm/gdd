@@ -628,6 +628,25 @@ const results = [],
       assert.ok(panel.scrollTop > 0);
     }
   });
+  await test("desktop-community-legend-keeps-canvas-in-viewport", async () => {
+    for (const size of [{width: 1280, height: 720}, {width: 1440, height: 600}]) {
+      await page.setViewportSize(size);
+      await navigate("concert-app");
+      assert.equal(await page.locator("#community-legend button").count(), 3);
+      const layout = await page.evaluate(() => {
+        const graph = document.querySelector("#graph").getBoundingClientRect();
+        const footer = document.querySelector("footer").getBoundingClientRect();
+        return {graphBottom: graph.bottom, footerTop: footer.top,
+          footerBottom: footer.bottom, pageHeight: document.documentElement.scrollHeight};
+      });
+      assert.ok(layout.graphBottom <= layout.footerTop + 0.5);
+      assert.ok(Math.abs(layout.footerBottom - size.height) <= 0.5);
+      assert.equal(layout.pageHeight, size.height);
+      await page.locator('[data-community-id="community.reservation_feature"].community-button').click();
+      assert.equal(await page.locator("#detail .canonical-id").textContent(), "community.reservation_feature");
+    }
+    await page.setViewportSize({width: 1440, height: 1000});
+  });
   await test("long-project-title-expands-header-without-overlap", async () => {
     for (const size of [
       { width: 740, height: 360 },

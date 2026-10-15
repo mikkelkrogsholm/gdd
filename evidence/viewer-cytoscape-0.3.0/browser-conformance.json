@@ -1,0 +1,141 @@
+{
+  "format": "gdd-browser-conformance/0.1",
+  "browser": "156.0.8078.4",
+  "offline": true,
+  "results": [
+    {
+      "id": "offline-portable-file",
+      "result": "PASS"
+    },
+    {
+      "id": "hostile-text-and-canvas-selection",
+      "result": "PASS"
+    },
+    {
+      "id": "keyboard-inspection",
+      "result": "PASS"
+    },
+    {
+      "id": "parallel-and-opposite-directed-edges",
+      "result": "PASS"
+    },
+    {
+      "id": "self-loop-is-inspectable",
+      "result": "PASS"
+    },
+    {
+      "id": "numeric-contract-precision",
+      "result": "PASS"
+    },
+    {
+      "id": "scenario-reveal-as-first-action",
+      "result": "PASS"
+    },
+    {
+      "id": "kind-search-and-empty-filter",
+      "result": "PASS"
+    },
+    {
+      "id": "relation-and-community-filters",
+      "result": "PASS"
+    },
+    {
+      "id": "overlapping-community-folding-is-lossless",
+      "result": "PASS"
+    },
+    {
+      "id": "zoom-pan-drag-and-reset",
+      "result": "PASS"
+    },
+    {
+      "id": "view-manifest-download",
+      "result": "PASS"
+    },
+    {
+      "id": "parallel-membership-is-not-overlap",
+      "result": "PASS"
+    },
+    {
+      "id": "scoped-artifact-cannot-widen-on-reset",
+      "result": "PASS"
+    },
+    {
+      "id": "extension-and-empty-model",
+      "result": "PASS"
+    },
+    {
+      "id": "responsive-dark-reduced-motion",
+      "result": "PASS"
+    },
+    {
+      "id": "exact-source-and-design-reference-selectors",
+      "result": "PASS"
+    },
+    {
+      "id": "new-selections-reset-inspector-scroll",
+      "result": "PASS"
+    },
+    {
+      "id": "mobile-selection-reveals-details-without-filter-jumps",
+      "result": "PASS"
+    },
+    {
+      "id": "responsive-panels-and-controls-do-not-overlap",
+      "result": "PASS"
+    },
+    {
+      "id": "desktop-fills-viewport-with-scrolling-panels",
+      "result": "PASS"
+    },
+    {
+      "id": "desktop-community-legend-keeps-canvas-in-viewport",
+      "result": "PASS"
+    },
+    {
+      "id": "long-project-title-expands-header-without-overlap",
+      "result": "PASS"
+    },
+    {
+      "id": "component-boundary-rationale-and-contract-navigation",
+      "result": "PASS"
+    },
+    {
+      "id": "overlapping-community-public-boundary",
+      "result": "PASS"
+    },
+    {
+      "id": "clusters-stay-separated-with-readable-labels",
+      "result": "PASS"
+    },
+    {
+      "id": "ownership-stay-separated-with-readable-labels",
+      "result": "PASS"
+    },
+    {
+      "id": "community-areas-labels-and-shared-node-identity",
+      "result": "PASS"
+    },
+    {
+      "id": "community-areas-follow-real-node-dragging",
+      "result": "PASS"
+    },
+    {
+      "id": "community-areas-preserve-folded-and-filtered-memberships",
+      "result": "PASS"
+    },
+    {
+      "id": "bounded-300-node-layout-and-canvas-interactions",
+      "result": "PASS"
+    },
+    {
+      "id": "no-script-errors-or-network",
+      "result": "PASS"
+    }
+  ],
+  "passed": 32,
+  "total": 32,
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "localAssetRequests": []
+}

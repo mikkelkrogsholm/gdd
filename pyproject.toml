@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gdd-validator"
-version = "0.7.1"
+version = "0.8.0"
 description = "Structural validator for Graph-Driven Development 0.3"
 readme = "README.md"
 license = "MIT"
-license-files = ["LICENSE"]
+license-files = ["LICENSE", "gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt", "gdd_validator/viewer/vendor/licenses/*.txt"]
 requires-python = ">=3.11"
 dependencies = ["PyYAML==6.0.3", "jsonschema==4.24.0"]
 

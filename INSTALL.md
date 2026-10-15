@@ -8,7 +8,9 @@ supports Python 3.11 and later. Local verification covers Python 3.11 and 3.12
 on macOS; no GitHub Actions CI is configured.
 The current standard is draft GDD 0.3, with explicit GDD 0.2 compatibility.
 The published 0.7.0 package uses viewer renderer 0.2.0. Current `main` targets
-package 0.7.1 (unreleased), with the community-aware force layout in renderer 0.2.1.
+package 0.8.0 (unreleased), with Cytoscape.js/fCoSE and overlapping community
+areas in renderer 0.3.0. The required JavaScript and license notices are bundled
+in each exported HTML file; CLI users need no Node.js installation.
 
 ## Install from source
 

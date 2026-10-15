@@ -2,8 +2,11 @@ from gdd_validator.visualization import GENERATOR
 """Meaningful checks of projection fidelity, trust boundaries and CLI delivery."""
 
 from copy import deepcopy
+from base64 import b64encode
+from hashlib import sha256
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -69,6 +72,25 @@ def test_html_escaping_and_offline_assets(tmp_path):
     assert "connect-src 'none'" in html
     assert len(PAYLOAD.findall(html)) == 1
     assert embedded(output)["model"]["nodes"]["constructor"]["behavior"] == HOSTILE
+
+
+def test_offline_engine_and_notices_are_covered_by_script_csp(tmp_path):
+    path = write_fixture(tmp_path / "model.json")
+    output = tmp_path / "graph.html"
+    render_view(path, output)
+    html = output.read_text(encoding="utf-8")
+    scripts = re.findall(r"<script>(.*?)</script>", html, re.S)
+    assert len(scripts) == 1
+    script = scripts[0]
+    vendor = ROOT / "gdd_validator/viewer/vendor"
+    manifest = json.loads((vendor / "manifest.json").read_text())
+    bundle = (vendor / manifest["bundle"]["path"]).read_bytes()
+    assert sha256(bundle).hexdigest() == manifest["bundle"]["sha256"]
+    assert script.startswith(bundle.decode("utf-8"))
+    assert (vendor / "THIRD-PARTY-NOTICES.txt").read_text() in script
+    digest = b64encode(sha256(script.encode("utf-8")).digest()).decode("ascii")
+    assert f"script-src 'sha256-{digest}'" in html
+    assert "img-src data:" in html and "unsafe-eval" not in html
 
 
 def test_context_scope_partitions_without_dropping_records(tmp_path):

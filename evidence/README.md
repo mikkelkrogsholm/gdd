@@ -1,5 +1,9 @@
 # Verification evidence and English presentation
 
+The renderer 0.3.0 [Cytoscape migration review](viewer-cytoscape-0.3.0/README.md)
+records fCoSE placement, overlapping community extents, preserved graph data,
+one-file offline export and fresh integrated browser and installed-wheel checks.
+
 The renderer 0.2.1 [layout review](viewer-layout-0.2.1/README.md) records
 community-aware force placement, collision checks, preserved graph identity and
 fresh before/after captures of the same concert model.

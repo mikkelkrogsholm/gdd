@@ -62,6 +62,7 @@ def prepare(directory: Path) -> None:
             directory / f"{name}.html",
             scope=scope,
         )
+    render_view(ROOT / "examples/concert-app/gdd.json", directory / "concert-app.html")
     empty = fixture()
     empty.update(nodes={}, edges=[], sources={})
     path = directory / "empty.gdd.json"

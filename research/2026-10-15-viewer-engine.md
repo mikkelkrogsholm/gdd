@@ -1,7 +1,8 @@
 # Viewer engine selection for GDD
 
 Date: October 15, 2026.
-Status: Cytoscape.js selected for integration; the production viewer has not migrated.
+Status: integrated in development package 0.8.0 / viewer 0.3.0.
+The exploratory results below retain their original scope; see [the viewer guide](../VIEWER.md) for the delivered implementation.
 
 ## Decision
 
@@ -26,6 +27,8 @@ not a claim that one library wins every graph-visualization benchmark.
 Cytoscape compound nodes use a `parent` relationship. GDD communities may overlap,
 so compound containment cannot represent every membership. Use independent visual
 community layers, with shared nodes represented once and all memberships preserved.
+
+The production viewer uses deterministic convex extent envelopes rather than this plugin.
 
 The [Cytoscape BubbleSets extension](https://github.com/upsetjs/cytoscape.js-bubblesets)
 is a candidate for these layers, **not an accepted production dependency yet**.

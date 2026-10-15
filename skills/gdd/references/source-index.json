@@ -2,7 +2,7 @@
   "format": "gdd-skill-assets/1",
   "origin": {
     "repository": "https://github.com/mikkelkrogsholm/gdd.git",
-    "git_base_revision": "b28cb0bdf2f2a76ff2a5648e6ca056b95907b26e",
+    "git_base_revision": "7b20907",
     "revision_basis": "Working tree based on the recorded Git base; per-file SHA-256 identifies copied bytes, including later edits."
   },
   "files": [
@@ -39,14 +39,14 @@
     {
       "path": "references/gdd/VALIDATOR.md",
       "source": "VALIDATOR.md",
-      "sha256": "59bcff8ad3f6cc6841815bdc2c9b9143fe40564ec73a6e82e5b0609519b014d5",
+      "sha256": "c631884ffdd91395aa0769f60207636bf95cc2d2a08373ac1ab768d4902f5c7c",
       "bytes": 15902
     },
     {
       "path": "references/gdd/VIEWER.md",
       "source": "VIEWER.md",
-      "sha256": "5c3f83988c86d3f64981f8af140e1e543380f4dc59765891a5595b5fa9304891",
-      "bytes": 10352
+      "sha256": "86b86e4d3288bafa10a18759f5c75c51d1dd6a4690e804248e99aebce538feca",
+      "bytes": 11899
     },
     {
       "path": "references/gdd/WORKFLOW.md",
@@ -153,13 +153,13 @@
     {
       "path": "references/gdd/schemas/view-state.schema.json",
       "source": "schemas/view-state.schema.json",
-      "sha256": "c3cc990cfac6ff71a30f3e321712ee243c24ec8c281f294f450ec0eafbab6e84",
+      "sha256": "bc68ed77373e12fc31782b4f8287347daa1425f62d02999b4bafd7dfab4640c7",
       "bytes": 5555
     },
     {
       "path": "references/gdd/schemas/view.schema.json",
       "source": "schemas/view.schema.json",
-      "sha256": "4a1a6b314e4c2fde51dcaa378d1c483221ce2358a863d114cb294032f1ab8ebc",
+      "sha256": "66098bccf49bc607117cfc7e99bba7a488a6012e1a5f0ea0cfde9a28499537bb",
       "bytes": 12752
     },
     {
@@ -330,6 +330,24 @@
       "from": "VIEWER.md",
       "href": "examples/concert.graph.html",
       "source_target": "examples/concert.graph.html",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt",
+      "source_target": "gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "scripts/viewer-vendor/README.md",
+      "source_target": "scripts/viewer-vendor/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "evidence/viewer-cytoscape-0.3.0/README.md",
+      "source_target": "evidence/viewer-cytoscape-0.3.0/README.md",
       "role": "optional-repository-reference"
     },
     {

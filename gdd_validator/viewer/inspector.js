@@ -242,7 +242,7 @@
     legend.append(
       el(
         "p",
-        "Dashed node: sketch or folded community. Arrows show relation direction. ×N is an inspectable relation bundle.",
+        "Dashed border: sketch. Numbered glyph: folded community. Arrows show relation direction. ×N is an inspectable relation bundle.",
       ),
     );
     const sources = Object.keys(model.sources || {});

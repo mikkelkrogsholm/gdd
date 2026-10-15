@@ -14,7 +14,7 @@ from .report import check, diagnostic
 from .boundaries import boundary_view
 
 __all__ = ["render_view", "verify_view", "view_data", "html_document"]
-GENERATOR = {"name": "gdd-viewer", "version": "0.2.1", "profile": "gdd-viewer-html/0.1"}
+GENERATOR = {"name": "gdd-viewer", "version": "0.3.0", "profile": "gdd-viewer-html/0.1"}
 ASSETS = Path(__file__).parent / "viewer"
 PAYLOAD = re.compile(
     r'<script id="gdd-data" type="application/json">(.*?)</script>', re.S
@@ -120,7 +120,7 @@ def html_document(data: dict) -> str:
     """Only trusted assets become markup. Model text stays JSON/textContent."""
     script = "\n".join(
         (ASSETS / name).read_text(encoding="utf-8")
-        for name in ("graph.js", "inspector.js", "app.js")
+        for name in ("vendor/cytoscape-fcose.js", "graph.js", "communities.js", "inspector.js", "app.js")
     )
     script_hash = b64encode(sha256(script.encode("utf-8")).digest()).decode("ascii")
     payload = _json_text(data, sort_keys=True, ensure_ascii=True, allow_nan=False)

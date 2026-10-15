@@ -2,6 +2,7 @@
 (() => {
   const { data, model, $, state, el, label } = GDD;
   $("project-title").textContent = model.project.title;
+  $("model-mode").textContent = `Read-only view · GDD ${model.format.split("/")[1]}`;
   $("renderer-meta").textContent = `${data.generator.name} ${data.generator.version} · Offline`;
   document.title = `${model.project.title} · GDD`;
   $("total-count").textContent = `${Object.keys(model.nodes).length} nodes`;

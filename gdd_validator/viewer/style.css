@@ -23,10 +23,11 @@
 }
 body {
   margin: 0;
+  height: 100dvh;
   min-height: 100dvh;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(min-content, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   background: var(--bg);
   color: var(--ink);
   font:
@@ -135,12 +136,13 @@ h2 {
   padding: 22px 18px;
   display: flex;
   flex-direction: column;
-  min-height: min-content;
+  min-height: 0;
+  overflow-y: auto;
   background: var(--panel);
   border-right: 1px solid var(--line);
 }
 main {
-  min-height: 550px;
+  min-height: 0;
   display: grid;
   grid-template-columns: 265px minmax(280px, 1fr) 340px;
 }
@@ -273,93 +275,62 @@ input[type="checkbox"] {
   background: var(--accent);
   margin-right: 7px;
 }
-svg#graph {
+#graph {
   display: block;
   width: 100%;
   height: 100%;
   touch-action: none;
   user-select: none;
+  position: relative;
+  z-index: 0;
 }
-#arrow path {
-  fill: var(--edge);
+#community-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
 }
-.edge-path {
-  fill: none;
-  stroke: var(--edge);
-  stroke-width: 1.5;
-  marker-end: url(#arrow);
+.community-extent {
+  fill-opacity: 0.075;
+  stroke-width: 1.8px;
+  stroke-linejoin: round;
 }
-.edge-hit {
-  fill: none;
-  stroke: transparent;
-  stroke-width: 16;
-  cursor: pointer;
-}
-.edge-label {
-  font-size: 10px;
-  fill: var(--muted);
+.community-dim { opacity: 0.25; }
+.community-heading {
+  font-size: 14px;
+  font-weight: 650;
+  font-family: system-ui, sans-serif;
+  text-anchor: middle;
   paint-order: stroke;
   stroke: var(--canvas);
   stroke-width: 4px;
   stroke-linejoin: round;
-  cursor: pointer;
 }
-.edge-group.selected .edge-path,
-.edge-group.connected .edge-path {
-  stroke: var(--accent);
-  stroke-width: 2.2;
+.community-section {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+  padding-top: 12px;
+  flex: 0 0 auto;
 }
-.edge-group.selected .edge-label {
-  fill: var(--accent);
+#community-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 8px 0;
+  max-height: 120px;
+  overflow-y: auto;
 }
-.node-glyph {
-  fill: var(--node);
-  stroke: var(--line);
-  stroke-width: 1.5;
-}
-.node-group {
-  cursor: grab;
-}
-.node-group.selected .node-glyph {
-  stroke: var(--accent);
-  stroke-width: 3;
-}
-.node-group.connected .node-glyph {
-  stroke: var(--accent);
-}
-.node-group.dim {
-  opacity: 0.22;
-}
-.edge-group.dim {
-  opacity: 0.12;
-}
-.node-label {
+.community-button {
+  text-align: left;
+  border-left: 4px solid var(--community-color);
   font-size: 11px;
-  fill: var(--ink);
-  font-weight: 550;
-  text-anchor: middle;
-  paint-order: stroke;
-  stroke: var(--canvas);
-  stroke-width: 3;
-  stroke-linejoin: round;
+  padding: 5px 7px;
 }
-.node-kind {
-  font-size: 9px;
-  fill: var(--muted);
-  text-anchor: middle;
-}
-.node-symbol {
-  font-size: 13px;
-  fill: var(--ink);
-  text-anchor: middle;
-  font-weight: 650;
-}
-.node-group.folded .node-glyph {
-  fill: var(--soft);
-  stroke-dasharray: 4 3;
-}
-.node-group.sketch .node-glyph {
-  stroke-dasharray: 3 3;
+.community-button[aria-pressed="true"] {
+  background: var(--soft);
+  outline: 1px solid var(--community-color);
 }
 .canvas-note {
   position: absolute;
@@ -559,8 +530,7 @@ footer span {
 .type-machine {
   --type: var(--community);
 }
-.type-dot,
-.node-accent {
+.type-dot {
   fill: var(--type, var(--community));
   background: var(--type, var(--community));
 }
@@ -622,14 +592,16 @@ footer span {
     height: auto;
     min-height: 0;
     grid-template-columns: 220px minmax(0, 1fr);
-    grid-template-rows: minmax(min-content, 65dvh) auto;
+    grid-template-rows: minmax(0, 65dvh) auto;
   }
   .stage {
-    min-height: 400px;
+    min-height: 0;
   }
   .explorer {
     grid-row: 1;
     padding: 18px 12px;
+    min-height: 0;
+    overflow-y: auto;
   }
   .inspector {
     contain: none;
@@ -712,22 +684,6 @@ footer span {
   * {
     scroll-behavior: auto !important;
   }
-}
-.edge-label {
-  opacity: 0;
-}
-.edge-group:hover .edge-label,
-.edge-group.connected .edge-label,
-.edge-group.selected .edge-label {
-  opacity: 1;
-}
-.node-symbol,
-.node-accent {
-  pointer-events: none;
-}
-.node-group:hover .node-glyph {
-  stroke: var(--accent);
-  stroke-width: 2.5;
 }
 .sr-only {
   position: absolute;

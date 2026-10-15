@@ -1,6 +1,6 @@
 # Interactive GDD graph
 
-`gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. Development package 0.7.1 uses renderer 0.2.1 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
+`gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. Development package 0.8.0 uses renderer 0.3.0 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
 
 ```sh
 uv run gdd view examples/concert.gdd.yaml --output concert.html
@@ -63,21 +63,42 @@ Labels, source metadata, and pseudocode are inserted with `textContent`. JSON es
 
 The view has no evidence overlays and does not display model validity, readiness, authorization, or implementation as a node-colored PASS. Maturity is the author's declaration. Sources are inspected separately from intention; raw Graphify observations, records, and external source-file contents are not visualized as extra vertices. Accepted GDD models developed from Graphify proposals can be displayed like any other GDD model.
 
-The layout combines node repulsion, connection springs and separate attraction
-centers for communities. Springs between groups are longer and weaker than
-springs within a group. Shared members are attracted toward the mean of their
-community centers, so they act as visual bridges. When explicit membership is
-absent, unique component ownership supplies a layout hint; related scenarios
-and rules follow the nodes they describe. These hints change only positions.
+The drawing engine is Cytoscape.js 3.34.4, with fCoSE 2.2.0 for layout. Each
+visual affinity region is laid out with fCoSE in deterministic proof mode, then
+regions are packed into rows for the current viewport. Affinities use explicit
+communities first, then unique ownership and related scenarios/rules. For
+positioning, a shared node uses its first affinity by canonical ID. This is a
+layout hint only; all actual memberships remain independent in the drawing.
+After fCoSE, deterministic separation reserves each glyph's actual caption
+rectangle before packing, including labels that extend below node centers.
 
-Up to 200 visible figures, a bounded force simulation and collision passes reserve
-space for glyphs and both label lines. Larger projections use deterministic group
-seeds without collision resolution. Results are repeatable for the same graph,
-filters and browser font environment. Filtering preserves retained positions;
-revealing new figures reflows the visible layout. The SVG view has been tested
-on the included examples and dense synthetic groups; large repository graphs
-have no measured performance guarantee. Use scope, filters, folding and zoom
-for a readable subset.
+**Show community areas** toggles padded convex envelopes around visible members
+and their community anchor. Names stay readable while zooming. Shared members
+appear once, with segmented community-color rings and inclusion in each relevant
+envelope. Numbered legend buttons highlight exact explicit members and open the
+community inspector. The legend counts currently represented canonical members,
+including folded members, deduplicating parallel membership edges.
+
+An envelope may geometrically enclose a nonmember. It shows spatial extent, never
+membership, containment, ownership or authorization. Highlight or inspect the
+community to confirm explicit membership. Envelopes follow dragging, panning,
+zooming and filtering; keyboard inspection remains available through the object
+list and legend. Colors are accompanied by names and numbers.
+
+The former 200-figure force cutoff is removed. Verification includes dense groups,
+overlapping memberships and a bounded 300-node projection. This is not a general
+large-graph performance guarantee. Use scope, filters, folding and zoom for a
+readable subset. Filtering preserves retained positions; newly revealed figures
+and folding reflow the layout. Camera, positions and area visibility are local
+presentation state and do not modify the semantic manifest.
+
+The locked vendor bundle and full notices are embedded in the same hashed script
+as the viewer. No sibling JavaScript files, CDN, worker, or runtime npm dependency
+is required. The CSP permits embedded data-URI glyph images and blocks external
+images and network requests. GDD code remains MIT-licensed; bundled components
+retain their [own notices](gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt),
+including the Apache-2.0 JamaJS SVD component within layout-base. Maintainers can
+[rebuild and check the vendor bundle](scripts/viewer-vendor/README.md) locally.
 
 ## Python API and checks
 
@@ -101,12 +122,15 @@ node conformance/run_browser.cjs
 
 The browser harness uses installed `playwright`, starts headless Chromium, generates fresh fixtures in a temporary directory, and tests `file://` with networking disabled. `NODE_PATH` or `GDD_PLAYWRIGHT_MODULE` can specify an existing Playwright runtime; `GDD_BROWSER_EXECUTABLE` can specify local Chrome, and `GDD_PYTHON` an environment containing this package. The harness installs no browser. Reports and screenshots are saved under `evidence/visualization/`; `GDD_BROWSER_OUTPUT` selects another directory for new review rounds.
 
-[The review rounds](evidence/review-loops/README.md) describe current verification. [The visualization review](evidence/visualization-review.md) preserves the results from 0.4.0.
+[The Cytoscape migration review](evidence/viewer-cytoscape-0.3.0/README.md) records
+renderer 0.3.0 verification. [Earlier review rounds](evidence/review-loops/README.md)
+and [the visualization review](evidence/visualization-review.md) retain their
+historical execution results.
 
 
 ## GDD 0.3 boundary inspection
 
-Renderer 0.2.1 supports both model versions. For 0.3 it shows component responsibility,
+Renderer 0.3.0 supports both model versions. For 0.3 it shows component responsibility,
 boundary rationale and exclusions, links to authoritative public actions, and derived
 community boundaries with ownership-based participation, overlap and omitted calls.
 These views are model context and grant no access or quality/acceptance status.

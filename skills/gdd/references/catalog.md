@@ -70,6 +70,7 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `evidence/review-loops/README.md`
 - `evidence/validator-conformance.json`
 - `evidence/validator-review.md`
+- `evidence/viewer-cytoscape-0.3.0/README.md`
 - `evidence/visualization-review.md`
 - `evidence/workflow-review.md`
 - `examples/agent-native/README.md`
@@ -80,7 +81,9 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `examples/graphify/README.md`
 - `examples/graphify/producer-evidence.json`
 - `gdd_validator/validator.py`
+- `gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt`
 - `research/2026-10-13-existing-work.md`
+- `scripts/viewer-vendor/README.md`
 
 ## Integrity and maintenance
 

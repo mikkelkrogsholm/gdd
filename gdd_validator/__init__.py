@@ -1,6 +1,6 @@
 """GDD 0.2 and 0.3 validation. No application code or pseudocode is executed."""
 
-__version__ = "0.7.1"
+__version__ = "0.8.0"
 
 from .validator import validate
 from .report import exit_code

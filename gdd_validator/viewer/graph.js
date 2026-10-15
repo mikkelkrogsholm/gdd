@@ -1,4 +1,4 @@
-/* GDD viewer: projection and deterministic SVG layout. No model mutations. */
+/* Canonical projection and the Cytoscape/fCoSE drawing adapter. */
 "use strict";
 const GDD = (() => {
   const data = JSON.parse(document.getElementById("gdd-data").textContent);
@@ -23,7 +23,6 @@ const GDD = (() => {
     internal: [],
     representatives: new Map(),
   };
-  let camera = { x: 0, y: 0, k: 1 };
   const communities = Object.keys(model.nodes)
     .filter((id) => model.nodes[id].kind === "community")
     .sort();
@@ -233,402 +232,279 @@ const GDD = (() => {
     return groups;
   }
   const affinities = layoutGroups();
-  function layout(reflow = true) {
-    const glyphs = [...projection.glyphs].sort((a, b) =>
-      a.id < b.id ? -1 : a.id > b.id ? 1 : 0,
-    );
-    const counts = new Map();
+  const nodeId = (id) => `n:${id}`;
+  const edgeId = (key) => `e:${key}`;
+  const nodeElement = (id) => cy.getElementById(nodeId(id));
+  const bundleElement = (key) => cy.getElementById(edgeId(key));
+  const palette = ["#157d73", "#a34d99", "#b27a12", "#3977ae", "#aa5837", "#687f2f", "#735eb0", "#277f92"];
+  const communityColor = (id) => palette[communities.indexOf(id) % palette.length];
+  const theme = (name) => getComputedStyle(document.body).getPropertyValue(name).trim();
+
+  function glyphCommunities(glyph) {
+    const ids = new Set(model.nodes[glyph.id].kind === "community" ? [glyph.id] : []);
+    for (const id of glyph.members) memberships.get(id).forEach((c) => ids.add(c));
+    return [...ids].sort();
+  }
+  function glyphImage(glyph) {
+    const groups = glyphCommunities(glyph), parts = [];
+    if (groups.length === 1) {
+      parts.push(`<circle cx="24" cy="24" r="21" fill="none" stroke="${communityColor(groups[0])}" stroke-width="3"/>`);
+    } else if (groups.length > 1) {
+      groups.forEach((group, i) => {
+        const a = i * 2 * Math.PI / groups.length - Math.PI / 2;
+        const b = (i + 1) * 2 * Math.PI / groups.length - Math.PI / 2;
+        parts.push(`<path d="M ${24 + 21 * Math.cos(a)} ${24 + 21 * Math.sin(a)} A 21 21 0 ${b - a > Math.PI ? 1 : 0} 1 ${24 + 21 * Math.cos(b)} ${24 + 21 * Math.sin(b)}" fill="none" stroke="${communityColor(group)}" stroke-width="3"/>`);
+      });
+    }
+    const symbol = glyph.members.length > 1 ? String(glyph.members.length) : symbols.get(model.nodes[glyph.id].kind) || "?";
+    parts.push(`<text x="24" y="29" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="600" fill="${theme('--ink')}">${symbol}</text>`);
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48">${parts.join('')}</svg>`)}`;
+  }
+  function engineStyle() {
+    return [
+      {selector: "node", style: {
+        width: 44, height: 44, "background-color": theme("--node"),
+        "background-image": "data(image)", "background-fit": "contain",
+        "border-color": theme("--line"), "border-width": 1.5,
+        label: "data(caption)", color: theme("--ink"), "font-family": "system-ui, sans-serif",
+        "font-size": 11, "font-weight": 500, "text-wrap": "wrap",
+        "text-valign": "bottom", "text-margin-y": 8,
+        "text-outline-color": theme("--canvas"), "text-outline-width": 2,
+        "overlay-opacity": 0, "min-zoomed-font-size": 0,
+      }},
+      {selector: "node.sketch", style: {"border-style": "dashed"}},
+      {selector: "node.folded", style: {width: 52, height: 52, "background-color": theme("--soft")}},
+      {selector: "edge", style: {
+        width: 1.3, "line-color": theme("--edge"), "target-arrow-color": theme("--edge"),
+        "target-arrow-shape": "triangle", "arrow-scale": 0.8, "curve-style": "bezier",
+        "control-point-step-size": 45, "loop-direction": "-90deg", "loop-sweep": "65deg",
+        label: "data(caption)", "font-family": "system-ui, sans-serif", "font-size": 9,
+        color: theme("--muted"), "text-opacity": 0, "text-rotation": "autorotate",
+        "text-background-color": theme("--canvas"), "text-background-opacity": 0.9,
+        "text-background-padding": 3, "overlay-opacity": 0,
+      }},
+      {selector: "node.connected", style: {"border-color": theme("--accent"), "border-width": 2.5}},
+      {selector: "node.chosen", style: {"border-color": theme("--accent"), "border-width": 4}},
+      {selector: "edge.connected, edge.hovered", style: {
+        "line-color": theme("--accent"), "target-arrow-color": theme("--accent"),
+        width: 2.2, "text-opacity": 1,
+      }},
+      {selector: ".dim", style: {opacity: 0.16}},
+    ];
+  }
+  const cy = GDDVendor.cytoscape({
+    container: $("graph"), elements: [], style: engineStyle(),
+    layout: {name: "preset"}, minZoom: 0.03, maxZoom: 4,
+    boxSelectionEnabled: false, autounselectify: true,
+    selectionType: "single", pixelRatio: "auto",
+  });
+  let layoutRunning = false;
+  function rememberPositions() {
+    cy.nodes().forEach((node) => positions.set(node.data("canonicalId"), {...node.position()}));
+  }
+
+  function seedPositions(glyphs) {
+    const counts = new Map(), seeds = new Map();
     for (const glyph of glyphs) {
-      const groups = affinities.get(glyph.id);
-      for (const group of groups)
-        counts.set(group, (counts.get(group) || 0) + 1 / groups.length);
+      const group = affinities.get(glyph.id)[0] || "";
+      counts.set(group, (counts.get(group) || 0) + 1);
     }
-    const keys = [...counts.keys()].sort();
-    const radii = keys.map((key) => Math.max(100, Math.sqrt(counts.get(key)) * 55));
-    const ring = keys.length < 2 ? 0 : radii.reduce((sum, radius) => sum + radius, 0) /
-      (keys.length * Math.sin(Math.PI / keys.length)) + 85;
-    const centers = new Map(keys.map((key, i) => {
-      const angle = Math.PI + i * 2 * Math.PI / keys.length;
-      return [key, {x: 600 + Math.cos(angle) * ring, y: 400 + Math.sin(angle) * ring}];
-    }));
-    const textMeasure = document.createElement("canvas").getContext("2d");
-    const family = getComputedStyle(document.body).fontFamily;
-    function width(text, font) {
-      if (!textMeasure) return text.length * 7;
-      textMeasure.font = `550 ${font}px ${family}`;
-      return textMeasure.measureText(text).width;
-    }
-    const seeds = new Map();
+    const groups = [...counts.keys()].sort();
+    const radius = groups.length < 2 ? 0 : Math.max(250, ...[...counts.values()].map((n) => Math.sqrt(n) * 85)) /
+      Math.sin(Math.PI / groups.length);
     let added = false;
-    const nodes = glyphs.map((glyph) => {
-      const groups = affinities.get(glyph.id);
-      // Multiple memberships pull toward their mean, leaving shared nodes as bridges.
-      const target = groups.length ? {
-        x: groups.reduce((sum, key) => sum + centers.get(key).x, 0) / groups.length,
-        y: groups.reduce((sum, key) => sum + centers.get(key).y, 0) / groups.length,
-      } : {x: 600, y: 400};
-      const seedKey = JSON.stringify(groups);
-      const index = seeds.get(seedKey) || 0;
-      seeds.set(seedKey, index + 1);
-      const title = short(
-        model.nodes[glyph.id].label || glyph.id.split(".").slice(1).join(".") || glyph.id,
-      );
-      const kind = glyph.members.length > 1
-        ? "folded community" : model.nodes[glyph.id].kind;
-      const halfWidth = Math.max(28, width(title, 11) / 2, width(kind, 9) / 2) + 12;
-      if (!positions.has(glyph.id)) {
-        const angle = index * 2.399963229728653;
-        const radius = 70 * Math.sqrt(index);
-        positions.set(glyph.id, {
-          x: target.x + Math.cos(angle) * radius,
-          y: target.y + Math.sin(angle) * radius,
-        });
-        added = true;
-      }
-      return {
-        id: glyph.id, groups, target, halfWidth, p: positions.get(glyph.id),
-        vx: 0, vy: 0, fx: 0, fy: 0,
-      };
-    });
-    if (!nodes.length || (!reflow && !added)) return;
-    const indexed = new Map(nodes.map((node) => [node.id, node]));
-    const links = projection.bundles.filter((bundle) => bundle.from !== bundle.to).map((bundle) => {
-      const a = indexed.get(bundle.from), b = indexed.get(bundle.to);
-      const shared = a.groups.some((group) => b.groups.includes(group));
-      return {a, b, length: shared ? 125 : 280, strength: shared ? 0.018 : 0.004};
-    });
-    // Rectangle envelopes reserve room for both the glyph and its two text lines.
-    function collision(a, b, strength, direct = false) {
-      const dx = a.p.x - b.p.x, dy = a.p.y - b.p.y;
-      const x = a.halfWidth + b.halfWidth - Math.abs(dx), y = 96 - Math.abs(dy);
-      if (x <= 0 || y <= 0) return;
-      const axis = x < y ? "x" : "y";
-      const distance = axis === "x" ? dx : dy;
-      const shift = (axis === "x" ? x : y) * strength * (distance < 0 ? -1 : 1);
-      if (direct) {
-        a.p[axis] += shift;
-        b.p[axis] -= shift;
-      } else {
-        const forceAxis = axis === "x" ? "fx" : "fy";
-        a[forceAxis] += shift;
-        b[forceAxis] -= shift;
+    for (const glyph of glyphs) {
+      const group = affinities.get(glyph.id)[0] || "";
+      const index = seeds.get(group) || 0;
+      seeds.set(group, index + 1);
+      if (positions.has(glyph.id)) continue;
+      const angle = Math.PI + groups.indexOf(group) * 2 * Math.PI / groups.length;
+      const spiral = index * 2.399963229728653, distance = 85 * Math.sqrt(index + 1);
+      positions.set(glyph.id, {x: Math.cos(angle) * radius + Math.cos(spiral) * distance,
+        y: Math.sin(angle) * radius + Math.sin(spiral) * distance});
+      added = true;
+    }
+    return added;
+  }
+
+  function separateCaptionBounds(points) {
+    // Captions extend below their node centers. Resolve their actual rectangles
+    // after fCoSE, preserving horizontal placement and deterministic vertical order.
+    points.sort((a, b) => a.y - b.y || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      for (let j = 0; j < i; j++) {
+        const previous = points[j];
+        if (point.x + point.left < previous.x + previous.right + 12 &&
+            previous.x + previous.left < point.x + point.right + 12)
+          point.y = Math.max(point.y, previous.y + previous.bottom + 12 - point.top);
       }
     }
-    // Cap force work; larger projections retain separated, deterministic group seeds.
-    const iterations = nodes.length <= 200 ? 240 : 0;
-    for (let iteration = 0; iteration < iterations; iteration++) {
-      const alpha = Math.max(0.08, 1 - iteration / iterations);
-      for (const node of nodes) { node.fx = 0; node.fy = 0; }
-      for (let i = 0; i < nodes.length; i++)
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i], b = nodes[j];
-          let dx = a.p.x - b.p.x, dy = a.p.y - b.p.y;
-          if (dx === 0 && dy === 0) { dx = Math.cos(i + j); dy = Math.sin(i + j); }
-          const d = Math.max(Math.hypot(dx, dy), 1);
-          const force = Math.min(7200 / (d * d), 18);
-          a.fx += dx / d * force; a.fy += dy / d * force;
-          b.fx -= dx / d * force; b.fy -= dy / d * force;
-          collision(a, b, 0.4);
+    const x1 = Math.min(...points.map((p) => p.x + p.left));
+    const y1 = Math.min(...points.map((p) => p.y + p.top));
+    const x2 = Math.max(...points.map((p) => p.x + p.right));
+    const y2 = Math.max(...points.map((p) => p.y + p.bottom));
+    return {width: x2 - x1, height: y2 - y1,
+      points: points.map((p) => ({id: p.id, x: p.x - x1, y: p.y - y1}))};
+  }
+
+  function layout(reflow = true) {
+    rememberPositions();
+    const glyphs = [...projection.glyphs].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+    const added = seedPositions(glyphs);
+    cy.startBatch();
+    cy.elements().remove();
+    cy.add(glyphs.map((glyph) => {
+      const node = model.nodes[glyph.id];
+      const title = short(node.label || glyph.id.split(".").slice(1).join(".") || glyph.id);
+      const kindLabel = glyph.members.length > 1 ? "folded community" : node.kind;
+      return {data: {id: nodeId(glyph.id), canonicalId: glyph.id, label: title, kindLabel,
+        caption: `${title}\n${kindLabel}`, image: glyphImage(glyph)}, position: positions.get(glyph.id),
+        classes: `${node.maturity === 'specified' ? '' : 'sketch'} ${glyph.members.length > 1 ? 'folded' : ''}`};
+    }));
+    cy.add(projection.bundles.map((bundle) => {
+      const names = [...new Set(bundle.edges.map((edge) => edge.relation))];
+      const caption = (names.length === 1 ? names[0] : `${names[0]} +${names.length - 1}`) +
+        (bundle.edges.length > 1 ? ` ×${bundle.edges.length}` : "");
+      return {data: {id: edgeId(bundle.key), source: nodeId(bundle.from), target: nodeId(bundle.to),
+        bundleKey: bundle.key, edgeIds: bundle.edges.map((edge) => edge.id), caption}};
+    }));
+    cy.endBatch();
+    if (glyphs.length < 2 || (!reflow && !added)) return;
+
+    // Solve each visual affinity region with fCoSE, then pack the regions.
+    // Affinity controls placement only; canonical memberships stay untouched.
+    const groups = new Map();
+    for (const glyph of glyphs) {
+      const group = affinities.get(glyph.id)[0] || "";
+      if (!groups.has(group)) groups.set(group, []);
+      groups.get(group).push(glyph);
+    }
+    const regions = [];
+    layoutRunning = true;
+    try {
+      for (const key of [...groups.keys()].sort((a, b) => a === "" ? 1 : b === "" ? -1 : a < b ? -1 : a > b ? 1 : 0)) {
+        const members = groups.get(key), included = new Set(members.map((g) => g.id));
+        const elements = members.map((glyph, index) => {
+          const bounds = nodeElement(glyph.id).boundingBox({includeLabels: true, includeOverlays: false});
+          const angle = index * 2.399963229728653, distance = 65 * Math.sqrt(index + 1);
+          return {data: {id: nodeId(glyph.id), width: Math.max(65, bounds.w + 20), height: Math.max(115, bounds.h + 34)},
+            position: {x: Math.cos(angle) * distance, y: Math.sin(angle) * distance}};
+        });
+        elements.push(...projection.bundles.filter((b) => b.from !== b.to && included.has(b.from) && included.has(b.to))
+          .map((b) => ({data: {id: edgeId(b.key), source: nodeId(b.from), target: nodeId(b.to)}})));
+        const calculation = GDDVendor.cytoscape({headless: true, styleEnabled: true, elements,
+          layout: {name: "preset"},
+          style: [{selector: "node", style: {width: "data(width)", height: "data(height)", padding: 0}}]});
+        try {
+          if (members.length > 1)
+            calculation.layout({name: "fcose", quality: "proof", randomize: false, animate: false,
+              fit: false, nodeDimensionsIncludeLabels: true, packComponents: false, tile: true,
+              nodeRepulsion: 4500, idealEdgeLength: 85, edgeElasticity: 0.35,
+              gravity: 0.3, numIter: 1800}).run();
+          const points = members.map((glyph) => {
+            const p = calculation.getElementById(nodeId(glyph.id)).position();
+            if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) throw new Error("Layout produced non-finite positions.");
+            const node = nodeElement(glyph.id), center = node.position();
+            const box = node.boundingBox({includeLabels: true, includeOverlays: false});
+            return {id: glyph.id, x: p.x, y: p.y, left: box.x1 - center.x, right: box.x2 - center.x,
+              top: box.y1 - center.y, bottom: box.y2 - center.y};
+          });
+          regions.push(separateCaptionBounds(points));
+        } finally { calculation.destroy(); }
+      }
+      const gap = 70, view = $("graph").getBoundingClientRect();
+      const area = regions.reduce((sum, r) => sum + (r.width + gap) * (r.height + gap), 0);
+      const rowWidth = Math.max(...regions.map((r) => r.width), Math.sqrt(area * Math.max(0.5, view.width / view.height)) * 1.15);
+      let x = 0, y = 0, rowHeight = 0;
+      cy.batch(() => {
+        for (const region of regions) {
+          if (x && x + region.width > rowWidth) { x = 0; y += rowHeight + gap; rowHeight = 0; }
+          for (const p of region.points) nodeElement(p.id).position({x: p.x + x, y: p.y + y});
+          x += region.width + gap;
+          rowHeight = Math.max(rowHeight, region.height);
         }
-      for (const {a, b, length, strength} of links) {
-        const dx = b.p.x - a.p.x, dy = b.p.y - a.p.y, d = Math.max(Math.hypot(dx, dy), 1);
-        const force = (d - length) * strength;
-        a.fx += dx / d * force; a.fy += dy / d * force;
-        b.fx -= dx / d * force; b.fy -= dy / d * force;
-      }
-      for (const node of nodes) {
-        node.vx = (node.vx + (node.fx + (node.target.x - node.p.x) * 0.045) * alpha) * 0.68;
-        node.vy = (node.vy + (node.fy + (node.target.y - node.p.y) * 0.045) * alpha) * 0.68;
-        const limit = Math.max(1, Math.hypot(node.vx, node.vy) / 16);
-        node.p.x += node.vx / limit; node.p.y += node.vy / limit;
-      }
-    }
-    if (iterations)
-      for (let pass = 0; pass < 18; pass++)
-        for (let i = 0; i < nodes.length; i++)
-          for (let j = i + 1; j < nodes.length; j++) collision(nodes[i], nodes[j], 0.51, true);
-  }
-  function edgeGeometry(bundle) {
-    const a = positions.get(bundle.from),
-      b = positions.get(bundle.to);
-    if (bundle.from === bundle.to)
-      return {
-        d: `M ${a.x - 12} ${a.y - 14} C ${a.x - 75} ${a.y - 95}, ${a.x + 75} ${a.y - 95}, ${a.x + 13} ${a.y - 16}`,
-        x: a.x,
-        y: a.y - 62,
-      };
-    const dx = b.x - a.x,
-      dy = b.y - a.y,
-      d = Math.max(Math.hypot(dx, dy), 1),
-      ux = dx / d,
-      uy = dy / d;
-    const reverse = projection.bundles.some(
-      (other) => other.from === bundle.to && other.to === bundle.from,
-    );
-    const offset = reverse ? 25 : 0,
-      cx = (a.x + b.x) / 2 - uy * offset,
-      cy = (a.y + b.y) / 2 + ux * offset;
-    return {
-      d: `M ${a.x + ux * 21} ${a.y + uy * 21} Q ${cx} ${cy} ${b.x - ux * 23} ${b.y - uy * 23}`,
-      x: (a.x + b.x) / 2 - (uy * offset) / 2,
-      y: (a.y + b.y) / 2 + (ux * offset) / 2 - 7,
-    };
-  }
-  function draw() {
-    $("edge-layer").replaceChildren();
-    $("node-layer").replaceChildren();
-    for (const bundle of projection.bundles) {
-      const geometry = edgeGeometry(bundle),
-        group = svg("g", {
-          class: "edge-group",
-          "data-edge-ids": JSON.stringify(bundle.edges.map((e) => e.id)),
-        });
-      group.append(
-        svg("path", { class: "edge-path", d: geometry.d }),
-        svg("path", { class: "edge-hit", d: geometry.d }),
-      );
-      const names = [...new Set(bundle.edges.map((e) => e.relation))];
-      const text =
-        names.length === 1 ? names[0] : `${names[0]} +${names.length - 1}`;
-      group.append(
-        svg(
-          "text",
-          { class: "edge-label", x: geometry.x, y: geometry.y },
-          text + (bundle.edges.length > 1 ? ` ×${bundle.edges.length}` : ""),
-        ),
-      );
-      group.append(
-        svg(
-          "title",
-          {},
-          bundle.edges
-            .map((e) => `${e.id}: ${e.from} → ${e.to} · ${e.relation}`)
-            .join("\n"),
-        ),
-      );
-      group.addEventListener("click", () => GDD.select("bundle", bundle.key));
-      $("edge-layer").append(group);
-    }
-    for (const glyph of projection.glyphs) {
-      const node = model.nodes[glyph.id],
-        p = positions.get(glyph.id),
-        type = kinds.includes(node.kind) ? node.kind : "component";
-      const folded = glyph.members.length > 1;
-      const group = svg("g", {
-        class: `node-group type-${type}${folded ? " folded" : ""}${node.maturity === "specified" ? "" : " sketch"}`,
-        "data-node-id": glyph.id,
-        "data-member-ids": JSON.stringify(glyph.members),
-        transform: `translate(${p.x},${p.y})`,
       });
-      group.append(
-        svg("circle", { class: "node-glyph", r: folded ? 22 : 18 }),
-        svg("circle", { class: "node-accent", r: 3, cx: 14, cy: -13 }),
-      );
-      group.append(
-        svg(
-          "text",
-          { class: "node-symbol", y: 5 },
-          folded ? String(glyph.members.length) : symbols.get(node.kind) || "?",
-        ),
-      );
-      group.append(
-        svg(
-          "text",
-          { class: "node-label", y: 40 },
-          short(
-            model.nodes[glyph.id].label ||
-              glyph.id.split(".").slice(1).join(".") ||
-              glyph.id,
-          ),
-        ),
-      );
-      group.append(
-        svg(
-          "text",
-          { class: "node-kind", y: 54 },
-          folded ? "folded community" : node.kind,
-        ),
-      );
-      group.append(svg("title", {}, `${glyph.id}\n${node.description}`));
-      group.addEventListener("click", () => {
-        if (!dragged) GDD.select("node", glyph.id);
-      });
-      group.addEventListener("pointerdown", (event) =>
-        startDrag(event, glyph.id),
-      );
-      $("node-layer").append(group);
-    }
-    highlight();
-    applyCamera();
+      rememberPositions();
+    } finally { layoutRunning = false; }
   }
   function highlight() {
-    const selection = state.selected,
-      selectedNodes = new Set(),
-      selectedEdges = new Set();
-    if (selection?.type === "node") {
+    const selection = state.selected, selectedNodes = new Set(), selectedEdges = new Set();
+    const community = selection?.type === "node" && model.nodes[selection.id]?.kind === "community";
+    if (community) {
+      for (const id of projection.nodes)
+        if (id === selection.id || memberships.get(id).includes(selection.id))
+          selectedNodes.add(projection.representatives.get(id));
+      for (const edge of projection.edges)
+        if (selectedNodes.has(projection.representatives.get(edge.from)) || selectedNodes.has(projection.representatives.get(edge.to)))
+          selectedEdges.add(edge.id);
+    } else if (selection?.type === "node") {
       selectedNodes.add(projection.representatives.get(selection.id));
-      for (const e of projection.edges)
-        if (e.from === selection.id || e.to === selection.id) {
-          selectedNodes.add(projection.representatives.get(e.from));
-          selectedNodes.add(projection.representatives.get(e.to));
-          selectedEdges.add(e.id);
+      for (const edge of projection.edges)
+        if (edge.from === selection.id || edge.to === selection.id) {
+          selectedNodes.add(projection.representatives.get(edge.from));
+          selectedNodes.add(projection.representatives.get(edge.to));
+          selectedEdges.add(edge.id);
         }
     } else if (selection?.type === "edge") selectedEdges.add(selection.id);
     else if (selection?.type === "bundle")
-      for (const b of projection.bundles)
-        if (b.key === selection.id)
-          b.edges.forEach((e) => selectedEdges.add(e.id));
-    for (const b of projection.bundles)
-      if (b.edges.some((e) => selectedEdges.has(e.id))) {
-        selectedNodes.add(b.from);
-        selectedNodes.add(b.to);
+      projection.bundles.find((bundle) => bundle.key === selection.id)?.edges.forEach((edge) => selectedEdges.add(edge.id));
+    if (!community)
+      for (const bundle of projection.bundles)
+        if (bundle.edges.some((edge) => selectedEdges.has(edge.id))) {
+          selectedNodes.add(bundle.from); selectedNodes.add(bundle.to);
+        }
+    cy.batch(() => {
+      cy.nodes().forEach((node) => {
+        const id = node.data("canonicalId");
+        node.toggleClass("chosen", selection?.type === "node" && projection.representatives.get(selection.id) === id);
+        node.toggleClass("connected", selectedNodes.has(id));
+        node.toggleClass("dim", selectedNodes.size > 0 && !selectedNodes.has(id));
+      });
+      for (const bundle of projection.bundles) {
+        const active = bundle.edges.some((edge) => selectedEdges.has(edge.id));
+        bundleElement(bundle.key).toggleClass("connected", active).toggleClass("dim", selectedNodes.size > 0 && !active);
       }
-    for (const item of $("node-layer").children) {
-      const id = item.getAttribute("data-node-id");
-      item.classList.toggle(
-        "selected",
-        selection?.type === "node" &&
-          projection.representatives.get(selection.id) === id,
-      );
-      item.classList.toggle("connected", selectedNodes.has(id));
-      item.classList.toggle(
-        "dim",
-        selectedNodes.size > 0 && !selectedNodes.has(id),
-      );
-    }
-    for (const item of $("edge-layer").children) {
-      const active = JSON.parse(item.getAttribute("data-edge-ids")).some((id) =>
-        selectedEdges.has(id),
-      );
-      item.classList.toggle("connected", active);
-      item.classList.toggle("dim", selectedNodes.size > 0 && !active);
-    }
+    });
+    GDD.drawCommunities?.();
   }
-  function applyCamera() {
-    $("viewport").setAttribute(
-      "transform",
-      `translate(${camera.x},${camera.y}) scale(${camera.k})`,
-    );
-    $("zoom-level").textContent = Math.round(camera.k * 100) + "%";
-  }
+  function draw() { highlight(); }
   function fit() {
-    const bounds = $("graph").getBoundingClientRect(),
-      all = projection.glyphs.map((g) => positions.get(g.id));
-    if (!all.length) return;
-    const minX = Math.min(...all.map((p) => p.x)) - 100,
-      maxX = Math.max(...all.map((p) => p.x)) + 100;
-    const minY = Math.min(...all.map((p) => p.y)) - 90,
-      maxY = Math.max(...all.map((p) => p.y)) + 100;
-    const k = Math.min(
-      (bounds.width - 30) / (maxX - minX),
-      (bounds.height - 120) / (maxY - minY),
-      1.6,
-    );
-    camera = {
-      k: Math.max(0.08, k),
-      x: bounds.width / 2 - ((minX + maxX) / 2) * k,
-      y: bounds.height / 2 - ((minY + maxY) / 2) * k + 10,
-    };
-    applyCamera();
+    cy.resize();
+    if (!cy.nodes().length) return;
+    cy.fit(cy.elements(), 85);
+    if (cy.zoom() > 1.6) cy.zoom(1.6);
+    cy.center();
+    GDD.drawCommunities?.();
   }
-  function zoom(factor, x, y) {
+  function zoom(factor) {
     const bounds = $("graph").getBoundingClientRect();
-    x ??= bounds.width / 2;
-    y ??= bounds.height / 2;
-    const next = Math.max(0.05, Math.min(4, camera.k * factor)),
-      ratio = next / camera.k;
-    camera = {
-      x: x - (x - camera.x) * ratio,
-      y: y - (y - camera.y) * ratio,
-      k: next,
-    };
-    applyCamera();
+    cy.zoom({level: Math.max(cy.minZoom(), Math.min(cy.maxZoom(), cy.zoom() * factor)),
+      renderedPosition: {x: bounds.width / 2, y: bounds.height / 2}});
   }
-  let drag = null,
-    dragged = false;
-  function startDrag(event, id = null) {
-    if (event.button !== 0) return;
-    event.stopPropagation();
-    dragged = false;
-    drag = {
-      id,
-      x: event.clientX,
-      y: event.clientY,
-      startX: event.clientX,
-      startY: event.clientY,
-    };
-    $("graph").setPointerCapture(event.pointerId);
-  }
-  $("graph").addEventListener("pointerdown", (event) => {
-    if (!event.target.closest(".edge-group")) startDrag(event);
+  cy.on("tap", "node", (event) => GDD.select("node", event.target.data("canonicalId")));
+  cy.on("tap", "edge", (event) => GDD.select("bundle", event.target.data("bundleKey")));
+  cy.on("mouseover", "edge", (event) => event.target.addClass("hovered"));
+  cy.on("mouseout", "edge", (event) => event.target.removeClass("hovered"));
+  cy.on("position", "node", () => {
+    if (!layoutRunning) { rememberPositions(); GDD.drawCommunities?.(); }
   });
-  $("graph").addEventListener("pointermove", (event) => {
-    if (!drag) return;
-    const dx = event.clientX - drag.x,
-      dy = event.clientY - drag.y;
-    if (
-      Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 3
-    )
-      dragged = true;
-    if (drag.id) {
-      const p = positions.get(drag.id);
-      p.x += dx / camera.k;
-      p.y += dy / camera.k;
-      draw();
-    } else {
-      camera.x += dx;
-      camera.y += dy;
-      applyCamera();
-    }
-    drag.x = event.clientX;
-    drag.y = event.clientY;
+  cy.on("pan zoom", () => {
+    $("zoom-level").textContent = Math.round(cy.zoom() * 100) + "%";
+    GDD.drawCommunities?.();
   });
-  function endDrag() {
-    if (drag?.id && !dragged) GDD.select("node", drag.id);
-    drag = null;
-    setTimeout(() => {
-      dragged = false;
-    }, 0);
-  }
-  $("graph").addEventListener("pointerup", endDrag);
-  $("graph").addEventListener("pointercancel", () => {
-    drag = null;
-    dragged = false;
-  });
-  $("graph").addEventListener(
-    "wheel",
-    (event) => {
-      event.preventDefault();
-      const r = $("graph").getBoundingClientRect();
-      zoom(
-        Math.exp(-event.deltaY * 0.0015),
-        event.clientX - r.left,
-        event.clientY - r.top,
-      );
-    },
-    { passive: false },
-  );
   $("zoom-in").onclick = () => zoom(1.2);
   $("zoom-out").onclick = () => zoom(1 / 1.2);
   $("fit").onclick = fit;
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    cy.style(engineStyle());
+    for (const glyph of projection.glyphs) nodeElement(glyph.id).data("image", glyphImage(glyph));
+    GDD.drawCommunities?.();
+  });
   return {
-    data,
-    model,
-    $,
-    state,
-    el,
-    label,
-    memberships,
-    communities,
-    kinds,
-    project,
-    layout,
-    draw,
-    fit,
-    highlight,
-    manifest,
-    get projection() {
-      return projection;
-    },
+    data, model, $, state, el, svg, label, memberships, communities, kinds, cy,
+    project, layout, draw, fit, zoom, highlight, manifest, nodeElement, bundleElement, communityColor,
+    get projection() { return projection; },
+    get layoutRunning() { return layoutRunning; },
   };
 })();

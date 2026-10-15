@@ -13,9 +13,10 @@ work. Agents refine that description, use it to scope development, and show the
 result through interactive views. The implementation language and agent runtime
 remain project choices.
 
-**Current development status:** GDD 0.3 draft · CLI/package 0.7.1 (unreleased) · viewer 0.2.1 · Python 3.11+ ·
+**Current development status:** GDD 0.3 draft · CLI/package 0.8.0 (unreleased) · viewer 0.3.0 · Python 3.11+ ·
 [MIT licensed](LICENSE). The repo includes the method, deterministic CLI, offline
 viewer, Graphify adapter, safe project starter and a portable agent skill.
+The viewer includes Cytoscape.js and fCoSE; [third-party notices](gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt) accompany the MIT-licensed GDD code.
 The first development release is [v0.7.0](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.7.0).
 Install from tagged source or its verified wheel; the package is not on PyPI.
 
@@ -53,7 +54,8 @@ This source-checkout quickstart requires Python 3.11+ and
 [uv](https://docs.astral.sh/uv/). It needs no LLM credentials, Graphify installation
 or frontend build. The generated graph works offline. These commands use a POSIX shell.
 The quickstart uses the published release; use `main` instead of `v0.7.0` to try
-the latest development changes, including the community-aware force layout.
+the latest development changes, including the Cytoscape.js/fCoSE viewer and
+community areas.
 
 ```sh
 git clone https://github.com/mikkelkrogsholm/gdd.git

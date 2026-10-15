@@ -7,17 +7,22 @@ imply a registry publication or a certified standard.
 
 ## Unreleased
 
-Target package: 0.7.1. Standard: draft GDD 0.3 with explicit 0.2 support.
-Viewer renderer: 0.2.1.
+Target package: 0.8.0. Standard: draft GDD 0.3 with explicit 0.2 support.
+Viewer renderer: 0.3.0.
 
-- Spread communities with separate attraction centers, node repulsion and
-  weaker, longer springs between groups. Component ownership supplies layout
-  hints when explicit communities are absent; shared members bridge groups.
-- Reserve collision space for node glyphs and both label lines in the bounded
-  force layout. Keep retained node positions stable when filtering and lay out
-  newly revealed nodes before fitting the view.
-- Add browser regression cases for dense communities and ownership groups,
-  including label collisions, deterministic reloads and stable filtering.
+- Replace the custom SVG physics/rendering engine with pinned Cytoscape.js 3.34.4
+  and fCoSE 2.2.0. Layout runs within visual affinity regions, followed by
+  deterministic packing, without the earlier 200-figure solver cutoff.
+- Display numbered community names, transparent overlapping extent envelopes,
+  shared-node color rings and a keyboard-accessible exact-member legend.
+  Community extents are visual hints; explicit memberships remain authoritative.
+- Preserve canonical graph payloads, directed relation bundles, folding, scope,
+  inspector text and downloaded semantic manifests. Filtering retained figures
+  preserves their positions; newly revealed figures reflow the layout.
+- Keep one-file offline export with an embedded locked vendor bundle, complete
+  third-party notices, restrictive CSP and no runtime build/CDN dependency.
+- Extend browser checks for actual canvas interaction, overlapping community
+  containment, readable headings, stable layouts and a bounded 300-node fixture.
 
 ## 0.7.0 — October 14, 2026
 
