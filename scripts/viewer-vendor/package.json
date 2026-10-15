@@ -1,0 +1,24 @@
+{
+  "name": "gdd-viewer-vendor",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Reproducible offline browser bundle for the GDD viewer.",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node build.mjs --check && node verify.mjs"
+  },
+  "dependencies": {
+    "cytoscape": "3.34.4",
+    "cytoscape-fcose": "2.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "gl-matrix": "3.4.3",
+    "heap": "0.2.7",
+    "lodash": "4.18.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

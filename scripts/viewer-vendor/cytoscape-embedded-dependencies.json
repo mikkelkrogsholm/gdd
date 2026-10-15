@@ -1,0 +1,27 @@
+{
+  "source": "https://raw.githubusercontent.com/cytoscape/cytoscape.js/v3.34.4/package-lock.json",
+  "sha256": "fa7e7caee37d6735e3aa3222a624e2f864a26dcf6388223f27d7e30f6b32dbb9",
+  "dependencies": {
+    "heap": {
+      "version": "0.2.7",
+      "resolved": "https://registry.npmjs.org/heap/-/heap-0.2.7.tgz",
+      "integrity": "sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "lodash": {
+      "version": "4.18.1",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.18.1.tgz",
+      "integrity": "sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "gl-matrix": {
+      "version": "3.4.3",
+      "resolved": "https://registry.npmjs.org/gl-matrix/-/gl-matrix-3.4.3.tgz",
+      "integrity": "sha512-wcCp8vu8FT22BnvKVPjXa/ICBWRq/zjFfdofZy1WSpQZpphblv12/bOQLBC1rMM7SGOFS9ltVmKOHil5+Ml7gA==",
+      "dev": true,
+      "license": "MIT"
+    }
+  }
+}

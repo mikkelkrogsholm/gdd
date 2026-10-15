@@ -1,0 +1,130 @@
+{
+  "format": "gdd-viewer-vendor/0.1",
+  "bundle": {
+    "path": "cytoscape-fcose.js",
+    "sha256": "d1cf4ffc5cccb5d10564a8d3d7364b7b10a72e547b5000ec0232594522b3e4fe",
+    "bytes": 591944
+  },
+  "build": {
+    "tool": "esbuild",
+    "version": "0.28.2",
+    "command": "npm ci --ignore-scripts && npm run build",
+    "directory": "scripts/viewer-vendor",
+    "lockfile_sha256": "32370bf8e3b8d4d12fb85b4e9d6b950fdb0edb5ce913331a14d613f6d1197926",
+    "entry_sha256": "639ce0ba9b6569051fd3504aa00eef8d0b70c85bbff43bda5624d34b824e13bb",
+    "script_sha256": "cb8ba9bfa1c577f293de0ce0764cc09d3b3b1351e6dbd0a99bc840638f4d2393",
+    "format": "iife",
+    "target": "es2020",
+    "supported": {
+      "template-literal": false
+    },
+    "minify": true,
+    "patches": [
+      {
+        "input": "node_modules/cytoscape/dist/cytoscape.esm.mjs",
+        "find": "freeGlobal || freeSelf || Function('return this')()",
+        "replace": "freeGlobal || freeSelf || globalThis",
+        "reason": "Remove legacy dynamic-code global lookup under strict hash CSP."
+      }
+    ]
+  },
+  "dependencies": [
+    {
+      "name": "cytoscape",
+      "version": "3.34.4",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/cytoscape/-/cytoscape-3.34.4.tgz",
+      "integrity": "sha512-msY99tMY8iWTg+sIPGfSqDcPNOt4xcj+v/K/7qUFaCUxxlqnMkUYLBjRUzn9W5CU/R2hrmtJa5+UtovrEM2ctg==",
+      "license_file": "licenses/cytoscape.txt",
+      "license_sha256": "f7ebdc2a36c48b5413fe0b60f7a16b6163ff171d5bb35f27dfda432962dd4f49"
+    },
+    {
+      "name": "cytoscape-fcose",
+      "version": "2.2.0",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/cytoscape-fcose/-/cytoscape-fcose-2.2.0.tgz",
+      "integrity": "sha512-ki1/VuRIHFCzxWNrsshHYPs6L7TvLu3DL+TyIGEsRcvVERmxokbf5Gdk7mFxZnTdiGtnA4cfSmjZJMviqSuZrQ==",
+      "license_file": "licenses/cytoscape-fcose.txt",
+      "license_sha256": "2837634f403949215760fcdd2fa1ed0c64875d02099ecc8318c704b852f1421d"
+    },
+    {
+      "name": "cose-base",
+      "version": "2.2.0",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/cose-base/-/cose-base-2.2.0.tgz",
+      "integrity": "sha512-AzlgcsCbUMymkADOJtQm3wO9S3ltPfYOFD5033keQn9NJzIbtnZj+UdBJe7DYml/8TdbtHJW3j58SOnKhWY/5g==",
+      "license_file": "licenses/cose-base.txt",
+      "license_sha256": "5fb3cf4a14c3c5af6e473a192df8bca10c77754e3a0c6492c79fb92a76a5478a"
+    },
+    {
+      "name": "layout-base",
+      "version": "2.0.1",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/layout-base/-/layout-base-2.0.1.tgz",
+      "integrity": "sha512-dp3s92+uNI1hWIpPGH3jK2kxE2lMjdXdr+DH8ynZHpd6PUlH6x6cbuXnoMmiNumznqaNO31xu9e79F0uuZ0JFg==",
+      "license_file": "licenses/layout-base.txt",
+      "license_sha256": "eabb762d8a95109a39c9be3247325529a5239a7aca327d909c3ccdc41f3a06bf"
+    }
+  ],
+  "embedded_dependencies": [
+    {
+      "name": "heap",
+      "version": "0.2.7",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/heap/-/heap-0.2.7.tgz",
+      "integrity": "sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==",
+      "license_file": "licenses/heap.txt",
+      "license_sha256": "e78f28382ac236a42dcbc16caaaaf2e76da55ddc67053a8bcb3aabdfc72df9cc"
+    },
+    {
+      "name": "lodash",
+      "version": "4.18.1",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/lodash/-/lodash-4.18.1.tgz",
+      "integrity": "sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==",
+      "license_file": "licenses/lodash.txt",
+      "license_sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc"
+    },
+    {
+      "name": "gl-matrix",
+      "version": "3.4.3",
+      "license": "MIT",
+      "source": "https://registry.npmjs.org/gl-matrix/-/gl-matrix-3.4.3.tgz",
+      "integrity": "sha512-wcCp8vu8FT22BnvKVPjXa/ICBWRq/zjFfdofZy1WSpQZpphblv12/bOQLBC1rMM7SGOFS9ltVmKOHil5+Ml7gA==",
+      "license_file": "licenses/gl-matrix.txt",
+      "license_sha256": "a3b114f081227dd05a221a9cc74b8bb8afce6343b4c8ba84593fcab0fdb0c3da"
+    }
+  ],
+  "embedded_dependency_provenance": {
+    "description": "Versions of dependencies already embedded in Cytoscape's published ESM distribution; not bundled a second time.",
+    "source": "https://raw.githubusercontent.com/cytoscape/cytoscape.js/v3.34.4/package-lock.json",
+    "source_sha256": "fa7e7caee37d6735e3aa3222a624e2f864a26dcf6388223f27d7e30f6b32dbb9",
+    "extract": "scripts/viewer-vendor/cytoscape-embedded-dependencies.json"
+  },
+  "additional_notices": [
+    "licenses/jamajs-svd.txt",
+    "licenses/cytoscape-embedded-components.txt"
+  ],
+  "inputs": [
+    {
+      "path": "entry.js",
+      "sha256": "639ce0ba9b6569051fd3504aa00eef8d0b70c85bbff43bda5624d34b824e13bb"
+    },
+    {
+      "path": "node_modules/cose-base/cose-base.js",
+      "sha256": "7cae9509bd36235a63a85e71c8d9fa2cd0bc1d0c1ecc5b5a737976f39d040ddf"
+    },
+    {
+      "path": "node_modules/cytoscape-fcose/cytoscape-fcose.js",
+      "sha256": "4b1cab218d74996aa59cd8473f9239cc6398b8c1774d84d7e59ad9a68959cb57"
+    },
+    {
+      "path": "node_modules/cytoscape/dist/cytoscape.esm.mjs",
+      "sha256": "d66d1f646101a399cc8a17c1b217190236843c4d4031957e8c25177dec91988a"
+    },
+    {
+      "path": "node_modules/layout-base/layout-base.js",
+      "sha256": "ec15ab5df9af3f20708f4faab994accf91cda71848cd5bb10a23432cc50b6745"
+    }
+  ]
+}
