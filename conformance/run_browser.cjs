@@ -14,6 +14,7 @@ const folder = process.env.GDD_BROWSER_OUTPUT
 const results = [],
   errors = [],
   requests = [],
+  localAssetRequests = [],
   consoleErrors = [];
 
 (async () => {
@@ -44,14 +45,105 @@ const results = [],
   });
   page.on("request", (request) => {
     if (!request.url().startsWith("file:")) requests.push(request.url());
+    else if (request.resourceType() !== "document") localAssetRequests.push(request.url());
   });
-  const navigate = (name) =>
-    page.goto(pathToFileURL(path.join(fixtures, name + ".html")).href);
+  const waitForGraph = () => page.waitForFunction(() =>
+    typeof GDD !== "undefined" && GDD.cy && !GDD.cy.destroyed() &&
+    GDD.cy.nodes().every((node) => {
+      const {x, y} = node.position();
+      return Number.isFinite(x) && Number.isFinite(y);
+    }),
+  );
+  const openFile = async (file) => {
+    await page.goto(pathToFileURL(file).href);
+    await waitForGraph();
+  };
+  const navigate = (name) => openFile(path.join(fixtures, name + ".html"));
   const manifest = () =>
     page
       .locator("#gdd-view-manifest")
       .evaluate((item) => JSON.parse(item.textContent));
   const selectNode = (id) => page.locator(`[data-list-node="${id}"]`).click();
+  const engineNodes = () => page.evaluate(() => GDD.cy.nodes().map((node) => ({
+    id: node.data("canonicalId"),
+    ...node.position(),
+    box: node.renderedBoundingBox({includeLabels: true, includeOverlays: false}),
+  })));
+  const camera = () => page.evaluate(() => ({zoom: GDD.cy.zoom(), pan: GDD.cy.pan()}));
+  const canvasPoint = async (kind, id) => {
+    await page.locator("#graph").scrollIntoViewIfNeeded();
+    return page.evaluate(({kind, id}) => {
+      const item = kind === "node" ? GDD.nodeElement(id) : GDD.bundleElement(id);
+      if (item.empty()) throw new Error(`Missing ${kind}: ${id}`);
+      const point = kind === "node" ? item.renderedPosition() : item.renderedMidpoint();
+      const rect = document.getElementById("graph").getBoundingClientRect();
+      return {x: rect.left + point.x, y: rect.top + point.y};
+    }, {kind, id});
+  };
+  const clickNode = async (id) => {
+    const point = await canvasPoint("node", id);
+    await page.mouse.click(point.x, point.y);
+  };
+  const bundleKey = (from, to) => page.evaluate(({from, to}) => {
+    const bundle = GDD.projection.bundles.find((item) => item.from === from && item.to === to);
+    if (!bundle) throw new Error(`Missing bundle: ${from} → ${to}`);
+    return bundle.key;
+  }, {from, to});
+  const assertProjectionIdentity = async () => {
+    const m = await manifest();
+    const engine = await page.evaluate(() => ({
+      nodes: GDD.cy.nodes().map((item) => item.data("canonicalId")).sort(),
+      bundles: GDD.cy.edges().map((item) => item.data("bundleKey")).sort(),
+      expectedBundles: GDD.projection.bundles.map((item) => item.key).sort(),
+      model: GDD.model,
+      embedded: JSON.parse(document.getElementById("gdd-data").textContent).model,
+    }));
+    assert.deepEqual(engine.model, engine.embedded, "Rendering mutated the canonical model");
+    assert.deepEqual(engine.nodes, m.glyphs.map((item) => item.id).sort());
+    assert.deepEqual(engine.bundles, engine.expectedBundles);
+    const represented = m.glyphs.flatMap((item) => item.node_ids).sort();
+    assert.deepEqual(represented, m.shown_nodes);
+    assert.equal(new Set(represented).size, represented.length);
+    const relations = m.bundles.flatMap((item) => item.edge_ids).concat(m.folded_internal_edges).sort();
+    assert.deepEqual(relations, m.shown_edges);
+    assert.equal(new Set(relations).size, relations.length);
+  };
+  const communityGeometry = () => page.evaluate(() => {
+    const rect = document.getElementById("graph").getBoundingClientRect();
+    return [...document.querySelectorAll("#community-layer path[data-community-id]")].map((path) => {
+      const members = JSON.parse(path.dataset.members);
+      const inverse = path.getScreenCTM().inverse();
+      const outside = members.filter((id) => {
+        const representative = GDD.projection.representatives.get(id);
+        const node = GDD.nodeElement(representative);
+        if (node.empty()) return true;
+        const position = node.renderedPosition();
+        const local = new DOMPoint(rect.left + position.x, rect.top + position.y).matrixTransform(inverse);
+        return !path.isPointInFill(local);
+      });
+      const box = path.getBBox();
+      const id = path.dataset.communityId;
+      const expected = [...new Set(GDD.model.edges.filter((edge) =>
+        edge.relation === "member_of" && edge.to === id && GDD.projection.nodes.includes(edge.from),
+      ).map((edge) => edge.from))].sort();
+      return {id, members, expected, outside, d: path.getAttribute("d"), width: box.width, height: box.height};
+    });
+  });
+  const assertCommunityHeadings = async () => {
+    const headings = await page.locator("#community-layer text[data-community-id]").evaluateAll((items) =>
+      items.map((item) => ({id: item.dataset.communityId, ...item.getBoundingClientRect().toJSON()})),
+    );
+    for (const heading of headings)
+      assert.ok(heading.height >= 12 && heading.width > 0,
+        `Community heading shrank below readable size: ${heading.id}`);
+    for (let i = 0; i < headings.length; i++)
+      for (let j = i + 1; j < headings.length; j++) {
+        const a = headings[i], b = headings[j];
+        assert.ok(a.right <= b.left + 0.5 || b.right <= a.left + 0.5 ||
+          a.bottom <= b.top + 0.5 || b.bottom <= a.top + 0.5,
+          "Community headings overlap");
+      }
+  };
   async function test(id, action) {
     try {
       await action();
@@ -65,14 +157,16 @@ const results = [],
     await fs.mkdir(portableDirectory);
     const portable = path.join(portableDirectory, "graph.html");
     await fs.copyFile(path.join(fixtures, "fixture.html"), portable);
-    await page.goto(pathToFileURL(portable).href);
+    await openFile(portable);
     assert.equal(await page.locator("html").getAttribute("lang"), "en");
     assert.equal(await page.title(), "Viewer fixture · GDD");
     assert.equal((await manifest()).shown_nodes.length, 6);
-    assert.equal(await page.locator("[data-node-id]").count(), 6);
+    assert.equal((await engineNodes()).length, 6);
+    assert.equal(await page.locator("script[src]").count(), 0);
+    assert.equal(await page.locator("link[rel=stylesheet][href]").count(), 0);
   });
   await test("hostile-text-and-canvas-selection", async () => {
-    await page.locator('[data-node-id="constructor"] .node-glyph').click();
+    await clickNode("constructor");
     const behavior = await page
       .locator("#detail details[open] pre")
       .first()
@@ -85,7 +179,7 @@ const results = [],
     assert.equal(behavior, expected);
     assert.equal(await page.evaluate(() => window.__gddPwned), undefined);
     assert.equal(await page.locator("img").count(), 0);
-    assert.equal(await page.locator("script").count(), 3);
+    assert.equal(await page.locator("script[src]").count(), 0);
   });
   await test("keyboard-inspection", async () => {
     await page.locator("#overview").click();
@@ -116,40 +210,17 @@ const results = [],
       ).edge_ids,
       ["edge.reverse"],
     );
-    const group = page
-      .locator(".edge-group")
-      .filter({ has: page.locator("title", { hasText: "edge.call_one:" }) });
-    const point = await group.locator(".edge-hit").evaluate((item) => {
-      const p = item.getPointAtLength(item.getTotalLength() / 2),
-        matrix = item.getScreenCTM();
-      return {
-        x: p.x * matrix.a + p.y * matrix.c + matrix.e,
-        y: p.x * matrix.b + p.y * matrix.d + matrix.f,
-      };
-    });
+    const key = await bundleKey("constructor", "action.second");
+    const point = await canvasPoint("edge", key);
     await page.mouse.click(point.x, point.y);
     const text = await page.locator("#detail").innerText();
     assert.ok(text.includes("DIRECTED RELATION BUNDLE"));
     forward.edge_ids.forEach((id) => assert.ok(text.includes(id)));
-    assert.equal(
-      await group.locator(".edge-path").getAttribute("marker-end"),
-      null,
-    ); // Marker is supplied by stylesheet.
-    assert.ok(
-      (
-        await group
-          .locator(".edge-path")
-          .evaluate((item) => getComputedStyle(item).markerEnd)
-      ).includes("arrow"),
-    );
+    assert.notEqual(await page.evaluate((id) => GDD.bundleElement(id).style("target-arrow-shape"), key), "none");
   });
   await test("self-loop-is-inspectable", async () => {
-    const group = page
-      .locator(".edge-group")
-      .filter({ has: page.locator("title", { hasText: "edge.loop:" }) });
-    assert.ok(
-      (await group.locator(".edge-path").getAttribute("d")).includes(" C "),
-    );
+    const key = await bundleKey("constructor", "constructor");
+    assert.equal(await page.evaluate((id) => GDD.bundleElement(id).isLoop(), key), true);
     await page.locator("#tab-edges").click();
     await page.locator('[data-list-edge="edge.loop"]').click();
     assert.ok(
@@ -169,7 +240,7 @@ const results = [],
   await test("scenario-reveal-as-first-action", async () => {
     await navigate("fixture");
     await page.locator("#scenarios").check();
-    assert.equal(await page.locator("[data-node-id]").count(), 7);
+    assert.equal((await engineNodes()).length, 7);
     assert.equal((await manifest()).shown_nodes.length, 7);
   });
   await test("kind-search-and-empty-filter", async () => {
@@ -203,10 +274,7 @@ const results = [],
   await test("overlapping-community-folding-is-lossless", async () => {
     await page.locator("#reset").click();
     await page.locator("#fold").check();
-    assert.equal(
-      await page.locator('[data-node-id="community.backend"] .node-kind').textContent(),
-      "folded community",
-    );
+    assert.match(await page.evaluate(() => GDD.nodeElement("community.backend").data("kindLabel")), /folded community/i);
     const m = await manifest();
     assert.equal(m.shown_nodes.length, 7);
     assert.equal(m.shown_edges.length, 9);
@@ -234,36 +302,30 @@ const results = [],
       await page.locator('.object-row[aria-pressed="true"]').count(),
       0,
     );
-    const before = await page.locator("#viewport").getAttribute("transform");
+    const before = await camera();
     await page.locator("#zoom-in").click();
-    assert.notEqual(
-      await page.locator("#viewport").getAttribute("transform"),
-      before,
-    );
-    const target = page.locator('[data-node-id="constructor"]'),
-      start = await target.getAttribute("transform");
-    const box = await target.locator(".node-glyph").boundingBox();
-    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    assert.notDeepEqual(await camera(), before);
+    const start = await page.evaluate(() => GDD.nodeElement("constructor").position());
+    const point = await canvasPoint("node", "constructor");
+    await page.mouse.move(point.x, point.y);
     await page.mouse.down();
-    await page.mouse.move(box.x + box.width / 2 + 20, box.y + box.height / 2, {
+    await page.mouse.move(point.x + 20, point.y, {
       steps: 20,
     });
     await page.mouse.up();
-    assert.notEqual(await target.getAttribute("transform"), start);
+    assert.notDeepEqual(await page.evaluate(() => GDD.nodeElement("constructor").position()), start);
     assert.equal(
       await page.locator("#detail .detail-tag").textContent(),
       "Model overview",
     );
-    const camera = await page.locator("#viewport").getAttribute("transform"),
-      svg = await page.locator("#graph").boundingBox();
-    await page.mouse.move(svg.x + 15, svg.y + svg.height / 2);
+    const beforePan = await camera(), graph = await page.locator("#graph").boundingBox();
+    await page.mouse.move(graph.x + 15, graph.y + 25);
     await page.mouse.down();
-    await page.mouse.move(svg.x + 35, svg.y + svg.height / 2 + 30);
+    await page.mouse.move(graph.x + 40, graph.y + 55, {steps: 10});
     await page.mouse.up();
-    assert.notEqual(
-      await page.locator("#viewport").getAttribute("transform"),
-      camera,
-    );
+    assert.notDeepEqual(await camera(), beforePan);
+    for (const area of await communityGeometry())
+      assert.deepEqual(area.outside, [], `Community area lost alignment after camera movement: ${area.id}`);
     await page.locator("#fit").click();
     assert.equal((await manifest()).shown_nodes.length, 7);
   });
@@ -408,7 +470,7 @@ const results = [],
   await test("mobile-selection-reveals-details-without-filter-jumps", async () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await navigate("fixture");
-    await page.locator('[data-node-id="constructor"] .node-glyph').click();
+    await clickNode("constructor");
     assert.equal(
       await page.locator("#detail .canonical-id").textContent(),
       "constructor",
@@ -447,6 +509,10 @@ const results = [],
       await page.setViewportSize(size);
       await navigate("concert");
       const checkPanels = async () => {
+        const controlSelectors = [
+          "#search", "#kind", "#relation", "#community", "#scenarios", "#fold",
+          ".list-tabs", "#object-list", "#reset", "#show-communities",
+        ];
         const layout = await page.evaluate(() => {
           const rect = (selector) => {
             const { left, right, top, bottom, height } = document
@@ -459,21 +525,10 @@ const results = [],
             header: rect("header"),
             main: rect("main"),
             footer: rect("footer"),
-            controls: [
-              "#search",
-              "#kind",
-              "#relation",
-              "#community",
-              "#scenarios",
-              "#fold",
-              ".list-tabs",
-              "#object-list",
-              "#reset",
-            ].map(rect),
             pageWidth: document.documentElement.scrollWidth,
           };
         });
-        const { panels, header, main, footer, controls, pageWidth } = layout;
+        const { panels, header, main, footer, pageWidth } = layout;
         const atSize = `${size.width}x${size.height}`;
         assert.ok(pageWidth <= size.width, `Horizontal overflow at ${atSize}`);
         assert.ok(
@@ -501,13 +556,22 @@ const results = [],
               `Overlapping panels at ${size.width}x${size.height}`,
             );
           }
-        const explorer = panels[1];
-        for (const control of controls)
+        for (const selector of controlSelectors) {
+          // Short screens may scroll the explorer; every control must be reachable.
+          await page.locator(selector).scrollIntoViewIfNeeded();
+          const {control, explorer} = await page.evaluate((selector) => {
+            const rect = (item) => {
+              const {top, bottom} = item.getBoundingClientRect();
+              return {top, bottom};
+            };
+            return {control: rect(document.querySelector(selector)), explorer: rect(document.querySelector(".explorer"))};
+          }, selector);
           assert.ok(
-            control.top >= explorer.top &&
+            control.top >= explorer.top - 0.5 &&
               control.bottom <= explorer.bottom + 0.5,
-            `Control outside explorer at ${atSize}`,
+            `Unreachable explorer control ${selector} at ${atSize}`,
           );
+        }
         if (size.width === 800)
           assert.ok(panels[0].height <= size.height * 0.65 + 1);
       };
@@ -627,7 +691,7 @@ const results = [],
     await page.setViewportSize({ width: 1440, height: 1000 });
   });
   await test("component-boundary-rationale-and-contract-navigation", async () => {
-    await page.goto(pathToFileURL(path.join(root, "examples/concert-0.3.graph.html")).href);
+    await navigate("concert-0.3");
     await selectNode("component.reservations");
     const section = page.locator(".detail-section").filter({
       has: page.getByRole("heading", { name: "Component responsibility and boundary rationale", exact: true }),
@@ -656,13 +720,7 @@ const results = [],
     await test(`${fixture}-stay-separated-with-readable-labels`, async () => {
       await page.setViewportSize({width: 1600, height: 1000});
       await navigate(fixture);
-      const collect = () => page.evaluate(() => [...document.querySelectorAll(".node-group")].map((node) => ({
-        id: node.dataset.nodeId,
-        x: node.transform.baseVal.getItem(0).matrix.e,
-        y: node.transform.baseVal.getItem(0).matrix.f,
-        boxes: [".node-glyph", ".node-label", ".node-kind"].map((selector) => node.querySelector(selector).getBoundingClientRect().toJSON()),
-      })));
-      const nodes = await collect();
+      const nodes = await engineNodes();
       assert.equal(nodes.length, fixture === "clusters" ? 30 : 27);
       assert.ok(nodes.every((node) => Number.isFinite(node.x) && Number.isFinite(node.y)));
       const groups = [0, 1, 2].map((group) => {
@@ -678,26 +736,132 @@ const results = [],
             "Community/component clusters collapsed into one mass");
       for (let i = 0; i < nodes.length; i++)
         for (let j = i + 1; j < nodes.length; j++)
-          for (const a of nodes[i].boxes)
-            for (const b of nodes[j].boxes)
-              assert.ok(Math.min(a.right, b.right) - Math.max(a.left, b.left) <= 0.5 || Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) <= 0.5,
-                `Visible node/label collision: ${nodes[i].id}, ${nodes[j].id}`);
+          {
+            const a = nodes[i].box, b = nodes[j].box;
+            assert.ok(Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1) <= 0.5 || Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1) <= 0.5,
+              `Visible node/label collision: ${nodes[i].id}, ${nodes[j].id}`);
+          }
+      if (fixture === "clusters") await assertCommunityHeadings();
       await page.screenshot({path: path.join(folder, `${fixture}-layout.png`)});
       const before = await manifest();
       await page.reload();
-      assert.deepEqual((await collect()).map(({id, x, y}) => ({id, x, y})), nodes.map(({id, x, y}) => ({id, x, y})));
+      await waitForGraph();
+      assert.deepEqual((await engineNodes()).map(({id, x, y}) => ({id, x, y})), nodes.map(({id, x, y}) => ({id, x, y})));
       assert.deepEqual(await manifest(), before);
       await page.locator("#search").fill("Group 0");
-      const filtered = await collect();
+      const filtered = await engineNodes();
       assert.ok(filtered.length < nodes.length);
       assert.ok(filtered.every((node) => nodes.some((original) => original.id === node.id && original.x === node.x && original.y === node.y)),
         "Filtering unexpectedly moved retained nodes");
     });
   }
+  await test("community-areas-labels-and-shared-node-identity", async () => {
+    await navigate("overlap");
+    const before = await manifest();
+    await assertProjectionIdentity();
+    const areas = await communityGeometry();
+    assert.deepEqual(areas.map((area) => area.id).sort(), ["community.group0", "community.group1", "community.group2"]);
+    for (const area of areas) {
+      assert.ok(area.width > 0 && area.height > 0, `Empty community area: ${area.id}`);
+      assert.deepEqual(area.outside, [], `Community area misses members: ${area.id}`);
+      assert.deepEqual(area.members, area.expected, `Community area changes explicit membership: ${area.id}`);
+      assert.ok(area.members.includes("action.group0.0"), "Shared action must belong to all three areas");
+      assert.equal(new Set(area.members).size, area.members.length);
+      const label = page.locator("#community-layer text").filter({hasText: `Group ${area.id.at(-1)}`});
+      assert.equal(await label.count(), 1);
+      assert.equal(await label.isVisible(), true);
+    }
+    await assertCommunityHeadings();
+    assert.equal((await engineNodes()).filter((node) => node.id === "action.group0.0").length, 1);
+    assert.equal(before.shown_nodes.length, 30);
+    assert.equal(before.shown_edges.length, 141);
+    assert.match(await page.locator("#community-section").textContent(), /extent|membership/i);
+    await page.screenshot({path: path.join(folder, "overlapping-communities.png")});
+    await page.locator("#show-communities").uncheck();
+    assert.equal(await page.locator("#community-layer path[data-community-id]:visible").count(), 0);
+    assert.deepEqual(await manifest(), before, "Hiding visual areas changed graph semantics");
+    await page.locator("#show-communities").check();
+    assert.equal(await page.locator("#community-layer path[data-community-id]:visible").count(), 3);
+    await page.locator('#community-legend [data-community-id="community.group1"]').click();
+    assert.equal(await page.locator("#detail .canonical-id").textContent(), "community.group1");
+    await assertProjectionIdentity();
+  });
+  await test("community-areas-follow-real-node-dragging", async () => {
+    await navigate("overlap");
+    const before = await communityGeometry();
+    const point = await canvasPoint("node", "action.group0.0");
+    const original = await page.evaluate(() => GDD.nodeElement("action.group0.0").position());
+    await page.mouse.move(point.x, point.y);
+    await page.mouse.down();
+    await page.mouse.move(point.x + 65, point.y + 35, {steps: 20});
+    await page.mouse.up();
+    const moved = await page.evaluate(() => GDD.nodeElement("action.group0.0").position());
+    assert.notDeepEqual(moved, original, "Canvas node did not move");
+    await page.waitForFunction((old) => [...document.querySelectorAll("#community-layer path[data-community-id]")].some((path) => old.find((area) => area.id === path.dataset.communityId)?.d !== path.getAttribute("d")), before);
+    const after = await communityGeometry();
+    for (const area of after) {
+      assert.deepEqual(area.members, before.find((old) => old.id === area.id).members);
+      assert.deepEqual(area.members, area.expected);
+      assert.deepEqual(area.outside, [], `Dragged member escaped its community area: ${area.id}`);
+    }
+    await assertProjectionIdentity();
+  });
+  await test("community-areas-preserve-folded-and-filtered-memberships", async () => {
+    await navigate("overlap");
+    const initial = await manifest();
+    await page.locator("#fold").check();
+    await assertProjectionIdentity();
+    assert.deepEqual((await manifest()).shown_nodes, initial.shown_nodes);
+    assert.deepEqual((await manifest()).shown_edges, initial.shown_edges);
+    for (const area of await communityGeometry()) {
+      assert.ok(area.members.includes("action.group0.0"));
+      assert.deepEqual(area.members, area.expected);
+      assert.deepEqual(area.outside, [], `Folded area misses represented members: ${area.id}`);
+    }
+    await page.locator("#community").selectOption("community.group1");
+    await assertProjectionIdentity();
+    const filtered = await manifest();
+    assert.ok(filtered.shown_nodes.length < initial.shown_nodes.length);
+    assert.ok(filtered.shown_nodes.includes("action.group0.0"));
+    for (const area of await communityGeometry())
+      assert.ok(area.members.every((id) => filtered.shown_nodes.includes(id)));
+    await page.locator("#reset").click();
+    await assertProjectionIdentity();
+    assert.deepEqual((await manifest()).shown_nodes, initial.shown_nodes);
+    assert.deepEqual((await manifest()).shown_edges, initial.shown_edges);
+  });
+  await test("bounded-300-node-layout-and-canvas-interactions", async () => {
+    await page.setViewportSize({width: 1600, height: 1000});
+    await navigate("large");
+    const nodes = await engineNodes();
+    assert.equal(nodes.length, 300);
+    assert.equal(new Set(nodes.map((node) => node.id)).size, 300);
+    assert.ok(nodes.every((node) => Number.isFinite(node.x) && Number.isFinite(node.y)));
+    await assertProjectionIdentity();
+    const initial = await manifest();
+    assert.equal(initial.shown_edges.length, 1173);
+    await page.locator("#search").fill("action.group2.97");
+    await selectNode("action.group2.97");
+    assert.equal(await page.locator("#detail .canonical-id").textContent(), "action.group2.97");
+    await page.locator("#fit").click();
+    await page.locator("#overview").click();
+    await clickNode("action.group2.97");
+    assert.equal(await page.locator("#detail .canonical-id").textContent(), "action.group2.97");
+    const beforeZoom = await camera();
+    await page.locator("#zoom-in").click();
+    assert.notDeepEqual(await camera(), beforeZoom);
+    await page.locator("#reset").click();
+    await assertProjectionIdentity();
+    assert.deepEqual((await manifest()).shown_nodes, initial.shown_nodes);
+    assert.deepEqual((await manifest()).shown_edges, initial.shown_edges);
+    await page.locator("#fit").click();
+    await page.screenshot({path: path.join(folder, "bounded-300-nodes.png")});
+  });
   await test("no-script-errors-or-network", async () => {
     assert.deepEqual(errors, []);
     assert.deepEqual(consoleErrors, []);
     assert.deepEqual(requests, []);
+    assert.deepEqual(localAssetRequests, []);
   });
   const report = {
     format: "gdd-browser-conformance/0.1",
@@ -709,6 +873,7 @@ const results = [],
     errors,
     consoleErrors,
     externalRequests: requests,
+    localAssetRequests,
   };
   await fs.writeFile(
     path.join(folder, "browser-conformance.json"),
