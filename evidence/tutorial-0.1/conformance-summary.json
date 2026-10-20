@@ -23,8 +23,7 @@
     "result": "PASS",
     "original_report_path": "/tmp/gdd-tutorial-release-20261020/visualization.json",
     "original_report_sha256": "c6ad4a4c201a98ac587db2829dbd0f5996ea84fc1471d1da6ab8b879a9c5e56b",
-    "report_format": "gdd-view-conformance/0.1",
-    "case_count": 0
+    "report_format": "gdd-view-conformance/0.1"
   },
   {
     "name": "workflow",
