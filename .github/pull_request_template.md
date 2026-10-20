@@ -4,7 +4,9 @@
 
 ## Local verification
 
-<!-- List commands actually run, their results and material limits. GitHub CI is intentionally absent. -->
+<!-- List commands actually run, their results and material limits.
+scripts/check.py --quick, the full default, --matrix and --release retain a fresh summary.json and logs.
+Choose checks proportionate to the change. GitHub CI is intentionally absent. -->
 
 ## Revisions and evidence
 

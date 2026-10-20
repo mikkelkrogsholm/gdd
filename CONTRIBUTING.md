@@ -55,7 +55,37 @@ welcome; contributors remain responsible for understanding and verifying them.
 ## Check a change
 
 Verification runs locally; GitHub Actions CI is intentionally absent. For an
-ordinary change, run the checks relevant to the affected behavior. For release
+ordinary change, run the checks relevant to the affected behavior. The local
+entry point records actual interpreter versions, durations, commands and logs
+in a new temporary directory and fails on the first unsuccessful step:
+
+```sh
+uv run --no-sync python scripts/check.py --quick   # focused parser, diagnostics, tutorial, Graphify, viewer and skill checks
+uv run --no-sync python scripts/check.py           # full pytest suite and skill synchronization check
+uv run --no-sync python scripts/check.py --matrix  # full pytest on installed Python 3.11, 3.12, 3.13 and 3.14
+uv run --no-sync python scripts/check.py --release # full suite, named conformance reports, wheel build and installed verification
+```
+
+The full suite can take several minutes. `--matrix` is explicit and sequential;
+it uses isolated environments and refuses automatic Python downloads. A missing
+interpreter is a reported failure, not a skipped success. `--quick --matrix`
+runs the focused set on those interpreters. Install the desired interpreters
+separately. The matrix list is maintained in `scripts/check.py`; it describes
+the tested interpreter lines, not every future version admitted by packaging.
+The host interpreter's exact patch is retained for its matching matrix line;
+choose it with the outer `uv run --python VERSION_OR_PATH` when checking a
+particular patch. Reports always identify the interpreter actually executed.
+
+Use `--output NEW_DIRECTORY` to retain reports in a chosen location; existing
+directories are refused. `summary.json` and per-step logs provide the local
+verification record for a PR. Browser checks remain separate and opt-in.
+Passing pytest scratch directories are discarded; failing cases retain their
+temporary inputs for diagnosis. Full suites on several interpreters can use
+substantial disk space, so matrix execution is sequential.
+The release mode intentionally executes conformance cases separately to retain
+named receipts; ordinary full checks do not repeat those runners afterward.
+
+The individual commands remain available as a reference. For release
 verification, use the full set below from the repository root with a fresh
 output directory so new verification does not overwrite historical evidence:
 

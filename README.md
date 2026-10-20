@@ -50,6 +50,10 @@ checker can verify the actual implementation.
 
 ## Try the CLI
 
+For a small worked planning loop on the development checkout, follow
+[the executable tutorial](docs/tutorial.md): start with a sketch, refine its
+contract, inspect the offline graph and hand revision-bound context to an agent.
+
 This source-checkout quickstart requires Python 3.11+ and
 [uv](https://docs.astral.sh/uv/). It needs no LLM credentials, Graphify installation
 or frontend build. The generated graph works offline. These commands use a POSIX shell.

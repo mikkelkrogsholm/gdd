@@ -36,6 +36,9 @@ use CHANGELOG's Unreleased section; the maintainer chooses the next version.
    [browser checks](INSTALL.md#optional-browser-checks) when viewer/browser behavior
    changes. Record actual commands, environment and results; retain relevant
    raw reports in a fresh directory. GitHub Actions CI remains absent.
+   `uv run --no-sync python scripts/check.py --release` collects the release
+   checks in one fresh directory. Use `--matrix` explicitly for the installed
+   interpreter lines maintained in that script; it does not download Python.
 5. Commit the reviewed changes. Require a clean checkout. Build the wheel from
    that exact commit into a fresh directory and run the installed-wheel verifier:
 

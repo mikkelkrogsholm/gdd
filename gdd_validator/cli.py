@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 import sys
 
-from .loading import InputError, load_bundle, parse
+from .loading import InputError, load_bundle, parse, resolve_local_path
 from .graphify_io import import_graphify, verify_graphify, export_graphify
 from .graphify_proposal import propose_graphify
 from .report import exit_code
@@ -196,9 +196,9 @@ def main() -> int:
                 result = export_graphify(args.path, args.output)
             else:
                 try:
-                    manifest = args.path.resolve()
+                    manifest = resolve_local_path(args.path)
                     root = manifest if manifest.is_dir() else manifest.parent
-                    output_parent = args.output.parent.resolve()
+                    output_parent = resolve_local_path(args.output.parent)
                 except RuntimeError as error:
                     raise ValueError(
                         f"Cannot resolve proposal paths: {error}"

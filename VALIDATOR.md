@@ -33,6 +33,13 @@ See [installation and skill setup](INSTALL.md).
 
 ## Supported checks
 
+The JSON/YAML consumer accepts at most 256 nested containers, counting a root
+mapping or sequence as one. Greater depth yields `FORMAT_UNSUPPORTED`/UNKNOWN,
+independent of the Python parser's changing stack capacity. This is a consumer
+resource limit, not a declaration that deeper GDD documents are invalid.
+Symlink loops are invalid local paths (FAIL); genuinely missing inputs remain
+unavailable (UNKNOWN). See [consumer input limits](docs/consumer-input-limits.md).
+
 | Profile/operation | Implemented |
 | --- | --- |
 | init | Valid, explicitly unready GDD 0.3 draft; exclusive publication with no overwrite or seeded authority |
@@ -54,6 +61,12 @@ Declared imports edges are checked against architecture constraints in the model
 Readiness scopes are implementation targets: component, entity, action, screen, or machine. Rule/scenario/community cannot alone constitute an implementation-ready scope. An empty ordinary readiness scope assesses all targets, including custom nodes with unknown readiness semantics. A child includes ancestors and necessary contracts; a parent scope includes its decomposed children. Distant rules can expand read context. Communities or hop counts do not limit obligations.
 
 ## Revisions and work packages
+
+Readiness diagnostics name missing contract, behavior, boundary and interface
+details in stable order. Locations identify an existing field or its nearest
+existing parent in the owning document, including included fragments. The
+messages describe obligations; they do not fill in contract content. The
+[planning tutorial](docs/tutorial.md) demonstrates the refinement loop.
 
 ```sh
 uv run gdd snapshot examples/concert.gdd.yaml --output snapshot.json

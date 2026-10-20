@@ -7,8 +7,8 @@ import sys
 
 import pytest
 
-from gdd_validator import exit_code, render_view, verify_view
-from gdd_validator.loading import InputError, schema
+from gdd_validator import exit_code, render_view, verify_view, validate
+from gdd_validator.loading import InputError, MAX_CONTAINER_DEPTH, schema
 from gdd_validator import visualization as view
 from jsonschema import Draft202012Validator
 
@@ -143,7 +143,7 @@ def test_known_artifact_violations_remain_fail(tmp_path, tamper):
     assert exit_code(verify_view(source, output)) == 1
 
 
-@pytest.mark.parametrize("depth", [0, 20, 300])
+@pytest.mark.parametrize("depth", [0, 20, MAX_CONTAINER_DEPTH - 4])
 def test_generated_supported_artifact_reloads_exactly(tmp_path, depth):
     source = model_file(tmp_path, depth)
     before = source.read_bytes()
@@ -153,6 +153,20 @@ def test_generated_supported_artifact_reloads_exactly(tmp_path, depth):
     data = json.loads(view.PAYLOAD.findall(output.read_text())[0])
     assert output.read_text() == view.html_document(data)
     assert source.read_bytes() == before
+
+
+def test_viewer_respects_consumer_depth_before_creating_output(tmp_path):
+    # Four model containers surround this annotation's nested lists.
+    source = model_file(tmp_path, MAX_CONTAINER_DEPTH - 3)
+    before = source.read_bytes()
+    output = tmp_path / "graph.html"
+    with pytest.raises(ValueError):
+        render_view(source, output)
+    assert source.read_bytes() == before and not output.exists()
+    report = validate(source)
+    assert exit_code(report) == 2
+    assert any(d["code"] == "FORMAT_UNSUPPORTED"
+               for check in report["checks"] for d in check["diagnostics"])
 
 
 @pytest.mark.parametrize("depth", [980, 991, 995, 1200])

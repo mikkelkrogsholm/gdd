@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from gdd_validator import validate
-from gdd_validator.loading import Bundle, load_bundle, schema_checks
+from gdd_validator.loading import Bundle, MAX_CONTAINER_DEPTH, load_bundle, schema_checks
 from gdd_validator.model import validate_model
 from gdd_validator.readiness import validate_readiness
 from gdd_validator.report import aggregate
@@ -419,9 +419,26 @@ def test_extension_recursive_data_depth_is_unknown(tmp_path):
         "$ref": "#/$defs/node",
     }
     data = {}
-    for _ in range(400):
+    for _ in range(MAX_CONTAINER_DEPTH + 1):
         data = {"child": data}
     report = validate(write_extension(tmp_path, spec, data))
+    assert aggregate(report["checks"], "model") == "UNKNOWN"
+    # The explicit input capacity now stops this document before schema execution.
+    assert "FORMAT_UNSUPPORTED" in codes(report)
+
+
+def test_extension_runtime_capacity_remains_scoped_unknown(tmp_path, monkeypatch):
+    from gdd_validator import model
+
+    original = model.Draft202012Validator.iter_errors
+
+    def exhausted(self, instance, *args, **kwargs):
+        if isinstance(instance, dict) and instance.get("capacity.test") is True:
+            raise RecursionError("Simulated extension evaluator capacity")
+        return original(self, instance, *args, **kwargs)
+
+    monkeypatch.setattr(model.Draft202012Validator, "iter_errors", exhausted)
+    report = validate(write_extension(tmp_path, {"type": "object"}, {"capacity.test": True}))
     assert aggregate(report["checks"], "model") == "UNKNOWN"
     assert "EXTENSION_UNSUPPORTED" in codes(report)
 

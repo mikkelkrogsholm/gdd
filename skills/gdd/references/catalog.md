@@ -65,6 +65,8 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `conformance/design.cases.json`
 - `conformance/diagnostics.csv`
 - `conformance/graphify-cases.yaml`
+- `docs/consumer-input-limits.md`
+- `docs/tutorial.md`
 - `evidence/README.md`
 - `evidence/graphify-review.md`
 - `evidence/review-loops/README.md`

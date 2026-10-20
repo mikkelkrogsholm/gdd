@@ -10,6 +10,21 @@ imply a registry publication or a certified standard.
 Target package: 0.8.0. Standard: draft GDD 0.3 with explicit 0.2 support.
 Viewer renderer: 0.3.0.
 
+- Make JSON/YAML loading independent of interpreter recursion thresholds with
+  an explicit 256-container consumer limit. Greater depth remains UNKNOWN;
+  the GDD format and historical executions are unchanged.
+- Classify symlink loops consistently across Python versions while retaining
+  missing-source UNKNOWN and bundle containment checks.
+- Default Graphify proposal candidates to GDD 0.3; `--format gdd/0.2` retains
+  the previous candidate contract and exact legacy fixture serialization.
+  Proposals remain unaccepted sketches without invented boundary decisions.
+- Name missing readiness fields and locate existing fields or their nearest
+  existing parents, retaining diagnostic codes and aggregate results.
+- Add a small executable planning tutorial and a local check entry point with
+  focused, full, explicit interpreter-matrix and installed-wheel release modes.
+- Remove the stale package version from the Graphify guide and synchronize
+  the portable skill guidance.
+
 - Replace the custom SVG physics/rendering engine with pinned Cytoscape.js 3.34.4
   and fCoSE 2.2.0. Layout runs within visual affinity regions, followed by
   deterministic packing, without the earlier 200-figure solver cutoff.

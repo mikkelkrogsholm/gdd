@@ -14,6 +14,9 @@ in each exported HTML file; CLI users need no Node.js installation.
 
 ## Install from source
 
+After installation, [the planning tutorial](docs/tutorial.md) walks through a
+small GDD 0.3 model without an LLM or runtime service.
+
 From the repository root, with [uv](https://docs.astral.sh/uv/getting-started/installation/)
 and Python 3.11 or 3.12 available:
 

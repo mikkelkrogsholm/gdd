@@ -2,7 +2,7 @@
   "format": "gdd-skill-assets/1",
   "origin": {
     "repository": "https://github.com/mikkelkrogsholm/gdd.git",
-    "git_base_revision": "7b20907",
+    "git_base_revision": "8d86248",
     "revision_basis": "Working tree based on the recorded Git base; per-file SHA-256 identifies copied bytes, including later edits."
   },
   "files": [
@@ -21,8 +21,8 @@
     {
       "path": "references/gdd/GRAPHIFY.md",
       "source": "GRAPHIFY.md",
-      "sha256": "a1655b0e2cba42022d8c2a7d68b43cd50f4f057922cda4f9ff014d225325fb1f",
-      "bytes": 10615
+      "sha256": "16bd131b93dfad199182f5821e193896f389bc2872b3bff9a9200406480527a5",
+      "bytes": 11349
     },
     {
       "path": "references/gdd/HOST.md",
@@ -39,8 +39,8 @@
     {
       "path": "references/gdd/VALIDATOR.md",
       "source": "VALIDATOR.md",
-      "sha256": "c631884ffdd91395aa0769f60207636bf95cc2d2a08373ac1ab768d4902f5c7c",
-      "bytes": 15902
+      "sha256": "533aefa4e779c10ce099e9ce438f1b916486e9ea0a6b6ad4dbd79256aaeec6f2",
+      "bytes": 16748
     },
     {
       "path": "references/gdd/VIEWER.md",
@@ -276,6 +276,18 @@
       "from": "VALIDATOR.md",
       "href": "INSTALL.md",
       "source_target": "INSTALL.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "docs/consumer-input-limits.md",
+      "source_target": "docs/consumer-input-limits.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "docs/tutorial.md",
+      "source_target": "docs/tutorial.md",
       "role": "optional-repository-reference"
     },
     {
