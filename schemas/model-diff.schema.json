@@ -1,0 +1,419 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.dev/schemas/model-diff.schema.json",
+  "title": "Informative stable-identity model comparison",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-model-diff/0.1"
+    },
+    "base": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "spec_revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "format": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "coverage": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "path",
+        "spec_revision",
+        "format",
+        "coverage",
+        "checks"
+      ],
+      "additionalProperties": false
+    },
+    "head": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "spec_revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "format": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "coverage": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "path",
+        "spec_revision",
+        "format",
+        "coverage",
+        "checks"
+      ],
+      "additionalProperties": false
+    },
+    "comparison": {
+      "type": "object",
+      "properties": {
+        "coverage": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "semantic_changes": {
+          "type": "boolean"
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "nodes": {
+              "type": "object",
+              "properties": {
+                "added": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "removed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "changed": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "added",
+                "removed",
+                "changed"
+              ],
+              "additionalProperties": false
+            },
+            "sources": {
+              "type": "object",
+              "properties": {
+                "added": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "removed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "changed": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "added",
+                "removed",
+                "changed"
+              ],
+              "additionalProperties": false
+            },
+            "questions": {
+              "type": "object",
+              "properties": {
+                "added": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "removed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "changed": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "added",
+                "removed",
+                "changed"
+              ],
+              "additionalProperties": false
+            },
+            "edges": {
+              "type": "object",
+              "properties": {
+                "added": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "removed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "changed": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "added",
+                "removed",
+                "changed"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "nodes",
+            "sources",
+            "questions",
+            "edges"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "coverage",
+        "semantic_changes",
+        "counts"
+      ],
+      "additionalProperties": false
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "registry": {
+            "enum": [
+              "nodes",
+              "edges",
+              "sources",
+              "questions"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "change": {
+            "enum": [
+              "added",
+              "removed",
+              "changed"
+            ]
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/field"
+            }
+          },
+          "before": {},
+          "after": {}
+        },
+        "required": [
+          "registry",
+          "id",
+          "change",
+          "fields"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "metadata_changes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/field"
+      }
+    },
+    "relocated": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "registry": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "base": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "head": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "registry",
+          "id",
+          "base",
+          "head"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "advisories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "pointer": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "before": {},
+          "after": {}
+        },
+        "required": [
+          "code",
+          "id",
+          "pointer",
+          "message",
+          "before",
+          "after"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "side": {
+            "enum": [
+              "base",
+              "head"
+            ]
+          },
+          "check_id": {
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "FAIL",
+              "UNKNOWN"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "side",
+          "check_id",
+          "result",
+          "reason",
+          "diagnostics"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "exit_code": {
+      "enum": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  "required": [
+    "format",
+    "base",
+    "head",
+    "comparison",
+    "changes",
+    "metadata_changes",
+    "relocated",
+    "advisories",
+    "diagnostics",
+    "exit_code"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "field": {
+      "type": "object",
+      "properties": {
+        "pointer": {
+          "type": "string"
+        },
+        "change": {
+          "enum": [
+            "added",
+            "removed",
+            "changed"
+          ]
+        },
+        "before": {},
+        "after": {}
+      },
+      "required": [
+        "pointer",
+        "change"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

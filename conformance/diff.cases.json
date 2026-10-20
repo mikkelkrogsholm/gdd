@@ -1,0 +1,77 @@
+[
+  {
+    "id": "diff.identity",
+    "assertion": "Formatting and edge order preserve semantic equality with distinct byte revisions.",
+    "test": "tests/test_model_diff.py::test_identity_reformat_and_edge_reorder"
+  },
+  {
+    "id": "diff.fragments",
+    "assertion": "Fragment relocation is separate nonsemantic metadata.",
+    "test": "tests/test_model_diff.py::test_fragment_relocation_is_nonsemantic"
+  },
+  {
+    "id": "diff.fields",
+    "assertion": "Exact prose and type fields retain escaped JSON pointers.",
+    "test": "tests/test_model_diff.py::test_exact_fields_prose_types_and_escaped_pointer"
+  },
+  {
+    "id": "diff.registries",
+    "assertion": "Stable node, edge and question changes are identified.",
+    "test": "tests/test_model_diff.py::test_registry_add_remove_change"
+  },
+  {
+    "id": "diff.weakening",
+    "assertion": "Structural weakening and identity concerns have positive and negative controls.",
+    "test": "tests/test_model_diff.py::test_structural_advisories_positive_and_noop_negative"
+  },
+  {
+    "id": "diff.contracts",
+    "assertion": "Contract removal differs from additive strengthening.",
+    "test": "tests/test_model_diff.py::test_contract_removal_advisory_and_addition_negative"
+  },
+  {
+    "id": "diff.verifiers",
+    "assertion": "Retained verification and expanded reach do not warn.",
+    "test": "tests/test_model_diff.py::test_retained_verifier_and_expanding_forbid_not_warned"
+  },
+  {
+    "id": "diff.partial",
+    "assertion": "Partial inputs never fabricate absent identities.",
+    "test": "tests/test_model_diff.py::test_partial_inputs_do_not_fabricate_absence"
+  },
+  {
+    "id": "diff.errors",
+    "assertion": "Unavailable and known invalid inputs retain distinct exits.",
+    "test": "tests/test_model_diff.py::test_unknown_and_invalid_inputs_visible"
+  },
+  {
+    "id": "diff.legacy",
+    "assertion": "Legacy to current format changes are explicit.",
+    "test": "tests/test_model_diff.py::test_legacy_to_current_format"
+  },
+  {
+    "id": "diff.schema",
+    "assertion": "Current, incomplete and invalid output conforms locally.",
+    "test": "tests/test_model_diff.py::test_result_schema_covers_partial_invalid_and_changed"
+  },
+  {
+    "id": "diff.readonly",
+    "assertion": "Comparison is deterministic and read only.",
+    "test": "tests/test_model_diff.py::test_schema_determinism_and_read_only"
+  },
+  {
+    "id": "diff.concert",
+    "assertion": "Real archived requirement change exposes the principal limit.",
+    "test": "tests/test_model_diff.py::test_archived_requirement_change_exposes_limit"
+  },
+  {
+    "id": "diff.extensions",
+    "assertion": "Extension content changes count; package formatting does not.",
+    "test": "tests/test_model_diff.py::test_extension_semantics_not_asset_packaging"
+  },
+  {
+    "id": "diff.source_identity",
+    "assertion": "Source role changes are identity review concerns, not historical reuse proof.",
+    "test": "tests/test_model_diff.py::test_source_role_change_has_identity_review"
+  }
+]
