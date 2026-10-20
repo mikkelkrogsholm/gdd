@@ -1,0 +1,204 @@
+{
+  "format": "gdd-design-conformance/0.3",
+  "tool": "gdd-validator/0.8.0",
+  "cases": [
+    {
+      "id": "case.design.complete_boundary_readiness",
+      "assertion": "complete boundary readiness",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.partial_boundary_sketch_and_readiness",
+      "assertion": "partial boundary sketch and readiness",
+      "result": "PASS",
+      "test_instances": 3
+    },
+    {
+      "id": "case.design.blank_boundary_is_invalid",
+      "assertion": "blank boundary is invalid",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "case.design.explicit_empty_exclusions",
+      "assertion": "explicit empty exclusions",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.unrelated_incomplete_component",
+      "assertion": "unrelated incomplete component",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.legacy_semantics_preserved",
+      "assertion": "legacy semantics preserved",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.new_fields_cannot_silently_enter_legacy_format",
+      "assertion": "new fields cannot silently enter legacy format",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.fragment_version_must_match",
+      "assertion": "fragment version must match",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.public_interface_requires_matching_owner",
+      "assertion": "public interface requires matching owner",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.cross_component_private_call",
+      "assertion": "cross component private call",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.internal_private_call_allowed",
+      "assertion": "internal private call allowed",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.unresolved_call_valid_sketch_unready",
+      "assertion": "unresolved call valid sketch unready",
+      "result": "PASS",
+      "test_instances": 3
+    },
+    {
+      "id": "case.design.postconditions_required_in_read_context",
+      "assertion": "postconditions required in read context",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.unrelated_private_call_does_not_block_readiness",
+      "assertion": "unrelated private call does not block readiness",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.community_overlap_and_owner_derived_membership",
+      "assertion": "community overlap and owner derived membership",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.community_membership_does_not_grant_access",
+      "assertion": "community membership does not grant access",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.scoped_boundary_view_declares_omitted_calls",
+      "assertion": "scoped boundary view declares omitted calls",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.unrelated_unresolved_call_not_in_every_community",
+      "assertion": "unrelated unresolved call not in every community",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.boundary_and_contract_changes_change_revision",
+      "assertion": "boundary and contract changes change revision",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.refinement_preserves_parent_boundary_context",
+      "assertion": "refinement preserves parent boundary context",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "case.design.packet_contains_canonical_boundaries_and_review_topics",
+      "assertion": "packet contains canonical boundaries and review topics",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.packet_omission_rejected",
+      "assertion": "packet omission rejected",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "case.design.boundary_change_invalidates_plan",
+      "assertion": "boundary change invalidates plan",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.broad_principle_is_advisory",
+      "assertion": "broad principle is advisory",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "case.design.precise_design_rule_can_still_block",
+      "assertion": "precise design rule can still block",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.advisory_review_complete_even_with_findings",
+      "assertion": "advisory review complete even with findings",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.review_unknown_is_explicit",
+      "assertion": "review unknown is explicit",
+      "result": "PASS",
+      "test_instances": 8
+    },
+    {
+      "id": "case.design.invalid_review_cannot_be_complete",
+      "assertion": "invalid review cannot be complete",
+      "result": "PASS",
+      "test_instances": 6
+    },
+    {
+      "id": "case.design.invalid_model_cannot_supply_complete_review",
+      "assertion": "invalid model cannot supply complete review",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.complete_review_does_not_replace_blocking_evidence",
+      "assertion": "complete review does not replace blocking evidence",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.new_viewer_and_cli_operations",
+      "assertion": "new viewer and cli operations",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.design.versioned_schema_definitions_align",
+      "assertion": "versioned schema definitions align",
+      "result": "PASS",
+      "test_instances": 1
+    }
+  ],
+  "case_count": 32,
+  "test_instances": 52,
+  "pytest_exit": 0,
+  "passed": true,
+  "stdout": "....................................................                     [100%]\n52 passed in 9.15s\n",
+  "stderr": ""
+}

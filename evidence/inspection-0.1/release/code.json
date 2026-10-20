@@ -1,0 +1,180 @@
+{
+  "format": "gdd-code-conformance/0.1",
+  "tool": "gdd-validator/0.8.0",
+  "cases": [
+    {
+      "id": "case.code.independent_package_clean_injected_repaired",
+      "assertion": "independent package clean injected repaired",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.copied_concert_clean_injected_repaired_missing",
+      "assertion": "copied concert clean injected repaired missing",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.direct_and_shortest_transitive_paths",
+      "assertion": "direct and shortest transitive paths",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "case.code.self_import_is_a_real_cycle",
+      "assertion": "self import is a real cycle",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.unresolved_bindings_prevent_pass",
+      "assertion": "unresolved bindings prevent pass",
+      "result": "PASS",
+      "test_instances": 5
+    },
+    {
+      "id": "case.code.unrelated_historical_binding_does_not_block_current_mapping",
+      "assertion": "unrelated historical binding does not block current mapping",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.supported_resource_expansion",
+      "assertion": "supported resource expansion",
+      "result": "PASS",
+      "test_instances": 3
+    },
+    {
+      "id": "case.code.unsafe_binding_resource_is_unknown",
+      "assertion": "unsafe binding resource is unknown",
+      "result": "PASS",
+      "test_instances": 4
+    },
+    {
+      "id": "case.code.excluded_endpoint_is_explicit_and_unresolved",
+      "assertion": "excluded endpoint is explicit and unresolved",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.source_symlink_is_not_followed",
+      "assertion": "source symlink is not followed",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.source_uncertainty_is_unknown",
+      "assertion": "source uncertainty is unknown",
+      "result": "PASS",
+      "test_instances": 3
+    },
+    {
+      "id": "case.code.unbound_import_into_bound_component_is_unknown",
+      "assertion": "unbound import into bound component is unknown",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.witnessed_violation_wins_over_unrelated_parse_uncertainty",
+      "assertion": "witnessed violation wins over unrelated parse uncertainty",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.observation_never_executes_project_code",
+      "assertion": "observation never executes project code",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.unsupported_selection_has_no_false_pass",
+      "assertion": "unsupported selection has no false pass",
+      "result": "PASS",
+      "test_instances": 3
+    },
+    {
+      "id": "case.code.checked_resource_revision_must_match_current_bytes",
+      "assertion": "checked resource revision must match current bytes",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.scoped_transitive_rule_retains_intermediate_inventory",
+      "assertion": "scoped transitive rule retains intermediate inventory",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.noncomponent_binding_requires_unique_explicit_owner",
+      "assertion": "noncomponent binding requires unique explicit owner",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "case.code.additional_records_cannot_override_declared_mapping",
+      "assertion": "additional records cannot override declared mapping",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "case.code.successful_observation_is_deterministic_and_preserves_inputs",
+      "assertion": "successful observation is deterministic and preserves inputs",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.transitive_witness_chooses_shortest_available_path",
+      "assertion": "transitive witness chooses shortest available path",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.no_selected_constraints_cannot_produce_vacuous_pass",
+      "assertion": "no selected constraints cannot produce vacuous pass",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.fixed_infrastructure_is_excluded_from_source_inventory",
+      "assertion": "fixed infrastructure is excluded from source inventory",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "case.code.already_declared_records_are_not_loaded_twice",
+      "assertion": "already declared records are not loaded twice",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "code.frozen-precedence",
+      "assertion": "Frozen finder precedence prevents false source collision violations; relative modules keep local meaning.",
+      "result": "PASS",
+      "test_instances": 4
+    },
+    {
+      "id": "code.excluded-import",
+      "assertion": "An omitted known local import cannot turn unresolved coverage into PASS.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "code.inventory-drift",
+      "assertion": "Changed source bytes invalidate a witnessed path and prevent PASS.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "code.output-schema",
+      "assertion": "PASS, FAIL and UNKNOWN observations validate against their separate informative contract.",
+      "result": "PASS",
+      "test_instances": 4
+    }
+  ],
+  "case_count": 28,
+  "test_instances": 50,
+  "pytest_exit": 0,
+  "passed": true,
+  "stdout": "..................................................                       [100%]\n50 passed in 0.56s\n",
+  "stderr": ""
+}

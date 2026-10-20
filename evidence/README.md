@@ -1,5 +1,9 @@
 # Verification evidence and English presentation
 
+The [read-only inspection review](inspection-0.1/README.md) records `gdd status`
+and `gdd impact`, separate assessment and coverage contracts, explained dependency
+witnesses, full local conformance, focused Python 3.11–3.14 checks and a fresh wheel.
+
 The [static Python code-observer review](code-check-0.1/README.md) records
 `gdd check-code`, current binding mappings, direct/transitive architecture
 controls, focused Python 3.11–3.14 coverage, full local conformance and an
