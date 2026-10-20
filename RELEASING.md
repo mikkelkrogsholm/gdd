@@ -22,6 +22,15 @@ Published tags are immutable. Never force-update or reuse a tag. A correction
 to published release contents requires a new package version and tag. Contributors
 use CHANGELOG's Unreleased section; the maintainer chooses the next version.
 
+## Compatibility policy under discussion
+
+[The proposed compatibility and 1.0 policy](docs/proposals/version-policy.md)
+records four pending decisions for issue #15: the 0.2 lifecycle, independent
+contract versions, tested Python coverage and measurable 1.0 criteria. It also
+links the actual historical interpreter verification. The proposal does not
+change this policy, remove legacy support or authorize a release. Existing
+version and publication rules above remain in force until decisions are recorded.
+
 ## Prepare the release locally
 
 1. Choose the package version. Update `pyproject.toml`,

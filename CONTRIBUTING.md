@@ -102,15 +102,17 @@ uv run --no-sync python conformance/run_design.py --output "$GDD_CHECK_DIR/desig
 uv run --no-sync python conformance/run_code.py --output "$GDD_CHECK_DIR/code.json"
 uv run --no-sync python conformance/run_status.py --output "$GDD_CHECK_DIR/status.json"
 uv run --no-sync python conformance/run_impact.py --output "$GDD_CHECK_DIR/impact.json"
+uv run --no-sync python conformance/run_diff.py --output "$GDD_CHECK_DIR/diff.json"
 uv build --wheel --out-dir "$GDD_CHECK_DIR/dist"
 uv run --no-sync python conformance/verify_readiness_wheel.py "$GDD_CHECK_DIR"/dist/*.whl --output "$GDD_CHECK_DIR/installed-wheel.json"
 ```
 
 For viewer interactions or browser behavior, also run the optional browser
 recipe in [INSTALL.md](INSTALL.md). Artifact-byte verification and browser
-interaction verification establish different facts. The recorded local core
-checks cover Python 3.11 and 3.12 on macOS. Identify the runtime and environment
-of new executions explicitly.
+interaction verification establish different facts. See the historical
+[interpreter coverage](docs/proposals/version-policy.md#python-verification-and-admission)
+for exact patches and full versus focused checks. Identify the runtime and
+environment of new executions explicitly.
 
 Keep tests focused on observable behavior and meaningful failure controls.
 Use FAIL for a demonstrated violation and UNKNOWN for missing or unsupported
@@ -138,14 +140,11 @@ request. Include reproducible commands and material limits; a screenshot or
 worker's PASS statement alone is insufficient evidence. Keep unrelated user
 changes and historical fixtures intact.
 
-Package, standard and viewer versions are separate. Update package metadata,
-the lockfile and runtime version references together for a package release.
-Change a standard or renderer version only when that contract changes; preserve
-explicit legacy compatibility. Record the resulting scope in
-[CHANGELOG.md](CHANGELOG.md). Describe user-visible changes in the Unreleased
-section; the maintainer assigns a release version. Build and check the exact wheel
-before proposing publication. [RELEASING.md](RELEASING.md) defines version tags,
-release checks and publication. Run artifact verification locally.
+[RELEASING.md](RELEASING.md) defines the active version, compatibility, tag,
+local release-check and publication rules. Its linked policy proposal records
+pending decisions without changing today's support. Describe user-visible
+changes in [CHANGELOG.md](CHANGELOG.md)'s Unreleased section; the maintainer
+assigns the release version.
 
 The maintainer selected the [MIT License](LICENSE) for GDD's code and associated
 documentation. Contributions are accepted under that license; preserve existing
