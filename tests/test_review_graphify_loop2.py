@@ -214,12 +214,29 @@ def test_proposal_api_rejects_circular_input_with_controlled_error(proposal_inpu
         propose_graphify(folder, mapping, format="gdd/0.2")
 
 
-def test_proposal_api_depth_exhaustion_is_a_controlled_error(proposal_inputs):
+def test_proposal_api_deep_invalid_mapping_is_rejected_before_io(proposal_inputs, monkeypatch):
     folder, mapping = proposal_inputs
     nested = "leaf"
     for _ in range(2000):
         nested = [nested]
     mapping["extra"] = nested
+    monkeypatch.setattr(
+        "gdd_validator.graphify_proposal.load_observations",
+        lambda _: pytest.fail("Invalid mapping must be rejected before bundle IO"),
+    )
+    # Interpreter JSON capacities differ; either serialization or the schema
+    # rejects this input, without exposing an uncontrolled recursion failure.
+    with pytest.raises(ValueError, match="JSON|Invalid explicit mapping"):
+        propose_graphify(folder, mapping, format="gdd/0.2")
+
+
+def test_proposal_api_depth_exhaustion_is_a_controlled_error(proposal_inputs, monkeypatch):
+    folder, mapping = proposal_inputs
+
+    def exhausted(*args, **kwargs):
+        raise RecursionError("Simulated serializer capacity exhaustion")
+
+    monkeypatch.setattr("gdd_validator.graphify_proposal.json.dumps", exhausted)
     with pytest.raises(ValueError, match="JSON"):
         propose_graphify(folder, mapping, format="gdd/0.2")
 
