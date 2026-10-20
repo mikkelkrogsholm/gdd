@@ -54,13 +54,15 @@
       "type": [
         "string",
         "null"
-      ]
+      ],
+      "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
     },
     "code_revision": {
       "type": [
         "string",
         "null"
-      ]
+      ],
+      "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
     },
     "scope": {
       "type": "array",
@@ -98,7 +100,7 @@
       "type": "object",
       "additionalProperties": {
         "type": "string",
-        "pattern": "^[a-f0-9]{64}$"
+        "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
       }
     },
     "bindings": {
@@ -144,7 +146,7 @@
           },
           "record_revision": {
             "type": "string",
-            "pattern": "^sha256:[a-f0-9]{64}$"
+            "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
           }
         },
         "required": [

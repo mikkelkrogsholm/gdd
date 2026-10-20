@@ -2,7 +2,7 @@
   "format": "gdd-skill-assets/1",
   "origin": {
     "repository": "https://github.com/mikkelkrogsholm/gdd.git",
-    "git_base_revision": "8155536",
+    "git_base_revision": "ea2b34e",
     "revision_basis": "Working tree based on the recorded Git base; per-file SHA-256 identifies copied bytes, including later edits."
   },
   "files": [
@@ -81,8 +81,8 @@
     {
       "path": "references/gdd/schemas/code-observation.schema.json",
       "source": "schemas/code-observation.schema.json",
-      "sha256": "53bbb1665f8d124e34201781cdc411d51fc9aa1e712b3e8f418130545ac4b84b",
-      "bytes": 9899
+      "sha256": "40105bfacb3697085bab9a277c930256a5c5952b244890ef4fcd910610f6b349",
+      "bytes": 10027
     },
     {
       "path": "references/gdd/schemas/design-review.schema.json",

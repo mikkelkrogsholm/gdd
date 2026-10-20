@@ -167,3 +167,15 @@ def test_explicit_legacy_model_uses_the_same_observer_without_migration(project)
     assert observe(project)['result'] == 'PASS'
     (root / 'api.py').write_text('import store\n')
     assert observe(project)['result'] == 'FAIL'
+
+
+@pytest.mark.parametrize('target', ['file_hash', 'binding_revision', 'spec_revision', 'code_revision'])
+def test_observation_hashes_reject_trailing_newlines(project, target):
+    observation = observe(project)
+    if target == 'file_hash':
+        observation['files']['api.py'] += '\n'
+    elif target == 'binding_revision':
+        observation['bindings']['binding.api']['record_revision'] += '\n'
+    else:
+        observation[target] += '\n'
+    assert list(Draft202012Validator(schema('code-observation')).iter_errors(observation))
