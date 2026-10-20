@@ -1,5 +1,9 @@
 # Verification evidence and English presentation
 
+The unreleased package 0.8.0 [CLI and first-use review](cli-first-use-0.8.0/README.md)
+records the first issue-triage milestone, full local Python 3.11–3.14 coverage,
+named conformance results, preserved offline artifacts and a fresh installed wheel.
+
 The renderer 0.3.0 [Cytoscape migration review](viewer-cytoscape-0.3.0/README.md)
 records fCoSE placement, overlapping community extents, preserved graph data,
 one-file offline export and fresh integrated browser and installed-wheel checks.

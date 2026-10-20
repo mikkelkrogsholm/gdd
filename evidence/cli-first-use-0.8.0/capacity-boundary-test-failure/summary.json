@@ -1,0 +1,57 @@
+{
+  "mode": "full",
+  "matrix": true,
+  "started_at": "2026-10-20T09:19:17.542375+00:00",
+  "host_python": "3.12.2",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "output": "/private/tmp/gdd-stabilization-full-matrix-sequential",
+  "steps": [
+    {
+      "name": "skill-sync",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/.venv/bin/python",
+        "scripts/sync_skill.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.056,
+      "stdout": "skill-sync.stdout.txt",
+      "stderr": "skill-sync.stderr.txt"
+    },
+    {
+      "name": "pytest-3.11",
+      "command": [
+        "uv",
+        "run",
+        "--isolated",
+        "--locked",
+        "--group",
+        "dev",
+        "--no-python-downloads",
+        "--python",
+        "3.11",
+        "python",
+        "-B",
+        "-c",
+        "import json, platform, sys; print('GDD_CHECK_RUNTIME=' + json.dumps({'python': platform.python_version(), 'executable': sys.executable}), flush=True); import pytest; raise SystemExit(pytest.main(sys.argv[1:]))",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "tmp_path_retention_policy=failed"
+      ],
+      "exit_code": 1,
+      "result": "FAIL",
+      "seconds": 292.873,
+      "stdout": "pytest-3.11.stdout.txt",
+      "stderr": "pytest-3.11.stderr.txt",
+      "runtime": {
+        "python": "3.11.11",
+        "executable": "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpb1wuSW/bin/python"
+      }
+    }
+  ],
+  "passed": false,
+  "finished_at": "2026-10-20T09:24:10.517653+00:00"
+}

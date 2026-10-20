@@ -1,0 +1,253 @@
+{
+  "mode": "release",
+  "matrix": true,
+  "started_at": "2026-10-20T09:40:19.325180+00:00",
+  "host_python": "3.12.12",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "output": "/private/tmp/gdd-stabilization-complete-release-matrix",
+  "steps": [
+    {
+      "name": "skill-sync",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpmd5r5P/bin/python",
+        "scripts/sync_skill.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.052,
+      "stdout": "skill-sync.stdout.txt",
+      "stderr": "skill-sync.stderr.txt"
+    },
+    {
+      "name": "pytest-3.11",
+      "command": [
+        "uv",
+        "run",
+        "--isolated",
+        "--locked",
+        "--group",
+        "dev",
+        "--no-python-downloads",
+        "--python",
+        "3.11",
+        "python",
+        "-B",
+        "-c",
+        "import json, platform, sys; print('GDD_CHECK_RUNTIME=' + json.dumps({'python': platform.python_version(), 'executable': sys.executable}), flush=True); import pytest; raise SystemExit(pytest.main(sys.argv[1:]))",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "tmp_path_retention_policy=failed"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 282.78,
+      "stdout": "pytest-3.11.stdout.txt",
+      "stderr": "pytest-3.11.stderr.txt",
+      "runtime": {
+        "python": "3.11.11",
+        "executable": "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpE4iXFN/bin/python"
+      }
+    },
+    {
+      "name": "pytest-3.12",
+      "command": [
+        "uv",
+        "run",
+        "--isolated",
+        "--locked",
+        "--group",
+        "dev",
+        "--no-python-downloads",
+        "--python",
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpmd5r5P/bin/python",
+        "python",
+        "-B",
+        "-c",
+        "import json, platform, sys; print('GDD_CHECK_RUNTIME=' + json.dumps({'python': platform.python_version(), 'executable': sys.executable}), flush=True); import pytest; raise SystemExit(pytest.main(sys.argv[1:]))",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "tmp_path_retention_policy=failed"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 368.408,
+      "stdout": "pytest-3.12.stdout.txt",
+      "stderr": "pytest-3.12.stderr.txt",
+      "runtime": {
+        "python": "3.12.12",
+        "executable": "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpPWUrfO/bin/python"
+      }
+    },
+    {
+      "name": "pytest-3.13",
+      "command": [
+        "uv",
+        "run",
+        "--isolated",
+        "--locked",
+        "--group",
+        "dev",
+        "--no-python-downloads",
+        "--python",
+        "3.13",
+        "python",
+        "-B",
+        "-c",
+        "import json, platform, sys; print('GDD_CHECK_RUNTIME=' + json.dumps({'python': platform.python_version(), 'executable': sys.executable}), flush=True); import pytest; raise SystemExit(pytest.main(sys.argv[1:]))",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "tmp_path_retention_policy=failed"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 339.819,
+      "stdout": "pytest-3.13.stdout.txt",
+      "stderr": "pytest-3.13.stderr.txt",
+      "runtime": {
+        "python": "3.13.13",
+        "executable": "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpFAlns2/bin/python"
+      }
+    },
+    {
+      "name": "pytest-3.14",
+      "command": [
+        "uv",
+        "run",
+        "--isolated",
+        "--locked",
+        "--group",
+        "dev",
+        "--no-python-downloads",
+        "--python",
+        "3.14",
+        "python",
+        "-B",
+        "-c",
+        "import json, platform, sys; print('GDD_CHECK_RUNTIME=' + json.dumps({'python': platform.python_version(), 'executable': sys.executable}), flush=True); import pytest; raise SystemExit(pytest.main(sys.argv[1:]))",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "tmp_path_retention_policy=failed"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 292.693,
+      "stdout": "pytest-3.14.stdout.txt",
+      "stderr": "pytest-3.14.stderr.txt",
+      "runtime": {
+        "python": "3.14.7",
+        "executable": "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmp5aB0Ou/bin/python"
+      }
+    },
+    {
+      "name": "standard",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpmd5r5P/bin/python",
+        "conformance/run.py",
+        "--output",
+        "/private/tmp/gdd-stabilization-complete-release-matrix/standard.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 9.47,
+      "stdout": "standard.stdout.txt",
+      "stderr": "standard.stderr.txt"
+    },
+    {
+      "name": "graphify",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpmd5r5P/bin/python",
+        "conformance/run_graphify.py",
+        "--output",
+        "/private/tmp/gdd-stabilization-complete-release-matrix/graphify.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.324,
+      "stdout": "graphify.stdout.txt",
+      "stderr": "graphify.stderr.txt"
+    },
+    {
+      "name": "visualization",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpmd5r5P/bin/python",
+        "conformance/run_visualization.py",
+        "--output",
+        "/private/tmp/gdd-stabilization-complete-release-matrix/visualization.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.913,
+      "stdout": "visualization.stdout.txt",
+      "stderr": "visualization.stderr.txt"
+    },
+    {
+      "name": "workflow",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpmd5r5P/bin/python",
+        "conformance/run_workflow.py",
+        "--output",
+        "/private/tmp/gdd-stabilization-complete-release-matrix/workflow.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 33.069,
+      "stdout": "workflow.stdout.txt",
+      "stderr": "workflow.stderr.txt"
+    },
+    {
+      "name": "design",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpmd5r5P/bin/python",
+        "conformance/run_design.py",
+        "--output",
+        "/private/tmp/gdd-stabilization-complete-release-matrix/design.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 10.001,
+      "stdout": "design.stdout.txt",
+      "stderr": "design.stderr.txt"
+    },
+    {
+      "name": "wheel-build",
+      "command": [
+        "uv",
+        "build",
+        "--wheel",
+        "--out-dir",
+        "/private/tmp/gdd-stabilization-complete-release-matrix/dist"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.5,
+      "stdout": "wheel-build.stdout.txt",
+      "stderr": "wheel-build.stderr.txt"
+    },
+    {
+      "name": "installed-wheel",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpmd5r5P/bin/python",
+        "conformance/verify_readiness_wheel.py",
+        "/private/tmp/gdd-stabilization-complete-release-matrix/dist/gdd_validator-0.8.0-py3-none-any.whl",
+        "--output",
+        "/private/tmp/gdd-stabilization-complete-release-matrix/installed-wheel.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 23.625,
+      "stdout": "installed-wheel.stdout.txt",
+      "stderr": "installed-wheel.stderr.txt"
+    }
+  ],
+  "passed": true,
+  "finished_at": "2026-10-20T10:03:01.024994+00:00"
+}

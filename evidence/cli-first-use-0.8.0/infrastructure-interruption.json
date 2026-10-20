@@ -1,0 +1,19 @@
+{
+  "recorded_at": "2026-10-20T09:19:22.281202+00:00",
+  "result": "INCOMPLETE",
+  "reason": "Parallel full suites exhausted available disk space. Remaining owned process groups were terminated; only identified own pytest scratch copies were removed. No application failure or PASS is inferred.",
+  "run_directories": [
+    "/tmp/gdd-stabilization-full-311",
+    "/tmp/gdd-stabilization-full-313",
+    "/tmp/gdd-stabilization-full-314",
+    "/tmp/gdd-stabilization-release-31212"
+  ],
+  "removed_scratch": [
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-29",
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-30",
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-31",
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-32",
+    "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-33"
+  ],
+  "recovery": "Retain failed pytest temp cases only; rerun full coverage sequentially."
+}

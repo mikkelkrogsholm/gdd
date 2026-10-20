@@ -50,3 +50,17 @@ Contributions and current discussions remain visible. Triage does not assign ano
 
 The main agent integrates focused worker commits and verifies the combined checkout. Completed local verification and its actual source identities are recorded separately; this plan does not itself establish PASS.
 
+## First milestone outcome
+
+The accepted implementation is complete locally. The [verification record](../evidence/cli-first-use-0.8.0/README.md)
+retains full 1,521-test runs on Python 3.11.11, 3.12.12, 3.13.13 and 3.14.7,
+all five named conformance suites, exact verification of the three unchanged
+offline example artifacts, and installation of a fresh wheel outside the checkout.
+It also preserves the diagnosed incomplete and failed attempts separately.
+The source commit and wheel digest identify the actual tested bytes. No package
+publication, release tag or source push is claimed by this local completion.
+
+Next recommended boundary: design the narrow Python import observer in #3,
+while preparing bounded external and second-runtime trials from #9/#10.
+Those are separate goals; the remaining roadmap is not implicitly implemented.
+

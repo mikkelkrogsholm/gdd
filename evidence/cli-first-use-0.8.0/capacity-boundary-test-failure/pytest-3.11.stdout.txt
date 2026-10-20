@@ -1,0 +1,81 @@
+GDD_CHECK_RUNTIME={"python": "3.11.11", "executable": "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpb1wuSW/bin/python"}
+........................................................................ [  4%]
+........................................................................ [  9%]
+........................................................................ [ 14%]
+........................................................................ [ 18%]
+........................................................................ [ 23%]
+..................................................................F..... [ 28%]
+........................................................................ [ 33%]
+........................................................................ [ 37%]
+........................................................................ [ 42%]
+........................................................................ [ 47%]
+........................................................................ [ 52%]
+........................................................................ [ 56%]
+........................................................................ [ 61%]
+........................................................................ [ 66%]
+........................................................................ [ 71%]
+........................................................................ [ 75%]
+........................................................................ [ 80%]
+.........................................F.............................. [ 85%]
+........................................................................ [ 90%]
+........................................................................ [ 94%]
+........................................................................ [ 99%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+________________ test_extension_recursive_data_depth_is_unknown ________________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-34/test_extension_recursive_data_0')
+
+    def test_extension_recursive_data_depth_is_unknown(tmp_path):
+        spec = {
+            "$defs": {
+                "node": {
+                    "type": "object",
+                    "properties": {"child": {"$ref": "#/$defs/node"}},
+                }
+            },
+            "$ref": "#/$defs/node",
+        }
+        data = {}
+        for _ in range(400):
+            data = {"child": data}
+        report = validate(write_extension(tmp_path, spec, data))
+        assert aggregate(report["checks"], "model") == "UNKNOWN"
+>       assert "EXTENSION_UNSUPPORTED" in codes(report)
+E       AssertionError: assert 'EXTENSION_UNSUPPORTED' in {'FORMAT_UNSUPPORTED'}
+E        +  where {'FORMAT_UNSUPPORTED'} = codes({'format': 'gdd-report/0.2', 'tool': {'name': 'gdd-validator', 'version': '0.8.0'}, 'spec_revision': None, 'profiles': ['model'], ...})
+
+tests/test_review_model_loop2.py:426: AssertionError
+____________ test_generated_supported_artifact_reloads_exactly[300] ____________
+
+tmp_path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-34/test_generated_supported_artif0')
+depth = 300
+
+    @pytest.mark.parametrize("depth", [0, 20, 300])
+    def test_generated_supported_artifact_reloads_exactly(tmp_path, depth):
+        source = model_file(tmp_path, depth)
+        before = source.read_bytes()
+        output = tmp_path / "graph.html"
+>       assert exit_code(render_view(source, output)) == 0
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_viewer_loop9.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+gdd_validator/visualization.py:163: in render_view
+    bundle = model_bundle(path)
+             ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-34/test_generated_supported_artif0/model.json')
+
+    def model_bundle(path: str | Path) -> Bundle:
+        bundle = load_bundle(Path(path))
+        if bundle.model.get("format") not in {"gdd/0.2", "gdd/0.3"}:
+>           raise ValueError("The viewer requires a supported GDD 0.2 or 0.3 model manifest.")
+E           ValueError: The viewer requires a supported GDD 0.2 or 0.3 model manifest.
+
+gdd_validator/visualization.py:37: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_review_model_loop2.py::test_extension_recursive_data_depth_is_unknown
+FAILED tests/test_review_viewer_loop9.py::test_generated_supported_artifact_reloads_exactly[300]
+2 failed, 1516 passed in 292.19s (0:04:52)

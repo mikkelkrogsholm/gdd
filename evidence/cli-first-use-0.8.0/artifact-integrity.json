@@ -1,0 +1,91 @@
+{
+  "source_revision": "fe626dfffbe149a757984d00ce473e9b8d97c370",
+  "baseline": "73494ed9933f5df7e663a0dec6a89aa29b10886a",
+  "artifacts": [
+    {
+      "model": "examples/concert.gdd.yaml",
+      "view": "examples/concert.graph.html",
+      "sha256": "cae03ca5ecbb138cfcd048ff193bb9fbffcce813d7cf6d1c9d3950673ce236df",
+      "unchanged_from_baseline": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.3.0"
+        },
+        "spec_revision": "sha256:6840144caf6ee5566d01d54f663fdf7d83a3b7c8ad309c90952eecfdb6d6bd5a",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "model": "examples/concert-0.3.gdd.yaml",
+      "view": "examples/concert-0.3.graph.html",
+      "sha256": "8175f865652701f71b819c096ad546abe5f2b6626969fc6ec330d83011f625ac",
+      "unchanged_from_baseline": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.3.0"
+        },
+        "spec_revision": "sha256:3a44421b96560abf0761f64e6d1a48db88a65f3f11f563ea134a33ffb1bf8d7b",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "model": "examples/concert-app/gdd.json",
+      "view": "examples/concert-app/graph.html",
+      "sha256": "edf1e096684dbbc9f8dfe23c2d8c4357279c1ebc543585be5da4d3011679da08",
+      "unchanged_from_baseline": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-viewer",
+          "version": "0.3.0"
+        },
+        "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+        "profiles": [
+          "visualization"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "integration.visualization",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Exact artifact matches this renderer and current model snapshot; browser conformance is tested separately.",
+            "diagnostics": []
+          }
+        ]
+      }
+    }
+  ],
+  "scope": "Exact artifact verification and byte comparison; no new interactive browser execution is claimed."
+}

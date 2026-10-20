@@ -1,0 +1,1709 @@
+{
+  "format": "gdd-graphify-conformance-run/0.2",
+  "executed_at": "2026-10-20T10:01:52.897480+00:00",
+  "total": 18,
+  "matched": 18,
+  "cases": [
+    {
+      "id": "case.graphify.actual_ast",
+      "matched": true,
+      "expected": {
+        "result": "PASS",
+        "diagnostic": null
+      },
+      "actual": "PASS",
+      "diagnostics": [],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:f4c7a0d19f6cf42579a30b5d474dd6fd1752f2197b2c4af6d16447136a7cffdb: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-ast matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.actual_directed_export",
+      "matched": true,
+      "expected": {
+        "result": "PASS",
+        "diagnostic": null
+      },
+      "actual": "PASS",
+      "diagnostics": [],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:c4a63298683bc7d3c68b70e859b1dad02d020051012bd13c739544de9bb141a0: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.undirected_bytes",
+      "matched": true,
+      "expected": {
+        "result": "PASS",
+        "diagnostic": null,
+        "check_id": "graphify.integrity"
+      },
+      "actual": "PASS",
+      "diagnostics": [],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:6d2bfc9b5f62af84e5a6222fd15c7e88762c105bca50b25a717f7f16d62767a6: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": [
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/0"
+                },
+                "related_ids": []
+              },
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/1"
+                },
+                "related_ids": []
+              },
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/2"
+                },
+                "related_ids": []
+              },
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/3"
+                },
+                "related_ids": []
+              },
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/4"
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.undirected_direction",
+      "matched": true,
+      "expected": {
+        "result": "UNKNOWN",
+        "diagnostic": "GRAPHIFY_DIRECTION_UNKNOWN",
+        "check_id": "graphify.direction"
+      },
+      "actual": "UNKNOWN",
+      "diagnostics": [
+        "GRAPHIFY_DIRECTION_UNKNOWN"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:6d2bfc9b5f62af84e5a6222fd15c7e88762c105bca50b25a717f7f16d62767a6: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": [
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/0"
+                },
+                "related_ids": []
+              },
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/1"
+                },
+                "related_ids": []
+              },
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/2"
+                },
+                "related_ids": []
+              },
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/3"
+                },
+                "related_ids": []
+              },
+              {
+                "code": "GRAPHIFY_DIRECTION_UNKNOWN",
+                "severity": "warning",
+                "message": "Stored endpoint order is preserved, but original direction is not established by this export.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/4"
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.identical_edge",
+      "matched": true,
+      "expected": {
+        "result": "PASS",
+        "diagnostic": null
+      },
+      "actual": "PASS",
+      "diagnostics": [],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:0eeac9f608471e51320ea02e04d29524f9001372eedff4d89ddfe91318a81544: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.dangling_endpoint",
+      "matched": true,
+      "expected": {
+        "result": "FAIL",
+        "diagnostic": "REFERENCE_UNRESOLVED"
+      },
+      "actual": "FAIL",
+      "diagnostics": [
+        "REFERENCE_UNRESOLVED"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:330f7ab5ffa800e84923ca3cf4a9b54c145340289167619a7609db21cfb918f0: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": [
+              {
+                "code": "REFERENCE_UNRESOLVED",
+                "severity": "error",
+                "message": "target endpoint is missing, invalid or ambiguous.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/0/target"
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.bad_relation",
+      "matched": true,
+      "expected": {
+        "result": "FAIL",
+        "diagnostic": "SCHEMA_INVALID"
+      },
+      "actual": "FAIL",
+      "diagnostics": [
+        "SCHEMA_INVALID"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:55ee9bb451399591e0e29c3f3a2cdec529cc76c85b97022aa4c58652b0c3e21e: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": [
+              {
+                "code": "SCHEMA_INVALID",
+                "severity": "error",
+                "message": "Edge needs an object with a nonempty relation label.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/0"
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.ambiguous_collections",
+      "matched": true,
+      "expected": {
+        "result": "UNKNOWN",
+        "diagnostic": "FORMAT_UNSUPPORTED"
+      },
+      "actual": "UNKNOWN",
+      "diagnostics": [
+        "FORMAT_UNSUPPORTED"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:bb2015eaeb97f0bd1306779a3cc2768e74342be7e235b67ae6ab06d38082b307: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Both edges and links are present; no collection is silently discarded.",
+            "diagnostics": [
+              {
+                "code": "FORMAT_UNSUPPORTED",
+                "severity": "warning",
+                "message": "Both edges and links are present; no collection is silently discarded.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.unknown_schema",
+      "matched": true,
+      "expected": {
+        "result": "UNKNOWN",
+        "diagnostic": "FORMAT_UNSUPPORTED"
+      },
+      "actual": "UNKNOWN",
+      "diagnostics": [
+        "FORMAT_UNSUPPORTED"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:410c906d53cee0e38f3856c3f457a55590e372e9728795842417a7658c937f97: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Declared producer/schema version or format is outside the inspected profiles.",
+            "diagnostics": [
+              {
+                "code": "FORMAT_UNSUPPORTED",
+                "severity": "warning",
+                "message": "Declared producer/schema version or format is outside the inspected profiles.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.unknown_profile",
+      "matched": true,
+      "expected": {
+        "result": "UNKNOWN",
+        "diagnostic": "FORMAT_UNSUPPORTED"
+      },
+      "actual": "UNKNOWN",
+      "diagnostics": [
+        "FORMAT_UNSUPPORTED"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:c4a63298683bc7d3c68b70e859b1dad02d020051012bd13c739544de9bb141a0: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Select an explicitly supported Graphify layout profile.",
+            "diagnostics": [
+              {
+                "code": "FORMAT_UNSUPPORTED",
+                "severity": "warning",
+                "message": "Select an explicitly supported Graphify layout profile.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.opaque_hyperedges",
+      "matched": true,
+      "expected": {
+        "result": "PASS",
+        "diagnostic": null
+      },
+      "actual": "PASS",
+      "diagnostics": [],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:15bcda9b7a826fa470301c6a8545540b069f7bf0b7d7ec591d73ff3f0c9572df: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.docs_not_code",
+      "matched": true,
+      "expected": {
+        "result": "UNKNOWN",
+        "diagnostic": "GRAPHIFY_INPUT_PROVENANCE_UNKNOWN",
+        "check_id": "graphify.code_candidates"
+      },
+      "actual": "UNKNOWN",
+      "diagnostics": [
+        "GRAPHIFY_INPUT_PROVENANCE_UNKNOWN"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:6b9e8289de7e93fb4d89d1add0cd7674d4b5a796f2abf6f977085e042210c9f8: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "0 producer-claimed code candidates; 3 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": [
+              {
+                "code": "GRAPHIFY_INPUT_PROVENANCE_UNKNOWN",
+                "severity": "warning",
+                "message": "0 producer-claimed code candidates; 3 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.precision",
+      "matched": true,
+      "expected": {
+        "result": "UNKNOWN",
+        "diagnostic": "FORMAT_UNSUPPORTED"
+      },
+      "actual": "UNKNOWN",
+      "diagnostics": [
+        "FORMAT_UNSUPPORTED"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:2f48c4da0d0861b280a5c7e8e3614f094107ea46f3f5b0a1f43a43b8711cb88f: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.json",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "JSON number requires precision beyond this projection; original bytes retained without rounded identities.",
+            "diagnostics": [
+              {
+                "code": "FORMAT_UNSUPPORTED",
+                "severity": "warning",
+                "message": "JSON number requires precision beyond this projection; original bytes retained without rounded identities.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.partial_markers",
+      "matched": true,
+      "expected": {
+        "result": "FAIL",
+        "diagnostic": "SCHEMA_INVALID"
+      },
+      "actual": "FAIL",
+      "diagnostics": [
+        "SCHEMA_INVALID"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:9e0ed46acfd916e141f1be49e66f75271edf971941ed475139891ae6d1107b3b: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": [
+              {
+                "code": "SCHEMA_INVALID",
+                "severity": "error",
+                "message": "Direction markers must be complete and refer to the stored endpoints.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/0"
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.conflicting_direction",
+      "matched": true,
+      "expected": {
+        "result": "FAIL",
+        "diagnostic": "SCHEMA_INVALID"
+      },
+      "actual": "FAIL",
+      "diagnostics": [
+        "SCHEMA_INVALID"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:d3a7fddcafdf17eb6e931641a01e52bdbd2f0b9234703bfb8b562f82f403d69c: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "FAIL",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": [
+              {
+                "code": "SCHEMA_INVALID",
+                "severity": "error",
+                "message": "Direction markers contradict the explicitly directed stored endpoints.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": "/links/0"
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.nested_version",
+      "matched": true,
+      "expected": {
+        "result": "UNKNOWN",
+        "diagnostic": "FORMAT_UNSUPPORTED"
+      },
+      "actual": "UNKNOWN",
+      "diagnostics": [
+        "FORMAT_UNSUPPORTED"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:cc4a21d39b3e4dc9b4ea45866c35821c07d2cc130f2a61c14b158b1f7d6812c2: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Declared producer/schema version or format is outside the inspected profiles.",
+            "diagnostics": [
+              {
+                "code": "FORMAT_UNSUPPORTED",
+                "severity": "warning",
+                "message": "Declared producer/schema version or format is outside the inspected profiles.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.nested_revision_conflict",
+      "matched": true,
+      "expected": {
+        "result": "UNKNOWN",
+        "diagnostic": "REVISION_UNRESOLVED"
+      },
+      "actual": "UNKNOWN",
+      "diagnostics": [
+        "REVISION_UNRESOLVED"
+      ],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:1e2d40767dc987ca6ddfc9a40b4ea1929479ee63fe6abffcc9e059da895665ba: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.revision",
+            "dimension": "integration",
+            "result": "UNKNOWN",
+            "scope": [],
+            "reason": "Code revision claims conflict or are malformed; artifact revision is not code revision.",
+            "diagnostics": [
+              {
+                "code": "REVISION_UNRESOLVED",
+                "severity": "warning",
+                "message": "Code revision claims conflict or are malformed; artifact revision is not code revision.",
+                "location": {
+                  "file": "graphify.raw.json",
+                  "pointer": ""
+                },
+                "related_ids": []
+              }
+            ]
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "case.graphify.no_fabricated_version",
+      "matched": true,
+      "expected": {
+        "result": "PASS",
+        "diagnostic": null,
+        "check_id": "graphify.projection"
+      },
+      "actual": "PASS",
+      "diagnostics": [],
+      "raw_preserved": true,
+      "report": {
+        "format": "gdd-report/0.2",
+        "tool": {
+          "name": "gdd-graphify",
+          "version": "0.1.2"
+        },
+        "spec_revision": null,
+        "profiles": [
+          "import.graphify"
+        ],
+        "scope": [],
+        "checks": [
+          {
+            "check_id": "graphify.raw",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Supplied artifact sha256:c4a63298683bc7d3c68b70e859b1dad02d020051012bd13c739544de9bb141a0: original bytes hashed; producer completeness and code correctness are not inferred.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.layout",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Explicit profile graphify-0.9.75-node-link matches the supplied collection layout; unknown fields preserved in original bytes.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.nodes",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Each supplied node retained; typed producer identities checked.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.edges",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Every edge indexed independently, including identical records and duplicate producer edge IDs.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.direction",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Direction is a producer/profile assertion, never proof of implementation behavior.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.code_candidates",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "3 producer-claimed code candidates; 0 noncode observations retained; 0 unclassified. No implementation verdict is produced.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.integrity",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Original bytes match the recorded SHA-256 and length.",
+            "diagnostics": []
+          },
+          {
+            "check_id": "graphify.projection",
+            "dimension": "integration",
+            "result": "PASS",
+            "scope": [],
+            "reason": "Raw-derived records, pointers, classifications and producer claims match a fresh projection. Caller assertions are inputs to this projection, not authenticated metadata.",
+            "diagnostics": []
+          }
+        ]
+      }
+    }
+  ]
+}
