@@ -134,6 +134,20 @@ produce a graph view and verify a bounded change. Existing-code work starts
 with the [Graphify adapter](GRAPHIFY.md), preserves original observations,
 and requires explicit review before observations become accepted intent.
 
+## Agent runtimes and verified scope
+
+Native Codex agents completed the installed-skill new-project and existing-code
+journeys recorded in [repository readiness](evidence/repository-readiness.md).
+Claude Code 2.1.186 discovered the project-local skill at
+`.claude/skills/gdd/SKILL.md`, but both journey attempts failed before model/tool
+execution because service authentication was rejected. The maintainer has no
+Claude subscription available here; it is not a verified journey runtime.
+
+See [runtime setup and trial boundaries](docs/runtime-trials.md) for the tested
+copy command, `/gdd` starting prompt, discovery confirmation and bounded rerun
+instructions. No runtime-specific metadata was required for project skill
+discovery. Existing `agents/openai.yaml` is retained for its original runtime.
+
 ## Optional browser checks
 
 The generated viewer requires no JavaScript installation. Its browser

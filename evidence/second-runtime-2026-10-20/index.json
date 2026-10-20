@@ -1,0 +1,71 @@
+{
+  "format": "gdd-local-evidence-index/0.1",
+  "source_baseline": "b5bfcce",
+  "outcome": "blocked-service-access",
+  "files": {
+    "README.md": {
+      "bytes": 4841,
+      "sha256": "80febfabe8699fd179a2b5fa9b6c8286e12e26ae1d071599dbe5c7d7a2fc139f"
+    },
+    "briefs/existing.md": {
+      "bytes": 2587,
+      "sha256": "76aea7fdff98e1c2e65259cef145f2649fb150341136c740e2ea370e60b26dda"
+    },
+    "briefs/fresh.md": {
+      "bytes": 2260,
+      "sha256": "ab4d8094755e6b40b0e71cc785b0c94ee164d603c71daa3484af0718d510683d"
+    },
+    "executed-preparation.py": {
+      "bytes": 5014,
+      "sha256": "7160af2087b741df46ff5434e479dac47383d30b30412ba4a4a1a867795a31a1"
+    },
+    "executed-runner.py": {
+      "bytes": 1685,
+      "sha256": "160fbbea962d379e03b55da3e9700c6fb645ce4cbaf5fb38565e259dbe10d4ba"
+    },
+    "harness-preparation.json": {
+      "bytes": 5407,
+      "sha256": "7f454d00f6e9a8e166f1766a2b5e4eb2d877c3b8b3d8667e8f6509343f41626c"
+    },
+    "installation.json": {
+      "bytes": 5406,
+      "sha256": "5d824a54c4f584e52369e174f737c72df9a4a7203022139d1ee4bf424d0b2e3e"
+    },
+    "receipts/existing/invocation.json": {
+      "bytes": 1098,
+      "sha256": "0e698df59790ba67d3b7e745f01b5851c2c1fdc9c87ef38b0c395cf4dd1dca26"
+    },
+    "receipts/existing/runtime.jsonl": {
+      "bytes": 3454,
+      "sha256": "4fb422725e482b479b0bade8c9bf50f2f5bf2892389add88289f3dffa651187e"
+    },
+    "receipts/existing/stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "receipts/fresh/disabled-project-source.invocation.json": {
+      "bytes": 1088,
+      "sha256": "f281b471c9b5f4727b3cd7ac7d3d63e28dc02178bd2c13aa96945ba629da6d15"
+    },
+    "receipts/fresh/disabled-project-source.runtime.jsonl": {
+      "bytes": 2692,
+      "sha256": "1ad22be21c7e53db620c6ee1c3e2d2cf80f000f7a27e49467f05720d3d32aa91"
+    },
+    "receipts/fresh/invocation.json": {
+      "bytes": 1095,
+      "sha256": "b8384c79ad11d71250191f6336dc9bafb955567beb5ef9a0fa7d8460d4576790"
+    },
+    "receipts/fresh/runtime.jsonl": {
+      "bytes": 3448,
+      "sha256": "9b9dad8f10e2c3e738d4b51460efd62b86bde8b23d1e8023707eb30ffa5306b1"
+    },
+    "receipts/fresh/stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "rerun.py": {
+      "bytes": 5295,
+      "sha256": "0818d4fa95c521af78db03f1d86bc7a53b11a7ead077d057ca2e56d8e4685042"
+    }
+  }
+}
