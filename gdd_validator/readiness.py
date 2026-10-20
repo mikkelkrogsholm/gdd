@@ -7,7 +7,7 @@ from .decision import compatible_decision_supersession
 from .record_integrity import invalid_record_ids, model_ids as referenceable_model_ids
 from .loading import Bundle, InputError, parse, parse_json, resolve_asset
 from .model import CORE_KINDS, type_references
-from .report import check
+from .report import check, pointer
 from .boundaries import call_boundaries, owners
 
 __all__ = [
@@ -137,6 +137,21 @@ def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
             dimension="readiness",
             ids=(ident,),
         )
+
+    def field_issue(code: str, message: str, ident: str, *fields: str) -> None:
+        """Point to the requested field, or its nearest existing parent.
+
+        Bundle locations already identify the owning file for fragmented models.
+        Never manufacture a JSON pointer to a missing object or property.
+        """
+        value = nodes.get(ident, {})
+        existing = []
+        for field in fields:
+            if not isinstance(value, dict) or field not in value:
+                break
+            existing.append(field)
+            value = value[field]
+        issue(code, message, ident, suffix=pointer(*existing))
 
     for ident in selected - nodes.keys():
         issue("REFERENCE_UNRESOLVED", "Unknown readiness target.", ident)
@@ -321,20 +336,26 @@ def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
             }
             if bundle.model["format"] == "gdd/0.3":
                 required.add("postconditions")
-            if required - contract.keys() or not node.get("behavior", "").strip():
-                issue(
+            missing = sorted(required - contract.keys())
+            if missing:
+                field_issue(
                     "READINESS_CONTRACT_MISSING",
-                    "Action needs full contract and behavior.",
-                    ident,
+                    "Action contract is missing fields: " + ", ".join(missing) + ".",
+                    ident, "contract",
                 )
-            if (
-                contract.get("effects_complete") is not True
-                or contract.get("dependencies_complete") is not True
-            ):
-                issue(
+            if not node.get("behavior", "").strip():
+                field_issue(
+                    "READINESS_CONTRACT_MISSING",
+                    "Action behavior is missing or blank; specify its ordered behavior.",
+                    ident, "behavior",
+                )
+            incomplete = [field for field in ("effects_complete", "dependencies_complete")
+                          if contract.get(field) is not True]
+            if incomplete:
+                field_issue(
                     "EFFECTS_INCOMPLETE",
-                    "Effects/dependencies are not declared complete.",
-                    ident,
+                    "Action contract must declare true: " + ", ".join(incomplete) + ".",
+                    ident, "contract", incomplete[0],
                 )
             owner_edges = [
                 e for e in edges if e["from"] == ident and e["relation"] == "owned_by"
@@ -362,10 +383,10 @@ def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
             ):
                 risk = risks.get(risk_name)
                 if not risk or not risk.get("rationale", "").strip():
-                    issue(
+                    field_issue(
                         "READINESS_CONTRACT_MISSING",
-                        f"Missing risk assessment: {risk_name}.",
-                        ident,
+                        f"Risk assessment {risk_name} needs a nonblank rationale.",
+                        ident, "contract", "risks", risk_name, "rationale",
                     )
                 elif risk["relevant"]:
                     allowed = (
@@ -394,27 +415,41 @@ def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
                         ident,
                     )
         elif kind == "entity" and "fields" not in node:
-            issue(
+            field_issue(
                 "READINESS_CONTRACT_MISSING",
-                "Required entity fields are unspecified.",
-                ident,
+                "Entity fields are missing; specify the field/type map.",
+                ident, "fields",
             )
         elif kind == "machine" and "machine" not in node:
-            issue(
+            field_issue(
                 "READINESS_CONTRACT_MISSING",
-                "Required machine states/transitions are unspecified.",
-                ident,
+                "Machine definition is missing; specify states and transitions.",
+                ident, "machine",
             )
         elif kind == "component":
             if "interfaces" not in node:
-                issue("READINESS_CONTRACT_MISSING", "Required component interfaces are unspecified.", ident)
+                field_issue("READINESS_CONTRACT_MISSING", "Component interfaces are missing; list public action IDs or explicitly use [].", ident, "interfaces")
             if bundle.model["format"] == "gdd/0.3":
                 boundary = node.get("boundary", {})
-                if (not boundary.get("responsibility", "").strip()
-                        or not boundary.get("rationale", "").strip() or "excludes" not in boundary):
-                    issue("BOUNDARY_RATIONALE_MISSING", "Component needs responsibility, boundary rationale and explicit excludes.", ident)
-                if any(owned.get(action) != ident for action in node.get("interfaces", [])):
-                    issue("READINESS_CONTRACT_MISSING", "Public actions require a unique matching provider owner.", ident)
+                missing = [field for field in ("responsibility", "rationale", "excludes")
+                           if field not in boundary or
+                           (field != "excludes" and not boundary[field].strip())]
+                if missing:
+                    field_issue("BOUNDARY_RATIONALE_MISSING",
+                                "Component boundary needs fields: " + ", ".join(missing) +
+                                "; responsibility and rationale must be nonblank; excludes may be [].",
+                                ident, "boundary", missing[0])
+                invalid = sorted(
+                    action for action in node.get("interfaces", [])
+                    if owned.get(action) != ident
+                )
+                if invalid:
+                    field_issue(
+                        "READINESS_CONTRACT_MISSING",
+                        "Public interface actions need exactly one owned_by edge to this component: "
+                        + ", ".join(invalid) + ".",
+                        ident, "interfaces",
+                    )
         elif kind == "screen" and ident in selected:
             interaction = node.get("interaction", {})
             if any(

@@ -1,0 +1,107 @@
+{
+  "format": "gdd/0.3",
+  "project": {
+    "id": "project.integer-addition",
+    "title": "Local integer addition",
+    "goal": "A caller receives the exact sum of two mathematical integers.",
+    "scope": "A pure local function. Transport, parsing and bounded machine-integer overflow handling are excluded."
+  },
+  "nodes": {
+    "component.arithmetic": {
+      "kind": "component",
+      "description": "Own pure integer arithmetic.",
+      "maturity": "specified",
+      "interfaces": [
+        "action.add"
+      ],
+      "boundary": {
+        "responsibility": "Calculate exact sums of mathematical integers.",
+        "rationale": "One cohesive operation needs no further component split.",
+        "excludes": [
+          "Transport and input decoding.",
+          "Persistent state and side effects."
+        ]
+      }
+    },
+    "action.add": {
+      "kind": "action",
+      "description": "Return the exact sum of two integers.",
+      "maturity": "specified",
+      "contract": {
+        "input": {
+          "left": {
+            "type": "integer"
+          },
+          "right": {
+            "type": "integer"
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "integer"
+        },
+        "errors": {},
+        "preconditions": [],
+        "postconditions": [
+          "Result equals left + right in mathematical integers."
+        ],
+        "external_effects": [],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": false,
+            "rationale": "Pure local calculation reads no identity, private data or privileged resource.",
+            "scenarios": []
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "No stored state or side effect; repeating the same input returns the same result.",
+            "scenarios": []
+          },
+          "boundaries": {
+            "relevant": false,
+            "rationale": "Both integers and output are unbounded mathematical integers; no range threshold or external input decoding is in scope.",
+            "scenarios": []
+          },
+          "concurrency": {
+            "relevant": false,
+            "rationale": "No shared mutable state or resource exists.",
+            "scenarios": []
+          },
+          "atomicity": {
+            "relevant": false,
+            "rationale": "No mutation or multi-step commit exists.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {}
+      },
+      "behavior": "Return left + right using exact integer arithmetic. Do not read or change shared state."
+    },
+    "scenario.add": {
+      "kind": "scenario",
+      "description": "A negative and a positive integer sum to zero.",
+      "scenario": {
+        "category": "normal",
+        "given": "left=-7 and right=7.",
+        "when": "The caller invokes action.add.",
+        "then": "The result is exactly 0."
+      }
+    }
+  },
+  "edges": [
+    {
+      "id": "edge.add.owner",
+      "from": "action.add",
+      "to": "component.arithmetic",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.add.scenario",
+      "from": "scenario.add",
+      "to": "action.add",
+      "relation": "exercises"
+    }
+  ]
+}
