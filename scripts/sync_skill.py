@@ -15,6 +15,7 @@ from urllib.parse import unquote, urlsplit
 CORE_REFERENCES = (
     "AGENTS.md", "GDD.md", "SPEC.md", "WORKFLOW.md", "VALIDATOR.md",
     "GRAPHIFY.md", "VIEWER.md", "HOST.md", "agents/gdd-lead.md", "agents/gdd-worker.md",
+    "docs/inspection.md",
 )
 COPY_DIRECTORY = Path("references/gdd")
 INDEX_PATH = Path("references/source-index.json")

@@ -17,6 +17,22 @@ The five validations yield model-PASS, backend-readiness-PASS, screen-readiness-
 
 Repeat `--scope` and `--profile` for multiple selections. `--output report.json` saves the report in a new file; existing files are not overwritten. Validation exit 0 means all reported requested checks are PASS/GRANTED; 1 means at least one FAIL/DENIED; 2 means UNKNOWN/UNRESOLVED without a known failure. Dimensions are separate; `aggregate(report['checks'], 'readiness')` in `gdd_validator.report` aggregates one dimension with FAIL before UNKNOWN before PASS.
 
+## Read status and potential change consequences
+
+```sh
+gdd status model.gdd.yaml --scope action.reserve --format text
+gdd impact model.gdd.yaml --scope action.reserve --format text
+```
+
+`status` composes existing assessments and optional explicitly selected workflow
+state; it keeps model validity, scoped readiness, authorization and implementation
+evidence separate. Next actions trace to diagnostics or absent inputs. `impact`
+explains declared potential callers/dependents with directional witnesses and
+keeps supporting context distinct from write ownership. Both are read-only and
+JSON-first; text is an optional projection of the same result. Their local tool
+contracts are `gdd-status/0.1` and `gdd-impact/0.1`, not core report profiles.
+See [inspection, exact coverage and exit policies](docs/inspection.md).
+
 ## Create a draft project
 
 `gdd init PATH --project-id project.example --title "Example"` creates

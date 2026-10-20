@@ -2,7 +2,7 @@
   "format": "gdd-skill-assets/1",
   "origin": {
     "repository": "https://github.com/mikkelkrogsholm/gdd.git",
-    "git_base_revision": "ea2b34e",
+    "git_base_revision": "abaacad",
     "revision_basis": "Working tree based on the recorded Git base; per-file SHA-256 identifies copied bytes, including later edits."
   },
   "files": [
@@ -39,8 +39,8 @@
     {
       "path": "references/gdd/VALIDATOR.md",
       "source": "VALIDATOR.md",
-      "sha256": "02ee7826f64a9feeed413517bcfc1edd197853d34adf45ebd39b3ccd4a186f06",
-      "bytes": 18079
+      "sha256": "275f13fb5bfe0e839db1bada13a4a98104776c32476cdb45ffd9047c7f9db188",
+      "bytes": 18899
     },
     {
       "path": "references/gdd/VIEWER.md",
@@ -51,8 +51,8 @@
     {
       "path": "references/gdd/WORKFLOW.md",
       "source": "WORKFLOW.md",
-      "sha256": "89d4ceb2441e2db32251373d1e00f0d4647b320d9587b7127bb3b8d9a6e7c4f3",
-      "bytes": 9018
+      "sha256": "82c32986270952375ab37fed3e465a454c27d082d8f1d2427b7f690808163b74",
+      "bytes": 9463
     },
     {
       "path": "references/gdd/agents/gdd-lead.md",
@@ -67,10 +67,16 @@
       "bytes": 2021
     },
     {
+      "path": "references/gdd/docs/inspection.md",
+      "source": "docs/inspection.md",
+      "sha256": "9efc8a2e0b9651b610ec430327cc41755248afc156ebcca52355c58d4315f804",
+      "bytes": 7875
+    },
+    {
       "path": "references/gdd/schemas/README.md",
       "source": "schemas/README.md",
-      "sha256": "4367b183ea7b36602980ad8cc81ff139ccc5847dc29b3661c3ff13b6c6eb412b",
-      "bytes": 4244
+      "sha256": "02f03da6328a856e141442e15840fdda75d2494e04ea148e87a6998bbadf8f4b",
+      "bytes": 4638
     },
     {
       "path": "references/gdd/schemas/boundaries.schema.json",
@@ -127,6 +133,12 @@
       "bytes": 3329
     },
     {
+      "path": "references/gdd/schemas/impact.schema.json",
+      "source": "schemas/impact.schema.json",
+      "sha256": "ac4c10a9f39e03da73f554bd839df99ad31c8bd184b8dc4504883b45d715cd7f",
+      "bytes": 6886
+    },
+    {
       "path": "references/gdd/schemas/observations.schema.json",
       "source": "schemas/observations.schema.json",
       "sha256": "c59d7caba9c54853dbbe9ea326a93b8c6e3069fc31683bc0c2ef1bfe23de3c58",
@@ -149,6 +161,12 @@
       "source": "schemas/snapshot.schema.json",
       "sha256": "381a1b00790f81b29f8bdda0ad9d505d714d890de74d9c41c73546139d257fce",
       "bytes": 935
+    },
+    {
+      "path": "references/gdd/schemas/status.schema.json",
+      "source": "schemas/status.schema.json",
+      "sha256": "ebce9813b2b3284e31a171a4a77d923a28449bb2ab3280827607477986f0dd2f",
+      "bytes": 9648
     },
     {
       "path": "references/gdd/schemas/validator-inputs.schema.json",
@@ -396,6 +414,18 @@
       "from": "WORKFLOW.md",
       "href": "examples/agent-native/README.md",
       "source_target": "examples/agent-native/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/inspection.md",
+      "href": "python-imports.md",
+      "source_target": "docs/python-imports.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/inspection.md",
+      "href": "tutorial.md",
+      "source_target": "docs/tutorial.md",
       "role": "optional-repository-reference"
     },
     {

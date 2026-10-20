@@ -100,6 +100,8 @@ uv run --no-sync python conformance/run_visualization.py --output "$GDD_CHECK_DI
 uv run --no-sync python conformance/run_workflow.py --output "$GDD_CHECK_DIR/workflow.json"
 uv run --no-sync python conformance/run_design.py --output "$GDD_CHECK_DIR/design.json"
 uv run --no-sync python conformance/run_code.py --output "$GDD_CHECK_DIR/code.json"
+uv run --no-sync python conformance/run_status.py --output "$GDD_CHECK_DIR/status.json"
+uv run --no-sync python conformance/run_impact.py --output "$GDD_CHECK_DIR/impact.json"
 uv build --wheel --out-dir "$GDD_CHECK_DIR/dist"
 uv run --no-sync python conformance/verify_readiness_wheel.py "$GDD_CHECK_DIR"/dist/*.whl --output "$GDD_CHECK_DIR/installed-wheel.json"
 ```

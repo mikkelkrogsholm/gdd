@@ -1,5 +1,10 @@
 [
   {
+    "id": "status.integration_exit_policy",
+    "assertion": "Assessed integration failures and unknowns affect exit policy without erasing independent readiness.",
+    "test": "tests/test_project_status.py::test_assessed_integration_checks_affect_exit_without_erasing_readiness"
+  },
+  {
     "id": "status.starter_questions_and_blockers_are_usable_without_host",
     "assertion": "Starter questions and blockers are usable without host.",
     "test": "tests/test_project_status.py::test_starter_questions_and_blockers_are_usable_without_host"

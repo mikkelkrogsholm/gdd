@@ -22,6 +22,7 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `WORKFLOW.md` | [WORKFLOW.md](gdd/WORKFLOW.md) |
 | `agents/gdd-lead.md` | [agents/gdd-lead.md](gdd/agents/gdd-lead.md) |
 | `agents/gdd-worker.md` | [agents/gdd-worker.md](gdd/agents/gdd-worker.md) |
+| `docs/inspection.md` | [docs/inspection.md](gdd/docs/inspection.md) |
 | `schemas/README.md` | [schemas/README.md](gdd/schemas/README.md) |
 | `schemas/boundaries.schema.json` | [schemas/boundaries.schema.json](gdd/schemas/boundaries.schema.json) |
 | `schemas/code-observation.schema.json` | [schemas/code-observation.schema.json](gdd/schemas/code-observation.schema.json) |
@@ -32,10 +33,12 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `schemas/gdd-0.2.schema.json` | [schemas/gdd-0.2.schema.json](gdd/schemas/gdd-0.2.schema.json) |
 | `schemas/gdd.schema.json` | [schemas/gdd.schema.json](gdd/schemas/gdd.schema.json) |
 | `schemas/graphify-mapping.schema.json` | [schemas/graphify-mapping.schema.json](gdd/schemas/graphify-mapping.schema.json) |
+| `schemas/impact.schema.json` | [schemas/impact.schema.json](gdd/schemas/impact.schema.json) |
 | `schemas/observations.schema.json` | [schemas/observations.schema.json](gdd/schemas/observations.schema.json) |
 | `schemas/records.schema.json` | [schemas/records.schema.json](gdd/schemas/records.schema.json) |
 | `schemas/report.schema.json` | [schemas/report.schema.json](gdd/schemas/report.schema.json) |
 | `schemas/snapshot.schema.json` | [schemas/snapshot.schema.json](gdd/schemas/snapshot.schema.json) |
+| `schemas/status.schema.json` | [schemas/status.schema.json](gdd/schemas/status.schema.json) |
 | `schemas/validator-inputs.schema.json` | [schemas/validator-inputs.schema.json](gdd/schemas/validator-inputs.schema.json) |
 | `schemas/view-state.schema.json` | [schemas/view-state.schema.json](gdd/schemas/view-state.schema.json) |
 | `schemas/view.schema.json` | [schemas/view.schema.json](gdd/schemas/view.schema.json) |

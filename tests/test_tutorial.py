@@ -34,5 +34,12 @@ def test_planning_tutorial_sequence(tmp_path):
     packet = json.loads(context.read_text())
     assert packet["spec_revision"] == ready["spec_revision"]
     assert "action.add" in context.read_text() and "component.arithmetic" in context.read_text()
+    before_inspection = refined.read_bytes()
+    status = cli("status", refined, "--scope", "action.add")
+    assert status["assessments"]["readiness"]["result"] == "PASS"
+    assert status["assessments"]["authorization"]["assessed"] is False
+    impact = cli("impact", refined, "--scope", "action.add")
+    assert impact["coverage"]["result"] == "complete"
+    assert refined.read_bytes() == before_inspection
     assert (project / "gdd.json").read_bytes() == sketch
     assert not list(tmp_path.rglob("*.py"))  # Planning did not invent an implementation.

@@ -12,6 +12,13 @@ A community is grouping; it is not proof of independence.
 
 ## Getting started
 
+For a read-only entry without a run, use `gdd status MODEL --scope ID`; supply
+`--run DIR` explicitly to include existing package/attempt state and current
+acceptance from the same `workflow status` assessor. Before changing a contract,
+`gdd impact MODEL --scope ID` explains declared potential consequences without
+dispatching work or assigning write ownership. Both support `--format text`.
+See [inspection and coverage](docs/inspection.md).
+
 ```sh
 gdd workflow plan model.gdd.yaml --request request.json --output plan.json
 gdd workflow verify model.gdd.yaml --plan plan.json

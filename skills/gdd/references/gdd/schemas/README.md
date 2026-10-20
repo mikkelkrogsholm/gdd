@@ -2,6 +2,12 @@
 
 All schemas use JSON Schema Draft 2020-12 and can be used with an existing schema validator. They define representation, not a complete GDD validator.
 
+[status.schema.json](status.schema.json) and [impact.schema.json](impact.schema.json)
+describe read-only project overviews and explained potential change consequences.
+They are local tool contracts outside the core GDD formats. See
+[inspection coverage](../docs/inspection.md); status is not a project-complete
+verdict and potential impact is not write ownership or verified runtime behavior.
+
 [code-observation.schema.json](code-observation.schema.json) describes the
 informative `gdd-code-observation/0.1` static Python observer output. It is
 outside the GDD core and does not extend `gdd-report/0.2` or establish trusted

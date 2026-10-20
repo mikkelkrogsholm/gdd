@@ -173,6 +173,24 @@ def run(wheel: Path) -> dict:
         if set(file_hashes(project)) != {"gdd.json", "SOURCES.md", "records.json"}:
             raise AssertionError("The scaffold did not create the documented project files.")
         command("fresh-project-model", ["validate", str(project / "gdd.json")])
+        starter_status = command("fresh-project-status", [
+            "status", str(project / "gdd.json"), "--scope", "action.main",
+        ], 1)
+        if starter_status["assessments"]["readiness"]["result"] != "FAIL":
+            raise AssertionError("Installed status must preserve starter readiness failures.")
+        ready_model = str(ROOT / "docs/tutorial/refined.gdd.json")
+        ready_before = Path(ready_model).read_bytes()
+        before_inspection = file_hashes(project)
+        ready_status = command("ready-status", ["status", ready_model, "--scope", "action.add"])
+        if ready_status["assessments"]["authorization"] != {
+            "assessed": False, "result": None, "check_refs": [],
+        }:
+            raise AssertionError("Installed status inferred authorization without host input.")
+        ready_impact = command("ready-impact", ["impact", ready_model, "--scope", "action.add"])
+        if ready_impact["coverage"]["basis"] != "declared-model":
+            raise AssertionError("Installed impact must identify its declared-model coverage.")
+        if file_hashes(project) != before_inspection or Path(ready_model).read_bytes() != ready_before:
+            raise AssertionError("Read-only inspection changed a model or scaffold.")
         readiness = command("fresh-project-unready", [
             "validate", str(project / "gdd.json"), "--profile", "readiness", "--scope", "action.main",
         ], 1)

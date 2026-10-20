@@ -5,6 +5,14 @@ Read [WORKFLOW](gdd/WORKFLOW.md), [the lead guide](gdd/agents/gdd-lead.md), and
 records, run status, code revision, local changes, and already completed effects.
 Choose a bounded objective and preserve the actual base before changing it.
 
+Use `gdd status MODEL --scope ID` for a read-only overview of existing assessments;
+select a workflow run and trusted host context explicitly when needed. Use
+`gdd impact MODEL --scope ID` to explain declared potential callers/dependents
+before changing a contract. Read the bundled [inspection guide](gdd/docs/inspection.md).
+Keep unassessed dimensions, stale acceptance and partial analysis visible.
+Potential impact and supporting context do not grant write ownership, and a status
+exit code does not declare project completion. Both commands support JSON and text.
+
 For a changed requirement, register its input and make the authorized model change
 visible: base revision, changed IDs, rationale, and affected contracts/scenarios.
 Keep the agreed behavior fixed while checking the implementation. If a new test

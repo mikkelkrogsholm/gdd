@@ -1,6 +1,7 @@
 """Read-only status composition over real assessors and explicit inputs."""
 
 from copy import deepcopy
+import importlib
 import json
 from pathlib import Path
 
@@ -72,6 +73,24 @@ def test_known_failure_outranks_unknown(tmp_path):
     assert result["exit_code"] == 1
 
 
+@pytest.mark.parametrize("uri,expected", [("https://example.invalid/spec", 2), ("../outside.txt", 1)])
+def test_assessed_integration_checks_affect_exit_without_erasing_readiness(tmp_path, uri, expected):
+    model = json.loads(READY.read_text())
+    model.setdefault("sources", {})["source.normative"] = {
+        "role": "knowledge", "title": "Normative input", "uri": uri,
+        "format": "text/plain", "normative": True, "revision": {"sha256": "0" * 64},
+    }
+    path = tmp_path / "model.json"
+    path.write_text(json.dumps(model))
+    result = project_status(path, scope=["action.add"])
+    validate_status(result)
+    assert result["assessments"]["readiness"]["result"] == "PASS"
+    assert result["spec_revision"] is None
+    assert result["exit_code"] == expected
+    assert any(item["dimension"] == "integration" and item["result"] != "PASS"
+               for item in result["reports"]["model"]["checks"])
+
+
 def test_inputs_remain_explicit_and_cannot_silently_override_trust():
     host = {"implementation": "implementation.example", "code_revision": "revision-a"}
     original = deepcopy(host)
@@ -82,6 +101,8 @@ def test_inputs_remain_explicit_and_cannot_silently_override_trust():
         project_status(READY, host_context=host, code_revision="revision-b")
     with pytest.raises(ValueError):
         project_status(READY, scope=[1, "action.add"])
+    with pytest.raises(ValueError, match="host input"):
+        project_status(READY, host_context=[], implementation="implementation.example")
 
 
 def test_actions_are_deterministic_bounded_and_traceable(tmp_path):
@@ -145,7 +166,8 @@ def test_recorded_acceptance_is_only_current_when_existing_assessor_says_so(monk
     observed = run_status(READY, workflow)
     observed["state"]["status"] = "accepted"
     observed["acceptance_current"] = current
-    monkeypatch.setattr("gdd_validator.project_status.run_status", lambda *a, **kw: deepcopy(observed))
+    monkeypatch.setattr(importlib.import_module("gdd_validator.project_status"), "run_status",
+                        lambda *a, **kw: deepcopy(observed))
     result = project_status(READY, run=workflow)
     assert result["workflow"]["acceptance_current"] is current
     assert f"acceptance_current={str(current).lower()}" in status_text(result)

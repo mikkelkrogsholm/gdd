@@ -141,6 +141,8 @@ missing required design or contract information stays explicit.
 | Project start | `gdd init` publishes a valid, explicitly unready GDD 0.3 draft without overwriting work |
 | Agent skill | Self-contained new-project, existing-code and change routes with synchronized standard references |
 | Model and scoped readiness | Validate GDD 0.3 and preserved 0.2 contracts, references, boundaries, contracts, risks and scenarios |
+| Session overview | `gdd status` keeps existing assessments separate and summarizes diagnostic-grounded next actions, with an optional explicit workflow run |
+| Change consequences | `gdd impact` explains declared potential callers/dependents with directional witnesses and separate supporting context |
 | Graph exploration | Generate and verify a standalone interactive HTML view with search, communities and inspectors |
 | Agent context and public boundaries | Extract revision-bound context and derived component/community interfaces |
 | Development workflow | Prepare work packages and journal dispatch, submission, integration, cancellation and acceptance |

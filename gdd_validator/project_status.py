@@ -32,6 +32,8 @@ def project_status(
     evidence are assessed when host context or explicit code identity is supplied.
     """
     host = deepcopy(host_context) if host_context is not None else {}
+    if not isinstance(host, dict):
+        raise ValueError("Invalid host input: expected an object.")
     for key, value in (("implementation", implementation), ("code_revision", code_revision)):
         if value is not None:
             if key in host and host[key] != value:
@@ -69,7 +71,10 @@ def project_status(
             "result": aggregate([item for _, item in checks], dimension) if report else None,
             "check_refs": [f"/reports/{dimension}/checks/{index}" for index, _ in checks],
         }
-        assessed_checks.extend(item for _, item in checks)
+    # Keep each named dimension independent, while retaining loading/integration
+    # checks in the overall exit policy of the reports actually assessed.
+    for report in reports.values():
+        assessed_checks.extend(report["checks"])
     workflow = None
     workflow_error = None
     if run is not None:

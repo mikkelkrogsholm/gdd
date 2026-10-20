@@ -10,6 +10,8 @@ from .visualization import render_view, verify_view
 from .workflow import prepare_workflow, verify_workflow
 from .workflow_run import create_run, run_status, advance_run
 from .code_check import check_code
+from .project_status import project_status
+from .impact import analyze_impact
 
 __all__ = [
     "validate",
@@ -26,4 +28,6 @@ __all__ = [
     "run_status",
     "advance_run",
     "check_code",
+    "project_status",
+    "analyze_impact",
 ]

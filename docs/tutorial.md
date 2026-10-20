@@ -75,3 +75,16 @@ this tutorial does not invent those decisions.
 For a larger worked implementation and its recorded limitations, see the
 [concert example](../examples/concert-app/README.md). Keep those historical
 execution claims separate from this new planning exercise.
+
+## 5. Review status before planning a change
+
+```sh
+gdd status "$GDD_TUTORIAL_DIR/refined.gdd.json" --scope action.add --format text
+gdd impact "$GDD_TUTORIAL_DIR/refined.gdd.json" --scope action.add --format text
+```
+
+Both are read-only. Status shows structural readiness separately from unassessed
+authorization and implementation evidence. Impact explains the selected action's
+declared consequences and supporting owner/scenario context without ordering
+edits or claiming an executed scenario. See [the inspection guide](inspection.md)
+for directional caller/dependency examples and coverage limits.
