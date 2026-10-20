@@ -197,3 +197,53 @@ def test_missing_completeness_does_not_require_readiness(tmp_path, model):
     assert result["exit_code"] == 0
     assert "action.add" in result["coverage"]["unspecified_declarations"]
     assert result["coverage"]["unlisted_dependencies"] == "unassessed"
+
+
+@pytest.mark.parametrize("replacement", ["compatible", "different_method", "narrower_scope", "invalid"])
+def test_check_plan_supersession_respects_existing_compatibility(tmp_path, model, replacement):
+    model["record_files"] = ["records.json"]
+    path = write(tmp_path, model)
+    record_path = tmp_path / "records.json"
+    records = {"format": "gdd-records/0.2", "project_id": model["project"]["id"], "records": {}}
+    record_path.write_text(json.dumps(records))
+    revision = load_bundle(path).revision
+    previous = {"kind": "check", "scope": ["scenario.add", "action.add"], "spec_revision": revision,
+                "method": "unit_test", "required_environment": [], "negative_controls": []}
+    current = deepcopy(previous)
+    current["supersedes"] = "check.old"
+    if replacement == "different_method":
+        current["method"] = "another_method"
+    elif replacement == "narrower_scope":
+        current["scope"] = ["scenario.add"]
+    elif replacement == "invalid":
+        current["scope"].append("unknown.id")
+    records["records"] = {"check.old": previous, "check.new": current}
+    record_path.write_text(json.dumps(records))
+    result = analyze_impact(path, scope=["action.add"])
+    selected = {record["id"] for record in result["records"]}
+    assert ("check.old" not in selected) == (replacement == "compatible")
+    if replacement == "compatible":
+        assert selected == {"check.new"}
+        assert any(record["id"] == "check.old" and "supersession" in record["reason"]
+                   for record in result["records_omitted"])
+    elif replacement == "invalid":
+        assert selected == {"check.old"}
+    else:
+        assert selected == {"check.old", "check.new"}
+
+
+def test_binding_supersession_not_retired_without_verified_host_trust(tmp_path, model):
+    from tests.test_code_check import binding
+    model["record_files"] = ["records.json"]
+    path = write(tmp_path, model)
+    record_path = tmp_path / "records.json"
+    records = {"format": "gdd-records/0.2", "project_id": model["project"]["id"], "records": {}}
+    record_path.write_text(json.dumps(records))
+    revision = load_bundle(path).revision
+    old = binding(revision, "action.add", "old.py")
+    new = binding(revision, "action.add", "new.py")
+    new["supersedes"] = "binding.old"
+    records["records"] = {"binding.old": old, "binding.new": new}
+    record_path.write_text(json.dumps(records))
+    result = analyze_impact(path, scope=["action.add"])
+    assert {record["id"] for record in result["records"]} == {"binding.old", "binding.new"}

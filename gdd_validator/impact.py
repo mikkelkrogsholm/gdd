@@ -149,11 +149,28 @@ def analyze_impact(path, *, scope, implementation=None):
     if bundle.model["format"] == "gdd/0.3":
         result["boundaries"] = boundary_view(bundle, sorted(support))
     invalid = invalid_record_ids(bundle)
+    # Match implementation evaluation's check-only retirement rule. Check plans
+    # do not assert execution; bindings need verified host trust and are retained.
+    superseded_checks = set()
+    for ident, replacement in bundle.records.items():
+        previous_id = replacement.get("supersedes")
+        previous = bundle.records.get(previous_id, {})
+        if (ident in invalid or previous_id in invalid or replacement.get("kind") != "check"
+                or previous.get("kind") != "check"):
+            continue
+        if (replacement.get("spec_revision") == previous.get("spec_revision") == bundle.revision
+                and replacement.get("method") == previous.get("method")
+                and set(previous["scope"]) <= set(replacement["scope"])):
+            superseded_checks.add(previous_id)
     for ident, record in sorted(bundle.records.items()):
         if record.get("kind") not in {"binding", "check"}:
             continue
         targets = sorted(set(record.get("targets", record.get("scope", []))) & affected_roots.keys())
         if not targets:
+            continue
+        if ident in superseded_checks:
+            result["records_omitted"].append({"id": ident,
+                "reason": "Retired by a valid compatible current-model check-plan supersession."})
             continue
         if record.get("spec_revision") != bundle.revision or ident in invalid:
             result["records_omitted"].append({"id": ident, "reason": "Historical revision or invalid record; never rebound to the selected model."})

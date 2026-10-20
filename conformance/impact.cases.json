@@ -73,5 +73,15 @@
     "id": "impact.unspecified",
     "test": "tests/test_impact.py::test_missing_completeness_does_not_require_readiness",
     "assertion": "Unspecified dependency declarations remain explicit without imposing implementation readiness on model-only impact."
+  },
+  {
+    "id": "impact.check_supersession",
+    "test": "tests/test_impact.py::test_check_plan_supersession_respects_existing_compatibility",
+    "assertion": "Only valid compatible current-model check-plan supersession retires a rerun candidate; invalid or incompatible superseders cannot retire it."
+  },
+  {
+    "id": "impact.binding_supersession",
+    "test": "tests/test_impact.py::test_binding_supersession_not_retired_without_verified_host_trust",
+    "assertion": "A declared binding supersession cannot retire inspection candidates without verified host trust."
   }
 ]
