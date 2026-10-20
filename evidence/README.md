@@ -1,5 +1,10 @@
 # Verification evidence and English presentation
 
+The [second-runtime access trial](second-runtime-2026-10-20/README.md) preserves
+Claude Code skill discovery and actual HTTP 401 failures before model execution.
+Both journeys remain unverified; the repeatable preparation does not establish
+second-runtime coverage.
+
 The [read-only inspection review](inspection-0.1/README.md) records `gdd status`
 and `gdd impact`, separate assessment and coverage contracts, explained dependency
 witnesses, full local conformance, focused Python 3.11–3.14 checks and a fresh wheel.

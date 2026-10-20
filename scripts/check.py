@@ -23,6 +23,7 @@ QUICK_TESTS = (
     "tests/test_local_check.py",
     "tests/test_code_check.py", "tests/test_code_check_cli.py", "tests/test_python_imports.py",
     "tests/test_project_status.py", "tests/test_impact.py", "tests/test_inspection_cli.py",
+    "tests/test_model_diff.py", "tests/test_model_diff_cli.py",
 )
 PYTEST_BOOTSTRAP = (
     "import json, platform, sys; "
@@ -96,7 +97,7 @@ def run_checks(output: Path, *, quick: bool = False, release: bool = False,
             if not step("pytest-" + (version or "current"), pytest_command(version, quick)):
                 return report
         if release:
-            for name in ("standard", "graphify", "visualization", "workflow", "design", "code", "status", "impact"):
+            for name in ("standard", "graphify", "visualization", "workflow", "design", "code", "status", "impact", "diff"):
                 script = "run.py" if name == "standard" else f"run_{name}.py"
                 if not step(name, [sys.executable, f"conformance/{script}",
                                    "--output", str(output / f"{name}.json")]):

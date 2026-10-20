@@ -23,6 +23,7 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `agents/gdd-lead.md` | [agents/gdd-lead.md](gdd/agents/gdd-lead.md) |
 | `agents/gdd-worker.md` | [agents/gdd-worker.md](gdd/agents/gdd-worker.md) |
 | `docs/inspection.md` | [docs/inspection.md](gdd/docs/inspection.md) |
+| `docs/model-diff.md` | [docs/model-diff.md](gdd/docs/model-diff.md) |
 | `schemas/README.md` | [schemas/README.md](gdd/schemas/README.md) |
 | `schemas/boundaries.schema.json` | [schemas/boundaries.schema.json](gdd/schemas/boundaries.schema.json) |
 | `schemas/code-observation.schema.json` | [schemas/code-observation.schema.json](gdd/schemas/code-observation.schema.json) |
@@ -34,6 +35,7 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `schemas/gdd.schema.json` | [schemas/gdd.schema.json](gdd/schemas/gdd.schema.json) |
 | `schemas/graphify-mapping.schema.json` | [schemas/graphify-mapping.schema.json](gdd/schemas/graphify-mapping.schema.json) |
 | `schemas/impact.schema.json` | [schemas/impact.schema.json](gdd/schemas/impact.schema.json) |
+| `schemas/model-diff.schema.json` | [schemas/model-diff.schema.json](gdd/schemas/model-diff.schema.json) |
 | `schemas/observations.schema.json` | [schemas/observations.schema.json](gdd/schemas/observations.schema.json) |
 | `schemas/records.schema.json` | [schemas/records.schema.json](gdd/schemas/records.schema.json) |
 | `schemas/report.schema.json` | [schemas/report.schema.json](gdd/schemas/report.schema.json) |
@@ -62,6 +64,7 @@ The complete source/target list is in [source-index.json](source-index.json).
 
 - `CONTRIBUTING.md`
 - `INSTALL.md`
+- `archive/experiments/README.md`
 - `archive/gdd-0.1/SPEC.md`
 - `archive/gdd-0.1/concert.gdd.yaml`
 - `archive/gdd-0.2/README.md`

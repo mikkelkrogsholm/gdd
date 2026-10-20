@@ -105,6 +105,11 @@ guidance and schemas and also ships in the wheel. Follow the
 the CLI must be installed separately. Give the agent your brief, project location
 and mandate.
 
+Completed installed-skill journeys are recorded for the native Codex runtime.
+Claude Code skill discovery was checked, but its two actual journeys stopped at
+authentication before model execution; second-runtime coverage remains unverified.
+See [runtime trials and repeatable setup](docs/runtime-trials.md).
+
 A starting prompt:
 
 ```text
@@ -143,6 +148,7 @@ missing required design or contract information stays explicit.
 | Model and scoped readiness | Validate GDD 0.3 and preserved 0.2 contracts, references, boundaries, contracts, risks and scenarios |
 | Session overview | `gdd status` keeps existing assessments separate and summarizes diagnostic-grounded next actions, with an optional explicit workflow run |
 | Change consequences | `gdd impact` explains declared potential callers/dependents with directional witnesses and separate supporting context |
+| Model review | `gdd diff` compares stable IDs and exact declared fields across two models, with advisory structural weakening indicators |
 | Graph exploration | Generate and verify a standalone interactive HTML view with search, communities and inspectors |
 | Agent context and public boundaries | Extract revision-bound context and derived component/community interfaces |
 | Development workflow | Prepare work packages and journal dispatch, submission, integration, cancellation and acceptance |
@@ -188,6 +194,11 @@ is preserved in a [byte-indexed recovery archive](archive/experiments/README.md)
 See [repository readiness evidence](evidence/repository-readiness.md) for the
 independent installed-skill journeys and current verification scope. These are
 bounded trials, not a guarantee for every project, language or agent runtime.
+
+The [external pilot proposal](docs/proposals/external-pilot.md) specifies a pinned
+Huey task, a written-specification baseline and a GDD arm with common evaluation.
+It awaits agreement on the subject, execution boundary and evaluation budget;
+no external comparative result is claimed.
 
 ## Read, contribute and extend
 

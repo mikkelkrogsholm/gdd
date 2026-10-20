@@ -114,3 +114,12 @@ replay records for current checks. Do not reuse old receipts to authorize new wo
 verification and reconstructed presentations. [Archive recovery instructions](../../archive/experiments/README.md)
 cover all original packets, plans, journals, tools, receipts and captures, including
 files removed from this concise reference.
+
+## Review the model requirement change
+
+The current `gdd diff` command can compare the archived phase-A and phase-B
+models by stable ID. It surfaces the per-principal reservation limit and the
+changed contract/scenario declarations without executing the app. Follow the
+[restoration and comparison commands](../../docs/model-diff.md#replay-the-archived-requirement-change).
+This is a current comparison of historical model bytes, not new evidence of
+the application's original execution.

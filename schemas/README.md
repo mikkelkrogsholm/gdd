@@ -2,6 +2,11 @@
 
 All schemas use JSON Schema Draft 2020-12 and can be used with an existing schema validator. They define representation, not a complete GDD validator.
 
+[model-diff.schema.json](model-diff.schema.json) describes the informative
+`gdd-model-diff/0.1` comparison output. Exact declaration changes and advisory
+structural indicators do not establish semantic weakening, historical ID reuse,
+authorization or implementation evidence. See [model comparison](../docs/model-diff.md).
+
 [status.schema.json](status.schema.json) and [impact.schema.json](impact.schema.json)
 describe read-only project overviews and explained potential change consequences.
 They are local tool contracts outside the core GDD formats. See

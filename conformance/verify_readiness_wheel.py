@@ -191,6 +191,19 @@ def run(wheel: Path) -> dict:
             raise AssertionError("Installed impact must identify its declared-model coverage.")
         if file_hashes(project) != before_inspection or Path(ready_model).read_bytes() != ready_before:
             raise AssertionError("Read-only inspection changed a model or scaffold.")
+        unchanged = command("equal-model-diff", ["diff", ready_model, ready_model])
+        if unchanged["comparison"]["semantic_changes"]:
+            raise AssertionError("Installed comparison invented a change between equal models.")
+        changed_model = json.loads(ready_before)
+        changed_model["nodes"]["action.add"]["contract"]["postconditions"] = []
+        changed_path = folder / "changed-model.json"
+        changed_path.write_text(json.dumps(changed_model), encoding="utf-8")
+        changed_before = changed_path.read_bytes()
+        changed = command("weakened-contract-diff", ["diff", ready_model, str(changed_path)])
+        if not changed["advisories"] or not changed["comparison"]["semantic_changes"]:
+            raise AssertionError("Installed comparison omitted the removed postcondition.")
+        if Path(ready_model).read_bytes() != ready_before or changed_path.read_bytes() != changed_before:
+            raise AssertionError("Installed comparison changed its inputs.")
         readiness = command("fresh-project-unready", [
             "validate", str(project / "gdd.json"), "--profile", "readiness", "--scope", "action.main",
         ], 1)

@@ -12,6 +12,7 @@ from .workflow_run import create_run, run_status, advance_run
 from .code_check import check_code
 from .project_status import project_status
 from .impact import analyze_impact
+from .model_diff import diff_models
 
 __all__ = [
     "validate",
@@ -30,4 +31,5 @@ __all__ = [
     "check_code",
     "project_status",
     "analyze_impact",
+    "diff_models",
 ]

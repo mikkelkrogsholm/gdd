@@ -21,6 +21,7 @@ from .scaffold import init_project
 from .code_check import check_code
 from .project_status import project_status, status_text
 from .impact import analyze_impact, impact_text
+from .model_diff import diff_models, diff_text
 
 __all__ = ["main"]
 
@@ -130,6 +131,11 @@ def main() -> int:
     impact.add_argument("--implementation")
     impact.add_argument("--format", choices=["json", "text"], default="json")
     impact.add_argument("--output", type=Path)
+    comparison = commands.add_parser("diff", help="Compare declared models by stable IDs with advisory weakening indicators")
+    comparison.add_argument("base", type=Path)
+    comparison.add_argument("head", type=Path)
+    comparison.add_argument("--format", choices=["json", "text"], default="json")
+    comparison.add_argument("--output", type=Path)
     for command in ("snapshot", "context", "boundaries"):
         sub = commands.add_parser(command)
         sub.add_argument("path", type=Path)
@@ -144,7 +150,10 @@ def main() -> int:
             result = init_project(args.path, project_id=args.project_id, title=args.title)
             sys.stdout.write(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n")
             return 0
-        if args.command == "status":
+        if args.command == "diff":
+            result = diff_models(args.base, args.head)
+            code = result["exit_code"]
+        elif args.command == "status":
             host = parse(args.host_context.read_bytes()) if args.host_context else None
             result = project_status(args.path, scope=args.scope, run=args.run, host_context=host,
                                     implementation=args.implementation, code_revision=args.code_revision, activity=args.activity)
@@ -293,8 +302,8 @@ def main() -> int:
         output = (
             json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
         )
-        if args.command in {"status", "impact"} and args.format == "text":
-            output = status_text(result) if args.command == "status" else impact_text(result)
+        if args.command in {"status", "impact", "diff"} and args.format == "text":
+            output = {"status": status_text, "impact": impact_text, "diff": diff_text}[args.command](result)
         if args.command not in {"graphify", "view"} and args.output:
             with args.output.open("x", encoding="utf-8") as file:
                 file.write(output)

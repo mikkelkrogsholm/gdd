@@ -31,6 +31,7 @@ compatibility selectors; a package version is not a substitute.
 | Records, report, snapshot, context, parallel plan | Respective `gdd-…/0.2` formats | Only the affected serialized contract changes version |
 | Workflow request, plan, run and run status | Respective `gdd-…/0.1` formats | Only the affected workflow contract changes version |
 | Status / impact | `gdd-status/0.1`, `gdd-impact/0.1` | Projection/output contract changes independently of core graph semantics |
+| Model comparison | `gdd-model-diff/0.1`, added in this development milestone | Exact declaration comparison and advisory indicators evolve independently of core graph semantics |
 | Code observation / Python observer | `gdd-code-observation/0.1`, `python-imports/0.1` | Observation structure and analysis profile are separate compatibility surfaces |
 | Boundaries / design review | `gdd-boundaries/0.3`, `gdd-design-review/0.3` | Affected output or design interpretation contract changes |
 | Graphify adapter | Named `graphify-0.9.75-ast` and `graphify-0.9.75-node-link` profiles | A new source dialect needs an explicit profile; unsupported input stays visible |

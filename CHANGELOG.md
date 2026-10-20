@@ -7,6 +7,10 @@ imply a registry publication or a certified standard.
 
 ## Unreleased
 
+- Add `gdd diff` and `diff_models` for read-only comparison of declared model
+  fields by stable ID, with JSON/text, explicit partial coverage and advisory
+  structural weakening indicators.
+
 Target package: 0.8.0. Standard: draft GDD 0.3 with explicit 0.2 support.
 Viewer renderer: 0.3.0.
 

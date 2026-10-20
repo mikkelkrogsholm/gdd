@@ -144,6 +144,31 @@ def test_unknown_and_invalid_inputs_visible(tmp_path, model):
     assert result["exit_code"] == 1 and not result["changes"]
 
 
+@pytest.mark.parametrize("invalid", [False, True])
+def test_semantic_unknown_is_partial_and_does_not_establish_absence(tmp_path, model, invalid):
+    source = {"role": "input", "title": "Source", "uri": "unused.txt",
+              "format": "text/plain", "normative": False}
+    model["sources"] = {"source.parent": source,
+                        "source.derived": {**source, "derived_from": [{"source": "source.parent"}]}}
+    model["nodes"]["component.unused"] = deepcopy(model["nodes"]["component.arithmetic"])
+    model["nodes"]["component.unused"]["interfaces"] = []
+    head = deepcopy(model)
+    head["nodes"].pop("component.unused")
+    head["nodes"]["action.add"]["behavior"] += " Exact change."
+    if invalid:
+        head["edges"].append({"id": "edge.bad", "from": "action.add",
+                              "to": "action.absent", "relation": "calls"})
+    result = diff_models(*pair(tmp_path, model, head))
+    assert result["exit_code"] == (1 if invalid else 2)
+    assert result["comparison"]["coverage"] == "partial"
+    assert any(diag["code"] == "REVISION_UNRESOLVED"
+               for item in result["diagnostics"] for diag in item["diagnostics"])
+    assert [item["id"] for item in result["changes"]] == ["action.add"]
+    assert result["changes"][0]["change"] == "changed"
+    assert not result["advisories"]
+    Draft202012Validator(json.loads((ROOT / "schemas/model-diff.schema.json").read_text())).validate(result)
+
+
 def test_known_invalid_semantics_still_show_exact_loaded_change(tmp_path, model):
     result = compare(tmp_path, model, lambda m: m["edges"].append({"id": "edge.bad", "from": "action.add", "to": "action.missing", "relation": "calls"}))
     assert result["exit_code"] == 1

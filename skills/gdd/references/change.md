@@ -15,6 +15,13 @@ exit code does not declare project completion. Both commands support JSON and te
 
 For a changed requirement, register its input and make the authorized model change
 visible: base revision, changed IDs, rationale, and affected contracts/scenarios.
+Use `gdd diff BASE HEAD --format text` to review exact declaration changes by
+stable ID. Read the bundled [comparison guide](gdd/docs/model-diff.md). Review
+structural weakening indicators without treating them as semantic proof; retain
+incomplete-input diagnostics. A comparison neither authorizes the change nor
+rebinds existing records to the new revision. Use `impact` on explicit current
+node IDs when you need potential consequences; deleted IDs require review of
+the preserved base rather than silently treating them as current nodes.
 Keep the agreed behavior fixed while checking the implementation. If a new test
 should demonstrate the old defect, execute it against the old code and retain the
 actual red result; then implement and retain green results. Do not fabricate red

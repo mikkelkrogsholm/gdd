@@ -33,6 +33,12 @@ JSON-first; text is an optional projection of the same result. Their local tool
 contracts are `gdd-status/0.1` and `gdd-impact/0.1`, not core report profiles.
 See [inspection, exact coverage and exit policies](docs/inspection.md).
 
+To review an actual model change, use `gdd diff BASE HEAD --format text`.
+It compares loaded declarations by stable IDs, separates byte revisions from
+structural changes and flags possible weakening for review. Incomplete inputs
+stay visible and cannot establish absence-based deletions. The separate local
+contract is `gdd-model-diff/0.1`; see [model comparison](docs/model-diff.md).
+
 ## Create a draft project
 
 `gdd init PATH --project-id project.example --title "Example"` creates

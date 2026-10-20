@@ -1,5 +1,10 @@
 [
   {
+    "id": "diff.semantic_unknown",
+    "assertion": "Semantic UNKNOWN stays partial, suppresses absence and yields exit 2 unless a known failure takes priority.",
+    "test": "tests/test_model_diff.py::test_semantic_unknown_is_partial_and_does_not_establish_absence"
+  },
+  {
     "id": "diff.identity",
     "assertion": "Formatting and edge order preserve semantic equality with distinct byte revisions.",
     "test": "tests/test_model_diff.py::test_identity_reformat_and_edge_reorder"

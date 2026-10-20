@@ -41,7 +41,7 @@ def _side(path):
         checks.append({"check_id": "diff.manifest", "dimension": "model", "result": "UNKNOWN",
                        "reason": "A supported GDD model manifest is unavailable.", "scope": [],
                        "diagnostics": []})
-    complete = representation_complete and not any(
+    complete = representation_complete and not any(item["result"] == "UNKNOWN" for item in checks) and not any(
         diagnostic["code"] == "ID_COLLISION"
         for item in checks for diagnostic in item.get("diagnostics", [])
     )
