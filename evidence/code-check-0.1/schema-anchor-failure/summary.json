@@ -1,0 +1,48 @@
+{
+  "mode": "release",
+  "matrix": false,
+  "started_at": "2026-10-20T11:11:19.730987+00:00",
+  "host_python": "3.12.12",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "output": "/private/tmp/gdd-code-check-verified-release",
+  "steps": [
+    {
+      "name": "skill-sync",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpMXURK5/bin/python",
+        "scripts/sync_skill.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.056,
+      "stdout": "skill-sync.stdout.txt",
+      "stderr": "skill-sync.stderr.txt"
+    },
+    {
+      "name": "pytest-current",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpMXURK5/bin/python",
+        "-B",
+        "-c",
+        "import json, platform, sys; print('GDD_CHECK_RUNTIME=' + json.dumps({'python': platform.python_version(), 'executable': sys.executable}), flush=True); import pytest; raise SystemExit(pytest.main(sys.argv[1:]))",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "tmp_path_retention_policy=failed"
+      ],
+      "exit_code": 1,
+      "result": "FAIL",
+      "seconds": 382.342,
+      "stdout": "pytest-current.stdout.txt",
+      "stderr": "pytest-current.stderr.txt",
+      "runtime": {
+        "python": "3.12.12",
+        "executable": "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpMXURK5/bin/python"
+      }
+    }
+  ],
+  "passed": false,
+  "finished_at": "2026-10-20T11:17:42.143387+00:00"
+}

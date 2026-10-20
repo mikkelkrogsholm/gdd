@@ -1,0 +1,1 @@
+25 installed CLI checks, legacy replay and 108 exact assets passed

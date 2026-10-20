@@ -1,0 +1,83 @@
+Installed 13 packages in 14ms
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+_______ test_frozen_finder_prevents_false_source_root_collision_edge[os] _______
+
+module = 'os'
+
+    @pytest.mark.parametrize("module", ["os", "abc", "io", "stat"])
+    def test_frozen_finder_prevents_false_source_root_collision_edge(module):
+        import _imp
+        if not _imp.is_frozen(module):
+            pytest.skip("This interpreter does not freeze the selected standard module.")
+        result = analyze({"main.py": f"import {module}", f"{module}.py": "value = 1"})
+>       assert not result["edges"]
+E       AssertionError: assert not [{'from': 'main.py', 'to': 'os.py', 'source_file': 'main.py', 'line': 1, ...}]
+
+tests/test_python_imports.py:203: AssertionError
+______ test_frozen_finder_prevents_false_source_root_collision_edge[abc] _______
+
+module = 'abc'
+
+    @pytest.mark.parametrize("module", ["os", "abc", "io", "stat"])
+    def test_frozen_finder_prevents_false_source_root_collision_edge(module):
+        import _imp
+        if not _imp.is_frozen(module):
+            pytest.skip("This interpreter does not freeze the selected standard module.")
+        result = analyze({"main.py": f"import {module}", f"{module}.py": "value = 1"})
+>       assert not result["edges"]
+E       AssertionError: assert not [{'from': 'main.py', 'to': 'abc.py', 'source_file': 'main.py', 'line': 1, ...}]
+
+tests/test_python_imports.py:203: AssertionError
+_______ test_frozen_finder_prevents_false_source_root_collision_edge[io] _______
+
+module = 'io'
+
+    @pytest.mark.parametrize("module", ["os", "abc", "io", "stat"])
+    def test_frozen_finder_prevents_false_source_root_collision_edge(module):
+        import _imp
+        if not _imp.is_frozen(module):
+            pytest.skip("This interpreter does not freeze the selected standard module.")
+        result = analyze({"main.py": f"import {module}", f"{module}.py": "value = 1"})
+>       assert not result["edges"]
+E       AssertionError: assert not [{'from': 'main.py', 'to': 'io.py', 'source_file': 'main.py', 'line': 1, ...}]
+
+tests/test_python_imports.py:203: AssertionError
+______ test_frozen_finder_prevents_false_source_root_collision_edge[stat] ______
+
+module = 'stat'
+
+    @pytest.mark.parametrize("module", ["os", "abc", "io", "stat"])
+    def test_frozen_finder_prevents_false_source_root_collision_edge(module):
+        import _imp
+        if not _imp.is_frozen(module):
+            pytest.skip("This interpreter does not freeze the selected standard module.")
+        result = analyze({"main.py": f"import {module}", f"{module}.py": "value = 1"})
+>       assert not result["edges"]
+E       AssertionError: assert not [{'from': 'main.py', 'to': 'stat.py', 'source_file': 'main.py', 'line': 1, ...}]
+
+tests/test_python_imports.py:203: AssertionError
+______ test_excluding_a_known_local_import_cannot_turn_unknown_into_pass _______
+
+project = (PosixPath('/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-54/test_.../znsnvw8s1p31zr7fywf_cgfc0000gn/T/pytest-of-mikkelfreltoftkrogsholm/pytest-54/test_excluding_a_known_local_i0/source'))
+
+    def test_excluding_a_known_local_import_cannot_turn_unknown_into_pass(project):
+        root = project[1]
+        (root / "api.py").write_text("import helper\n")
+        (root / "helper.py").write_text("import store\n")
+        assert observe(project)["result"] == "UNKNOWN"
+        excluded = observe(project, exclude=["helper.py"])
+>       assert excluded["result"] == "UNKNOWN"
+E       AssertionError: assert 'PASS' == 'UNKNOWN'
+E         
+E         - UNKNOWN
+E         + PASS
+
+tests/test_code_check_cli.py:147: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_python_imports.py::test_frozen_finder_prevents_false_source_root_collision_edge[os]
+FAILED tests/test_python_imports.py::test_frozen_finder_prevents_false_source_root_collision_edge[abc]
+FAILED tests/test_python_imports.py::test_frozen_finder_prevents_false_source_root_collision_edge[io]
+FAILED tests/test_python_imports.py::test_frozen_finder_prevents_false_source_root_collision_edge[stat]
+FAILED tests/test_code_check_cli.py::test_excluding_a_known_local_import_cannot_turn_unknown_into_pass
+5 failed in 0.58s

@@ -1,5 +1,10 @@
 # Verification evidence and English presentation
 
+The [static Python code-observer review](code-check-0.1/README.md) records
+`gdd check-code`, current binding mappings, direct/transitive architecture
+controls, focused Python 3.11–3.14 coverage, full local conformance and an
+installed wheel. Observations remain separate from trusted implementation evidence.
+
 The unreleased package 0.8.0 [CLI and first-use review](cli-first-use-0.8.0/README.md)
 records the first issue-triage milestone, full local Python 3.11–3.14 coverage,
 named conformance results, preserved offline artifacts and a fresh installed wheel.
