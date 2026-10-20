@@ -1,0 +1,2089 @@
+{
+  "format": "gdd-model-diff/0.1",
+  "base": {
+    "path": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-diff-worked-3a74v9bv/recovered/examples/concert-app/history/phase-a/gdd.json",
+    "spec_revision": "sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9",
+    "format": "gdd/0.3",
+    "coverage": "complete",
+    "checks": [
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "model.semantics",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+        "diagnostics": []
+      }
+    ]
+  },
+  "head": {
+    "path": "/private/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/gdd-diff-worked-3a74v9bv/recovered/examples/concert-app/gdd.json",
+    "spec_revision": "sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170",
+    "format": "gdd/0.3",
+    "coverage": "complete",
+    "checks": [
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "representation.schema",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Local JSON Schema validation.",
+        "diagnostics": []
+      },
+      {
+        "check_id": "model.semantics",
+        "dimension": "model",
+        "result": "PASS",
+        "scope": [],
+        "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+        "diagnostics": []
+      }
+    ]
+  },
+  "comparison": {
+    "coverage": "complete",
+    "semantic_changes": true,
+    "counts": {
+      "nodes": {
+        "added": 5,
+        "removed": 0,
+        "changed": 5
+      },
+      "sources": {
+        "added": 0,
+        "removed": 0,
+        "changed": 1
+      },
+      "questions": {
+        "added": 0,
+        "removed": 0,
+        "changed": 0
+      },
+      "edges": {
+        "added": 22,
+        "removed": 0,
+        "changed": 0
+      }
+    }
+  },
+  "changes": [
+    {
+      "registry": "nodes",
+      "id": "action.cancel",
+      "change": "changed",
+      "fields": [
+        {
+          "pointer": "/contract/error_cases/SessionChanged",
+          "change": "added",
+          "after": [
+            "scenario.ui_session_change"
+          ]
+        },
+        {
+          "pointer": "/contract/errors/SessionChanged",
+          "change": "added",
+          "after": "At the HTTP boundary reject a stale presented identity before private reads or effects; the expectation never selects the authenticated principal."
+        },
+        {
+          "pointer": "/contract/postconditions",
+          "change": "changed",
+          "before": [
+            "An owned active reservation becomes cancelled atomically.",
+            "An already cancelled owned reservation remains cancelled."
+          ],
+          "after": [
+            "An owned active reservation becomes cancelled atomically.",
+            "An already cancelled owned reservation remains cancelled.",
+            "Reject a stale browser identity expectation against the server-resolved session before reading personal data or applying effects."
+          ]
+        }
+      ],
+      "before": {
+        "kind": "action",
+        "description": "The owner may cancel their reservation; repeating the request has no additional effect.",
+        "maturity": "specified",
+        "source_refs": [
+          {
+            "source": "source.requirements",
+            "purpose": "contract"
+          },
+          {
+            "source": "source.http",
+            "purpose": "contract"
+          }
+        ],
+        "contract": {
+          "input": {
+            "reservation_id": {
+              "type": "string",
+              "min_length": 1
+            }
+          },
+          "context": {
+            "principal_id": {
+              "type": "string",
+              "min_length": 1,
+              "origin": "authenticated_context"
+            }
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "min_length": 1
+              },
+              "state": {
+                "type": "enum",
+                "values": [
+                  "cancelled"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "state"
+            ]
+          },
+          "errors": {
+            "Unauthenticated": "Reject before lookup or mutation when trusted authentication is absent.",
+            "InvalidInput": "Reject malformed input before any reservation mutation.",
+            "ReservationNotFound": "Return an error when the reservation does not exist; change no reservation.",
+            "PersistenceUnavailable": "Rollback before returning failure; no partial effects or new key binding."
+          },
+          "preconditions": [
+            "Validate authenticated identity and input before lookup or mutation."
+          ],
+          "external_effects": [],
+          "effects_complete": true,
+          "dependencies_complete": true,
+          "risks": {
+            "authorization": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.foreign_cancel"
+              ]
+            },
+            "idempotency": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.cancel",
+                "scenario.replay_after_cancel"
+              ]
+            },
+            "boundaries": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.reservation_missing"
+              ]
+            },
+            "concurrency": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.cancel_concurrent"
+              ]
+            },
+            "atomicity": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.atomic_failure"
+              ]
+            }
+          },
+          "error_cases": {
+            "Unauthenticated": [
+              "scenario.cancel_unauthenticated"
+            ],
+            "InvalidInput": [
+              "scenario.cancel_invalid"
+            ],
+            "ReservationNotFound": [
+              "scenario.reservation_missing",
+              "scenario.foreign_cancel"
+            ],
+            "PersistenceUnavailable": [
+              "scenario.atomic_failure"
+            ]
+          },
+          "postconditions": [
+            "An owned active reservation becomes cancelled atomically.",
+            "An already cancelled owned reservation remains cancelled."
+          ]
+        },
+        "behavior": "Validate identity and input first.\nAn absent reservation and another owner's reservation both yield ReservationNotFound.\nCheck ownership before returning data, including a retry for an already cancelled reservation.\nAtomically change reserved to cancelled so the reservation no longer occupies a seat.\nReturn cancelled unchanged; do not release a seat again.\nPreserve the old request key so a repeated reserve request cannot recreate the reservation."
+      },
+      "after": {
+        "kind": "action",
+        "description": "The owner may cancel their reservation; repeating the request has no additional effect.",
+        "maturity": "specified",
+        "source_refs": [
+          {
+            "source": "source.requirements",
+            "purpose": "contract"
+          },
+          {
+            "source": "source.http",
+            "purpose": "contract"
+          }
+        ],
+        "contract": {
+          "input": {
+            "reservation_id": {
+              "type": "string",
+              "min_length": 1
+            }
+          },
+          "context": {
+            "principal_id": {
+              "type": "string",
+              "min_length": 1,
+              "origin": "authenticated_context"
+            }
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "min_length": 1
+              },
+              "state": {
+                "type": "enum",
+                "values": [
+                  "cancelled"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "state"
+            ]
+          },
+          "errors": {
+            "Unauthenticated": "Reject before lookup or mutation when trusted authentication is absent.",
+            "InvalidInput": "Reject malformed input before any reservation mutation.",
+            "ReservationNotFound": "Return an error when the reservation does not exist; change no reservation.",
+            "PersistenceUnavailable": "Rollback before returning failure; no partial effects or new key binding.",
+            "SessionChanged": "At the HTTP boundary reject a stale presented identity before private reads or effects; the expectation never selects the authenticated principal."
+          },
+          "preconditions": [
+            "Validate authenticated identity and input before lookup or mutation."
+          ],
+          "external_effects": [],
+          "effects_complete": true,
+          "dependencies_complete": true,
+          "risks": {
+            "authorization": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.foreign_cancel"
+              ]
+            },
+            "idempotency": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.cancel",
+                "scenario.replay_after_cancel"
+              ]
+            },
+            "boundaries": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.reservation_missing"
+              ]
+            },
+            "concurrency": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.cancel_concurrent"
+              ]
+            },
+            "atomicity": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.atomic_failure"
+              ]
+            }
+          },
+          "error_cases": {
+            "Unauthenticated": [
+              "scenario.cancel_unauthenticated"
+            ],
+            "InvalidInput": [
+              "scenario.cancel_invalid"
+            ],
+            "ReservationNotFound": [
+              "scenario.reservation_missing",
+              "scenario.foreign_cancel"
+            ],
+            "PersistenceUnavailable": [
+              "scenario.atomic_failure"
+            ],
+            "SessionChanged": [
+              "scenario.ui_session_change"
+            ]
+          },
+          "postconditions": [
+            "An owned active reservation becomes cancelled atomically.",
+            "An already cancelled owned reservation remains cancelled.",
+            "Reject a stale browser identity expectation against the server-resolved session before reading personal data or applying effects."
+          ]
+        },
+        "behavior": "Validate identity and input first.\nAn absent reservation and another owner's reservation both yield ReservationNotFound.\nCheck ownership before returning data, including a retry for an already cancelled reservation.\nAtomically change reserved to cancelled so the reservation no longer occupies a seat.\nReturn cancelled unchanged; do not release a seat again.\nPreserve the old request key so a repeated reserve request cannot recreate the reservation."
+      }
+    },
+    {
+      "registry": "nodes",
+      "id": "action.list_own_reservations",
+      "change": "changed",
+      "fields": [
+        {
+          "pointer": "/contract/error_cases/SessionChanged",
+          "change": "added",
+          "after": [
+            "scenario.ui_session_change"
+          ]
+        },
+        {
+          "pointer": "/contract/errors/SessionChanged",
+          "change": "added",
+          "after": "At the HTTP boundary reject a stale presented identity before private reads or effects; the expectation never selects the authenticated principal."
+        },
+        {
+          "pointer": "/contract/postconditions",
+          "change": "changed",
+          "before": [
+            "Return only this principal's complete reserved/cancelled history, active count and current nullable domain-owned limit.",
+            "In phase A return active_limit=null; no per-principal limit is enforced."
+          ],
+          "after": [
+            "Return only this principal's complete reserved/cancelled history, active count and current nullable domain-owned limit.",
+            "Reject a stale browser identity expectation against the server-resolved session before reading personal data or applying effects.",
+            "Return active_limit=2 from the domain's single policy value."
+          ]
+        }
+      ],
+      "before": {
+        "kind": "action",
+        "description": "Return only this principal's complete reserved/cancelled history, active count and current nullable domain-owned limit.",
+        "maturity": "specified",
+        "source_refs": [
+          {
+            "source": "source.http",
+            "purpose": "contract"
+          }
+        ],
+        "behavior": "Return only this principal's complete reserved/cancelled history, active count and current nullable domain-owned limit.",
+        "contract": {
+          "input": {},
+          "context": {
+            "principal_id": {
+              "type": "string",
+              "min_length": 1,
+              "origin": "authenticated_context"
+            }
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "reservations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "min_length": 1
+                    },
+                    "concert_id": {
+                      "type": "string",
+                      "min_length": 1
+                    },
+                    "state": {
+                      "type": "enum",
+                      "values": [
+                        "reserved",
+                        "cancelled"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "concert_id",
+                    "state"
+                  ]
+                }
+              },
+              "active_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "active_limit": {
+                "type": "integer",
+                "minimum": 1,
+                "nullable": true
+              }
+            },
+            "required": [
+              "reservations",
+              "active_count",
+              "active_limit"
+            ]
+          },
+          "errors": {
+            "Unauthenticated": "Reject before persistence lookup.",
+            "PersistenceUnavailable": "Return no partial private data."
+          },
+          "preconditions": [
+            "Validate the declared input and resolve any required session before exposing private data."
+          ],
+          "postconditions": [
+            "Return only this principal's complete reserved/cancelled history, active count and current nullable domain-owned limit.",
+            "In phase A return active_limit=null; no per-principal limit is enforced."
+          ],
+          "external_effects": [],
+          "effects_complete": true,
+          "dependencies_complete": true,
+          "risks": {
+            "authorization": {
+              "relevant": true,
+              "rationale": "The negative scenario covers session/credential rejection.",
+              "scenarios": [
+                "scenario.app.action.list_own_reservations.negative"
+              ]
+            },
+            "idempotency": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "boundaries": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "concurrency": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "atomicity": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            }
+          },
+          "error_cases": {
+            "Unauthenticated": [
+              "scenario.app.action.list_own_reservations.negative"
+            ],
+            "PersistenceUnavailable": [
+              "scenario.app.action.list_own_reservations.negative"
+            ]
+          }
+        }
+      },
+      "after": {
+        "kind": "action",
+        "description": "Return only this principal's complete reserved/cancelled history, active count and current nullable domain-owned limit.",
+        "maturity": "specified",
+        "source_refs": [
+          {
+            "source": "source.http",
+            "purpose": "contract"
+          }
+        ],
+        "behavior": "Return only this principal's complete reserved/cancelled history, active count and current nullable domain-owned limit.",
+        "contract": {
+          "input": {},
+          "context": {
+            "principal_id": {
+              "type": "string",
+              "min_length": 1,
+              "origin": "authenticated_context"
+            }
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "reservations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "min_length": 1
+                    },
+                    "concert_id": {
+                      "type": "string",
+                      "min_length": 1
+                    },
+                    "state": {
+                      "type": "enum",
+                      "values": [
+                        "reserved",
+                        "cancelled"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "concert_id",
+                    "state"
+                  ]
+                }
+              },
+              "active_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "active_limit": {
+                "type": "integer",
+                "minimum": 1,
+                "nullable": true
+              }
+            },
+            "required": [
+              "reservations",
+              "active_count",
+              "active_limit"
+            ]
+          },
+          "errors": {
+            "Unauthenticated": "Reject before persistence lookup.",
+            "PersistenceUnavailable": "Return no partial private data.",
+            "SessionChanged": "At the HTTP boundary reject a stale presented identity before private reads or effects; the expectation never selects the authenticated principal."
+          },
+          "preconditions": [
+            "Validate the declared input and resolve any required session before exposing private data."
+          ],
+          "postconditions": [
+            "Return only this principal's complete reserved/cancelled history, active count and current nullable domain-owned limit.",
+            "Reject a stale browser identity expectation against the server-resolved session before reading personal data or applying effects.",
+            "Return active_limit=2 from the domain's single policy value."
+          ],
+          "external_effects": [],
+          "effects_complete": true,
+          "dependencies_complete": true,
+          "risks": {
+            "authorization": {
+              "relevant": true,
+              "rationale": "The negative scenario covers session/credential rejection.",
+              "scenarios": [
+                "scenario.app.action.list_own_reservations.negative"
+              ]
+            },
+            "idempotency": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "boundaries": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "concurrency": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "atomicity": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            }
+          },
+          "error_cases": {
+            "Unauthenticated": [
+              "scenario.app.action.list_own_reservations.negative"
+            ],
+            "PersistenceUnavailable": [
+              "scenario.app.action.list_own_reservations.negative"
+            ],
+            "SessionChanged": [
+              "scenario.ui_session_change"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "registry": "nodes",
+      "id": "action.logout",
+      "change": "changed",
+      "fields": [
+        {
+          "pointer": "/contract/error_cases/SessionChanged",
+          "change": "added",
+          "after": [
+            "scenario.ui_session_change"
+          ]
+        },
+        {
+          "pointer": "/contract/errors/SessionChanged",
+          "change": "added",
+          "after": "At the HTTP boundary reject a stale presented identity before private reads or effects; the expectation never selects the authenticated principal."
+        },
+        {
+          "pointer": "/contract/postconditions",
+          "change": "changed",
+          "before": [
+            "Revoke the presented session and expire its cookie; repeated logout is harmless and must not revoke other tokens."
+          ],
+          "after": [
+            "Revoke the presented session and expire its cookie; repeated logout is harmless and must not revoke other tokens.",
+            "Reject a stale browser identity expectation against the server-resolved session before reading personal data or applying effects."
+          ]
+        }
+      ],
+      "before": {
+        "kind": "action",
+        "description": "Revoke the presented session and expire its cookie; repeated logout is harmless and must not revoke other tokens.",
+        "maturity": "specified",
+        "source_refs": [
+          {
+            "source": "source.http",
+            "purpose": "contract"
+          }
+        ],
+        "behavior": "Revoke the presented session and expire its cookie; repeated logout is harmless and must not revoke other tokens.",
+        "contract": {
+          "input": {},
+          "context": {
+            "session_token": {
+              "type": "string",
+              "optional": true,
+              "nullable": true
+            }
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "principal": {
+                "type": "any",
+                "nullable": true
+              }
+            },
+            "required": [
+              "principal"
+            ]
+          },
+          "errors": {},
+          "preconditions": [
+            "Validate the declared input and resolve any required session before exposing private data."
+          ],
+          "postconditions": [
+            "Revoke the presented session and expire its cookie; repeated logout is harmless and must not revoke other tokens."
+          ],
+          "external_effects": [
+            "Expire the presented session cookie."
+          ],
+          "effects_complete": true,
+          "dependencies_complete": true,
+          "risks": {
+            "authorization": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "idempotency": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "boundaries": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "concurrency": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "atomicity": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            }
+          },
+          "error_cases": {}
+        }
+      },
+      "after": {
+        "kind": "action",
+        "description": "Revoke the presented session and expire its cookie; repeated logout is harmless and must not revoke other tokens.",
+        "maturity": "specified",
+        "source_refs": [
+          {
+            "source": "source.http",
+            "purpose": "contract"
+          }
+        ],
+        "behavior": "Revoke the presented session and expire its cookie; repeated logout is harmless and must not revoke other tokens.",
+        "contract": {
+          "input": {},
+          "context": {
+            "session_token": {
+              "type": "string",
+              "optional": true,
+              "nullable": true
+            }
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "principal": {
+                "type": "any",
+                "nullable": true
+              }
+            },
+            "required": [
+              "principal"
+            ]
+          },
+          "errors": {
+            "SessionChanged": "At the HTTP boundary reject a stale presented identity before private reads or effects; the expectation never selects the authenticated principal."
+          },
+          "preconditions": [
+            "Validate the declared input and resolve any required session before exposing private data."
+          ],
+          "postconditions": [
+            "Revoke the presented session and expire its cookie; repeated logout is harmless and must not revoke other tokens.",
+            "Reject a stale browser identity expectation against the server-resolved session before reading personal data or applying effects."
+          ],
+          "external_effects": [
+            "Expire the presented session cookie."
+          ],
+          "effects_complete": true,
+          "dependencies_complete": true,
+          "risks": {
+            "authorization": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "idempotency": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "boundaries": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "concurrency": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            },
+            "atomicity": {
+              "relevant": false,
+              "rationale": "This bounded operation has no additional transactional or idempotency obligation beyond its explicit contract.",
+              "scenarios": []
+            }
+          },
+          "error_cases": {
+            "SessionChanged": [
+              "scenario.ui_session_change"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "registry": "nodes",
+      "id": "action.reserve",
+      "change": "changed",
+      "fields": [
+        {
+          "pointer": "/behavior",
+          "change": "changed",
+          "before": "Validate identity and input before lookup or mutation.\nThe request key is scoped to principal_id and action.reserve.\nBind a successful key to concert_id and reservation ID; reusing the key with another concert_id yields IdempotencyConflict.\nAn identical retry returns the same reservation ID and CURRENT state, including after cancellation, without new side effects.\nLook up an earlier success BEFORE checking new capacity; a full venue must not turn a successful retry into SoldOut.\nOnly a new key attempts to create a new reservation.\nReject a new reservation with SoldOut when the number of reservations in reserved equals capacity.\nKey uniqueness, capacity protection, creation and key binding must be part of the same atomic database operation or transaction.\nConcurrent transactions must produce a result equivalent to a valid sequential order under these rules; an unprotected check-then-insert is insufficient.\nA failed creation does not bind the request key and leaves no reservation.",
+          "after": "Validate identity and input before lookup or mutation.\nThe request key is scoped to principal_id and action.reserve.\nBind a successful key to concert_id and reservation ID; reusing the key with another concert_id yields IdempotencyConflict.\nAn identical retry returns the same reservation ID and CURRENT state, including after cancellation, without new side effects.\nLook up an earlier success BEFORE checking new capacity; a full venue must not turn a successful retry into SoldOut.\nOnly a new key attempts to create a new reservation.\nReject a new reservation with SoldOut when the number of reservations in reserved equals capacity.\nKey uniqueness, capacity protection, creation and key binding must be part of the same atomic database operation or transaction.\nConcurrent transactions must produce a result equivalent to a valid sequential order under these rules; an unprotected check-then-insert is insufficient.\nA failed creation does not bind the request key and leaves no reservation.\nFor a new key, after resolving concert existence enforce the principal's global active limit of two BEFORE concert capacity. Both counts, insert and key binding are in one protected transaction. Successful replay remains before either limit."
+        },
+        {
+          "pointer": "/contract/error_cases/ActiveReservationLimitReached",
+          "change": "added",
+          "after": [
+            "scenario.active_limit"
+          ]
+        },
+        {
+          "pointer": "/contract/error_cases/SessionChanged",
+          "change": "added",
+          "after": [
+            "scenario.ui_session_change"
+          ]
+        },
+        {
+          "pointer": "/contract/errors/ActiveReservationLimitReached",
+          "change": "added",
+          "after": "Reject a new key at two active reservations without mutation or key binding."
+        },
+        {
+          "pointer": "/contract/errors/SessionChanged",
+          "change": "added",
+          "after": "At the HTTP boundary reject a stale presented identity before private reads or effects; the expectation never selects the authenticated principal."
+        },
+        {
+          "pointer": "/contract/postconditions",
+          "change": "changed",
+          "before": [
+            "A new reservation is created atomically only when capacity is available.",
+            "A successful repeated request returns its original reservation in its current state and creates no additional reservation."
+          ],
+          "after": [
+            "A new reservation is created atomically only when capacity is available.",
+            "A successful repeated request returns its original reservation in its current state and creates no additional reservation.",
+            "Reject a stale browser identity expectation against the server-resolved session before reading personal data or applying effects.",
+            "Each principal has at most two reserved reservations across all concerts. Cancelled history does not consume allowance."
+          ]
+        },
+        {
+          "pointer": "/contract/risks/concurrency/scenarios",
+          "change": "changed",
+          "before": [
+            "scenario.last_seat",
+            "scenario.concurrent_same_key"
+          ],
+          "after": [
+            "scenario.last_seat",
+            "scenario.concurrent_same_key",
+            "scenario.active_limit_concurrent"
+          ]
+        }
+      ],
+      "before": {
+        "kind": "action",
+        "description": "Reserve exactly one seat or retrieve an earlier successful result.",
+        "maturity": "specified",
+        "source_refs": [
+          {
+            "source": "source.requirements",
+            "purpose": "contract"
+          },
+          {
+            "source": "source.http",
+            "purpose": "contract"
+          }
+        ],
+        "contract": {
+          "input": {
+            "concert_id": {
+              "type": "string",
+              "min_length": 1
+            },
+            "request_key": {
+              "type": "string",
+              "min_length": 1
+            }
+          },
+          "context": {
+            "principal_id": {
+              "type": "string",
+              "min_length": 1,
+              "origin": "authenticated_context"
+            }
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "min_length": 1
+              },
+              "state": {
+                "type": "enum",
+                "values": [
+                  "reserved",
+                  "cancelled"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "state"
+            ]
+          },
+          "errors": {
+            "Unauthenticated": "Reject before lookup or mutation when trusted authentication is absent.",
+            "InvalidInput": "Reject malformed input before any reservation mutation.",
+            "ConcertNotFound": "Return an error and create no reservation when the concert does not exist.",
+            "SoldOut": "Return an error and create no reservation when no seat is available.",
+            "IdempotencyConflict": "Reject a request key already bound to another concert; leave the existing reservation unchanged.",
+            "PersistenceUnavailable": "Rollback before returning failure; no partial effects or new key binding."
+          },
+          "preconditions": [
+            "Validate authenticated identity and input before lookup or mutation."
+          ],
+          "external_effects": [],
+          "effects_complete": true,
+          "dependencies_complete": true,
+          "risks": {
+            "authorization": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.reserve_unauthenticated"
+              ]
+            },
+            "idempotency": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.replay",
+                "scenario.key_conflict"
+              ]
+            },
+            "boundaries": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.zero_capacity",
+                "scenario.sold_out"
+              ]
+            },
+            "concurrency": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.last_seat",
+                "scenario.concurrent_same_key"
+              ]
+            },
+            "atomicity": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.atomic_failure"
+              ]
+            }
+          },
+          "error_cases": {
+            "Unauthenticated": [
+              "scenario.reserve_unauthenticated"
+            ],
+            "InvalidInput": [
+              "scenario.reserve_invalid"
+            ],
+            "ConcertNotFound": [
+              "scenario.concert_missing"
+            ],
+            "SoldOut": [
+              "scenario.sold_out"
+            ],
+            "IdempotencyConflict": [
+              "scenario.key_conflict"
+            ],
+            "PersistenceUnavailable": [
+              "scenario.atomic_failure"
+            ]
+          },
+          "postconditions": [
+            "A new reservation is created atomically only when capacity is available.",
+            "A successful repeated request returns its original reservation in its current state and creates no additional reservation."
+          ]
+        },
+        "behavior": "Validate identity and input before lookup or mutation.\nThe request key is scoped to principal_id and action.reserve.\nBind a successful key to concert_id and reservation ID; reusing the key with another concert_id yields IdempotencyConflict.\nAn identical retry returns the same reservation ID and CURRENT state, including after cancellation, without new side effects.\nLook up an earlier success BEFORE checking new capacity; a full venue must not turn a successful retry into SoldOut.\nOnly a new key attempts to create a new reservation.\nReject a new reservation with SoldOut when the number of reservations in reserved equals capacity.\nKey uniqueness, capacity protection, creation and key binding must be part of the same atomic database operation or transaction.\nConcurrent transactions must produce a result equivalent to a valid sequential order under these rules; an unprotected check-then-insert is insufficient.\nA failed creation does not bind the request key and leaves no reservation."
+      },
+      "after": {
+        "kind": "action",
+        "description": "Reserve exactly one seat or retrieve an earlier successful result.",
+        "maturity": "specified",
+        "source_refs": [
+          {
+            "source": "source.requirements",
+            "purpose": "contract"
+          },
+          {
+            "source": "source.http",
+            "purpose": "contract"
+          }
+        ],
+        "contract": {
+          "input": {
+            "concert_id": {
+              "type": "string",
+              "min_length": 1
+            },
+            "request_key": {
+              "type": "string",
+              "min_length": 1
+            }
+          },
+          "context": {
+            "principal_id": {
+              "type": "string",
+              "min_length": 1,
+              "origin": "authenticated_context"
+            }
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "min_length": 1
+              },
+              "state": {
+                "type": "enum",
+                "values": [
+                  "reserved",
+                  "cancelled"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "state"
+            ]
+          },
+          "errors": {
+            "Unauthenticated": "Reject before lookup or mutation when trusted authentication is absent.",
+            "InvalidInput": "Reject malformed input before any reservation mutation.",
+            "ConcertNotFound": "Return an error and create no reservation when the concert does not exist.",
+            "SoldOut": "Return an error and create no reservation when no seat is available.",
+            "IdempotencyConflict": "Reject a request key already bound to another concert; leave the existing reservation unchanged.",
+            "PersistenceUnavailable": "Rollback before returning failure; no partial effects or new key binding.",
+            "SessionChanged": "At the HTTP boundary reject a stale presented identity before private reads or effects; the expectation never selects the authenticated principal.",
+            "ActiveReservationLimitReached": "Reject a new key at two active reservations without mutation or key binding."
+          },
+          "preconditions": [
+            "Validate authenticated identity and input before lookup or mutation."
+          ],
+          "external_effects": [],
+          "effects_complete": true,
+          "dependencies_complete": true,
+          "risks": {
+            "authorization": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.reserve_unauthenticated"
+              ]
+            },
+            "idempotency": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.replay",
+                "scenario.key_conflict"
+              ]
+            },
+            "boundaries": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.zero_capacity",
+                "scenario.sold_out"
+              ]
+            },
+            "concurrency": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.last_seat",
+                "scenario.concurrent_same_key",
+                "scenario.active_limit_concurrent"
+              ]
+            },
+            "atomicity": {
+              "relevant": true,
+              "rationale": "The contract covers this risk; the scenarios are planned checks.",
+              "scenarios": [
+                "scenario.atomic_failure"
+              ]
+            }
+          },
+          "error_cases": {
+            "Unauthenticated": [
+              "scenario.reserve_unauthenticated"
+            ],
+            "InvalidInput": [
+              "scenario.reserve_invalid"
+            ],
+            "ConcertNotFound": [
+              "scenario.concert_missing"
+            ],
+            "SoldOut": [
+              "scenario.sold_out"
+            ],
+            "IdempotencyConflict": [
+              "scenario.key_conflict"
+            ],
+            "PersistenceUnavailable": [
+              "scenario.atomic_failure"
+            ],
+            "SessionChanged": [
+              "scenario.ui_session_change"
+            ],
+            "ActiveReservationLimitReached": [
+              "scenario.active_limit"
+            ]
+          },
+          "postconditions": [
+            "A new reservation is created atomically only when capacity is available.",
+            "A successful repeated request returns its original reservation in its current state and creates no additional reservation.",
+            "Reject a stale browser identity expectation against the server-resolved session before reading personal data or applying effects.",
+            "Each principal has at most two reserved reservations across all concerts. Cancelled history does not consume allowance."
+          ]
+        },
+        "behavior": "Validate identity and input before lookup or mutation.\nThe request key is scoped to principal_id and action.reserve.\nBind a successful key to concert_id and reservation ID; reusing the key with another concert_id yields IdempotencyConflict.\nAn identical retry returns the same reservation ID and CURRENT state, including after cancellation, without new side effects.\nLook up an earlier success BEFORE checking new capacity; a full venue must not turn a successful retry into SoldOut.\nOnly a new key attempts to create a new reservation.\nReject a new reservation with SoldOut when the number of reservations in reserved equals capacity.\nKey uniqueness, capacity protection, creation and key binding must be part of the same atomic database operation or transaction.\nConcurrent transactions must produce a result equivalent to a valid sequential order under these rules; an unprotected check-then-insert is insufficient.\nA failed creation does not bind the request key and leaves no reservation.\nFor a new key, after resolving concert existence enforce the principal's global active limit of two BEFORE concert capacity. Both counts, insert and key binding are in one protected transaction. Successful replay remains before either limit."
+      }
+    },
+    {
+      "registry": "nodes",
+      "id": "machine.reservation",
+      "change": "changed",
+      "fields": [
+        {
+          "pointer": "/machine/transitions",
+          "change": "changed",
+          "before": [
+            {
+              "id": "transition.reserve",
+              "from": "absent",
+              "to": "reserved",
+              "trigger": "action.reserve",
+              "guard": "Authenticated user; existing concert; new request key; at least one available seat.",
+              "effects": "Create a reservation with state=reserved and bind the request key atomically under capacity protection."
+            },
+            {
+              "id": "transition.cancel",
+              "from": "reserved",
+              "to": "cancelled",
+              "trigger": "action.cancel",
+              "guard": "The authenticated user owns the reservation.",
+              "effects": "Atomically change to cancelled; any materialized seat counter is updated within the same transaction."
+            }
+          ],
+          "after": [
+            {
+              "id": "transition.reserve",
+              "from": "absent",
+              "to": "reserved",
+              "trigger": "action.reserve",
+              "guard": "Authenticated user; existing concert; new request key; at least one available seat. AND the principal has fewer than two active reservations across all concerts.",
+              "effects": "Create a reservation with state=reserved and bind the request key atomically under capacity protection."
+            },
+            {
+              "id": "transition.cancel",
+              "from": "reserved",
+              "to": "cancelled",
+              "trigger": "action.cancel",
+              "guard": "The authenticated user owns the reservation.",
+              "effects": "Atomically change to cancelled; any materialized seat counter is updated within the same transaction."
+            }
+          ]
+        }
+      ],
+      "before": {
+        "kind": "machine",
+        "description": "Reservation mutation lifecycle; retries and errors follow the action contracts.",
+        "maturity": "specified",
+        "machine": {
+          "states": [
+            "absent",
+            "reserved",
+            "cancelled"
+          ],
+          "initial": "absent",
+          "terminal": [
+            "cancelled"
+          ],
+          "transitions": [
+            {
+              "id": "transition.reserve",
+              "from": "absent",
+              "to": "reserved",
+              "trigger": "action.reserve",
+              "guard": "Authenticated user; existing concert; new request key; at least one available seat.",
+              "effects": "Create a reservation with state=reserved and bind the request key atomically under capacity protection."
+            },
+            {
+              "id": "transition.cancel",
+              "from": "reserved",
+              "to": "cancelled",
+              "trigger": "action.cancel",
+              "guard": "The authenticated user owns the reservation.",
+              "effects": "Atomically change to cancelled; any materialized seat counter is updated within the same transaction."
+            }
+          ]
+        },
+        "annotations": {
+          "gdd.notes": [
+            "absent is a modeling marker for a reservation that does not yet exist; it is never stored.",
+            "The state machine describes mutations. Validation, errors and idempotent return paths are defined in the action contracts.",
+            "cancelled is terminal for mutations but may still be read and returned during an authorized retry."
+          ]
+        },
+        "source_refs": [
+          {
+            "source": "source.requirements",
+            "purpose": "contract"
+          }
+        ]
+      },
+      "after": {
+        "kind": "machine",
+        "description": "Reservation mutation lifecycle; retries and errors follow the action contracts.",
+        "maturity": "specified",
+        "machine": {
+          "states": [
+            "absent",
+            "reserved",
+            "cancelled"
+          ],
+          "initial": "absent",
+          "terminal": [
+            "cancelled"
+          ],
+          "transitions": [
+            {
+              "id": "transition.reserve",
+              "from": "absent",
+              "to": "reserved",
+              "trigger": "action.reserve",
+              "guard": "Authenticated user; existing concert; new request key; at least one available seat. AND the principal has fewer than two active reservations across all concerts.",
+              "effects": "Create a reservation with state=reserved and bind the request key atomically under capacity protection."
+            },
+            {
+              "id": "transition.cancel",
+              "from": "reserved",
+              "to": "cancelled",
+              "trigger": "action.cancel",
+              "guard": "The authenticated user owns the reservation.",
+              "effects": "Atomically change to cancelled; any materialized seat counter is updated within the same transaction."
+            }
+          ]
+        },
+        "annotations": {
+          "gdd.notes": [
+            "absent is a modeling marker for a reservation that does not yet exist; it is never stored.",
+            "The state machine describes mutations. Validation, errors and idempotent return paths are defined in the action contracts.",
+            "cancelled is terminal for mutations but may still be read and returned during an authorized retry."
+          ]
+        },
+        "source_refs": [
+          {
+            "source": "source.requirements",
+            "purpose": "contract"
+          }
+        ]
+      }
+    },
+    {
+      "registry": "nodes",
+      "id": "rule.active_limit",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "kind": "rule",
+            "description": "Each principal has at most two reserved reservations across all concerts. Cancelled history does not consume allowance.",
+            "rule": {
+              "category": "invariant",
+              "statement": "Each principal has at most two reserved reservations across all concerts. Cancelled history does not consume allowance.",
+              "scope": "targeted",
+              "blocking": true,
+              "verification": [
+                "pytest_concert"
+              ]
+            }
+          }
+        }
+      ],
+      "after": {
+        "kind": "rule",
+        "description": "Each principal has at most two reserved reservations across all concerts. Cancelled history does not consume allowance.",
+        "rule": {
+          "category": "invariant",
+          "statement": "Each principal has at most two reserved reservations across all concerts. Cancelled history does not consume allowance.",
+          "scope": "targeted",
+          "blocking": true,
+          "verification": [
+            "pytest_concert"
+          ]
+        }
+      }
+    },
+    {
+      "registry": "nodes",
+      "id": "scenario.active_limit",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "kind": "scenario",
+            "description": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance.",
+            "scenario": {
+              "category": "boundary",
+              "given": "Real persistent reservations exist for separate principals.",
+              "when": "Attempt a third distinct-key reservation in a concert with free capacity.",
+              "then": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance."
+            }
+          }
+        }
+      ],
+      "after": {
+        "kind": "scenario",
+        "description": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance.",
+        "scenario": {
+          "category": "boundary",
+          "given": "Real persistent reservations exist for separate principals.",
+          "when": "Attempt a third distinct-key reservation in a concert with free capacity.",
+          "then": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance."
+        }
+      }
+    },
+    {
+      "registry": "nodes",
+      "id": "scenario.active_limit_concurrent",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "kind": "scenario",
+            "description": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance.",
+            "scenario": {
+              "category": "concurrency",
+              "given": "Real persistent reservations exist for separate principals.",
+              "when": "Submit two new keys concurrently across different concerts when the principal has one active reservation.",
+              "then": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance."
+            }
+          }
+        }
+      ],
+      "after": {
+        "kind": "scenario",
+        "description": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance.",
+        "scenario": {
+          "category": "concurrency",
+          "given": "Real persistent reservations exist for separate principals.",
+          "when": "Submit two new keys concurrently across different concerts when the principal has one active reservation.",
+          "then": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance."
+        }
+      }
+    },
+    {
+      "registry": "nodes",
+      "id": "scenario.active_limit_replay",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "kind": "scenario",
+            "description": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance.",
+            "scenario": {
+              "category": "boundary",
+              "given": "Real persistent reservations exist for separate principals.",
+              "when": "Replay a successful active or cancelled key while already at the limit; cancel and retry an unbound failed-limit key.",
+              "then": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance."
+            }
+          }
+        }
+      ],
+      "after": {
+        "kind": "scenario",
+        "description": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance.",
+        "scenario": {
+          "category": "boundary",
+          "given": "Real persistent reservations exist for separate principals.",
+          "when": "Replay a successful active or cancelled key while already at the limit; cancel and retry an unbound failed-limit key.",
+          "then": "Preserve replay semantics and enforce the global limit atomically without binding failed keys; cancellation frees allowance."
+        }
+      }
+    },
+    {
+      "registry": "nodes",
+      "id": "scenario.ui_session_change",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "kind": "scenario",
+            "description": "Return SessionChanged before effects; clear the stale personal view and require explicit sign-in. Bob's session and history remain intact.",
+            "scenario": {
+              "category": "negative",
+              "given": "Two tabs share a cookie; one changes the session from Alice to Bob.",
+              "when": "The stale Alice tab tries a private refresh, reservation or logout.",
+              "then": "Return SessionChanged before effects; clear the stale personal view and require explicit sign-in. Bob's session and history remain intact."
+            }
+          }
+        }
+      ],
+      "after": {
+        "kind": "scenario",
+        "description": "Return SessionChanged before effects; clear the stale personal view and require explicit sign-in. Bob's session and history remain intact.",
+        "scenario": {
+          "category": "negative",
+          "given": "Two tabs share a cookie; one changes the session from Alice to Bob.",
+          "when": "The stale Alice tab tries a private refresh, reservation or logout.",
+          "then": "Return SessionChanged before effects; clear the stale personal view and require explicit sign-in. Bob's session and history remain intact."
+        }
+      }
+    },
+    {
+      "registry": "sources",
+      "id": "source.http",
+      "change": "changed",
+      "fields": [
+        {
+          "pointer": "/revision/sha256",
+          "change": "changed",
+          "before": "cc51152f472a725941ed2067fffbfc326c917c7facf14154dd29a0fc3dca31ad",
+          "after": "2369e726b9ba81f6dabf8c08bea53970b449d346afa4ac0a03fc67c252400259"
+        }
+      ],
+      "before": {
+        "role": "knowledge",
+        "title": "HTTP.md",
+        "uri": "HTTP.md",
+        "format": "markdown",
+        "normative": true,
+        "revision": {
+          "sha256": "cc51152f472a725941ed2067fffbfc326c917c7facf14154dd29a0fc3dca31ad"
+        }
+      },
+      "after": {
+        "role": "knowledge",
+        "title": "HTTP.md",
+        "uri": "HTTP.md",
+        "format": "markdown",
+        "normative": true,
+        "revision": {
+          "sha256": "2369e726b9ba81f6dabf8c08bea53970b449d346afa4ac0a03fc67c252400259"
+        }
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.rule.active_limit.constrains.action.list_own_reservations",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.rule.active_limit.constrains.action.list_own_reservations",
+            "from": "rule.active_limit",
+            "relation": "constrains",
+            "to": "action.list_own_reservations"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.rule.active_limit.constrains.action.list_own_reservations",
+        "from": "rule.active_limit",
+        "relation": "constrains",
+        "to": "action.list_own_reservations"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.rule.active_limit.constrains.action.reserve",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.rule.active_limit.constrains.action.reserve",
+            "from": "rule.active_limit",
+            "relation": "constrains",
+            "to": "action.reserve"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.rule.active_limit.constrains.action.reserve",
+        "from": "rule.active_limit",
+        "relation": "constrains",
+        "to": "action.reserve"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.rule.active_limit.constrains.entity.reservation",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.rule.active_limit.constrains.entity.reservation",
+            "from": "rule.active_limit",
+            "relation": "constrains",
+            "to": "entity.reservation"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.rule.active_limit.constrains.entity.reservation",
+        "from": "rule.active_limit",
+        "relation": "constrains",
+        "to": "entity.reservation"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit.exercises.action.cancel",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit.exercises.action.cancel",
+            "from": "scenario.active_limit",
+            "relation": "exercises",
+            "to": "action.cancel"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit.exercises.action.cancel",
+        "from": "scenario.active_limit",
+        "relation": "exercises",
+        "to": "action.cancel"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit.exercises.action.list_own_reservations",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit.exercises.action.list_own_reservations",
+            "from": "scenario.active_limit",
+            "relation": "exercises",
+            "to": "action.list_own_reservations"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit.exercises.action.list_own_reservations",
+        "from": "scenario.active_limit",
+        "relation": "exercises",
+        "to": "action.list_own_reservations"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit.exercises.action.reserve",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit.exercises.action.reserve",
+            "from": "scenario.active_limit",
+            "relation": "exercises",
+            "to": "action.reserve"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit.exercises.action.reserve",
+        "from": "scenario.active_limit",
+        "relation": "exercises",
+        "to": "action.reserve"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit.verifies.rule.active_limit",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit.verifies.rule.active_limit",
+            "from": "scenario.active_limit",
+            "relation": "verifies",
+            "to": "rule.active_limit"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit.verifies.rule.active_limit",
+        "from": "scenario.active_limit",
+        "relation": "verifies",
+        "to": "rule.active_limit"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit_concurrent.exercises.action.cancel",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit_concurrent.exercises.action.cancel",
+            "from": "scenario.active_limit_concurrent",
+            "relation": "exercises",
+            "to": "action.cancel"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit_concurrent.exercises.action.cancel",
+        "from": "scenario.active_limit_concurrent",
+        "relation": "exercises",
+        "to": "action.cancel"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit_concurrent.exercises.action.list_own_reservations",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit_concurrent.exercises.action.list_own_reservations",
+            "from": "scenario.active_limit_concurrent",
+            "relation": "exercises",
+            "to": "action.list_own_reservations"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit_concurrent.exercises.action.list_own_reservations",
+        "from": "scenario.active_limit_concurrent",
+        "relation": "exercises",
+        "to": "action.list_own_reservations"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit_concurrent.exercises.action.reserve",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit_concurrent.exercises.action.reserve",
+            "from": "scenario.active_limit_concurrent",
+            "relation": "exercises",
+            "to": "action.reserve"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit_concurrent.exercises.action.reserve",
+        "from": "scenario.active_limit_concurrent",
+        "relation": "exercises",
+        "to": "action.reserve"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit_concurrent.verifies.rule.active_limit",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit_concurrent.verifies.rule.active_limit",
+            "from": "scenario.active_limit_concurrent",
+            "relation": "verifies",
+            "to": "rule.active_limit"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit_concurrent.verifies.rule.active_limit",
+        "from": "scenario.active_limit_concurrent",
+        "relation": "verifies",
+        "to": "rule.active_limit"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit_replay.exercises.action.cancel",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit_replay.exercises.action.cancel",
+            "from": "scenario.active_limit_replay",
+            "relation": "exercises",
+            "to": "action.cancel"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit_replay.exercises.action.cancel",
+        "from": "scenario.active_limit_replay",
+        "relation": "exercises",
+        "to": "action.cancel"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit_replay.exercises.action.list_own_reservations",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit_replay.exercises.action.list_own_reservations",
+            "from": "scenario.active_limit_replay",
+            "relation": "exercises",
+            "to": "action.list_own_reservations"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit_replay.exercises.action.list_own_reservations",
+        "from": "scenario.active_limit_replay",
+        "relation": "exercises",
+        "to": "action.list_own_reservations"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit_replay.exercises.action.reserve",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit_replay.exercises.action.reserve",
+            "from": "scenario.active_limit_replay",
+            "relation": "exercises",
+            "to": "action.reserve"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit_replay.exercises.action.reserve",
+        "from": "scenario.active_limit_replay",
+        "relation": "exercises",
+        "to": "action.reserve"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.active_limit_replay.verifies.rule.active_limit",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.active_limit_replay.verifies.rule.active_limit",
+            "from": "scenario.active_limit_replay",
+            "relation": "verifies",
+            "to": "rule.active_limit"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.active_limit_replay.verifies.rule.active_limit",
+        "from": "scenario.active_limit_replay",
+        "relation": "verifies",
+        "to": "rule.active_limit"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.ui_session_change.exercises.action.cancel",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.ui_session_change.exercises.action.cancel",
+            "from": "scenario.ui_session_change",
+            "relation": "exercises",
+            "to": "action.cancel"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.ui_session_change.exercises.action.cancel",
+        "from": "scenario.ui_session_change",
+        "relation": "exercises",
+        "to": "action.cancel"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.ui_session_change.exercises.action.list_own_reservations",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.ui_session_change.exercises.action.list_own_reservations",
+            "from": "scenario.ui_session_change",
+            "relation": "exercises",
+            "to": "action.list_own_reservations"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.ui_session_change.exercises.action.list_own_reservations",
+        "from": "scenario.ui_session_change",
+        "relation": "exercises",
+        "to": "action.list_own_reservations"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.ui_session_change.exercises.action.logout",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.ui_session_change.exercises.action.logout",
+            "from": "scenario.ui_session_change",
+            "relation": "exercises",
+            "to": "action.logout"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.ui_session_change.exercises.action.logout",
+        "from": "scenario.ui_session_change",
+        "relation": "exercises",
+        "to": "action.logout"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.ui_session_change.exercises.action.reserve",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.ui_session_change.exercises.action.reserve",
+            "from": "scenario.ui_session_change",
+            "relation": "exercises",
+            "to": "action.reserve"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.ui_session_change.exercises.action.reserve",
+        "from": "scenario.ui_session_change",
+        "relation": "exercises",
+        "to": "action.reserve"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.ui_session_change.exercises.screen.reserve",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.ui_session_change.exercises.screen.reserve",
+            "from": "scenario.ui_session_change",
+            "relation": "exercises",
+            "to": "screen.reserve"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.ui_session_change.exercises.screen.reserve",
+        "from": "scenario.ui_session_change",
+        "relation": "exercises",
+        "to": "screen.reserve"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.ui_session_change.verifies.rule.auth_context",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.ui_session_change.verifies.rule.auth_context",
+            "from": "scenario.ui_session_change",
+            "relation": "verifies",
+            "to": "rule.auth_context"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.ui_session_change.verifies.rule.auth_context",
+        "from": "scenario.ui_session_change",
+        "relation": "verifies",
+        "to": "rule.auth_context"
+      }
+    },
+    {
+      "registry": "edges",
+      "id": "edge.app.scenario.ui_session_change.verifies.rule.ui_complete",
+      "change": "added",
+      "fields": [
+        {
+          "pointer": "",
+          "change": "changed",
+          "before": null,
+          "after": {
+            "id": "edge.app.scenario.ui_session_change.verifies.rule.ui_complete",
+            "from": "scenario.ui_session_change",
+            "relation": "verifies",
+            "to": "rule.ui_complete"
+          }
+        }
+      ],
+      "after": {
+        "id": "edge.app.scenario.ui_session_change.verifies.rule.ui_complete",
+        "from": "scenario.ui_session_change",
+        "relation": "verifies",
+        "to": "rule.ui_complete"
+      }
+    }
+  ],
+  "metadata_changes": [
+    {
+      "pointer": "/project/assumptions",
+      "change": "changed",
+      "before": [
+        "One seat per reservation. Multiple reservations with different request keys are allowed.",
+        "Concerts already exist, and capacity does not change in this example.",
+        "Identity comes from the server authentication layer, not a user_id in the request body.",
+        "Reservations do not expire automatically in this initial model.",
+        "Payment, ticket issuance, waiting lists and external events are outside this example.",
+        "Reservation history and successful request keys are retained; deletion is outside this example."
+      ],
+      "after": [
+        "One seat per reservation. Multiple reservations with different request keys are allowed.",
+        "Concerts already exist, and capacity does not change in this example.",
+        "Identity comes from the server authentication layer, not a user_id in the request body.",
+        "Reservations do not expire automatically in this initial model.",
+        "Payment, ticket issuance, waiting lists and external events are outside this example.",
+        "Reservation history and successful request keys are retained; deletion is outside this example.",
+        "Phase B requires a compatible existing database; refuse incompatible over-limit state without changing history."
+      ]
+    },
+    {
+      "pointer": "/project/scope",
+      "change": "changed",
+      "before": "Active phase A: no per-principal reservation limit. Phase B is a separately revised experiment; keep its future obligations inactive until that revision.",
+      "after": "Active phase B: at most two reserved reservations per principal across all concerts; preserve successful keys and compatible phase-A history."
+    }
+  ],
+  "relocated": [],
+  "advisories": [
+    {
+      "code": "CONTRACT_REQUIREMENT_REMOVED",
+      "id": "action.list_own_reservations",
+      "pointer": "/contract/postconditions",
+      "message": "Contract entries disappeared or were replaced; review exact text without assuming semantic weakening.",
+      "before": [
+        "In phase A return active_limit=null; no per-principal limit is enforced."
+      ],
+      "after": [
+        "Return only this principal's complete reserved/cancelled history, active count and current nullable domain-owned limit.",
+        "Reject a stale browser identity expectation against the server-resolved session before reading personal data or applying effects.",
+        "Return active_limit=2 from the domain's single policy value."
+      ]
+    }
+  ],
+  "diagnostics": [],
+  "exit_code": 0
+}

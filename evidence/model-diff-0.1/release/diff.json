@@ -1,0 +1,108 @@
+{
+  "format": "gdd-model-diff-conformance/0.1",
+  "tool": "gdd-validator/0.8.0",
+  "cases": [
+    {
+      "id": "diff.semantic_unknown",
+      "assertion": "Semantic UNKNOWN stays partial, suppresses absence and yields exit 2 unless a known failure takes priority.",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "diff.identity",
+      "assertion": "Formatting and edge order preserve semantic equality with distinct byte revisions.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.fragments",
+      "assertion": "Fragment relocation is separate nonsemantic metadata.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.fields",
+      "assertion": "Exact prose and type fields retain escaped JSON pointers.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.registries",
+      "assertion": "Stable node, edge and question changes are identified.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.weakening",
+      "assertion": "Structural weakening and identity concerns have positive and negative controls.",
+      "result": "PASS",
+      "test_instances": 7
+    },
+    {
+      "id": "diff.contracts",
+      "assertion": "Contract removal differs from additive strengthening.",
+      "result": "PASS",
+      "test_instances": 3
+    },
+    {
+      "id": "diff.verifiers",
+      "assertion": "Retained verification and expanded reach do not warn.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.partial",
+      "assertion": "Partial inputs never fabricate absent identities.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.errors",
+      "assertion": "Unavailable and known invalid inputs retain distinct exits.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.legacy",
+      "assertion": "Legacy to current format changes are explicit.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.schema",
+      "assertion": "Current, incomplete and invalid output conforms locally.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.readonly",
+      "assertion": "Comparison is deterministic and read only.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.concert",
+      "assertion": "Real archived requirement change exposes the principal limit.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.extensions",
+      "assertion": "Extension content changes count; package formatting does not.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "diff.source_identity",
+      "assertion": "Source role changes are identity review concerns, not historical reuse proof.",
+      "result": "PASS",
+      "test_instances": 1
+    }
+  ],
+  "case_count": 16,
+  "test_instances": 25,
+  "pytest_exit": 0,
+  "passed": true,
+  "stdout": ".........................                                                [100%]\n25 passed in 0.87s\n",
+  "stderr": ""
+}

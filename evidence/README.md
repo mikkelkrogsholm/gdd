@@ -1,5 +1,10 @@
 # Verification evidence and English presentation
 
+The [stable-ID model comparison review](model-diff-0.1/README.md) records
+`gdd diff`, conservative partial coverage, structural advisory controls,
+archived-model comparison, full local conformance and an installed wheel. It
+also links the separately scoped external-pilot and proposed-policy decisions.
+
 The [second-runtime access trial](second-runtime-2026-10-20/README.md) preserves
 Claude Code skill discovery and actual HTTP 401 failures before model execution.
 Both journeys remain unverified; the repeatable preparation does not establish

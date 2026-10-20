@@ -1,0 +1,114 @@
+{
+  "format": "gdd-impact-conformance/0.1",
+  "tool": "gdd-validator/0.8.0",
+  "cases": [
+    {
+      "id": "impact.reverse",
+      "assertion": "Reverse consumers have edge witnesses; owners and scenarios remain supporting.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.cycles",
+      "assertion": "Cycles terminate and roots have deterministic independent witnesses.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.scopes",
+      "assertion": "Malformed, missing and unsupported selections are visibly invalid.",
+      "result": "PASS",
+      "test_instances": 6
+    },
+    {
+      "id": "impact.mixed",
+      "assertion": "Mixed scope preserves valid-root partial analysis.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.readonly",
+      "assertion": "Analysis writes nothing; text projects the same schema-valid report.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.closure",
+      "assertion": "Supporting witnesses match the shared established context closure.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.extension",
+      "assertion": "Only declared extension dependency semantics propagate potential changes.",
+      "result": "PASS",
+      "test_instances": 2
+    },
+    {
+      "id": "impact.unknown",
+      "assertion": "Unavailable extension semantics do not become a safe-empty complete result.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.records",
+      "assertion": "Current applicable check plans and bindings are identified; historical records are not rebound.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.types",
+      "assertion": "Type references name their semantic dependency derivation.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.entities",
+      "assertion": "Data readers/creators/writers propagate only from changed entity to consumer.",
+      "result": "PASS",
+      "test_instances": 3
+    },
+    {
+      "id": "impact.navigation",
+      "assertion": "Destination changes reach navigation consumers, not vice versa.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.incomplete",
+      "assertion": "Explicitly incomplete declared dependencies retain useful roots with partial semantics, never a complete safe result.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.malformed",
+      "assertion": "Malformed and unsupported files produce visible diagnostics without model mutation.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.unspecified",
+      "assertion": "Unspecified dependency declarations remain explicit without imposing implementation readiness on model-only impact.",
+      "result": "PASS",
+      "test_instances": 1
+    },
+    {
+      "id": "impact.check_supersession",
+      "assertion": "Only valid compatible current-model check-plan supersession retires a rerun candidate; invalid or incompatible superseders cannot retire it.",
+      "result": "PASS",
+      "test_instances": 4
+    },
+    {
+      "id": "impact.binding_supersession",
+      "assertion": "A declared binding supersession cannot retire inspection candidates without verified host trust.",
+      "result": "PASS",
+      "test_instances": 1
+    }
+  ],
+  "case_count": 17,
+  "test_instances": 28,
+  "pytest_exit": 0,
+  "passed": true,
+  "stdout": "............................                                             [100%]\n28 passed in 0.39s\n",
+  "stderr": ""
+}
