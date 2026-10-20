@@ -1,0 +1,83 @@
+[
+  {
+    "name": "standard",
+    "exit_code": 0,
+    "result": "PASS",
+    "original_report_path": "/tmp/gdd-tutorial-release-20261020/standard.json",
+    "original_report_sha256": "965ec9e1be6416f522a710c4964977f5f51482ccd7adfb041c003c27d309739c",
+    "report_format": "gdd-conformance-run/0.2",
+    "case_count": 58
+  },
+  {
+    "name": "graphify",
+    "exit_code": 0,
+    "result": "PASS",
+    "original_report_path": "/tmp/gdd-tutorial-release-20261020/graphify.json",
+    "original_report_sha256": "33dedbb8e0c29749e7ffc1764c5b9fef32c5f7eced2392ad122607ee460501cb",
+    "report_format": "gdd-graphify-conformance-run/0.2",
+    "case_count": 18
+  },
+  {
+    "name": "visualization",
+    "exit_code": 0,
+    "result": "PASS",
+    "original_report_path": "/tmp/gdd-tutorial-release-20261020/visualization.json",
+    "original_report_sha256": "c6ad4a4c201a98ac587db2829dbd0f5996ea84fc1471d1da6ab8b879a9c5e56b",
+    "report_format": "gdd-view-conformance/0.1",
+    "case_count": 0
+  },
+  {
+    "name": "workflow",
+    "exit_code": 0,
+    "result": "PASS",
+    "original_report_path": "/tmp/gdd-tutorial-release-20261020/workflow.json",
+    "original_report_sha256": "d8fb62beb4ab3326fc9d75a38e1619aa77acb6d747327d1f5f1ea41d41757675",
+    "report_format": "gdd-workflow-conformance/0.1",
+    "case_count": 20
+  },
+  {
+    "name": "design",
+    "exit_code": 0,
+    "result": "PASS",
+    "original_report_path": "/tmp/gdd-tutorial-release-20261020/design.json",
+    "original_report_sha256": "4758388f46e622d635b0f1afa64d1b7bdd9c1606423a30d9d92a4ba73ecafc76",
+    "report_format": "gdd-design-conformance/0.3",
+    "case_count": 32
+  },
+  {
+    "name": "code",
+    "exit_code": 0,
+    "result": "PASS",
+    "original_report_path": "/tmp/gdd-tutorial-release-20261020/code.json",
+    "original_report_sha256": "0f1ed577823115c205a4c1f721a43a6f813329c56b6aec9336fa580ca24c0a64",
+    "report_format": "gdd-code-conformance/0.1",
+    "case_count": 28
+  },
+  {
+    "name": "status",
+    "exit_code": 0,
+    "result": "PASS",
+    "original_report_path": "/tmp/gdd-tutorial-release-20261020/status.json",
+    "original_report_sha256": "1c606de401e088884b23e6c48d919991d0577891d04017ba3fd365e95a3d0128",
+    "report_format": "gdd-status-conformance/0.1",
+    "case_count": 13
+  },
+  {
+    "name": "impact",
+    "exit_code": 0,
+    "result": "PASS",
+    "original_report_path": "/tmp/gdd-tutorial-release-20261020/impact.json",
+    "original_report_sha256": "1f1ced03435163a2af9d21b19f75c87c5fd450bf81e90b8f2371fb813c462bc1",
+    "report_format": "gdd-impact-conformance/0.1",
+    "case_count": 17
+  },
+  {
+    "name": "diff",
+    "exit_code": 0,
+    "result": "PASS",
+    "original_report_path": "/tmp/gdd-tutorial-release-20261020/diff.json",
+    "original_report_sha256": "74f72eb9d89fa0ae42250df484b0e97fd05f637cb4952a32bc1a188b3f5d494a",
+    "report_format": "gdd-model-diff-conformance/0.1",
+    "case_count": 16
+  }
+]

@@ -1,5 +1,10 @@
 # Verification evidence and English presentation
 
+The [complete tutorial review](tutorial-0.1/README.md) records the actual
+graph-to-code-to-evidence journey, isolated assertion failure and currentness
+controls, documentation cleanup and historical-note provenance. Its composed
+verification preserves the first failed wheel-location check and corrected rerun.
+
 The [stable-ID model comparison review](model-diff-0.1/README.md) records
 `gdd diff`, conservative partial coverage, structural advisory controls,
 archived-model comparison, full local conformance and an installed wheel. It

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/conformance/verify_readiness_wheel.py", line 379, in <module>
+    result = run(args.wheel)
+             ^^^^^^^^^^^^^^^
+  File "/Users/mikkelfreltoftkrogsholm/Projekter/gdd/conformance/verify_readiness_wheel.py", line 300, in run
+    raise AssertionError("The tutorial did not execute in its isolated temporary project.")
+AssertionError: The tutorial did not execute in its isolated temporary project.

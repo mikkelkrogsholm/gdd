@@ -1,0 +1,204 @@
+{
+  "mode": "release",
+  "matrix": false,
+  "started_at": "2026-10-20T13:33:38.323844+00:00",
+  "host_python": "3.12.12",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "output": "/private/tmp/gdd-tutorial-release-20261020",
+  "steps": [
+    {
+      "name": "skill-sync",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "scripts/sync_skill.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.058,
+      "stdout": "skill-sync.stdout.txt",
+      "stderr": "skill-sync.stderr.txt"
+    },
+    {
+      "name": "pytest-current",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "-B",
+        "-c",
+        "import json, platform, sys; print('GDD_CHECK_RUNTIME=' + json.dumps({'python': platform.python_version(), 'executable': sys.executable}), flush=True); import pytest; raise SystemExit(pytest.main(sys.argv[1:]))",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "tmp_path_retention_policy=failed"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 388.81,
+      "stdout": "pytest-current.stdout.txt",
+      "stderr": "pytest-current.stderr.txt",
+      "runtime": {
+        "python": "3.12.12",
+        "executable": "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python"
+      }
+    },
+    {
+      "name": "standard",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/run.py",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/standard.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 8.871,
+      "stdout": "standard.stdout.txt",
+      "stderr": "standard.stderr.txt"
+    },
+    {
+      "name": "graphify",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/run_graphify.py",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/graphify.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.338,
+      "stdout": "graphify.stdout.txt",
+      "stderr": "graphify.stderr.txt"
+    },
+    {
+      "name": "visualization",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/run_visualization.py",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/visualization.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.901,
+      "stdout": "visualization.stdout.txt",
+      "stderr": "visualization.stderr.txt"
+    },
+    {
+      "name": "workflow",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/run_workflow.py",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/workflow.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 32.204,
+      "stdout": "workflow.stdout.txt",
+      "stderr": "workflow.stderr.txt"
+    },
+    {
+      "name": "design",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/run_design.py",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/design.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 9.605,
+      "stdout": "design.stdout.txt",
+      "stderr": "design.stderr.txt"
+    },
+    {
+      "name": "code",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/run_code.py",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/code.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 1.13,
+      "stdout": "code.stdout.txt",
+      "stderr": "code.stderr.txt"
+    },
+    {
+      "name": "status",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/run_status.py",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/status.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 1.289,
+      "stdout": "status.stdout.txt",
+      "stderr": "status.stderr.txt"
+    },
+    {
+      "name": "impact",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/run_impact.py",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/impact.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.886,
+      "stdout": "impact.stdout.txt",
+      "stderr": "impact.stderr.txt"
+    },
+    {
+      "name": "diff",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/run_diff.py",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/diff.json"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 1.371,
+      "stdout": "diff.stdout.txt",
+      "stderr": "diff.stderr.txt"
+    },
+    {
+      "name": "wheel-build",
+      "command": [
+        "uv",
+        "build",
+        "--wheel",
+        "--out-dir",
+        "/private/tmp/gdd-tutorial-release-20261020/dist"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "seconds": 0.475,
+      "stdout": "wheel-build.stdout.txt",
+      "stderr": "wheel-build.stderr.txt"
+    },
+    {
+      "name": "installed-wheel",
+      "command": [
+        "/Users/mikkelfreltoftkrogsholm/.cache/uv/builds-v0/.tmpbyTINK/bin/python",
+        "conformance/verify_readiness_wheel.py",
+        "/private/tmp/gdd-tutorial-release-20261020/dist/gdd_validator-0.8.0-py3-none-any.whl",
+        "--output",
+        "/private/tmp/gdd-tutorial-release-20261020/installed-wheel.json"
+      ],
+      "exit_code": 1,
+      "result": "FAIL",
+      "seconds": 25.089,
+      "stdout": "installed-wheel.stdout.txt",
+      "stderr": "installed-wheel.stderr.txt"
+    }
+  ],
+  "passed": false,
+  "finished_at": "2026-10-20T13:41:29.325559+00:00"
+}

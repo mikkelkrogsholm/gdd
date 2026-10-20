@@ -1,0 +1,88 @@
+{
+  "result": "PASS",
+  "verification_basis": "Combined actual full-suite/conformance execution plus focused changed-doc checks and corrected installed-wheel rerun; the first release attempt remains FAIL.",
+  "source_revision": "8a7bacf7fece97b44466930317cb8f4cc1240a5f",
+  "full_suite_source_revision": "98c998ec8a010a95b4a7a3d6a90559dce6626fa3",
+  "baseline": "c5c4a03bb301bf83703d8a4c3fcb5c3607292442",
+  "source_clean_before_recording": true,
+  "source_sha256": {
+    "CHANGELOG.md": "1c264179bcd3f670ea8f2298c8c67549ba414cc93774b8485294583685601e63",
+    "CONTRIBUTING.md": "b95f2f9ab221369718f5699abef72eb23e28acec555a53a53b1f4bcc27540869",
+    "HOST.md": "397737d1856a51c9900d937c32c799407f71c91d3b7e7592779d1805f759fd3c",
+    "INSTALL.md": "dc56b62a11fec28024ae7694011c9f6fc0306d30a571b6080284eb3b61016ed1",
+    "README.md": "441cecfbe45f2a73349c153c88446219284e2a3664a200256b5536388512d359",
+    "REPOSITORY-PLAN.md": "f880c39b6e8cb2aa64fc5c9d24ee136e7295e0fa2ff54c8d0b8aaeae48d74a39",
+    "SCRATCHPAD.md": "a3e8e772567d89f95811f6164180dd937b71b9b1a488b6bc32068d40a911f38a",
+    "VALIDATOR.md": "69d64b57429308ebcdca4a76b6b8ab5318587d531806c8eaa450f44c2a322d4b",
+    "WORKFLOW.md": "932468473b4020f39f23bfcf8f4c3af10f2d21cc52e1438ceaa68bae97624cf6",
+    "WORKLOG.md": "c39c8a4fcba98b7be1d476e5c09834ce6c856d9a7f10c068bb85fae0e604915e",
+    "conformance/verify_readiness_wheel.py": "978ceab983f612fb024aacc79c20905b74221001ba5d6d6a1e2fb537ac70e790",
+    "docs/history/README.md": "2cf1742e124ce4fee8d056b767df1b7dc37446b8c1a1d09b36d31681719c12ae",
+    "docs/history/REPOSITORY-PLAN.md": "57732f38500bd609776dd1871ef22273fdbc42c5519abdc75263e143ef6a2faa",
+    "docs/history/SCRATCHPAD.md": "77299db3ac23ba6555c644ed41d82a202c36e95a47af0343fa031e1f9e5e94eb",
+    "docs/history/WORKLOG.md": "b8672264df51085efb9f9421bc61664c63075ce655bf418e6a92c7fd51ff39f9",
+    "docs/history/provenance.json": "0ef2ca0fe06167bb1c3f972a73a9319a17586a5711ee13b77d436229ef02577e",
+    "docs/proposals/external-pilot.md": "a10b16d7babd47b063a5789028f797e03a2b7cd4926cb4d809f22b6b5177feb9",
+    "docs/tutorial.md": "01f3f95547505d43e7a044829aee621c015d2cd9561434856be2d39ad3e85855",
+    "docs/tutorial/evidence.gdd.json": "0c31a08abce587e1d04c198709b5c7868b7e4680345dc92f6f33a815d62cf760",
+    "docs/tutorial/integer_add.py": "082930ebc0abd828ec5b20c7183db2ee22d6e9f8d322944de7f7f2f514d75ba1",
+    "docs/tutorial/test_integer_add.py": "babb8ce1dbf9a81395fe1b0e5958a736a8ac70cbbcfe2f017fb59441bbe57440",
+    "docs/tutorial/tutorial_host.py": "3f792a2d1a2dd9dd90fd7a434ba29b2a5f1cc328c68df02d3a6e46f8c0f35927",
+    "examples/README.md": "b6989c6aee2288c9ac16f032ec06b2e1cd6e1a034788a73b8d689c74520d72b4",
+    "skills/gdd/references/catalog.md": "b85fbe96df8c33257ea034d7202e2d1c827167840b15ad5000e18dadeba67239",
+    "skills/gdd/references/gdd/HOST.md": "397737d1856a51c9900d937c32c799407f71c91d3b7e7592779d1805f759fd3c",
+    "skills/gdd/references/gdd/VALIDATOR.md": "69d64b57429308ebcdca4a76b6b8ab5318587d531806c8eaa450f44c2a322d4b",
+    "skills/gdd/references/gdd/WORKFLOW.md": "932468473b4020f39f23bfcf8f4c3af10f2d21cc52e1438ceaa68bae97624cf6",
+    "skills/gdd/references/source-index.json": "33745d72debeceae944b4a7b8fc1354e2be4d9e836e49f8098f7d975dcb97123",
+    "tests/test_tutorial.py": "699d39b2e31874527af7770c3ebaa3c512426cc31ed844091f9eac7ddeeb5d00"
+  },
+  "full_suite": {
+    "tests": 1723,
+    "python": "3.12.12",
+    "source_revision": "98c998ec8a010a95b4a7a3d6a90559dce6626fa3",
+    "receipt": "release-attempt/summary.json"
+  },
+  "final_focused_matrix": {
+    "tests_per_interpreter": 356,
+    "python": [
+      "3.11.11",
+      "3.12.12",
+      "3.13.13",
+      "3.14.7"
+    ],
+    "receipt": "quick-matrix/summary.json"
+  },
+  "focused_after_fix": "38 tutorial, host and skill tests passed on Python 3.12.12 before the final matrix.",
+  "changed_after_full_suite": [
+    "conformance/verify_readiness_wheel.py",
+    "docs/tutorial.md"
+  ],
+  "correction": "BSD mktemp ignored TMPDIR without an explicit template. Tutorial now uses an explicit template; verifier resolves the resulting directory before enforcing isolation. Runtime/package assets did not change after the wheel build.",
+  "wheel": {
+    "filename": "gdd_validator-0.8.0-py3-none-any.whl",
+    "sha256": "32b84e5c9999d51c892c6cee82887b11fda7758e1c7c68827af80d535ddb71f0",
+    "installed_cli_checks": 34,
+    "receipt": "installed-wheel.json"
+  },
+  "link_check": {
+    "relative_file_targets": 220,
+    "scope": "Root Markdown, docs Markdown and examples/README.md; frozen evidence/archive bytes were not rewritten."
+  },
+  "historical_note_provenance": "../../docs/history/provenance.json",
+  "preserved": [
+    "gdd_validator",
+    "standard",
+    "schemas",
+    "archive",
+    "GDD.md",
+    "SPEC.md",
+    "docs/tutorial/refined.gdd.json",
+    ".github/workflows",
+    "existing historical execution records and hashes"
+  ],
+  "github_ci_added": false,
+  "external_trial_executed": false,
+  "runtime_subscription_used": false,
+  "publication": false,
+  "push": false
+}
