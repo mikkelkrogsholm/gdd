@@ -1,0 +1,122 @@
+[
+  {
+    "id": "case.code.independent_package_clean_injected_repaired",
+    "assertion": "independent package clean injected repaired",
+    "test": "tests/test_code_check.py::test_independent_package_clean_injected_repaired"
+  },
+  {
+    "id": "case.code.copied_concert_clean_injected_repaired_missing",
+    "assertion": "copied concert clean injected repaired missing",
+    "test": "tests/test_code_check.py::test_copied_concert_clean_injected_repaired_missing"
+  },
+  {
+    "id": "case.code.direct_and_shortest_transitive_paths",
+    "assertion": "direct and shortest transitive paths",
+    "test": "tests/test_code_check.py::test_direct_and_shortest_transitive_paths"
+  },
+  {
+    "id": "case.code.self_import_is_a_real_cycle",
+    "assertion": "self import is a real cycle",
+    "test": "tests/test_code_check.py::test_self_import_is_a_real_cycle"
+  },
+  {
+    "id": "case.code.unresolved_bindings_prevent_pass",
+    "assertion": "unresolved bindings prevent pass",
+    "test": "tests/test_code_check.py::test_unresolved_bindings_prevent_pass"
+  },
+  {
+    "id": "case.code.unrelated_historical_binding_does_not_block_current_mapping",
+    "assertion": "unrelated historical binding does not block current mapping",
+    "test": "tests/test_code_check.py::test_unrelated_historical_binding_does_not_block_current_mapping"
+  },
+  {
+    "id": "case.code.supported_resource_expansion",
+    "assertion": "supported resource expansion",
+    "test": "tests/test_code_check.py::test_supported_resource_expansion"
+  },
+  {
+    "id": "case.code.unsafe_binding_resource_is_unknown",
+    "assertion": "unsafe binding resource is unknown",
+    "test": "tests/test_code_check.py::test_unsafe_binding_resource_is_unknown"
+  },
+  {
+    "id": "case.code.excluded_endpoint_is_explicit_and_unresolved",
+    "assertion": "excluded endpoint is explicit and unresolved",
+    "test": "tests/test_code_check.py::test_excluded_endpoint_is_explicit_and_unresolved"
+  },
+  {
+    "id": "case.code.source_symlink_is_not_followed",
+    "assertion": "source symlink is not followed",
+    "test": "tests/test_code_check.py::test_source_symlink_is_not_followed"
+  },
+  {
+    "id": "case.code.source_uncertainty_is_unknown",
+    "assertion": "source uncertainty is unknown",
+    "test": "tests/test_code_check.py::test_source_uncertainty_is_unknown"
+  },
+  {
+    "id": "case.code.unbound_import_into_bound_component_is_unknown",
+    "assertion": "unbound import into bound component is unknown",
+    "test": "tests/test_code_check.py::test_unbound_import_into_bound_component_is_unknown"
+  },
+  {
+    "id": "case.code.witnessed_violation_wins_over_unrelated_parse_uncertainty",
+    "assertion": "witnessed violation wins over unrelated parse uncertainty",
+    "test": "tests/test_code_check.py::test_witnessed_violation_wins_over_unrelated_parse_uncertainty"
+  },
+  {
+    "id": "case.code.observation_never_executes_project_code",
+    "assertion": "observation never executes project code",
+    "test": "tests/test_code_check.py::test_observation_never_executes_project_code"
+  },
+  {
+    "id": "case.code.unsupported_selection_has_no_false_pass",
+    "assertion": "unsupported selection has no false pass",
+    "test": "tests/test_code_check.py::test_unsupported_selection_has_no_false_pass"
+  },
+  {
+    "id": "case.code.checked_resource_revision_must_match_current_bytes",
+    "assertion": "checked resource revision must match current bytes",
+    "test": "tests/test_code_check.py::test_checked_resource_revision_must_match_current_bytes"
+  },
+  {
+    "id": "case.code.scoped_transitive_rule_retains_intermediate_inventory",
+    "assertion": "scoped transitive rule retains intermediate inventory",
+    "test": "tests/test_code_check.py::test_scoped_transitive_rule_retains_intermediate_inventory"
+  },
+  {
+    "id": "case.code.noncomponent_binding_requires_unique_explicit_owner",
+    "assertion": "noncomponent binding requires unique explicit owner",
+    "test": "tests/test_code_check.py::test_noncomponent_binding_requires_unique_explicit_owner"
+  },
+  {
+    "id": "case.code.additional_records_cannot_override_declared_mapping",
+    "assertion": "additional records cannot override declared mapping",
+    "test": "tests/test_code_check.py::test_additional_records_cannot_override_declared_mapping"
+  },
+  {
+    "id": "case.code.successful_observation_is_deterministic_and_preserves_inputs",
+    "assertion": "successful observation is deterministic and preserves inputs",
+    "test": "tests/test_code_check.py::test_successful_observation_is_deterministic_and_preserves_inputs"
+  },
+  {
+    "id": "case.code.transitive_witness_chooses_shortest_available_path",
+    "assertion": "transitive witness chooses shortest available path",
+    "test": "tests/test_code_check.py::test_transitive_witness_chooses_shortest_available_path"
+  },
+  {
+    "id": "case.code.no_selected_constraints_cannot_produce_vacuous_pass",
+    "assertion": "no selected constraints cannot produce vacuous pass",
+    "test": "tests/test_code_check.py::test_no_selected_constraints_cannot_produce_vacuous_pass"
+  },
+  {
+    "id": "case.code.fixed_infrastructure_is_excluded_from_source_inventory",
+    "assertion": "fixed infrastructure is excluded from source inventory",
+    "test": "tests/test_code_check.py::test_fixed_infrastructure_is_excluded_from_source_inventory"
+  },
+  {
+    "id": "case.code.already_declared_records_are_not_loaded_twice",
+    "assertion": "already declared records are not loaded twice",
+    "test": "tests/test_code_check.py::test_already_declared_records_are_not_loaded_twice"
+  }
+]
