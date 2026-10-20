@@ -35,7 +35,7 @@ Use a new temporary directory; `init` refuses to overwrite an existing bundle.
 Keep this shell open so subsequent commands retain `$GDD_TUTORIAL_DIR`.
 
 ```sh
-GDD_TUTORIAL_DIR="$(mktemp -d)"
+GDD_TUTORIAL_DIR="$(mktemp -d "${TMPDIR:-/tmp}/gdd-tutorial.XXXXXX")"
 gdd init "$GDD_TUTORIAL_DIR/project" --project-id project.integer-addition --title "Local integer addition"
 gdd validate "$GDD_TUTORIAL_DIR/project/gdd.json" --profile model
 gdd validate "$GDD_TUTORIAL_DIR/project/gdd.json" --profile readiness --scope action.main || test "$?" -eq 1

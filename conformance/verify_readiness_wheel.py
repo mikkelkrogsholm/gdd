@@ -295,7 +295,7 @@ python() { "$GDD_TUTORIAL_PYTHON" -I "$@"; }
         )
         if tutorial_run.returncode:
             raise AssertionError(f"Installed tutorial failed: {tutorial_run.stdout}\n{tutorial_run.stderr}")
-        tutorial_root = Path(tutorial_run.stdout.rsplit("TUTORIAL_ROOT=", 1)[1].strip())
+        tutorial_root = Path(tutorial_run.stdout.rsplit("TUTORIAL_ROOT=", 1)[1].strip()).resolve(strict=True)
         if not tutorial_root.is_relative_to(folder) or tutorial_root.is_relative_to(ROOT):
             raise AssertionError("The tutorial did not execute in its isolated temporary project.")
         tutorial_model = tutorial_root / "evidence.gdd.json"
