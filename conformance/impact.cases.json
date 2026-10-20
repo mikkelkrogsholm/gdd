@@ -1,0 +1,77 @@
+[
+  {
+    "id": "impact.reverse",
+    "test": "tests/test_impact.py::test_reverse_paths_and_supporting_owner",
+    "assertion": "Reverse consumers have edge witnesses; owners and scenarios remain supporting."
+  },
+  {
+    "id": "impact.cycles",
+    "test": "tests/test_impact.py::test_cycles_and_multiple_roots_are_deterministic",
+    "assertion": "Cycles terminate and roots have deterministic independent witnesses."
+  },
+  {
+    "id": "impact.scopes",
+    "test": "tests/test_impact.py::test_invalid_scopes_visible",
+    "assertion": "Malformed, missing and unsupported selections are visibly invalid."
+  },
+  {
+    "id": "impact.mixed",
+    "test": "tests/test_impact.py::test_mixed_scope_retains_valid_root",
+    "assertion": "Mixed scope preserves valid-root partial analysis."
+  },
+  {
+    "id": "impact.readonly",
+    "test": "tests/test_impact.py::test_read_only_text_and_schema",
+    "assertion": "Analysis writes nothing; text projects the same schema-valid report."
+  },
+  {
+    "id": "impact.closure",
+    "test": "tests/test_impact.py::test_context_paths_match_existing_closure",
+    "assertion": "Supporting witnesses match the shared established context closure."
+  },
+  {
+    "id": "impact.extension",
+    "test": "tests/test_impact.py::test_extension_context_does_not_invent_dependency",
+    "assertion": "Only declared extension dependency semantics propagate potential changes."
+  },
+  {
+    "id": "impact.unknown",
+    "test": "tests/test_impact.py::test_unknown_extension_is_visible_partial_semantics",
+    "assertion": "Unavailable extension semantics do not become a safe-empty complete result."
+  },
+  {
+    "id": "impact.records",
+    "test": "tests/test_impact.py::test_current_records_selected_history_never_rebound",
+    "assertion": "Current applicable check plans and bindings are identified; historical records are not rebound."
+  },
+  {
+    "id": "impact.types",
+    "test": "tests/test_impact.py::test_type_reference_consumers_have_semantic_witness",
+    "assertion": "Type references name their semantic dependency derivation."
+  },
+  {
+    "id": "impact.entities",
+    "test": "tests/test_impact.py::test_entity_consumers_reverse_only",
+    "assertion": "Data readers/creators/writers propagate only from changed entity to consumer."
+  },
+  {
+    "id": "impact.navigation",
+    "test": "tests/test_impact.py::test_navigation_consumer_reverse_only",
+    "assertion": "Destination changes reach navigation consumers, not vice versa."
+  },
+  {
+    "id": "impact.incomplete",
+    "test": "tests/test_impact.py::test_explicitly_incomplete_dependencies_partial",
+    "assertion": "Explicitly incomplete declared dependencies retain useful roots with partial semantics, never a complete safe result."
+  },
+  {
+    "id": "impact.malformed",
+    "test": "tests/test_impact.py::test_unsupported_and_malformed_inputs",
+    "assertion": "Malformed and unsupported files produce visible diagnostics without model mutation."
+  },
+  {
+    "id": "impact.unspecified",
+    "test": "tests/test_impact.py::test_missing_completeness_does_not_require_readiness",
+    "assertion": "Unspecified dependency declarations remain explicit without imposing implementation readiness on model-only impact."
+  }
+]

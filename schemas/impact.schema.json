@@ -1,0 +1,307 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.dev/schemas/impact.schema.json",
+  "title": "Informative declared-model impact result",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-impact/0.1"
+    },
+    "spec_revision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "implementation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "basis": {
+          "const": "declared-model"
+        },
+        "runtime_callers": {
+          "const": "unassessed"
+        },
+        "unlisted_dependencies": {
+          "const": "unassessed"
+        },
+        "unspecified_declarations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "result",
+        "basis",
+        "runtime_callers",
+        "unlisted_dependencies",
+        "unspecified_declarations"
+      ],
+      "additionalProperties": false
+    },
+    "roots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "category": {
+                  "enum": [
+                    "selected",
+                    "direct",
+                    "transitive",
+                    "supporting"
+                  ]
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "witness": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "from": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "to": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "edge": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "relation": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "derivation": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "orientation": {
+                        "enum": [
+                          "forward",
+                          "reverse",
+                          "semantic"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "from",
+                      "to",
+                      "edge",
+                      "relation",
+                      "derivation",
+                      "orientation"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "category",
+                "reason",
+                "witness"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "items"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "binding",
+              "check"
+            ]
+          },
+          "action": {
+            "enum": [
+              "review",
+              "rerun",
+              "inspect"
+            ]
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "roots": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "spec_revision": {
+            "type": "string"
+          },
+          "implementation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "record_revision": {
+            "type": "string"
+          },
+          "declaration": {
+            "type": "object"
+          },
+          "provenance": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "action",
+          "targets",
+          "roots",
+          "spec_revision",
+          "implementation",
+          "record_revision",
+          "declaration",
+          "provenance"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "records_omitted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "boundaries": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "exit_code": {
+      "enum": [
+        0,
+        1,
+        2
+      ]
+    },
+    "record_coverage": {
+      "type": "object",
+      "properties": {
+        "basis": {
+          "const": "declared-records-only"
+        },
+        "code_bindings": {
+          "enum": [
+            "unassessed",
+            "present",
+            "absent"
+          ]
+        }
+      },
+      "required": [
+        "basis",
+        "code_bindings"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "format",
+    "spec_revision",
+    "scope",
+    "implementation",
+    "coverage",
+    "roots",
+    "records",
+    "records_omitted",
+    "boundaries",
+    "diagnostics",
+    "exit_code",
+    "record_coverage"
+  ],
+  "additionalProperties": false
+}

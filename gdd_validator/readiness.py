@@ -38,78 +38,111 @@ def implementation_targets(bundle: Bundle, seeds: list[str]) -> set[str]:
     }
 
 
+def context_links(bundle: Bundle) -> list[dict]:
+    """Declared read-context arcs shared by closure and explanatory consumers."""
+    links = []
+
+    def add(source, target, derivation, edge=None, reverse=False):
+        links.append({"from": source, "to": target,
+                      "edge": edge["id"] if edge else None,
+                      "relation": edge["relation"] if edge else None,
+                      "orientation": "reverse" if reverse else "forward" if edge else "semantic",
+                      "derivation": derivation})
+
+    for ident, node in bundle.model["nodes"].items():
+        for target in node.get("interfaces", []):
+            add(ident, target, "public-interface")
+        contract = node.get("contract", {})
+        specs = list(node.get("fields", {}).values())
+        for fieldmap in ("input", "context"):
+            specs.extend(contract.get(fieldmap, {}).values())
+        if "output" in contract:
+            specs.append(contract["output"])
+        for spec in specs:
+            for target in type_references(spec):
+                add(ident, target, "type-reference")
+        for transition in node.get("machine", {}).get("transitions", []):
+            add(ident, transition["trigger"], "machine-trigger")
+        for risk in contract.get("risks", {}).values():
+            for target in risk["scenarios"]:
+                add(ident, target, "contract-risk-scenario")
+        for cases in contract.get("error_cases", {}).values():
+            for target in cases:
+                add(ident, target, "contract-error-scenario")
+        constraint = node.get("rule", {}).get("constraint", {})
+        for key in ("from", "to"):
+            if key in constraint:
+                add(ident, constraint[key], "rule-constraint-endpoint")
+    definitions = {name: definition for ext in bundle.extensions.values()
+                   for name, definition in ext["relations"].items()}
+    outgoing = {"owned_by", "stored_in", "calls", "depends_on", "reads", "creates",
+                "changes", "refines", "state_of", "imports", "navigates_to",
+                "constrains", "exercises", "verifies"}
+    incoming = {"constrains", "exercises", "verifies", "state_of"}
+    for edge in bundle.model["edges"]:
+        source, target, relation = edge["from"], edge["to"], edge["relation"]
+        definition = definitions.get(relation, {})
+        if (relation in outgoing or bundle.model["format"] == "gdd/0.3" and relation == "member_of"
+                or definition.get("context") in {"outgoing", "both"}
+                or definition.get("dependency") or definition.get("effect", "none") != "none"):
+            add(source, target, "declared-context", edge)
+        if relation in incoming or definition.get("context") in {"incoming", "both"}:
+            add(target, source, "declared-context", edge, True)
+    return sorted(links, key=lambda item: (item["from"], item["to"], item["edge"] or "", item["derivation"]))
+
+
+def context_paths(bundle: Bundle, seeds: list[str]) -> dict[str, list[dict]]:
+    """Deterministic witnesses for exactly the established context closure."""
+    from collections import deque
+
+    paths = {ident: [] for ident in sorted(set(seeds))}
+    # Reverse refinement expands only the initial implementation scope, as before.
+    refinements = sorted((e for e in bundle.model["edges"] if e["relation"] == "refines"),
+                         key=lambda e: e["id"])
+    pending = deque(paths)
+    while pending:
+        target = pending.popleft()
+        for edge in refinements:
+            if edge["to"] == target and edge["from"] not in paths:
+                source = edge["from"]
+                paths[source] = paths[target] + [{"from": target, "to": source,
+                    "edge": edge["id"], "relation": "refines", "orientation": "reverse",
+                    "derivation": "initial-refinement"}]
+                pending.append(source)
+    adjacency = {}
+    for link in context_links(bundle):
+        adjacency.setdefault(link["from"], []).append(link)
+    for ident, node in sorted(bundle.model["nodes"].items()):
+        if node.get("rule", {}).get("scope") == "global" and ident not in paths:
+            root = sorted(seeds)[0] if seeds else None
+            paths[ident] = [{"from": root, "to": ident, "edge": None, "relation": None,
+                             "orientation": "semantic", "derivation": "global-rule-context"}]
+    pending = deque(paths)
+    while pending:
+        source = pending.popleft()
+        for link in adjacency.get(source, []):
+            target = link["to"]
+            if target not in paths:
+                paths[target] = paths[source] + [link]
+                pending.append(target)
+    return paths
+
+
 def context_closure(bundle: Bundle, seeds: list[str]) -> set[str]:
-    nodes, edges = bundle.model["nodes"], bundle.model["edges"]
+    # Ordinary readiness/workflow callers need identities, not witness paths.
     found = _refinement_members(bundle, seeds)
-    definitions = {
-        name: definition
-        for ext in bundle.extensions.values()
-        for name, definition in ext["relations"].items()
-    }
-    while True:
-        before = set(found)
-        for ident in list(found):
-            node = nodes.get(ident, {})
-            found.update(node.get("interfaces", []))
-            contract = node.get("contract", {})
-            type_specs = list(node.get("fields", {}).values())
-            for fieldmap in ("input", "context"):
-                type_specs.extend(contract.get(fieldmap, {}).values())
-            if "output" in contract:
-                type_specs.append(contract["output"])
-            for spec in type_specs:
-                found.update(type_references(spec))
-            found.update(
-                t["trigger"] for t in node.get("machine", {}).get("transitions", [])
-            )
-            for risk in node.get("contract", {}).get("risks", {}).values():
-                found.update(risk["scenarios"])
-            for cases in node.get("contract", {}).get("error_cases", {}).values():
-                found.update(cases)
-            constraint = node.get("rule", {}).get("constraint", {})
-            found.update(constraint.get(k) for k in ("from", "to") if k in constraint)
-        for ident, node in nodes.items():
-            if node.get("rule", {}).get("scope") == "global":
-                found.add(ident)
-        for edge in edges:
-            source, target, relation = edge["from"], edge["to"], edge["relation"]
-            if source in found and relation in {
-                "owned_by",
-                "stored_in",
-                "calls",
-                "depends_on",
-                "reads",
-                "creates",
-                "changes",
-                "refines",
-                "state_of",
-                "imports",
-                "navigates_to",
-                "constrains",
-                "exercises",
-                "verifies",
-            }:
+    adjacency = {}
+    for link in context_links(bundle):
+        adjacency.setdefault(link["from"], set()).add(link["to"])
+    found.update(ident for ident, node in bundle.model["nodes"].items()
+                 if node.get("rule", {}).get("scope") == "global")
+    pending = list(found)
+    while pending:
+        for target in adjacency.get(pending.pop(), ()):
+            if target not in found:
                 found.add(target)
-            if bundle.model["format"] == "gdd/0.3" and source in found and relation == "member_of":
-                found.add(target)
-            if target in found and relation in {
-                "constrains",
-                "exercises",
-                "verifies",
-                "state_of",
-            }:
-                found.add(source)
-            definition = definitions.get(relation, {})
-            if source in found and (
-                definition.get("context") in {"outgoing", "both"}
-                or definition.get("dependency")
-                or definition.get("effect", "none") != "none"
-            ):
-                found.add(target)
-            if target in found and definition.get("context") in {"incoming", "both"}:
-                found.add(source)
-        if found == before:
-            return found
+                pending.append(target)
+    return found
 
 
 def validate_readiness(bundle: Bundle, scope: list[str], host: dict) -> None:
