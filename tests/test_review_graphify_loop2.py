@@ -177,7 +177,7 @@ def test_proposal_api_rejects_every_unencodable_string(proposal_inputs, field, t
     else:
         source_uri = text
     with pytest.raises(ValueError, match="JSON"):
-        propose_graphify(folder, mapping, source_uri=source_uri)
+        propose_graphify(folder, mapping, source_uri=source_uri, format="gdd/0.2")
 
 
 @pytest.mark.parametrize("number", [float("nan"), float("inf"), float("-inf")])
@@ -191,7 +191,7 @@ def test_proposal_api_rejects_nonfinite_values_before_schema_or_io(
         lambda _: pytest.fail("Invalid JSON must be rejected before bundle IO"),
     )
     with pytest.raises(ValueError, match="JSON"):
-        propose_graphify(folder, mapping)
+        propose_graphify(folder, mapping, format="gdd/0.2")
 
 
 @pytest.mark.parametrize("value", [b"\xff", object()])
@@ -204,14 +204,14 @@ def test_proposal_source_uri_rejects_non_json_values_before_io(
         lambda _: pytest.fail("Invalid JSON must be rejected before bundle IO"),
     )
     with pytest.raises(ValueError, match="JSON"):
-        propose_graphify(folder, mapping, source_uri=value)
+        propose_graphify(folder, mapping, source_uri=value, format="gdd/0.2")
 
 
 def test_proposal_api_rejects_circular_input_with_controlled_error(proposal_inputs):
     folder, mapping = proposal_inputs
     mapping["project"]["title"] = mapping
     with pytest.raises(ValueError, match="JSON"):
-        propose_graphify(folder, mapping)
+        propose_graphify(folder, mapping, format="gdd/0.2")
 
 
 def test_proposal_api_depth_exhaustion_is_a_controlled_error(proposal_inputs):
@@ -221,7 +221,7 @@ def test_proposal_api_depth_exhaustion_is_a_controlled_error(proposal_inputs):
         nested = [nested]
     mapping["extra"] = nested
     with pytest.raises(ValueError, match="JSON"):
-        propose_graphify(folder, mapping)
+        propose_graphify(folder, mapping, format="gdd/0.2")
 
 
 def test_proposal_api_keeps_valid_unicode_and_materializes_a_valid_candidate(
@@ -234,7 +234,7 @@ def test_proposal_api_keeps_valid_unicode_and_materializes_a_valid_candidate(
     mapping["nodes"][0]["rationale"] = text
     mapping["edges"][0]["rationale"] = text
     before = deepcopy(mapping)
-    proposal = propose_graphify(folder, mapping)
+    proposal = propose_graphify(folder, mapping, format="gdd/0.2")
     assert proposal["mapping"] == mapping == before
     assert proposal["status"] == "proposed"
     candidate = proposal["model_candidate"]

@@ -1,6 +1,6 @@
 # Graphify → GDD
 
-Adapter 0.1.2 in `gdd-validator` 0.4.1 imports Graphify as a separate observation layer. It preserves the received artifact's bytes and indexes every node and relation without a Graph/DiGraph builder. The agent can then choose an explicit interpretation and prepare an unaccepted GDD proposal. Known 0.1.0/0.1.1 bundles are revalidated under the current rules; the importer's version field bypasses no checks.
+Adapter 0.1.2 in `gdd-validator` imports Graphify as a separate observation layer. It preserves the received artifact's bytes and indexes every node and relation without a Graph/DiGraph builder. The agent can then choose an explicit interpretation and prepare an unaccepted GDD proposal. Known 0.1.0/0.1.1 bundles are revalidated under the current rules; the importer's version field bypasses no checks.
 
 ```sh
 uv run gdd graphify import graphify-out/graph.json \
@@ -64,7 +64,11 @@ uv run gdd graphify propose examples/graphify/observations \
 
 The mapping lists the project's id/title/goal, selected observations, desired model IDs/core types, and rationale. Relations require an explicit relation, ID, and endpoints. Types such as function/class do not automatically become action/entity. An observed calls edge does not automatically become a normative GDD edge.
 
-The result is `gdd-graphify-proposal/0.2` with `status: proposed`, `model_candidate`, the explicit mapping, omitted observation IDs, and unverified binding candidates. The candidate is a valid GDD sketch with a provenance reference to raw input, role=observation/normative=false, and blocking contract questions. It receives no workflow state, accepted receipt, check evidence, or invented spec_revision.
+Proposals default to a `gdd/0.3` candidate. Use CLI `--format gdd/0.2` or API `format="gdd/0.2"` when continuing a legacy model; `--format gdd/0.3` selects the current format explicitly. Unsupported targets are rejected. The mapping contract remains `gdd-graphify-mapping/0.2`.
+
+The result is `gdd-graphify-proposal/0.2` with `status: proposed`, `model_candidate`, the explicit mapping, omitted observation IDs, and unverified binding candidates. The envelope version describes the proposal structure, while `model_candidate.format` identifies the selected GDD standard. The candidate is a valid GDD sketch with a provenance reference to raw input, role=observation/normative=false, and blocking contract questions. It receives no workflow state, accepted receipt, check evidence, or invented spec_revision.
+
+Components receive no invented boundary rationale or interfaces, and actions receive no invented contracts or postconditions. An open question blocks implementation and acceptance; model validity is not readiness or evidence that the implementation satisfies intent. Resolve these omissions from trusted requirements during refinement.
 
 The agent can then apply the proposal as an ordinary authorized model change under the project's existing mandate. Source promotion/model change must be visible; existing accepted requirements are not changed by import/propose. The source URI is relative to the proposal file's location; materialize model_candidate there or adjust the locator explicitly. A binding can only be registered as observed/checked once targets, implementation, model snapshot, and actual source/code revisions are known.
 

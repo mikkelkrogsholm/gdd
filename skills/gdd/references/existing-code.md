@@ -39,12 +39,13 @@ ownership separately during refinement; retain the raw observation in the bundle
 gdd graphify propose observations --mapping mapping.json --output proposal.json
 ```
 
-The adapter currently emits a `gdd/0.2` model candidate for its preserved proposal
-contract. Use the explicit [0.2-to-0.3 migration](gdd/standard/MIGRATION.md)
-when adopting the current standard: keep stable IDs and original observations,
-add the new component rationale/contracts and required action postconditions,
-and record the authorized refinement. Importing observations does not perform
-that migration or accept intent automatically.
+The adapter defaults to a `gdd/0.3` candidate. Select `--format gdd/0.2` (or
+API `format="gdd/0.2"`) to continue a legacy model explicitly. The proposal and
+mapping envelope versions stay `0.2`; `model_candidate.format` identifies the
+selected standard. Preserve stable IDs and observations while refining the
+candidate. Component boundaries/interfaces and action contracts/postconditions
+must come from actual requirements; the adapter invents none. Model validity
+alone does not establish readiness or authorize implementation.
 
 The proposal is an unaccepted sketch. Review its interpretation under the current
 mandate; imports and proposals do not change accepted requirements. Materialize

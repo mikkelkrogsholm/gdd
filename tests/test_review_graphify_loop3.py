@@ -97,7 +97,7 @@ def test_raw_depth_boundary_is_consistent_and_exactly_recoverable(
             for d in c["diagnostics"]
         )
         with pytest.raises(ValueError, match="intact"):
-            propose_graphify(folder, compact_mapping(index))
+            propose_graphify(folder, compact_mapping(index), format="gdd/0.2")
     else:
         assert len(index["nodes"]) == 1
         expected_id = (
@@ -147,7 +147,7 @@ def test_legacy_full_deep_index_is_unassessed_not_corrupt(tmp_path, version):
     export_graphify(folder, tmp_path / "recovered.json")
     assert (tmp_path / "recovered.json").read_bytes() == raw
     with pytest.raises(ValueError, match="intact"):
-        propose_graphify(folder, compact_mapping(index))
+        propose_graphify(folder, compact_mapping(index), format="gdd/0.2")
 
 
 @pytest.mark.parametrize("version", ["0.1.0", "0.1.1"])

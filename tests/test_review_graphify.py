@@ -118,7 +118,7 @@ def test_missing_original_cannot_support_a_proposal(tmp_path):
     (folder / "graphify.raw.json").unlink()
     assert exit_code(verify_graphify(folder)) == 2
     with pytest.raises(ValueError, match="intact"):
-        propose_graphify(folder, mapping)
+        propose_graphify(folder, mapping, format="gdd/0.2")
 
 
 @pytest.mark.parametrize("required", ["graphify.integrity", "graphify.projection"])
@@ -141,7 +141,7 @@ def test_proposal_requires_explicit_positive_integrity_and_projection(
         lambda _: (index, raw, report),
     )
     with pytest.raises(ValueError, match="intact"):
-        propose_graphify(folder, mapping)
+        propose_graphify(folder, mapping, format="gdd/0.2")
 
 
 def test_looping_raw_symlink_is_a_controlled_invalid_asset(tmp_path):
@@ -157,7 +157,7 @@ def test_looping_raw_symlink_is_a_controlled_invalid_asset(tmp_path):
         export_graphify(folder, recovered)
     assert not recovered.exists()
     with pytest.raises(ValueError, match="intact"):
-        propose_graphify(folder, mapping)
+        propose_graphify(folder, mapping, format="gdd/0.2")
 
 
 def test_looping_bundle_root_is_a_controlled_invalid_asset(tmp_path):
@@ -262,7 +262,7 @@ def test_correct_legacy_importer_bundle_uses_current_checks(tmp_path):
     report = verify_graphify(folder)
     assert exit_code(report) == 0
     assert report["tool"]["version"] == "0.1.2"
-    assert propose_graphify(folder, mapping)["status"] == "proposed"
+    assert propose_graphify(folder, mapping, format="gdd/0.2")["status"] == "proposed"
     recovered = tmp_path / "recovered.json"
     export_graphify(folder, recovered)
     assert recovered.read_bytes() == raw
@@ -300,7 +300,7 @@ def test_unknown_importer_version_cannot_use_legacy_normalization(tmp_path):
     assert exit_code(report) == 2
     assert report["checks"][0]["diagnostics"][0]["code"] == "FORMAT_UNSUPPORTED"
     with pytest.raises(ValueError, match="intact"):
-        propose_graphify(folder, mapping)
+        propose_graphify(folder, mapping, format="gdd/0.2")
 
 
 def test_looping_model_manifest_has_a_structured_public_report(tmp_path):

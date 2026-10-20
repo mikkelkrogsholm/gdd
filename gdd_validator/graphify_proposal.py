@@ -14,8 +14,14 @@ __all__ = ["propose_graphify"]
 
 
 def propose_graphify(
-    path: str | Path, mapping: dict, *, source_uri: str = "graphify.raw.json"
+    path: str | Path,
+    mapping: dict,
+    *,
+    source_uri: str = "graphify.raw.json",
+    format: str = "gdd/0.3",
 ) -> dict:
+    if format not in ("gdd/0.3", "gdd/0.2"):
+        raise ValueError("Proposal format must be gdd/0.3 or gdd/0.2.")
     try:
         # Validate original Python strings too: a JSON escape roundtrip can
         # normalize surrogate pairs while leaving the caller's input unchanged.
@@ -128,7 +134,7 @@ def propose_graphify(
         "revision": {"sha256": index["artifact"]["revision"].removeprefix("sha256:")},
     }
     model = {
-        "format": "gdd/0.2",
+        "format": format,
         "project": deepcopy(mapping["project"]),
         "nodes": nodes,
         "edges": edges,
@@ -142,7 +148,7 @@ def propose_graphify(
             }
         },
     }
-    checks = schema_checks(model, "<model_candidate>", "gdd/0.2")
+    checks = schema_checks(model, "<model_candidate>", format)
     if any(c["result"] != "PASS" for c in checks):
         raise ValueError(
             "Explicit mapping does not form a valid GDD representation: " + str(checks)

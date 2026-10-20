@@ -419,7 +419,7 @@ def test_proposal_is_explicit_unaccepted_and_has_no_authority(tmp_path):
     folder, _ = bundle(tmp_path, data)
     index = decode_json((folder / "observations.json").read_bytes())
     selected = mapping(index)
-    proposal = propose_graphify(folder, selected)
+    proposal = propose_graphify(folder, selected, format="gdd/0.2")
     assert proposal["status"] == "proposed"
     candidate = proposal["model_candidate"]
     assert candidate["sources"]["source.graphify"]["normative"] is False
@@ -478,7 +478,7 @@ def test_proposal_cannot_silently_promote_bad_mappings(tmp_path, mutation):
     if mutation == "missing_rationale":
         selected["nodes"][0].pop("rationale")
     with pytest.raises(ValueError):
-        propose_graphify(folder, selected)
+        propose_graphify(folder, selected, format="gdd/0.2")
 
 
 def test_raw_profile_is_explicit_and_bundle_overrides_are_checked(tmp_path):
@@ -538,13 +538,13 @@ def test_cli_import_validate_export_and_propose(tmp_path):
     )
     proposal = folder / "proposal.json"
     result = run(
-        "graphify", "propose", folder, "--mapping", selections, "--output", proposal
+        "graphify", "propose", folder, "--format", "gdd/0.2", "--mapping", selections, "--output", proposal
     )
     assert result.returncode == 0, result.stderr
     assert json.loads(proposal.read_text())["status"] == "proposed"
     assert (
         run(
-            "graphify", "propose", folder, "--mapping", selections, "--output", proposal
+            "graphify", "propose", folder, "--format", "gdd/0.2", "--mapping", selections, "--output", proposal
         ).returncode
         == 1
     )
@@ -593,7 +593,7 @@ def test_directed_endpoints_cannot_be_overruled_by_conflicting_markers(tmp_path)
     assert exit_code(report) == 1
     index = decode_json((folder / "observations.json").read_bytes())
     with pytest.raises(ValueError):
-        propose_graphify(folder, mapping(index))
+        propose_graphify(folder, mapping(index), format="gdd/0.2")
 
 
 @pytest.mark.parametrize("alias", ["same", "symlink", "hardlink"])
@@ -658,3 +658,67 @@ def test_missing_graphify_profile_does_not_guess_yaml_as_json():
     report = validate(ROOT / "examples/concert.gdd.yaml", profiles=["import.graphify"])
     assert exit_code(report) == 2
     assert "FORMAT_UNSUPPORTED" in codes(report)
+
+
+@pytest.mark.parametrize("target_format", [None, "gdd/0.3", "gdd/0.2"])
+def test_proposal_target_format_preserves_sketch_and_observation_boundaries(tmp_path, target_format):
+    folder, _ = bundle(tmp_path)
+    index = decode_json((folder / "observations.json").read_bytes())
+    selected = mapping(index)
+    selected["nodes"][0]["kind"] = "component"
+    selected["edges"] = []
+    untouched = deepcopy(selected)
+    options = {} if target_format is None else {"format": target_format}
+    proposal = propose_graphify(folder, selected, **options)
+    candidate = proposal["model_candidate"]
+    assert candidate["format"] == (target_format or "gdd/0.3")
+    assert proposal["format"] == "gdd-graphify-proposal/0.2"
+    assert selected == untouched
+    assert proposal["mapping"] == selected
+    assert all(n["maturity"] == "sketch" for n in candidate["nodes"].values())
+    assert all(not {"boundary", "interfaces", "contract", "postconditions"} & n.keys()
+               for n in candidate["nodes"].values())
+    assert "records" not in candidate and "record_files" not in candidate
+    assert all(not source["normative"] for source in candidate["sources"].values())
+    question = candidate["questions"]["question.graphify_contracts"]
+    assert question["status"] == "open"
+    assert set(question["blocks"]) == {"implementation", "acceptance"}
+    model = folder / "candidate.gdd.json"
+    model.write_bytes(raw(candidate))
+    assert aggregate(validate(model)["checks"], "model") == "PASS"
+    assert aggregate(validate(model, profiles=["readiness"], scope=["action.0"])["checks"],
+                     "readiness") in {"FAIL", "UNKNOWN"}
+
+
+def test_explicit_legacy_proposal_matches_preserved_fixture():
+    folder = ROOT / "examples/graphify/observations"
+    selected = json.loads((ROOT / "examples/graphify/mapping.json").read_text())
+    expected = (folder / "proposal.json").read_bytes()
+    actual = propose_graphify(folder, selected, format="gdd/0.2")
+    assert (json.dumps(actual, ensure_ascii=False, indent=2) + "\n").encode() == expected
+
+
+@pytest.mark.parametrize("target_format", ["gdd/0.1", "gdd/0.4", "", None])
+def test_proposal_rejects_unsupported_format_before_io(target_format):
+    with pytest.raises(ValueError, match="Proposal format"):
+        propose_graphify("missing-observations", {}, format=target_format)
+
+
+@pytest.mark.parametrize("target_format", [None, "gdd/0.3", "gdd/0.2"])
+def test_cli_proposal_current_default_and_explicit_formats(tmp_path, target_format):
+    folder, _ = bundle(tmp_path)
+    index = decode_json((folder / "observations.json").read_bytes())
+    mapping_file = tmp_path / "mapping.json"
+    mapping_file.write_bytes(raw(mapping(index)))
+    output = tmp_path / "proposal.json"
+    args = [sys.executable, "-m", "gdd_validator", "graphify", "propose", str(folder),
+            "--mapping", str(mapping_file), "--output", str(output)]
+    if target_format:
+        args.extend(["--format", target_format])
+    result = subprocess.run(args, capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    proposal = json.loads(output.read_bytes())
+    assert proposal["model_candidate"]["format"] == (target_format or "gdd/0.3")
+    model = tmp_path / "candidate.gdd.json"
+    model.write_bytes(raw(proposal["model_candidate"]))
+    assert aggregate(validate(model)["checks"], "model") == "PASS"

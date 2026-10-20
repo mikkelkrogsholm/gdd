@@ -91,6 +91,10 @@ def main() -> int:
             sub.add_argument("--source-id", default="source.graphify")
         if action == "propose":
             sub.add_argument("--mapping", type=Path, required=True)
+            sub.add_argument(
+                "--format", choices=["gdd/0.3", "gdd/0.2"], default="gdd/0.3",
+                help="Target model format (default: gdd/0.3)",
+            )
     review = commands.add_parser("design-review", help="Check an advisory review's structure and current applicability")
     review.add_argument("path", type=Path)
     review.add_argument("--review", type=Path)
@@ -202,6 +206,7 @@ def main() -> int:
                 result = propose_graphify(
                     args.path,
                     parse(args.mapping.read_bytes()),
+                    format=args.format,
                     source_uri=Path(
                         os.path.relpath(root / "graphify.raw.json", output_parent)
                     ).as_posix(),
