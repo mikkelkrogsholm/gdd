@@ -145,6 +145,7 @@ missing required design or contract information stays explicit.
 | Agent context and public boundaries | Extract revision-bound context and derived component/community interfaces |
 | Development workflow | Prepare work packages and journal dispatch, submission, integration, cancellation and acceptance |
 | Existing-code observations | Lossless Graphify import/export and explicit unaccepted intent proposals for the documented profiles |
+| Python architecture checks | `gdd check-code` compares static source imports with explicit graph constraints using implementation-specific binding records |
 | Design review | Check a revision-bound advisory review's structure and applicability |
 | Evidence | Assess immutable check plans, bindings and host-verified execution claims against current revisions |
 | Host helpers | Explicit Python API for actual snapshots, command execution and immutable checked evidence records |

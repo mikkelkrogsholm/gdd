@@ -2,7 +2,7 @@
   "format": "gdd-skill-assets/1",
   "origin": {
     "repository": "https://github.com/mikkelkrogsholm/gdd.git",
-    "git_base_revision": "8d86248",
+    "git_base_revision": "8155536",
     "revision_basis": "Working tree based on the recorded Git base; per-file SHA-256 identifies copied bytes, including later edits."
   },
   "files": [
@@ -39,8 +39,8 @@
     {
       "path": "references/gdd/VALIDATOR.md",
       "source": "VALIDATOR.md",
-      "sha256": "533aefa4e779c10ce099e9ce438f1b916486e9ea0a6b6ad4dbd79256aaeec6f2",
-      "bytes": 16748
+      "sha256": "02ee7826f64a9feeed413517bcfc1edd197853d34adf45ebd39b3ccd4a186f06",
+      "bytes": 18079
     },
     {
       "path": "references/gdd/VIEWER.md",
@@ -69,14 +69,20 @@
     {
       "path": "references/gdd/schemas/README.md",
       "source": "schemas/README.md",
-      "sha256": "ddb1ba8a65e0179606849f4bdc3827c9aae65945f23e7c001b4d2ac1d448fab5",
-      "bytes": 3935
+      "sha256": "4367b183ea7b36602980ad8cc81ff139ccc5847dc29b3661c3ff13b6c6eb412b",
+      "bytes": 4244
     },
     {
       "path": "references/gdd/schemas/boundaries.schema.json",
       "source": "schemas/boundaries.schema.json",
       "sha256": "9d030fddaaeb53147be7b02a27636048cca1e5bb0a40d6a713c47843ae2834d7",
       "bytes": 6603
+    },
+    {
+      "path": "references/gdd/schemas/code-observation.schema.json",
+      "source": "schemas/code-observation.schema.json",
+      "sha256": "53bbb1665f8d124e34201781cdc411d51fc9aa1e712b3e8f418130545ac4b84b",
+      "bytes": 9899
     },
     {
       "path": "references/gdd/schemas/design-review.schema.json",
@@ -286,6 +292,12 @@
     },
     {
       "from": "VALIDATOR.md",
+      "href": "docs/python-imports.md",
+      "source_target": "docs/python-imports.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
       "href": "docs/tutorial.md",
       "source_target": "docs/tutorial.md",
       "role": "optional-repository-reference"
@@ -384,6 +396,12 @@
       "from": "WORKFLOW.md",
       "href": "examples/agent-native/README.md",
       "source_target": "examples/agent-native/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "schemas/README.md",
+      "href": "../docs/python-imports.md",
+      "source_target": "docs/python-imports.md",
       "role": "optional-repository-reference"
     },
     {

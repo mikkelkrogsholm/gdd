@@ -47,6 +47,16 @@ environment, check selection, bindings, and immutable evidence with exact model,
 implementation, resource, and current code revisions. Do not reuse pre-integration
 worker evidence as proof of a later combined revision.
 
+For Python import constraints, use `gdd check-code MODEL --root SOURCE_ROOT
+--implementation ID --profile python-imports/0.1`; select `--records` explicitly
+when needed and repeat `--scope` for rule IDs. Read the bundled
+[observer contract](gdd/VALIDATOR.md#observe-actual-python-import-relationships)
+and [output schema](gdd/schemas/code-observation.schema.json). Inspect witnesses,
+actual source hashes, exclusions and unresolved coverage. This static observation
+executes no project modules and creates no trusted evidence; an UNKNOWN result
+does not establish architectural compliance. Preserve actual host checks and
+attestations through the existing evidence workflow.
+
 Record the four-principle advisory assessment with graph IDs and actual code
 locations. The host independently verifies the required fields and selections;
 the validator does not execute application checks. Acceptance requires current

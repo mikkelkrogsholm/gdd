@@ -192,3 +192,18 @@ def test_invalid_encoding_never_reports_nonpositive_source_positions():
     position = result["diagnostics"][0]["location"]
     assert position["line"] is None or position["line"] >= 1
     assert position["column"] is None or position["column"] >= 0
+
+
+@pytest.mark.parametrize("module", ["os", "abc", "io", "stat"])
+def test_frozen_finder_prevents_false_source_root_collision_edge(module):
+    import _imp
+    if not _imp.is_frozen(module):
+        pytest.skip("This interpreter does not freeze the selected standard module.")
+    result = analyze({"main.py": f"import {module}", f"{module}.py": "value = 1"})
+    assert not result["edges"]
+    assert all(row["external"] for row in result["imports"])
+
+
+def test_relative_module_keeps_local_meaning_despite_frozen_basename():
+    result = analyze({"app/__init__.py": "", "app/main.py": "from .os import value", "app/os.py": "value = 1"})
+    assert any(edge["target_file"] == "app/os.py" for edge in result["edges"])

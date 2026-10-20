@@ -51,6 +51,7 @@ unavailable (UNKNOWN). See [consumer input limits](docs/consumer-input-limits.md
 | parallel | Separate plan assessment of completeness declarations, base, locked contracts, read/write files, declared isolation, integration owner/checks, and serialization |
 | import.graphify | [The Graphify adapter](GRAPHIFY.md) validates explicit AST/node-link profiles, raw integrity, multiedges, references, direction, and observation projection. Unknown versions/directions are UNKNOWN |
 | visualization | [Offline renderer](VIEWER.md); `--view FILE` checks the exact artifact/profile against the current model revision. Without input/with an unknown profile: UNKNOWN |
+| check-code | [Static Python import observation](docs/python-imports.md) from current implementation-specific bindings and explicit forbid constraints; separate observation envelope, no project code execution |
 
 Extensions use exact manifest versions and byte hashes. The generic declarative Draft 2020-12 profile checks `data_schema`, endpoints, and context/dependency/effect, including targets of active local schema references. There is no implicit substitutability with core kinds. Custom implementation readiness requires a separate profile and therefore yields UNKNOWN. Remote schema references are never fetched. Schema/data depth exceeding the runtime validator's capacity yields UNKNOWN. `--unsupported-extension example.sensors` makes missing consumer support explicit.
 
@@ -59,6 +60,25 @@ Numeric inputs use Python integers and finite floats when the number's decimal v
 Declared imports edges are checked against architecture constraints in the model. A direct prohibition applies to the specific edge; a transitive prohibition applies to nonempty import paths, including cycles. A contradiction yields CONSTRAINT_INVALID. This proves no actual import relationships in the implementation and does not turn the graph into a complete allowlist.
 
 Readiness scopes are implementation targets: component, entity, action, screen, or machine. Rule/scenario/community cannot alone constitute an implementation-ready scope. An empty ordinary readiness scope assesses all targets, including custom nodes with unknown readiness semantics. A child includes ancestors and necessary contracts; a parent scope includes its decomposed children. Distant rules can expand read context. Communities or hop counts do not limit obligations.
+
+## Observe actual Python import relationships
+
+```sh
+gdd check-code model.gdd.yaml --root src --implementation implementation.main --profile python-imports/0.1 --records current.records.json --scope rule.api_boundary --output new-observation.json
+```
+
+This separate operation reads current binding records, inventories Python source
+and compares static imports with explicit direct/transitive architecture rules.
+It reports shortest violating paths, exact source positions, incomplete coverage
+and advisory unclaimed/undeclared code. The required profile and root define the
+bounded interpretation; unsupported/dynamic input stays UNKNOWN. Missing model
+imports edges are not prohibitions. No project modules or pseudocode are executed.
+
+The output is `gdd-code-observation/0.1`, not a new `gdd-report/0.2` profile or
+trusted implementation evidence. It records actual bytes and binding digests;
+the existing host boundary still governs execution evidence and acceptance.
+See [Python profile, mappings and limitations](docs/python-imports.md) and the
+informative [output schema](schemas/code-observation.schema.json).
 
 ## Revisions and work packages
 

@@ -10,6 +10,12 @@ imply a registry publication or a certified standard.
 Target package: 0.8.0. Standard: draft GDD 0.3 with explicit 0.2 support.
 Viewer renderer: 0.3.0.
 
+- Add `gdd check-code` and the Python `check_code` API for explicit static
+  Python import constraints, current binding records, shortest violating paths
+  and conservative UNKNOWN coverage. A separate `gdd-code-observation/0.1`
+  envelope preserves the existing report/evidence trust boundary. Include
+  copied concert controls, independent conformance, CLI and installed checks.
+
 - Make JSON/YAML loading independent of interpreter recursion thresholds with
   an explicit 256-container consumer limit. Greater depth remains UNKNOWN;
   the GDD format and historical executions are unchanged.

@@ -2,6 +2,11 @@
 
 All schemas use JSON Schema Draft 2020-12 and can be used with an existing schema validator. They define representation, not a complete GDD validator.
 
+[code-observation.schema.json](code-observation.schema.json) describes the
+informative `gdd-code-observation/0.1` static Python observer output. It is
+outside the GDD core and does not extend `gdd-report/0.2` or establish trusted
+implementation evidence. See [the Python profile](../docs/python-imports.md).
+
 | Schema | Document |
 | --- | --- |
 | gdd.schema.json | GDD 0.3 model manifest and safely loaded YAML/JSON |

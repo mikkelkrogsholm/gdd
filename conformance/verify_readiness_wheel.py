@@ -192,6 +192,56 @@ def run(wheel: Path) -> dict:
         if file_hashes(occupied) != before:
             raise AssertionError("Initialization changed a nonempty directory.")
 
+        # Exercise the installed observer with caller-authored binding records.
+        code_root = folder / "python-source"
+        code_root.mkdir()
+        api, storage = code_root / "api.py", code_root / "storage.py"
+        api.write_text("pass\n", encoding="utf-8")
+        storage.write_text("pass\n", encoding="utf-8")
+        code_model = folder / "python-model.json"
+        code_records = folder / "python-records.json"
+        code_document = {
+            "format": "gdd/0.3", "project": {"id": "project.python", "title": "Python", "goal": "Check imports"},
+            "record_files": [code_records.name], "edges": [],
+            "nodes": {
+                "component.api": {"kind": "component", "description": "API"},
+                "component.storage": {"kind": "component", "description": "Storage"},
+                "rule.boundary": {"kind": "rule", "description": "Boundary", "rule": {
+                    "category": "architecture", "statement": "API must not import storage.",
+                    "scope": "global", "blocking": True, "verification": ["python_imports"],
+                    "constraint": {"relation": "imports", "from": "component.api", "to": "component.storage",
+                                   "reach": "direct", "policy": "forbid"}}},
+            },
+        }
+        code_model.write_text(json.dumps(code_document), encoding="utf-8")
+        mapping = {"format": "gdd-records/0.2", "project_id": "project.python", "records": {}}
+        code_records.write_text(json.dumps(mapping), encoding="utf-8")
+        code_spec = command("code-model-snapshot", ["snapshot", str(code_model)])["revision"]
+        mapping["records"] = {
+            "binding." + name: {"kind": "binding", "spec_revision": code_spec,
+                               "targets": ["component." + name], "implementation": "implementation.python",
+                               "role": "code", "resource": name + ".py", "selector": {"kind": "whole-document"},
+                               "status": "planned"}
+            for name in ("api", "storage")
+        }
+        code_records.write_text(json.dumps(mapping), encoding="utf-8")
+        code_args = ["check-code", str(code_model), "--root", str(code_root),
+                     "--implementation", "implementation.python", "--profile", "python-imports/0.1"]
+        clean = command("code-clean", code_args)
+        api.write_text("import storage\n", encoding="utf-8")
+        injected = command("code-forbidden-import", code_args, 1)
+        api.write_text("pass\n", encoding="utf-8")
+        repaired = command("code-repaired", code_args)
+        storage.unlink()
+        missing = command("code-missing-source", code_args, 2)
+        code_controls = {name: result["result"] for name, result in
+                         (("clean", clean), ("injected", injected), ("repaired", repaired), ("missing", missing))}
+        if (code_controls != {"clean": "PASS", "injected": "FAIL", "repaired": "PASS", "missing": "UNKNOWN"}
+                or clean["code_revision"] != repaired["code_revision"]
+                or clean["code_revision"] == injected["code_revision"]
+                or not injected["checks"][0]["path"]):
+            raise AssertionError("Installed code observer controls did not establish the expected source behavior.")
+
         replay = execute([
             str(python), "-I", str(ROOT / "examples/agent-native/replay.py"), "--output", str(folder / "replay"),
         ], folder)
@@ -216,6 +266,7 @@ def run(wheel: Path) -> dict:
         "checks": checks,
         "cli_checks": len(checks),
         "legacy_replay": summary,
+        "code_observation_controls": code_controls,
         "matching_runtime_files": sorted(assets),
         "passed": True,
     }

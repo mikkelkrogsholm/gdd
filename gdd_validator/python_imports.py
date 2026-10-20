@@ -3,9 +3,16 @@
 from __future__ import annotations
 
 import ast
+import _imp
 import json
 import sys
 from collections import defaultdict
+
+
+def runtime_module(module: str) -> bool:
+    """Identify names owned by builtin/frozen finders before source path lookup."""
+    root = module.split(".")[0]
+    return root in sys.builtin_module_names or _imp.is_frozen(root) or _imp.is_frozen(module)
 
 
 def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> dict:
@@ -13,8 +20,8 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
 
     Imports in every AST branch count as static dependencies. External module
     availability is deliberately not checked. Interpreter built-in module names
-    take precedence over same-named root source files, as Python's built-in
-    finder precedes normal path lookup. Diagnostics describe uncertainty,
+    and frozen modules take precedence over same-named root source files before
+    normal path lookup. Diagnostics describe uncertainty,
     not a claim that an import executes or that arbitrary reflection is detected.
     """
     trees: dict[str, ast.Module] = {}
@@ -95,7 +102,7 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
             diagnostic("CODE_IMPORT_UNRESOLVED", file, node, "Relative import has no regular package context.")
             observe(file, node, module, imported, None, False)
             return None
-        if not relative and (module.split(".")[0] in sys.builtin_module_names
+        if not relative and (runtime_module(module)
                              or module.split(".")[0] not in local_roots):
             observe(file, node, module, imported, None, True)
             return None

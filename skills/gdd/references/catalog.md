@@ -24,6 +24,7 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `agents/gdd-worker.md` | [agents/gdd-worker.md](gdd/agents/gdd-worker.md) |
 | `schemas/README.md` | [schemas/README.md](gdd/schemas/README.md) |
 | `schemas/boundaries.schema.json` | [schemas/boundaries.schema.json](gdd/schemas/boundaries.schema.json) |
+| `schemas/code-observation.schema.json` | [schemas/code-observation.schema.json](gdd/schemas/code-observation.schema.json) |
 | `schemas/design-review.schema.json` | [schemas/design-review.schema.json](gdd/schemas/design-review.schema.json) |
 | `schemas/extension.schema.json` | [schemas/extension.schema.json](gdd/schemas/extension.schema.json) |
 | `schemas/fragment-0.2.schema.json` | [schemas/fragment-0.2.schema.json](gdd/schemas/fragment-0.2.schema.json) |
@@ -66,6 +67,7 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `conformance/diagnostics.csv`
 - `conformance/graphify-cases.yaml`
 - `docs/consumer-input-limits.md`
+- `docs/python-imports.md`
 - `docs/tutorial.md`
 - `evidence/README.md`
 - `evidence/graphify-review.md`

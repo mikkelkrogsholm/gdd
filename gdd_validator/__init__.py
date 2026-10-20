@@ -9,6 +9,7 @@ from .graphify_proposal import propose_graphify
 from .visualization import render_view, verify_view
 from .workflow import prepare_workflow, verify_workflow
 from .workflow_run import create_run, run_status, advance_run
+from .code_check import check_code
 
 __all__ = [
     "validate",
@@ -24,4 +25,5 @@ __all__ = [
     "create_run",
     "run_status",
     "advance_run",
+    "check_code",
 ]

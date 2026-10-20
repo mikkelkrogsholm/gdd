@@ -18,6 +18,7 @@ from .boundaries import boundary_view
 from .design_review import review_design
 from .visualization import model_bundle
 from .scaffold import init_project
+from .code_check import check_code
 
 __all__ = ["main"]
 
@@ -102,6 +103,15 @@ def main() -> int:
     review.add_argument("--code-revision", required=True)
     review.add_argument("--scope", action="append")
     review.add_argument("--output", type=Path)
+    code_check = commands.add_parser("check-code", help="Observe static Python imports against explicit architecture rules")
+    code_check.add_argument("path", type=Path)
+    code_check.add_argument("--root", type=Path, required=True)
+    code_check.add_argument("--implementation", required=True)
+    code_check.add_argument("--profile", required=True)
+    code_check.add_argument("--records", type=Path)
+    code_check.add_argument("--scope", action="append", default=[])
+    code_check.add_argument("--exclude", action="append", default=[])
+    code_check.add_argument("--output", type=Path)
     for command in ("snapshot", "context", "boundaries"):
         sub = commands.add_parser(command)
         sub.add_argument("path", type=Path)
@@ -116,7 +126,11 @@ def main() -> int:
             result = init_project(args.path, project_id=args.project_id, title=args.title)
             sys.stdout.write(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n")
             return 0
-        if args.command == "boundaries":
+        if args.command == "check-code":
+            result = check_code(args.path, root=args.root, implementation=args.implementation,
+                                profile=args.profile, records=args.records, scope=args.scope, exclude=args.exclude)
+            code = exit_code(result)
+        elif args.command == "boundaries":
             result = boundary_view(model_bundle(args.path))
             code = 0
         elif args.command == "design-review":

@@ -118,5 +118,25 @@
     "id": "case.code.already_declared_records_are_not_loaded_twice",
     "assertion": "already declared records are not loaded twice",
     "test": "tests/test_code_check.py::test_already_declared_records_are_not_loaded_twice"
+  },
+  {
+    "id": "code.frozen-precedence",
+    "assertion": "Frozen finder precedence prevents false source collision violations; relative modules keep local meaning.",
+    "test": "tests/test_python_imports.py::test_frozen_finder_prevents_false_source_root_collision_edge"
+  },
+  {
+    "id": "code.excluded-import",
+    "assertion": "An omitted known local import cannot turn unresolved coverage into PASS.",
+    "test": "tests/test_code_check_cli.py::test_excluding_a_known_local_import_cannot_turn_unknown_into_pass"
+  },
+  {
+    "id": "code.inventory-drift",
+    "assertion": "Changed source bytes invalidate a witnessed path and prevent PASS.",
+    "test": "tests/test_code_check_cli.py::test_source_inventory_drift_cannot_establish_a_witness"
+  },
+  {
+    "id": "code.output-schema",
+    "assertion": "PASS, FAIL and UNKNOWN observations validate against their separate informative contract.",
+    "test": "tests/test_code_check_cli.py::test_observations_follow_their_own_schema"
   }
 ]
