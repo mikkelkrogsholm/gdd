@@ -9,6 +9,8 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -273,6 +275,69 @@ def run(wheel: Path) -> dict:
                 or not injected["checks"][0]["path"]):
             raise AssertionError("Installed code observer controls did not establish the expected source behavior.")
 
+        # Execute the tutorial's actual documented commands with only copied
+        # example assets and the installed package, outside the source checkout.
+        tutorial_copy = folder / "tutorial-checkout"
+        shutil.copytree(ROOT / "docs/tutorial", tutorial_copy / "docs/tutorial")
+        tutorial_document = (ROOT / "docs/tutorial.md").read_text(encoding="utf-8")
+        blocks = re.findall(r"```sh\n(.*?)\n```", tutorial_document, re.DOTALL)
+        if not blocks:
+            raise AssertionError("The documented tutorial has no executable shell blocks.")
+        preamble = '''set -eu
+gdd() { "$GDD_TUTORIAL_PYTHON" -I -m gdd_validator "$@"; }
+python() { "$GDD_TUTORIAL_PYTHON" -I "$@"; }
+'''
+        tutorial_run = subprocess.run(
+            ["sh", "-c", preamble + "\n".join(blocks)
+             + '\nprintf "\\nTUTORIAL_ROOT=%s\\n" "$GDD_TUTORIAL_DIR"'],
+            cwd=tutorial_copy, capture_output=True, text=True, timeout=120,
+            env={**environment, "GDD_TUTORIAL_PYTHON": str(python), "TMPDIR": str(folder)},
+        )
+        if tutorial_run.returncode:
+            raise AssertionError(f"Installed tutorial failed: {tutorial_run.stdout}\n{tutorial_run.stderr}")
+        tutorial_root = Path(tutorial_run.stdout.rsplit("TUTORIAL_ROOT=", 1)[1].strip())
+        if not tutorial_root.is_relative_to(folder) or tutorial_root.is_relative_to(ROOT):
+            raise AssertionError("The tutorial did not execute in its isolated temporary project.")
+        tutorial_model = tutorial_root / "evidence.gdd.json"
+        tutorial_args = ["validate", str(tutorial_model), "--profile", "records", "--scope", "action.add"]
+        untrusted = command("tutorial-without-trust", tutorial_args, 2)
+        trusted_args = tutorial_args + ["--host-context", str(tutorial_root / "host-context.json")]
+        current_evidence = command("tutorial-current-evidence", trusted_args)
+        unauthorized = command("tutorial-acceptance-unresolved", trusted_args + ["--activity", "acceptance"], 2)
+        stale = command("tutorial-changed-code", tutorial_args + [
+            "--host-context", str(tutorial_root / "stale-host-context.json")], 2)
+
+        def dimension_result(report: dict, dimension: str) -> str:
+            results = {item["result"] for item in report["checks"] if item["dimension"] == dimension}
+            if len(results) != 1:
+                raise AssertionError(f"Unexpected tutorial {dimension} assessments: {results}")
+            return results.pop()
+
+        good = json.loads((tutorial_root / "pass.receipt.json").read_text())
+        bad = json.loads((tutorial_root / "negative.receipt.json").read_text())
+        refused = json.loads((tutorial_root / "stale-authoring.json").read_text())
+        tutorial_controls = {
+            "shell_blocks_executed": len(blocks),
+            "without_trust": dimension_result(untrusted, "implementation"),
+            "current_evidence": dimension_result(current_evidence, "implementation"),
+            "acceptance": dimension_result(unauthorized, "authorization"),
+            "changed_code": dimension_result(stale, "implementation"),
+            "stale_authoring": refused["result"],
+            "pass_receipt": good, "negative_receipt": bad,
+        }
+        expected_tutorial = {"without_trust": "UNKNOWN", "current_evidence": "PASS",
+                             "acceptance": "UNRESOLVED", "changed_code": "UNKNOWN",
+                             "stale_authoring": "REFUSED"}
+        if (any(tutorial_controls[key] != value for key, value in expected_tutorial.items())
+                or good["result"] != "PASS" or good["exit_code"] != 0
+                or bad["result"] != "FAIL" or bad["exit_code"] != 1
+                or "AssertionError" not in bad["stderr"]
+                or "FAILED (failures=" not in bad["stderr"]):
+            raise AssertionError("Installed tutorial failed its actual evidence/currentness controls.")
+        for name in ("integer_add.py", "test_integer_add.py", "evidence.gdd.json", "refined.gdd.json"):
+            if (tutorial_root / name).read_bytes() != (tutorial_copy / "docs/tutorial" / name).read_bytes():
+                raise AssertionError("The tutorial changed its preserved source/model: " + name)
+
         replay = execute([
             str(python), "-I", str(ROOT / "examples/agent-native/replay.py"), "--output", str(folder / "replay"),
         ], folder)
@@ -298,6 +363,7 @@ def run(wheel: Path) -> dict:
         "cli_checks": len(checks),
         "legacy_replay": summary,
         "code_observation_controls": code_controls,
+        "tutorial_controls": tutorial_controls,
         "matching_runtime_files": sorted(assets),
         "passed": True,
     }

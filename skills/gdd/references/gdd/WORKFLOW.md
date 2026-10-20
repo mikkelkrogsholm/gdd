@@ -12,6 +12,12 @@ A community is grouping; it is not proof of independence.
 
 ## Getting started
 
+First work through the [graph-to-code tutorial](docs/tutorial.md): it builds and
+checks one bounded scope before introducing orchestration. Use this page when
+you need work packages, parallel execution or a persistent integration journal.
+The [host guide](HOST.md) covers actual code snapshots and check receipts; the
+[validation standard](standard/VALIDATION.md) defines the separate assessment gates.
+
 For a read-only entry without a run, use `gdd status MODEL --scope ID`; supply
 `--run DIR` explicitly to include existing package/attempt state and current
 acceptance from the same `workflow status` assessor. Before changing a contract,
@@ -67,7 +73,7 @@ assets are read from the model and checked against the snapshot; they are never 
 before B is dispatched. `calls` and `depends_on` describe product contracts; they do not
 automatically invent this work order. Independent packages can be dispatched from the same
 code base. The host establishes actual isolation, permissions, and appropriate read-only
-access. Shared-checkout subagents deliver temp patches; concurrent code writers
+access. Shared-checkout subagents should remain read-only; concurrent code writers
 must have isolated worktrees. Logical workspace paths prove no isolation.
 
 ## Events and progress

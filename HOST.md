@@ -5,6 +5,10 @@ existing agent runtime owns reasoning, actual edits, command execution, review
 and trusted policy. A small Python host API avoids recreating snapshot and
 evidence plumbing for every project. It has no LLM or provider dependency.
 
+For a complete small example before using these API details, follow the
+[graph-to-code tutorial](docs/tutorial.md). It runs real local tests and records
+their evidence using the helpers below.
+
 These helpers are **explicit trusted-caller operations**. The validator and CLI
 never invoke them from graph content, pseudocode or a check method label. The
 caller must already have authorization for the selected command and edits.

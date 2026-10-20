@@ -2,7 +2,7 @@
   "format": "gdd-skill-assets/1",
   "origin": {
     "repository": "https://github.com/mikkelkrogsholm/gdd.git",
-    "git_base_revision": "c584259",
+    "git_base_revision": "ea7d752",
     "revision_basis": "Working tree based on the recorded Git base; per-file SHA-256 identifies copied bytes, including later edits."
   },
   "files": [
@@ -27,8 +27,8 @@
     {
       "path": "references/gdd/HOST.md",
       "source": "HOST.md",
-      "sha256": "6524b6db862cb69f045122c46ea5edf73fdeabe2b72758586fde7f12e0179bea",
-      "bytes": 9883
+      "sha256": "397737d1856a51c9900d937c32c799407f71c91d3b7e7592779d1805f759fd3c",
+      "bytes": 10077
     },
     {
       "path": "references/gdd/SPEC.md",
@@ -39,8 +39,8 @@
     {
       "path": "references/gdd/VALIDATOR.md",
       "source": "VALIDATOR.md",
-      "sha256": "af28ad93cc7f6f1de6b455e796d9aa40e4734b04e740e393afd3376f0158767b",
-      "bytes": 19285
+      "sha256": "69d64b57429308ebcdca4a76b6b8ab5318587d531806c8eaa450f44c2a322d4b",
+      "bytes": 19284
     },
     {
       "path": "references/gdd/VIEWER.md",
@@ -51,8 +51,8 @@
     {
       "path": "references/gdd/WORKFLOW.md",
       "source": "WORKFLOW.md",
-      "sha256": "82c32986270952375ab37fed3e465a454c27d082d8f1d2427b7f690808163b74",
-      "bytes": 9463
+      "sha256": "932468473b4020f39f23bfcf8f4c3af10f2d21cc52e1438ceaa68bae97624cf6",
+      "bytes": 9870
     },
     {
       "path": "references/gdd/agents/gdd-lead.md",
@@ -285,6 +285,12 @@
       "role": "optional-repository-reference"
     },
     {
+      "from": "HOST.md",
+      "href": "docs/tutorial.md",
+      "source_target": "docs/tutorial.md",
+      "role": "optional-repository-reference"
+    },
+    {
       "from": "SPEC.md",
       "href": "conformance/cases.yaml",
       "source_target": "conformance/cases.yaml",
@@ -310,6 +316,12 @@
     },
     {
       "from": "VALIDATOR.md",
+      "href": "docs/tutorial.md",
+      "source_target": "docs/tutorial.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
       "href": "INSTALL.md",
       "source_target": "INSTALL.md",
       "role": "optional-repository-reference"
@@ -328,38 +340,14 @@
     },
     {
       "from": "VALIDATOR.md",
-      "href": "docs/tutorial.md",
-      "source_target": "docs/tutorial.md",
+      "href": "CONTRIBUTING.md",
+      "source_target": "CONTRIBUTING.md",
       "role": "optional-repository-reference"
     },
     {
       "from": "VALIDATOR.md",
-      "href": "evidence/review-loops/README.md",
-      "source_target": "evidence/review-loops/README.md",
-      "role": "optional-repository-reference"
-    },
-    {
-      "from": "VALIDATOR.md",
-      "href": "evidence/graphify-review.md",
-      "source_target": "evidence/graphify-review.md",
-      "role": "optional-repository-reference"
-    },
-    {
-      "from": "VALIDATOR.md",
-      "href": "evidence/visualization-review.md",
-      "source_target": "evidence/visualization-review.md",
-      "role": "optional-repository-reference"
-    },
-    {
-      "from": "VALIDATOR.md",
-      "href": "evidence/validator-conformance.json",
-      "source_target": "evidence/validator-conformance.json",
-      "role": "optional-repository-reference"
-    },
-    {
-      "from": "VALIDATOR.md",
-      "href": "evidence/validator-review.md",
-      "source_target": "evidence/validator-review.md",
+      "href": "evidence/README.md",
+      "source_target": "evidence/README.md",
       "role": "optional-repository-reference"
     },
     {
@@ -372,12 +360,6 @@
       "from": "VALIDATOR.md",
       "href": "examples/agent-native/README.md",
       "source_target": "examples/agent-native/README.md",
-      "role": "optional-repository-reference"
-    },
-    {
-      "from": "VALIDATOR.md",
-      "href": "evidence/workflow-review.md",
-      "source_target": "evidence/workflow-review.md",
       "role": "optional-repository-reference"
     },
     {
@@ -420,6 +402,12 @@
       "from": "VIEWER.md",
       "href": "examples/concert-0.3.graph.html",
       "source_target": "examples/concert-0.3.graph.html",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "WORKFLOW.md",
+      "href": "docs/tutorial.md",
+      "source_target": "docs/tutorial.md",
       "role": "optional-repository-reference"
     },
     {

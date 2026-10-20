@@ -1,0 +1,32 @@
+{
+  "original_commit": "c5c4a03bb301bf83703d8a4c3fcb5c3607292442",
+  "documents": [
+    {
+      "original_path": "SCRATCHPAD.md",
+      "presentation_path": "docs/history/SCRATCHPAD.md",
+      "original_commit": "c5c4a03bb301bf83703d8a4c3fcb5c3607292442",
+      "original_git_blob": "6414f7823d2279d57a56f0300cc45a6913382552",
+      "original_sha256": "3d5b0096355d626eef17a86602637ac4e718ea91311b8d7c3b66506d41673d20",
+      "presentation_sha256": "77299db3ac23ba6555c644ed41d82a202c36e95a47af0343fa031e1f9e5e94eb",
+      "change": "relative Markdown destinations only; prose unchanged"
+    },
+    {
+      "original_path": "WORKLOG.md",
+      "presentation_path": "docs/history/WORKLOG.md",
+      "original_commit": "c5c4a03bb301bf83703d8a4c3fcb5c3607292442",
+      "original_git_blob": "a29d570e7888e9249dee90cf6fb6ea3884f6eb15",
+      "original_sha256": "b8672264df51085efb9f9421bc61664c63075ce655bf418e6a92c7fd51ff39f9",
+      "presentation_sha256": "b8672264df51085efb9f9421bc61664c63075ce655bf418e6a92c7fd51ff39f9",
+      "change": "byte-identical relocation"
+    },
+    {
+      "original_path": "REPOSITORY-PLAN.md",
+      "presentation_path": "docs/history/REPOSITORY-PLAN.md",
+      "original_commit": "c5c4a03bb301bf83703d8a4c3fcb5c3607292442",
+      "original_git_blob": "fca2334c1560636306a316d4261024525792d5ad",
+      "original_sha256": "8e2730050e0375a778724bf815a6d02f835372309217df71cd52cabd0319f671",
+      "presentation_sha256": "57732f38500bd609776dd1871ef22273fdbc42c5519abdc75263e143ef6a2faa",
+      "change": "relative Markdown destinations only; prose unchanged"
+    }
+  ]
+}

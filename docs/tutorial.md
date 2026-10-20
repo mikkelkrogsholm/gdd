@@ -5,7 +5,13 @@ an isolated failing mutation, and assess current implementation evidence. Use
 Python 3.11 or newer with `gdd` installed in that same environment, following
 [installation](../INSTALL.md). Run these commands from the repository root;
 `python` and `gdd` must select that environment. Keep the same shell open.
+The command blocks use a POSIX shell, as in the installation guide.
 No LLM, account, subscription or network service is used by this exercise.
+
+From a development checkout, first run `uv sync --locked --dev --python 3.12`,
+then `. .venv/bin/activate` in your POSIX shell. This puts both `python` and
+`gdd` from that environment on PATH. The current tutorial assets are on `main`,
+not in the older v0.7.0 release.
 
 The sequence deliberately distinguishes **valid model**, **implementation
 readiness**, **actual execution**, **trusted current evidence** and

@@ -12,7 +12,7 @@ a workflow that GDD should support. Questions and small documentation fixes are
 welcome too. For a larger feature or standard change, open an issue before
 implementing it so we can agree on scope and compatibility.
 
-Start with [README.md](README.md) and [REPOSITORY-PLAN.md](REPOSITORY-PLAN.md).
+Start with [README.md](README.md) and the complete [tutorial](docs/tutorial.md).
 Keep changes bounded to a concrete user journey, validator defect or documented
 contract. A small bug report should identify the input, command, actual result
 and expected behavior; preserve diagnostic codes and include a minimal fixture

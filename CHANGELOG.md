@@ -7,6 +7,10 @@ imply a registry publication or a certified standard.
 
 ## Unreleased
 
+- Complete the small graph-to-code tutorial with real Python tests, host-captured
+  receipts and current evidence assessment; simplify first-use navigation and
+  relocate historical working notes with preserved original provenance.
+
 - Add `gdd diff` and `diff_models` for read-only comparison of declared model
   fields by stable ID, with JSON/text, explicit partial coverage and advisory
   structural weakening indicators.

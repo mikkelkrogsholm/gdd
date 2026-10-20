@@ -1,6 +1,9 @@
 # Proposed external GDD pilot
 
-Status: **proposal for maintainer review; no comparative run executed**.
+Status: **WITHDRAWN — the maintainer declined issue #9 on October 20, 2026.**
+No qualification or comparative run was executed. The protocol below is retained
+as historical proposal material, not an active plan or approval request. Any
+later GDD use on the maintainer's own project will be scoped separately.
 Prepared for [issue #9](https://github.com/mikkelkrogsholm/gdd/issues/9).
 Repository inspection date: October 20, 2026.
 

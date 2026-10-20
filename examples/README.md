@@ -1,5 +1,9 @@
 # Standard examples
 
+Start with the small [graph-to-code tutorial](../docs/tutorial.md) for the
+complete path through implementation, local tests and current evidence. The
+examples below provide larger references and individual format demonstrations.
+
 The standard files below illustrate the format and method. The separate [agent-native example](agent-native/README.md) demonstrates an actually executed, bounded code workflow with red/green tests and revision-bound acceptance.
 
 The curated [concert application](concert-app/README.md) is the GDD 0.3 end-to-end
