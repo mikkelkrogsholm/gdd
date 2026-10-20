@@ -156,3 +156,39 @@ def test_observation_is_deterministic_and_does_not_mutate_input():
     assert first == analyze_imports(dict(reversed(list(sources.items()))), components)
     assert sources["b.py"] == b"import a"
     assert components == {"b.py": "b", "a.py": "a"}
+
+
+@pytest.mark.parametrize("source", [
+    "import importlib; loader=getattr(importlib, 'import_module'); loader('app.storage')",
+    "from importlib import import_module; loaders=[import_module]",
+    "import importlib", "import builtins", "import runpy",
+    "loader=__builtins__['__import__']; loader('app.storage')",
+    "from builtins import __import__ as loader; loaders={'load': loader}",
+    "import builtins as b; loader=b.__dict__['__import__']",
+    "import sys; registry=getattr(sys, 'modules')",
+    "from sys import modules as registry",
+    "import sys; hooks=sys.meta_path",
+])
+def test_recognized_loader_values_and_namespaces_cannot_escape_coverage(source):
+    assert "CODE_DYNAMIC_IMPORT" in codes(analyze({"main.py": source}))
+
+
+@pytest.mark.parametrize("source", ["import sys", "import sys; version=sys.version", "from builtins import len; count=len([])"])
+def test_harmless_sys_and_specific_builtin_imports_remain_ordinary_external_dependencies(source):
+    assert not analyze({"main.py": source})["diagnostics"]
+
+
+@pytest.mark.parametrize("module", ["sys", "builtins"])
+def test_builtin_finder_prevents_false_source_root_collision_edge(module):
+    result = analyze({"main.py": f"import {module}", f"{module}.py": ""})
+    assert not result["edges"]
+    assert result["imports"][0]["external"] is True
+    assert result["imports"][0]["target_file"] is None
+
+
+def test_invalid_encoding_never_reports_nonpositive_source_positions():
+    result = analyze_imports({"bad.py": b"# coding: unknown-codec\n"}, {"bad.py": "bad"})
+    assert codes(result) == {"CODE_SOURCE_UNPARSEABLE"}
+    position = result["diagnostics"][0]["location"]
+    assert position["line"] is None or position["line"] >= 1
+    assert position["column"] is None or position["column"] >= 0

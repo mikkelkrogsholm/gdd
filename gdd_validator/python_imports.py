@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import json
+import sys
 from collections import defaultdict
 
 
@@ -11,7 +12,9 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
     """Return source dependencies for regular packages rooted at the inventory root.
 
     Imports in every AST branch count as static dependencies. External module
-    availability is deliberately not checked. Diagnostics describe uncertainty,
+    availability is deliberately not checked. Interpreter built-in module names
+    take precedence over same-named root source files, as Python's built-in
+    finder precedes normal path lookup. Diagnostics describe uncertainty,
     not a claim that an import executes or that arbitrary reflection is detected.
     """
     trees: dict[str, ast.Module] = {}
@@ -21,10 +24,11 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
     diagnostics: list[dict] = []
 
     def diagnostic(code: str, file: str, node=None, message: str = "") -> None:
+        line = getattr(node, "lineno", None)
         diagnostics.append({
             "code": code, "severity": "warning", "message": message,
             "location": {"file": file, "pointer": "",
-                         "line": getattr(node, "lineno", None),
+                         "line": line if line and line > 0 else None,
                          "column": getattr(node, "col_offset", None)},
             "related_ids": sorted({components[file]} if file in components else set()),
         })
@@ -35,7 +39,7 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
         except (SyntaxError, ValueError, RecursionError) as exc:
             diagnostic("CODE_SOURCE_UNPARSEABLE", file, exc, str(exc))
             if isinstance(exc, SyntaxError):
-                diagnostics[-1]["location"]["column"] = exc.offset - 1 if exc.offset else None
+                diagnostics[-1]["location"]["column"] = exc.offset - 1 if exc.offset and exc.offset > 0 else None
             continue
         trees[file] = tree
         if file.split("/")[-1] == "__init__.py" and all(
@@ -91,7 +95,8 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
             diagnostic("CODE_IMPORT_UNRESOLVED", file, node, "Relative import has no regular package context.")
             observe(file, node, module, imported, None, False)
             return None
-        if not relative and module.split(".")[0] not in local_roots:
+        if not relative and (module.split(".")[0] in sys.builtin_module_names
+                             or module.split(".")[0] not in local_roots):
             observe(file, node, module, imported, None, True)
             return None
         parts = module.split(".")
@@ -135,6 +140,20 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
             first, *rest = name.split(".")
             return ".".join([aliases.get(first, first), *rest])
 
+        def sensitive(name):
+            if not name:
+                return False
+            return (
+                name.split(".")[0] in {"importlib", "runpy", "__builtins__", "__loader__", "__spec__"}
+                or name in {"builtins", "builtins.__import__", "builtins.eval", "builtins.exec"}
+                or ".".join(name.split(".")[:2]) in
+                    {"sys.modules", "sys.meta_path", "sys.path", "sys.path_hooks", "sys.path_importer_cache", "sys.__dict__"}
+            )
+
+        def dynamic(node):
+            diagnostic("CODE_DYNAMIC_IMPORT", file, node,
+                       "Dynamic import-system namespaces or loader values require analysis outside this static import profile.")
+
         # Follow simple assignment aliases without evaluating expressions. Repeat
         # to support aliases declared after a function that uses them.
         assignments = [node for node in ast.walk(tree) if isinstance(node, (ast.Assign, ast.AnnAssign))]
@@ -155,6 +174,8 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
             if isinstance(node, ast.Import):
                 for alias in node.names:
                     resolve(file, node, alias.name)
+                    if sensitive(alias.name):
+                        dynamic(node)
             elif isinstance(node, ast.ImportFrom):
                 module = node.module or ""
                 if node.level:
@@ -166,6 +187,9 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
                     else:
                         module = ".".join(parts[:len(parts) - node.level + 1] + ([module] if module else []))
                 for alias in node.names:
+                    if not node.level and (sensitive(f"{module}.{alias.name}")
+                                           or (module in {"sys", "builtins"} and alias.name == "*")):
+                        dynamic(node)
                     target = resolve(file, node, module, alias.name, relative=bool(node.level))
                     if target and target.endswith("/__init__.py"):
                         child = f"{module}.{alias.name}"
@@ -179,12 +203,17 @@ def analyze_imports(sources: dict[str, bytes], components: dict[str, str]) -> di
                 reflected = isinstance(node.func, ast.Call) and isinstance(node.func.func, ast.Name) and node.func.func.id == "getattr"
                 if (name in {"builtins.__import__", "builtins.eval", "builtins.exec", "importlib.import_module", "importlib.reload", "importlib.util.module_from_spec", "importlib.util.spec_from_file_location", "runpy.run_module", "runpy.run_path"}
                     or (name and (name.startswith("importlib.machinery.") or name.endswith(".exec_module") or name.endswith(".load_module")))
-                    or reflected):
+                    or sensitive(name) or reflected
+                    or (name in {"getattr", "vars"} and node.args
+                        and (sensitive(expanded_name(node.args[0]))
+                             or expanded_name(node.args[0]) == "sys"))):
                     diagnostic("CODE_DYNAMIC_IMPORT", file, node,
                                "Dynamic loading or reflection requires analysis outside this static import profile.")
-            elif isinstance(node, ast.Attribute) and expanded_name(node) == "sys.modules":
-                diagnostic("CODE_DYNAMIC_IMPORT", file, node,
-                           "Access to the module registry is outside this static import profile.")
+            elif isinstance(node, (ast.Name, ast.Attribute)) and isinstance(node.ctx, ast.Load) and sensitive(expanded_name(node)):
+                # Values can escape into containers, arguments, assignments or
+                # getattr/subscript access before a later call. A call-only scan
+                # would incorrectly certify these recognized capabilities.
+                dynamic(node)
 
     def unique_sorted(rows: list[dict]) -> list[dict]:
         return [row for _, row in sorted({json.dumps(row, sort_keys=True): row for row in rows}.items())]
