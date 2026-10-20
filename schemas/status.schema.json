@@ -1,0 +1,436 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/tool/status/0.1/status.schema.json",
+  "title": "Informative GDD status tool result 0.1",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-status/0.1"
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "const": "gdd-validator"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "spec_revision": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "run": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "host_context_supplied": {
+          "type": "boolean"
+        },
+        "implementation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "code_revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "activity": {
+          "enum": [
+            "implementation",
+            "acceptance",
+            "model_changes"
+          ]
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "model",
+        "run",
+        "host_context_supplied",
+        "implementation",
+        "code_revision",
+        "activity",
+        "missing"
+      ],
+      "additionalProperties": false
+    },
+    "assessments": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "object",
+          "properties": {
+            "assessed": {
+              "type": "boolean"
+            },
+            "result": {
+              "enum": [
+                null,
+                "PASS",
+                "FAIL",
+                "UNKNOWN",
+                "GRANTED",
+                "DENIED",
+                "UNRESOLVED"
+              ]
+            },
+            "check_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "assessed",
+            "result",
+            "check_refs"
+          ],
+          "additionalProperties": false
+        },
+        "readiness": {
+          "type": "object",
+          "properties": {
+            "assessed": {
+              "type": "boolean"
+            },
+            "result": {
+              "enum": [
+                null,
+                "PASS",
+                "FAIL",
+                "UNKNOWN",
+                "GRANTED",
+                "DENIED",
+                "UNRESOLVED"
+              ]
+            },
+            "check_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "assessed",
+            "result",
+            "check_refs"
+          ],
+          "additionalProperties": false
+        },
+        "authorization": {
+          "type": "object",
+          "properties": {
+            "assessed": {
+              "type": "boolean"
+            },
+            "result": {
+              "enum": [
+                null,
+                "PASS",
+                "FAIL",
+                "UNKNOWN",
+                "GRANTED",
+                "DENIED",
+                "UNRESOLVED"
+              ]
+            },
+            "check_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "assessed",
+            "result",
+            "check_refs"
+          ],
+          "additionalProperties": false
+        },
+        "implementation": {
+          "type": "object",
+          "properties": {
+            "assessed": {
+              "type": "boolean"
+            },
+            "result": {
+              "enum": [
+                null,
+                "PASS",
+                "FAIL",
+                "UNKNOWN",
+                "GRANTED",
+                "DENIED",
+                "UNRESOLVED"
+              ]
+            },
+            "check_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "assessed",
+            "result",
+            "check_refs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "model",
+        "readiness",
+        "authorization",
+        "implementation"
+      ],
+      "additionalProperties": false
+    },
+    "reports": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "$ref": "https://gdd.example/schemas/0.2/report.schema.json"
+        },
+        "readiness": {
+          "$ref": "https://gdd.example/schemas/0.2/report.schema.json"
+        },
+        "authorization": {
+          "$ref": "https://gdd.example/schemas/0.2/report.schema.json"
+        },
+        "implementation": {
+          "$ref": "https://gdd.example/schemas/0.2/report.schema.json"
+        }
+      },
+      "required": [
+        "model",
+        "readiness"
+      ],
+      "additionalProperties": false
+    },
+    "workflow": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "format": {
+              "const": "gdd-run-status/0.1"
+            },
+            "revision": {
+              "type": "string"
+            },
+            "state": {
+              "type": "object"
+            },
+            "available_packages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "event_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "acceptance_current": {
+              "type": "boolean"
+            },
+            "report": {
+              "$ref": "https://gdd.example/schemas/0.2/report.schema.json"
+            }
+          },
+          "required": [
+            "format",
+            "revision",
+            "state",
+            "available_packages",
+            "event_count",
+            "acceptance_current",
+            "report"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "workflow_error": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "input": {
+              "type": "string"
+            },
+            "check": {
+              "$ref": "https://gdd.example/schemas/0.2/report.schema.json#/properties/checks/items"
+            }
+          },
+          "required": [
+            "input",
+            "check"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "question": {
+            "type": "object"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "pointer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "file",
+              "pointer"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "question",
+          "location"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "diagnostic_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "argv": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "https://gdd.example/schemas/0.2/report.schema.json#/properties/checks/items/properties/diagnostics/items/properties/location"
+              }
+            ]
+          }
+        },
+        "required": [
+          "reason",
+          "source",
+          "diagnostic_code",
+          "argv",
+          "location"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 12
+    },
+    "next_action_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "exit_code": {
+      "enum": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  "required": [
+    "format",
+    "tool",
+    "spec_revision",
+    "scope",
+    "inputs",
+    "assessments",
+    "reports",
+    "workflow",
+    "workflow_error",
+    "open_questions",
+    "next_actions",
+    "next_action_count",
+    "exit_code"
+  ],
+  "additionalProperties": false
+}

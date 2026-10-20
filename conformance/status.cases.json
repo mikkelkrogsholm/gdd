@@ -1,0 +1,62 @@
+[
+  {
+    "id": "status.starter_questions_and_blockers_are_usable_without_host",
+    "assertion": "Starter questions and blockers are usable without host.",
+    "test": "tests/test_project_status.py::test_starter_questions_and_blockers_are_usable_without_host"
+  },
+  {
+    "id": "status.ready_scope_does_not_imply_authority_or_evidence",
+    "assertion": "Ready scope does not imply authority or evidence.",
+    "test": "tests/test_project_status.py::test_ready_scope_does_not_imply_authority_or_evidence"
+  },
+  {
+    "id": "status.explicit_empty_host_is_assessed_unresolved",
+    "assertion": "Explicit empty host is assessed unresolved.",
+    "test": "tests/test_project_status.py::test_explicit_empty_host_is_assessed_unresolved"
+  },
+  {
+    "id": "status.known_failure_outranks_unknown",
+    "assertion": "Known failure outranks unknown.",
+    "test": "tests/test_project_status.py::test_known_failure_outranks_unknown"
+  },
+  {
+    "id": "status.inputs_remain_explicit_and_cannot_silently_override_trust",
+    "assertion": "Inputs remain explicit and cannot silently override trust.",
+    "test": "tests/test_project_status.py::test_inputs_remain_explicit_and_cannot_silently_override_trust"
+  },
+  {
+    "id": "status.actions_are_deterministic_bounded_and_traceable",
+    "assertion": "Actions are deterministic bounded and traceable.",
+    "test": "tests/test_project_status.py::test_actions_are_deterministic_bounded_and_traceable"
+  },
+  {
+    "id": "status.optional_run_exactly_projects_existing_status_without_journal_writes",
+    "assertion": "Optional run exactly projects existing status without journal writes.",
+    "test": "tests/test_project_status.py::test_optional_run_exactly_projects_existing_status_without_journal_writes"
+  },
+  {
+    "id": "status.recorded_acceptance_is_only_current_when_existing_assessor_says_so",
+    "assertion": "Recorded acceptance is only current when existing assessor says so.",
+    "test": "tests/test_project_status.py::test_recorded_acceptance_is_only_current_when_existing_assessor_says_so"
+  },
+  {
+    "id": "status.missing_run_is_unknown_and_malformed_journal_is_fail",
+    "assertion": "Missing run is unknown and malformed journal is fail.",
+    "test": "tests/test_project_status.py::test_missing_run_is_unknown_and_malformed_journal_is_fail"
+  },
+  {
+    "id": "status.unrelated_historical_record_does_not_erase_readiness",
+    "assertion": "Unrelated historical record does not erase readiness.",
+    "test": "tests/test_project_status.py::test_unrelated_historical_record_does_not_erase_readiness"
+  },
+  {
+    "id": "status.run_model_revision_is_not_silently_rebound",
+    "assertion": "Run model revision is not silently rebound.",
+    "test": "tests/test_project_status.py::test_run_model_revision_is_not_silently_rebound"
+  },
+  {
+    "id": "status.explicit_code_identity_never_manufactures_implementation_evidence",
+    "assertion": "Explicit code identity never manufactures implementation evidence.",
+    "test": "tests/test_project_status.py::test_explicit_code_identity_never_manufactures_implementation_evidence"
+  }
+]
