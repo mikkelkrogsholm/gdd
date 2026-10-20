@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
 from hashlib import sha256
+import errno
 import json
 import math
 from pathlib import Path, PurePosixPath
@@ -26,6 +27,8 @@ __all__ = [
     "digest",
     "canonical",
     "resolve_asset",
+    "resolve_local_path",
+    "MAX_CONTAINER_DEPTH",
     "schema",
 ]
 
@@ -39,6 +42,8 @@ FORMATS = {
     "gdd-report/0.2": "report",
     "gdd-snapshot/0.2": "snapshot",
 }
+MAX_CONTAINER_DEPTH = 256
+
 NUMBER = re.compile(r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\Z")
 
 
@@ -95,6 +100,39 @@ def _number(raw: str) -> float:
     return parsed
 
 
+class _ContainerDepthError(InputError):
+    """Permit YAML to interpret non-JSON scalar syntax before classifying depth."""
+
+
+def _check_depth(depth: int) -> None:
+    if depth > MAX_CONTAINER_DEPTH:
+        raise _ContainerDepthError(
+            "FORMAT_UNSUPPORTED",
+            f"Input exceeds this consumer's {MAX_CONTAINER_DEPTH}-container nesting limit; input validity is unresolved.",
+        )
+
+
+def _check_json_depth(text: str) -> None:
+    """Bound recursive decoding without counting brackets inside JSON strings."""
+    depth = 0
+    quoted = escaped = False
+    for char in text:
+        if quoted:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                quoted = False
+        elif char == '"':
+            quoted = True
+        elif char in "[{":
+            depth += 1
+            _check_depth(depth)
+        elif char in "]}":
+            depth -= 1
+
+
 def parse_json(raw: bytes | str) -> Any:
     """Load the strict JSON profile; syntax errors never fall back to YAML."""
     try:
@@ -112,6 +150,7 @@ def parse_json(raw: bytes | str) -> Any:
                 result[key] = val
             return result
 
+        _check_json_depth(text)
         decoded = json.loads(
             text, object_pairs_hook=json_pairs, parse_int=_integer, parse_float=_number
         )
@@ -151,7 +190,7 @@ def parse(raw: bytes | str) -> Any:
         # JSON strings keep literal U+2028/U+2029; YAML may fold them.
         try:
             return parse_json(text)
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, _ContainerDepthError):
             pass
         explicit_tags = set()
         builtin_tags = {
@@ -166,6 +205,18 @@ def parse(raw: bytes | str) -> Any:
                 )
             if isinstance(token, yaml.tokens.TagToken):
                 explicit_tags.add(token.start_mark.index)
+        # Event parsing is iterative; composition and value conversion recurse.
+        depth = 0
+        for event in yaml.parse(text, Loader=yaml.BaseLoader):
+            if isinstance(
+                event, (yaml.events.MappingStartEvent, yaml.events.SequenceStartEvent)
+            ):
+                depth += 1
+                _check_depth(depth)
+            elif isinstance(
+                event, (yaml.events.MappingEndEvent, yaml.events.SequenceEndEvent)
+            ):
+                depth -= 1
         node = yaml.compose(text, Loader=yaml.BaseLoader)
 
         def value(item: Any) -> Any:
@@ -371,6 +422,21 @@ def schema_checks(data: Any, file: str, expected: str | None = None) -> list[dic
     ]
 
 
+def resolve_local_path(path: Path) -> Path:
+    """Detect symlink loops consistently while allowing unavailable inputs."""
+    try:
+        try:
+            return path.resolve(strict=True)
+        except FileNotFoundError:
+            return path.resolve(strict=False)
+    except (OSError, RuntimeError) as error:
+        if isinstance(error, RuntimeError) or error.errno == errno.ELOOP:
+            raise InputError(
+                "ASSET_PATH_INVALID", f"Cannot resolve local path: {path}: {error}"
+            ) from error
+        raise
+
+
 def resolve_asset(root: Path, relative: str) -> Path:
     p = PurePosixPath(relative)
     if (
@@ -381,13 +447,8 @@ def resolve_asset(root: Path, relative: str) -> Path:
         or "\x00" in relative
     ):
         raise InputError("ASSET_PATH_INVALID", f"Invalid local asset: {relative}")
-    try:
-        resolved = (root / relative).resolve()
-        resolved_root = root.resolve()
-    except RuntimeError as error:
-        raise InputError(
-            "ASSET_PATH_INVALID", f"Cannot resolve local asset: {relative}: {error}"
-        ) from error
+    resolved = resolve_local_path(root / relative)
+    resolved_root = resolve_local_path(root)
     if not resolved.is_relative_to(resolved_root):
         raise InputError("ASSET_PATH_INVALID", f"Asset escapes bundle root: {relative}")
     return resolved
@@ -435,10 +496,15 @@ def load_bundle(
     unsupported_extensions: frozenset[str] = frozenset(),
 ) -> Bundle:
     try:
-        resolved = path.resolve()
-    except RuntimeError as error:
+        resolved = resolve_local_path(path)
+    except (InputError, OSError) as error:
         bundle = Bundle(path.absolute())
-        bundle.issue("ASSET_PATH_INVALID", str(error), str(bundle.path))
+        bundle.issue(
+            error.code if isinstance(error, InputError) else "SOURCE_UNAVAILABLE",
+            str(error),
+            str(bundle.path),
+            result="FAIL" if isinstance(error, InputError) else "UNKNOWN",
+        )
         return bundle
     bundle = Bundle(resolved)
     seen: set[Path] = set()

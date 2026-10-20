@@ -16,7 +16,7 @@ from .graphify import (
     import_report,
     observe_graphify,
 )
-from .loading import InputError, canonical, resolve_asset, schema
+from .loading import InputError, canonical, resolve_asset, resolve_local_path, schema
 from .report import check, diagnostic
 
 __all__ = ["import_graphify", "verify_graphify", "export_graphify", "load_observations"]
@@ -40,6 +40,7 @@ def _manifest_path(path: str | Path) -> Path:
 def load_observations(path: str | Path) -> tuple[dict | None, bytes | None, dict]:
     manifest = _manifest_path(path)
     try:
+        manifest = resolve_local_path(manifest)
         index = decode_json(manifest.read_bytes())
     except (OSError, InputError) as error:
         return (
@@ -129,7 +130,7 @@ def load_observations(path: str | Path) -> tuple[dict | None, bytes | None, dict
             ),
         )
     try:
-        raw_path = resolve_asset(manifest.resolve().parent, index["artifact"]["path"])
+        raw_path = resolve_asset(manifest.parent, index["artifact"]["path"])
         raw = raw_path.read_bytes()
     except (OSError, InputError) as error:
         return (
@@ -270,10 +271,18 @@ def verify_graphify(
     if path.is_dir() or (path.name == "observations.json" and profile is None):
         return manifest_report()
     try:
+        path = resolve_local_path(path)
         raw = path.read_bytes()
-    except OSError as error:
+    except (InputError, OSError) as error:
         return import_report(
-            [_failure("raw", "SOURCE_UNAVAILABLE", str(error), "UNKNOWN")]
+            [
+                _failure(
+                    "raw",
+                    error.code if isinstance(error, InputError) else "SOURCE_UNAVAILABLE",
+                    str(error),
+                    "FAIL" if isinstance(error, InputError) else "UNKNOWN",
+                )
+            ]
         )
     # A manifest need not have a particular filename.
     try:
@@ -286,7 +295,7 @@ def verify_graphify(
         raw,
         profile=profile,
         producer_version=producer_version,
-        locator=path.resolve().as_uri(),
+        locator=path.as_uri(),
     )[1]
 
 
@@ -301,10 +310,18 @@ def import_graphify(
 ) -> dict:
     path, output = Path(path), Path(output)
     try:
+        path = resolve_local_path(path)
         raw = path.read_bytes()
-    except OSError as error:
+    except (InputError, OSError) as error:
         return import_report(
-            [_failure("raw", "SOURCE_UNAVAILABLE", str(error), "UNKNOWN")]
+            [
+                _failure(
+                    "raw",
+                    error.code if isinstance(error, InputError) else "SOURCE_UNAVAILABLE",
+                    str(error),
+                    "FAIL" if isinstance(error, InputError) else "UNKNOWN",
+                )
+            ]
         )
     index, report = observe_graphify(
         raw,
@@ -312,7 +329,7 @@ def import_graphify(
         producer_version=producer_version,
         code_revision=code_revision,
         source_id=source_id,
-        locator=path.resolve().as_uri(),
+        locator=path.as_uri(),
     )
     if output.exists() or output.is_symlink():
         raise FileExistsError(f"Observation bundle already exists: {output}")

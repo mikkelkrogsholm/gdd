@@ -7,7 +7,14 @@ from jsonschema import Draft202012Validator
 
 from . import __version__
 from .graphify_io import verify_graphify
-from .loading import InputError, canonical, load_bundle, resolve_asset, schema_checks
+from .loading import (
+    InputError,
+    canonical,
+    load_bundle,
+    resolve_asset,
+    resolve_local_path,
+    schema_checks,
+)
 from .model import validate_model
 from .planning import validate_package, validate_parallel
 from .readiness import validate_readiness
@@ -249,12 +256,13 @@ def validate(
     secondary_path = None
     if model_path is not None:
         try:
-            secondary_path = Path(path).resolve()
-        except (OSError, RuntimeError) as error:
+            secondary_path = resolve_local_path(Path(path))
+        except (InputError, OSError) as error:
             bundle.issue(
-                "ASSET_PATH_INVALID",
+                error.code if isinstance(error, InputError) else "SOURCE_UNAVAILABLE",
                 f"Secondary record input cannot be resolved: {error}.",
                 str(path),
+                result="FAIL" if isinstance(error, InputError) else "UNKNOWN",
             )
     if secondary_path is not None and secondary_path not in declared_record_paths:
         records_bundle = load_bundle(secondary_path)
