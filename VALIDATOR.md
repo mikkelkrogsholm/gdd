@@ -2,6 +2,12 @@
 
 The validator loads version-dispatched GDD 0.2 and 0.3, checks the model, and assesses the structural readiness of a selected scope. It has a Python API and CLI and writes reports in `gdd-report/0.2`. Pseudocode, extension code, and application tests are not executed.
 
+Start with the [graph-to-code tutorial](docs/tutorial.md) for a complete worked
+example, or [INSTALL.md](INSTALL.md) for setup. This page is the command and API
+reference. The [validation standard](standard/VALIDATION.md) defines model,
+readiness, authorization and implementation assessments; [HOST.md](HOST.md)
+explains how actual checks become trusted evidence.
+
 Python 3.11 or newer is required. `uv.lock` pins the installation. Run from the project directory:
 
 ```sh
@@ -108,7 +114,7 @@ Readiness diagnostics name missing contract, behavior, boundary and interface
 details in stable order. Locations identify an existing field or its nearest
 existing parent in the owning document, including included fragments. The
 messages describe obligations; they do not fill in contract content. The
-[planning tutorial](docs/tutorial.md) demonstrates the refinement loop.
+[tutorial](docs/tutorial.md) demonstrates the refinement loop.
 
 ```sh
 uv run gdd snapshot examples/concert.gdd.yaml --output snapshot.json
@@ -157,11 +163,17 @@ Source lineage follows source+revision identities. Missing historical input revi
 
 ```sh
 uv run pytest -q
-uv run python conformance/run.py --output evidence/validator-conformance.json
+GDD_CHECK_DIR="$(mktemp -d)"
+uv run python conformance/run.py --output "$GDD_CHECK_DIR/validator-conformance.json"
 uv build
 ```
 
-58 standard cases are actually executed, including concrete condition fixtures. Regression tests additionally cover parser, path, extension, context, authority, supersession, evidence, and CLI failures. [The review rounds](evidence/review-loops/README.md) document 0.4.1. [The Graphify phase checks](evidence/graphify-review.md) document the 0.3.0 run, and [the visualization review](evidence/visualization-review.md) documents 0.4.0. [The validator report from 0.2.0](evidence/validator-conformance.json) and [the earlier review](evidence/validator-review.md) are preserved as history. Synthetic host mandates and receipts are only test inputs, never actual approvals or application evidence.
+The conformance runner executes the standard cases against concrete fixtures.
+Regression tests also cover parser, paths, extensions, context, authority,
+supersession, evidence and CLI behavior. Use [CONTRIBUTING.md](CONTRIBUTING.md)
+for the current local check commands and [evidence](evidence/README.md) for
+version-specific execution records. Synthetic mandates and receipts in tests
+are fixtures, not actual approvals or application evidence.
 
 ```python
 from gdd_validator import validate, exit_code
@@ -173,7 +185,9 @@ assert exit_code(report) == 0
 
 The API returns a JSON-compatible report object. Invalid tool arguments raise `ValueError`; model/file failures produce report diagnostics. Revision and report formats are validated internally. [The code](gdd_validator/validator.py) is the entry point for orchestration; loading/model/readiness/planning/records contain the respective checks.
 
-Version 0.5.0 adds [the agent workflow](WORKFLOW.md) as a separate tool layer. Runtime validation still executes no application tests; the bounded [quote example](examples/agent-native/README.md) has actual externally executed checks and explicitly host-verified evidence. [The workflow review](evidence/workflow-review.md) documents this version.
+The [agent workflow](WORKFLOW.md) is a separate tool layer for preparing work
+and tracking integration. For an executed parallel-work example, see the
+[quote example](examples/agent-native/README.md).
 
 
 ## GDD 0.3 boundary and advisory checks

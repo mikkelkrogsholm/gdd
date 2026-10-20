@@ -48,11 +48,18 @@ cross-component calls explicit. KISS, DRY, separation of concerns and modularity
 are review topics; precise rules can become blocking checks when a trusted
 checker can verify the actual implementation.
 
-## Try the CLI
+## Start with the tutorial
 
-For a small worked planning loop on the development checkout, follow
-[the executable tutorial](docs/tutorial.md): start with a sketch, refine its
-contract, inspect the offline graph and hand revision-bound context to an agent.
+[Build a small Python implementation from a GDD graph](docs/tutorial.md).
+Start with a sketch, refine a contract, inspect the graph, implement and test it,
+then capture revision-bound evidence with the host helpers. A deliberately broken
+implementation shows why a check must detect failure before its PASS is trusted.
+The tutorial uses the development checkout and needs no LLM account.
+
+For the method without commands, read [GDD.md](GDD.md). For installation choices,
+see [INSTALL.md](INSTALL.md).
+
+### Try the released CLI
 
 This source-checkout quickstart requires Python 3.11+ and
 [uv](https://docs.astral.sh/uv/). It needs no LLM credentials, Graphify installation
@@ -89,12 +96,7 @@ generate a view of `examples/concert-0.3.gdd.yaml` in another fresh output file.
 It contains communities, contracts and pseudocode; its `action.reserve` backend
 scope passes structural readiness while its frontend remains a sketch.
 
-See [installation](INSTALL.md) for source/wheel setup, standalone skill copying
-and optional browser-check dependencies.
-
-The model's sources and normative assets determine its snapshot identity. Context
-is a reading boundary; write ownership is declared separately in a development
-plan. See [CLI usage and trust boundaries](VALIDATOR.md).
+See [CLI reference](VALIDATOR.md) for commands, revision identities and work-package boundaries.
 
 ## Use GDD with an agent
 
@@ -105,10 +107,9 @@ guidance and schemas and also ships in the wheel. Follow the
 the CLI must be installed separately. Give the agent your brief, project location
 and mandate.
 
-Completed installed-skill journeys are recorded for the native Codex runtime.
-Claude Code skill discovery was checked, but its two actual journeys stopped at
-authentication before model execution; second-runtime coverage remains unverified.
-See [runtime trials and repeatable setup](docs/runtime-trials.md).
+Installed-skill journeys have been verified with native Codex. Other runtime
+journeys remain unverified; see [runtime trials](docs/runtime-trials.md) for scope
+and setup.
 
 A starting prompt:
 
@@ -163,17 +164,24 @@ and [design principles](standard/DESIGN-PRINCIPLES.md) for each capability's exa
 contract. Graphify support is profile-specific; unsupported or ambiguous input
 remains UNKNOWN.
 
-GDD reports four separate assessments: **model validity, structural readiness,
-authorization and implementation evidence**. A valid graph does not establish
-that its code behaves correctly. Tests, real-source architecture checks and
-human/agent review supply that evidence. The CLI executes no pseudocode, model
-check labels or LLM calls, and broad design principles have no automatic quality
-guarantee.
+GDD keeps four assessments separate:
 
-CLI reports are machine-readable JSON. For validation, exit **0** means requested checks passed,
+| Assessment | What it establishes |
+| --- | --- |
+| Model validity | The graph follows the supported format and structural rules |
+| Structural readiness | The selected scope has the declared information needed for implementation |
+| Authorization | The trusted host supplies a current mandate for the requested activity |
+| Implementation evidence | Applicable checks and bindings are supported by host-verified execution evidence |
+
+The tutorial follows these distinctions through a concrete implementation.
+[Validation semantics](standard/VALIDATION.md) define the assessments;
+[HOST.md](HOST.md) explains actual execution and trust. The CLI does not execute
+pseudocode or LLM calls. Broad design principles still need review.
+
+Validation reports are JSON: exit **0** means requested checks passed,
 **1** means a known failure or denial, and **2** means unresolved information
-without a known failure. With `--activity`, the records profile assesses
-authorization; ordinary records validation assesses implementation evidence.
+without a known failure. Individual tool formats are documented in the
+[CLI reference](VALIDATOR.md).
 
 ## An executed reference experiment
 
@@ -195,11 +203,6 @@ See [repository readiness evidence](evidence/repository-readiness.md) for the
 independent installed-skill journeys and current verification scope. These are
 bounded trials, not a guarantee for every project, language or agent runtime.
 
-The [external pilot proposal](docs/proposals/external-pilot.md) specifies a pinned
-Huey task, a written-specification baseline and a GDD arm with common evaluation.
-It awaits agreement on the subject, execution boundary and evaluation budget;
-no external comparative result is claimed.
-
 ## Read, contribute and extend
 
 Contributions are welcome, including small documentation fixes, bug reports,
@@ -211,6 +214,7 @@ snapshots; [RELEASING.md](RELEASING.md) explains how they are checked and publis
 
 | You want to… | Start here |
 | --- | --- |
+| Complete a first graph-to-code journey | [Tutorial](docs/tutorial.md) |
 | Apply the method as an agent | [GDD.md](GDD.md) |
 | Install the CLI and standalone skill | [INSTALL.md](INSTALL.md), [skills/gdd](skills/gdd/SKILL.md) |
 | Understand the standard and format | [SPEC.md](SPEC.md) and [FORMAT.md](standard/FORMAT.md) |
@@ -219,23 +223,10 @@ snapshots; [RELEASING.md](RELEASING.md) explains how they are checked and publis
 | Execute checks and author trusted evidence | [HOST.md](HOST.md) |
 | Explore examples | [examples](examples/README.md) |
 | Understand integrations and decisions | [INTEGRATIONS.md](standard/INTEGRATIONS.md), [DECISIONS.md](standard/DECISIONS.md) |
-| Follow repository readiness work | [REPOSITORY-PLAN.md](REPOSITORY-PLAN.md) |
 | Contribute or prepare a release | [CONTRIBUTING.md](CONTRIBUTING.md), [RELEASING.md](RELEASING.md), [CHANGELOG.md](CHANGELOG.md), [LICENSE](LICENSE) |
 
 Verification runs locally. The repository has no GitHub Actions CI workflow.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for change and release checks.
-For local development and conformance checks:
-
-```sh
-uv sync --locked --group dev
-uv run pytest -q
-uv run python conformance/run.py
-uv run python conformance/run_graphify.py
-uv run python conformance/run_visualization.py
-uv run python conformance/run_workflow.py
-uv run python conformance/run_design.py
-```
-
 Follow [repository instructions](AGENTS.md) when changing normative assets,
 revisions or generated artifacts. Repository prose is English. GDD 0.2 has an
 explicit [historical contract](archive/gdd-0.2/README.md); other previous material

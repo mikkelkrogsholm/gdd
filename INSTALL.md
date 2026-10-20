@@ -4,8 +4,9 @@ The Python distribution is named **gdd-validator** and installs the **gdd**
 command. Install tagged source or the verified wheel from the
 [v0.7.0 GitHub development release](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.7.0).
 You can also build a wheel locally; no package is published to PyPI. Package 0.7.0
-supports Python 3.11 and later. Local verification covers Python 3.11 and 3.12
-on macOS; no GitHub Actions CI is configured.
+supports Python 3.11 and later. Local verification runs on macOS;
+[verification records](evidence/model-diff-0.1/README.md) distinguish the full-suite
+Python version from the focused compatibility matrix. No GitHub Actions CI is configured.
 The current standard is draft GDD 0.3, with explicit GDD 0.2 compatibility.
 The published 0.7.0 package uses viewer renderer 0.2.0. Current `main` targets
 package 0.8.0 (unreleased), with Cytoscape.js/fCoSE and overlapping community
@@ -14,11 +15,13 @@ in each exported HTML file; CLI users need no Node.js installation.
 
 ## Install from source
 
-After installation, [the planning tutorial](docs/tutorial.md) walks through a
-small GDD 0.3 model without an LLM or runtime service.
+For the [graph-to-code tutorial](docs/tutorial.md), use the current development
+checkout: the tutorial assets and newer commands are not in release v0.7.0.
+It covers a small GDD 0.3 model, Python implementation, checks and captured evidence
+without an LLM account.
 
 From the repository root, with [uv](https://docs.astral.sh/uv/getting-started/installation/)
-and Python 3.11 or 3.12 available:
+and Python 3.11+ available (the commands below select Python 3.12):
 
 For the released snapshot, check out `v0.7.0` before installation. Contributors
 should work on a branch from `main`, as described in [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -86,14 +89,14 @@ Initialization creates `gdd.json`, `SOURCES.md` and `records.json`. It refuses
 an existing directory and repeated initialization exits 1 without overwriting
 files. The model check should exit 0. The readiness check should exit 1 because
 the scaffold is a draft with an unresolved scope question. The view should exit
-0 and opens as an offline HTML file. A valid graph is separate from readiness,
-authorization and executed implementation evidence.
+0; open the generated HTML file in your browser. Continue with
+[the tutorial](docs/tutorial.md) on the development checkout to refine and implement a scope.
 
 For validation reports, exit 0 means the requested checks passed; exit 1 means
 a FAIL or DENIED result; exit 2 means unresolved or unsupported assessment.
 Read the JSON checks and their dimensions, particularly when FAIL and UNKNOWN
-occur together. [VALIDATOR.md](VALIDATOR.md) documents individual commands and
-[GDD.md](GDD.md) explains the method.
+occur together. [VALIDATOR.md](VALIDATOR.md) documents commands and links the
+canonical assessment and trust contracts.
 
 ## Install the standalone agent skill
 
