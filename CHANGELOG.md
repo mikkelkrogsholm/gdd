@@ -7,6 +7,12 @@ imply a registry publication or a certified standard.
 
 ## Unreleased
 
+## 0.8.0 — November 2, 2026
+
+Package: `gdd-validator` 0.8.0, a GitHub development prerelease. Standard:
+draft GDD 0.3 with full explicit 0.2 support. Viewer renderer: 0.4.0;
+profile: `gdd-viewer-html/0.1`. No PyPI publication.
+
 - Add offline viewer lenses for user journeys, components and domain data with
   canonical cross-perspective navigation and advisory gap inspection. Renderer
   0.4.0 emits `gdd-view/0.3` and `gdd-view-state/0.3`; prior renderer artifacts
@@ -23,9 +29,6 @@ imply a registry publication or a certified standard.
 - Add `gdd diff` and `diff_models` for read-only comparison of declared model
   fields by stable ID, with JSON/text, explicit partial coverage and advisory
   structural weakening indicators.
-
-Target package: 0.8.0. Standard: draft GDD 0.3 with explicit 0.2 support.
-Viewer renderer: 0.4.0.
 
 - Add read-only `gdd status` and `gdd impact` with Python APIs, deterministic
   JSON/text projections and separate informative tool envelopes. Status composes
@@ -67,6 +70,18 @@ Viewer renderer: 0.4.0.
   third-party notices, restrictive CSP and no runtime build/CDN dependency.
 - Extend browser checks for actual canvas interaction, overlapping community
   containment, readable headings, stable layouts and a bounded 300-node fixture.
+
+- Preserve detailed FAIL/UNKNOWN diagnostics and unresolved exit statuses for
+  product projections and viewer input; handle parser/projection capacity without
+  tracebacks or partial output. Protect input and normative assets from output
+  overwrites, preserve exact custom data, and keep projection order deterministic.
+- Accept explicitly scoped global product rules without targets or invented
+  entity links; retain explicit targeted-rule checks. Refresh current product and
+  concert demos while preserving historical renderer artifacts and executions.
+- Adopt full explicit GDD 0.2 validation and legacy replay throughout package
+  0.x, independent contract versioning and documented Python verification policy.
+  Installation remains Python 3.11+; each release records actual interpreter and
+  platform coverage. Package 1.0 criteria remain under discussion, not adopted.
 
 ## 0.7.0 — October 14, 2026
 

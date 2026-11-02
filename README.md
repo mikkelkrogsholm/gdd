@@ -13,11 +13,11 @@ work. Agents refine that description, use it to scope development, and show the
 result through interactive views. The implementation language and agent runtime
 remain project choices.
 
-**Current development status:** GDD 0.3 draft · CLI/package 0.8.0 (unreleased) · viewer 0.4.0 · Python 3.11+ ·
+**Current development status:** GDD 0.3 draft · CLI/package 0.8.0 development prerelease · viewer 0.4.0 · Python 3.11+ ·
 [MIT licensed](LICENSE). The repo includes the method, deterministic CLI, offline
 viewer, Graphify adapter, safe project starter and a portable agent skill.
 The viewer includes Cytoscape.js and fCoSE; [third-party notices](gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt) accompany the MIT-licensed GDD code.
-The first development release is [v0.7.0](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.7.0).
+The latest development prerelease is [v0.8.0](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.8.0).
 Install from tagged source or its verified wheel; the package is not on PyPI.
 
 ## How the method works
@@ -59,7 +59,7 @@ and switch between User journey, Components and Data model.
 Start with a sketch, refine a contract, inspect the graph, implement and test it,
 then capture revision-bound evidence with the host helpers. A deliberately broken
 implementation shows why a check must detect failure before its PASS is trusted.
-The tutorial uses the development checkout and needs no LLM account.
+The tutorial is included in v0.8.0 and needs no LLM account.
 
 For the method without commands, read [GDD.md](GDD.md). For installation choices,
 see [INSTALL.md](INSTALL.md).
@@ -69,14 +69,14 @@ see [INSTALL.md](INSTALL.md).
 This source-checkout quickstart requires Python 3.11+ and
 [uv](https://docs.astral.sh/uv/). It needs no LLM credentials, Graphify installation
 or frontend build. The generated graph works offline. These commands use a POSIX shell.
-The quickstart uses the published release; use `main` instead of `v0.7.0` to try
-the latest development changes, including the Cytoscape.js/fCoSE viewer and
-community areas.
+The quickstart uses the v0.8.0 development prerelease, including the
+Cytoscape.js/fCoSE viewer, community areas and product perspectives.
+Contributors can use `main` for subsequent development changes.
 
 ```sh
 git clone https://github.com/mikkelkrogsholm/gdd.git
 cd gdd
-git checkout v0.7.0
+git checkout v0.8.0
 uv sync --locked
 uv run gdd --help
 

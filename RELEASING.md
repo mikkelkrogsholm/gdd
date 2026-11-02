@@ -4,7 +4,7 @@ GDD has three independent version lines:
 
 | Surface | Current version | Meaning |
 | --- | --- | --- |
-| Python package and CLI | 0.8.0 (unreleased) | Distributed tool behavior and public Python APIs |
+| Python package and CLI | 0.8.0 | Distributed tool behavior and public Python APIs |
 | GDD standard | Draft 0.3; explicit 0.2 support | Document schemas and interpretation contracts |
 | Viewer renderer | 0.4.0 | Generated HTML renderer; profile remains `gdd-viewer-html/0.1` |
 
@@ -61,7 +61,7 @@ number in separate rows does not couple their release schedules.
 
 | Surface | Current identifier or version | Version changes when |
 | --- | --- | --- |
-| Package / CLI / public Python API | 0.8.0 (unreleased) | Distributed behavior or public API changes; package rules above apply |
+| Package / CLI / public Python API | 0.8.0 | Distributed behavior or public API changes; package rules above apply |
 | Model and fragment | `gdd/0.3`, `gdd-fragment/0.3`; explicit `gdd/0.2`, `gdd-fragment/0.2` support | Required structure or interpretation changes |
 | Extensions | `gdd-extension/0.2` | Extension contract changes |
 | Product extension and advisory perspectives | `gdd.product` 0.1.0; `gdd-perspectives/0.1` | Exact hashed optional extension semantics or projection contract changes; supported on unchanged GDD 0.2/0.3 cores |
