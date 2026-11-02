@@ -189,3 +189,33 @@ This confirmation is bounded to the documented scenarios and finite deterministi
 permutations, not a guarantee that all bugs are absent. Full-suite, wheel and
 integrated release verification remain the manager's final local checks; this
 round did not run remote CI or change historical execution records.
+
+### Final integrated acceptance
+
+The manager completed the previously pending final local verification against
+source commit `1900e58240f48a29368cb796c727bfafbd2d31bd`. The pending-check note
+above describes the earlier handoff state and is now complete. Command run from
+`/Users/mikkelfreltoftkrogsholm/Projekter/gdd`:
+
+```sh
+uv run --no-sync python scripts/check.py --release --output /tmp/gdd-review-final-release-20261102
+```
+
+The actual receipt `/private/tmp/gdd-review-final-release-20261102/summary.json`
+reports **PASS** for every release step on host Python **3.12.2**, with no Python
+version matrix requested. Its `pytest-current.stdout.txt` records **1,815 passed
+in 375.22s**. All nine separate conformance suites passed: standard, graphify,
+visualization, workflow, design, code, status, impact and diff. Skill synchronization
+and wheel construction also passed. The actual `installed-wheel.stdout.txt` and
+`installed-wheel.json` record **37 installed CLI checks**, legacy replay and
+**125 exact assets** passing outside the checkout, with `PYTHONPATH` removed and
+the standalone skill extracted and verified. The verified wheel is
+`gdd_validator-0.8.0-py3-none-any.whl`, SHA-256
+`3c870655f3b563484917dde2fd8cbe2ac20eb9c8e130924ce7583fe248bd96c8`.
+Together with the **43 offline browser checks (32 + 11)** recorded above, these
+complete the agreed integrated local acceptance; no GitHub CI or push occurred.
+
+This final documentation-only update records those completed executions on
+`1900e58`; it does not claim tests ran on a later runtime revision. Runtime and
+wheel bytes remain unchanged. Only `git diff --check` was run for this final
+prose update. All associated verification jobs were terminal at handoff.
