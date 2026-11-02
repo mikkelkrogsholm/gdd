@@ -29,7 +29,7 @@ const root = path.resolve(__dirname, "..");
     const manifest = () => page.evaluate(() => GDD.manifest());
     const data = () => page.locator("#gdd-data").evaluate(e => JSON.parse(e.textContent));
     const select = id => page.locator(`[data-list-node="${id}"]`).click();
-    const test = async (name, run) => {await run(); results.push({name, result: "PASS"});};
+    const test = async (name, run) => {try {await run(); results.push({name, result: "PASS"});} catch (error) {error.message = `${name}: ${error.message}`; throw error;}};
     const partition = async () => {
       const d = await data(), m = await manifest();
       for (const [all, shown, omitted] of [
@@ -133,6 +133,109 @@ const root = path.resolve(__dirname, "..");
       const box = await page.locator("#perspective").boundingBox();
       assert(box.width > 100 && box.x >= 0 && box.x + box.width <= 390);
       await partition();
+    });
+    await test("hostile human action response and goal are exact inert text", async () => {
+      await open("adversarial");
+      const d = await data();
+      for (const [id, fields] of [["actor.guest", ["goal"]], ["step.choose", ["user_action", "system_response"]]]) {
+        await select(id);
+        const values = await page.locator("#detail dd").allTextContents();
+        for (const field of fields) assert(values.includes(d.model.nodes[id].data[field]));
+      }
+      assert.equal(await page.evaluate(() => globalThis.gddInjected), undefined);
+      assert.equal(await page.locator("#detail img, #detail script").count(), 0);
+      await partition();
+    });
+    await test("lenses kinds searches communities and folding preserve exact intersection", async () => {
+      await open("adversarial");
+      const d = await data();
+      for (const lens of ["journey", "components", "data", "all"]) {
+        for (const folded of [false, true]) {
+          await page.locator("#perspective").selectOption(lens);
+          await page.locator("#community").selectOption("community.product");
+          await page.locator("#fold").setChecked(folded);
+          for (const kind of ["", "entity"]) {
+            await page.locator("#kind").selectOption(kind);
+            await page.locator("#search").fill("reservation");
+            const m = await manifest();
+            const eligible = lens === "all" ? Object.keys(d.model.nodes) : d.perspectives.views[lens].shown.node_ids;
+            // Search includes relation text matches, so independently evaluate its canonical witnesses.
+            const hits = new Set(d.model.edges.filter(e => d.text.edges[e.id].toLocaleLowerCase().includes("reservation")).flatMap(e => [e.from, e.to]));
+            const members = new Set(d.model.edges.filter(e => e.relation === "member_of" && e.to === "community.product").map(e => e.from));
+            const expected = eligible.filter(id => (!kind || d.model.nodes[id].kind === kind) &&
+              (id === "community.product" || members.has(id)) &&
+              (id.toLocaleLowerCase().includes("reservation") || d.text.nodes[id].full.toLocaleLowerCase().includes("reservation") || hits.has(id))).sort();
+            assert.deepEqual(m.shown_nodes, expected);
+            const eligibleEdges = lens === "all" ? d.model.edges.map(e => e.id) : d.perspectives.views[lens].shown.edge_ids;
+            assert.deepEqual(m.shown_edges, d.model.edges.filter(e => eligibleEdges.includes(e.id) && expected.includes(e.from) && expected.includes(e.to)).map(e => e.id).sort());
+            assert.equal(m.folding.enabled, folded);
+            await partition();
+          }
+          await page.locator("#kind").selectOption("");
+          await page.locator("#search").fill("");
+        }
+      }
+      await page.locator("#reset").click();
+      let m = await manifest();
+      const forward = m.bundles.find(b => b.from === "step.choose" && b.to === "step.reserve");
+      const reverse = m.bundles.find(b => b.from === "step.reserve" && b.to === "step.choose");
+      assert.deepEqual(forward.edge_ids.sort(), ["edge.choose.reserve", "edge.parallel"]);
+      assert.deepEqual(reverse.edge_ids, ["edge.reverse"]);
+      await page.locator("#fold").check();
+      m = await manifest();
+      assert(m.glyphs.some(g => g.id === "community.product" && g.node_ids.includes("step.choose")));
+      assert(["edge.choose.reserve", "edge.parallel", "edge.reverse"].every(id => m.folded_internal_edges.includes(id)));
+      await select("step.choose");
+      assert((await page.locator("#detail dd").allTextContents()).includes(d.model.nodes["step.choose"].data.user_action));
+      await partition();
+    });
+    await test("related perspective navigation clears filters retains folding and honors scope", async () => {
+      for (const file of ["adversarial", "adversarial-scoped"]) {
+        await open(file);
+        const d = await data();
+        await page.locator("#fold").check();
+        await page.locator("#kind").selectOption("gdd.product.journey_step");
+        await page.locator("#community").selectOption("community.product");
+        await page.locator("#search").fill("step.choose");
+        await select("step.choose");
+        await page.locator('#detail [data-perspective="journey"]').click();
+        const m = await manifest();
+        assert.equal(m.filters.perspective, "journey");
+        assert.equal(m.filters.kind + m.filters.search + m.filters.community, "");
+        assert.equal(m.folding.enabled, true);
+        assert.deepEqual(m.shown_nodes, d.perspectives.views.journey.shown.node_ids.filter(id => d.manifest.shown_nodes.includes(id)));
+        assert((await page.locator("#detail").innerText()).includes("step.choose"));
+        if (m.shown_nodes.includes("community.product"))
+          assert(m.glyphs.some(g => g.id === "community.product" && g.node_ids.includes("step.choose")));
+        await partition();
+      }
+    });
+    await test("gap navigation through empty filtered folded lenses remains scoped", async () => {
+      for (const file of ["partial", "partial-scoped"]) {
+        await open(file);
+        await page.locator("#perspective").selectOption("data");
+        await page.locator("#kind").selectOption("entity");
+        await page.locator("#search").fill("no_match");
+        await page.locator("#fold").check();
+        await page.locator('[data-gap-node="step.reserve"]').first().click();
+        let m = await manifest();
+        assert(m.shown_nodes.includes("step.reserve"));
+        assert.equal(m.filters.perspective, "all");
+        assert.equal(m.filters.kind + m.filters.search, "");
+        assert.equal(m.folding.enabled, true);
+        await partition();
+        if (file === "partial-scoped") {
+          await page.locator("#search").fill("no_match");
+          const before = await manifest();
+          await page.locator('[data-gap-node="entity.reservation"]').click();
+          m = await manifest();
+          assert.deepEqual(m, before);
+          assert((await page.locator("#detail").innerText()).includes("Outside artifact scope"));
+          await page.locator('#detail [data-perspective="data"]').click();
+          assert.deepEqual(await manifest(), before);
+          await partition();
+        }
+      }
     });
     await test("portable offline file has no network assets or console errors", async () => {
       assert.deepEqual(errors, []); assert.deepEqual(requests, []);

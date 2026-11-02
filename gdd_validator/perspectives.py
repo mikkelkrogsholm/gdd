@@ -151,9 +151,6 @@ def _perspective_data(bundle: Bundle) -> dict:
                 gap("MISSING_RESPONSIBLE_COMPONENT", ident, "No responsible component is linked to this step.")
         if node["kind"] == "entity" and not any(link["entity"] == ident for link in links):
             gap("MISSING_DATA_COMPONENT", ident, "No responsible or using component is linked to this entity.")
-        if node["kind"] == "rule" and node.get("rule", {}).get("category") == "invariant":
-            if not any(e["relation"] == "constrains" and e["from"] == ident for e in edges):
-                gap("MISSING_RULE_TARGET", ident, "This invariant has no explicit constrains targets; review whether it is a data rule.")
     return {
         "format": "gdd-perspectives/0.1", "spec_revision": bundle.revision,
         "advisory": True,

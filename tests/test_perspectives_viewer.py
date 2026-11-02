@@ -35,7 +35,11 @@ def test_prior_renderer_is_explicitly_unknown(tmp_path):
     assert GENERATOR["version"] == "0.4.0"
 
 
-@pytest.mark.parametrize("name", ["concert", "concert-0.3", "product/greenfield"])
-def test_current_demos_match_renderer(name):
-    suffix = ".gdd.json" if name.startswith("product/") else ".gdd.yaml"
-    assert verify_view(ROOT / f"examples/{name}{suffix}", ROOT / f"examples/{name}.graph.html")["checks"][0]["result"] == "PASS"
+@pytest.mark.parametrize("source,view", [
+    ("concert.gdd.yaml", "concert.graph.html"),
+    ("concert-0.3.gdd.yaml", "concert-0.3.graph.html"),
+    ("product/greenfield.gdd.json", "product/greenfield.graph.html"),
+    ("concert-app/gdd.json", "concert-app/graph.html"),
+])
+def test_current_demos_match_renderer(source, view):
+    assert verify_view(ROOT / "examples" / source, ROOT / "examples" / view)["checks"][0]["result"] == "PASS"

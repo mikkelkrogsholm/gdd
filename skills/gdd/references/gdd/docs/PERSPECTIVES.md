@@ -101,11 +101,12 @@ canonical targets without making incomplete sketches invalid. See the
 ## Advisory limits and compatibility
 
 Gaps flag steps without actors, user actions, system responses or responsible
-components, entities without responsible/using components, and invariant rules
-without explicit targets. An invariant without targets needs human review to
-decide whether it is a data rule. A global invariant remains valid; a targeted
-rule without targets is already invalid under core semantics. Fields that are
-present but invalid do not become advisory omissions: normal validation fails.
+components, and entities without responsible/using components. Explicit global
+rules need no targets and apply regardless of local graph distance; they remain
+in the data perspective and scoped context closure. A targeted rule without
+targets is invalid under core semantics and cannot become an advisory sketch.
+Fields that are present but invalid do not become advisory omissions: normal
+validation fails.
 
 A successful inspection or an empty gap list establishes no implementation PASS,
 readiness, authorization, domain completeness or acceptance. This command does

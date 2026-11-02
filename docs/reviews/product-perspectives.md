@@ -51,3 +51,81 @@ records or regenerated evidence captures):
   passed. The changed perspective error contract was synchronized into the
   portable skill. No full-suite, wheel, browser, or remote CI run was requested
   for this bounded round.
+
+## Round 2: advisory semantics and offline interaction
+
+Scope: existing advisory gaps, global versus targeted core rules, and bounded
+adversarial browser interactions. No new rule categories, completeness obligations,
+renderer assets or versions were introduced.
+
+Reproduced against base `0f5ca06`: a valid global invariant without `constrains`
+produced `MISSING_RULE_TARGET` on both core 0.2 and 0.3. This contradicted the
+existing global applicability semantics in `standard/VALIDATION.md`. The new
+regression controls failed twice for that advisory; targeted rules without
+`constrains` already failed correctly. The misleading rule-gap branch is removed.
+Global rules retain their original canonical content in the data perspective and
+remain in context closure from either an entity or its component. Targeted rules
+without targets still fail model validation and projection (exit 1), with the
+`CONSTRAINT_INVALID` diagnostic. Incomplete journeys remain valid and retain all
+five existing actor/action/response/component/entity-link advisory codes on both
+core formats.
+
+Real offline Chromium coverage now includes exact actor goal and action/response
+inspection with closing-script text, HTML event handlers, an external image URL,
+Unicode and line/paragraph separators. Text remains inert, with no injected DOM,
+network asset request or console/page error. Lens/kind/search/community/folding
+combinations preserve exact canonical node and edge intersections and partitions.
+Folded internal edges and opposite-direction parallel bundles retain their IDs.
+Gap and related-perspective links clear appropriate filters, keep folding state,
+allow canonical inspection and never widen artifact scope; links to records
+outside scope leave the complete manifest unchanged. Applying filters resets the
+inspector to overview, so the navigation test selects its matching record after
+applying filters. No browser product defect was reproduced in these cases.
+
+Local execution evidence (temporary machine-local logs, not historical evidence):
+
+- `/tmp/gdd-review-r2-before.log`: `uv run --no-sync python -m pytest
+  tests/test_perspectives.py -k plain_core_rule -q` against base implementation:
+  **2 failed, 2 passed**. Failures are the two false global advisories.
+- `/tmp/gdd-review-r2-projection.log`: initial corrected projection suite:
+  **21 passed** (before adding the second partial-sketch format control).
+- `/tmp/gdd-review-r2-browser.log`: **11 checks passed**, Chromium
+  **151.0.7922.34**, offline. Command:
+
+  ```sh
+  GDD_PLAYWRIGHT_MODULE=/Users/mikkelfreltoftkrogsholm/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright node conformance/run_perspectives_browser.cjs
+  ```
+
+- `/tmp/gdd-review-r2-focused.log`: **151 passed in 21.38s**, focused
+  product/input/viewer/skill verification before adding the fourth demo control:
+
+  ```sh
+  uv run --no-sync python -m pytest tests/test_perspectives.py tests/test_perspectives_inputs.py tests/test_perspectives_viewer.py tests/test_review_viewer.py tests/test_review_viewer_loop4.py tests/test_review_viewer_loop9.py tests/test_inspection_cli.py tests/test_review_cli.py tests/test_review_cli_loop2.py tests/test_review_cli_loop3.py tests/test_skill_assets.py -q
+  ```
+
+- `/tmp/gdd-review-r2-demos.log`: the current concert 0.2, concert 0.3 and product
+  greenfield artifacts verify **PASS**, so their derived payloads need no
+  regeneration. An expanded inventory found the preexisting
+  `examples/concert-app/graph.html` at renderer 0.3.0/profile 0.1; its current
+  verifier result is **UNKNOWN** (unsupported renderer/profile/version). The
+  artifact was byte-identical to the base. The manager confirmed this is a
+  documented current presentation, separate from historical captures, and
+  authorized regeneration from its unchanged `gdd.json`.
+- `/tmp/gdd-review-r2-demo-regeneration.log`: regenerated only
+  `examples/concert-app/graph.html` through `render_view` into a temporary new
+  output, then replaced the current presentation. Its verifier now reports
+  **PASS**. No application/model/evidence/snapshot or historical capture changed.
+- `/tmp/gdd-review-r2-current-artifacts.log`: **26 passed in 3.19s**, including
+  the new fourth-demo verifier control and the repository's historical concert
+  archive integrity checks. Command:
+
+  ```sh
+  uv run --no-sync python -m pytest tests/test_perspectives_viewer.py tests/test_concert_archive.py -q
+  ```
+
+- `/tmp/gdd-review-r2-skill.log` and `/tmp/gdd-review-r2-diff-check.log`:
+  `uv run --no-sync python scripts/sync_skill.py --check` and `git diff --check`
+  passed.
+
+The authoritative perspective guide and its portable skill copy were synchronized.
+No full-suite, wheel or remote CI execution was performed for this bounded round.

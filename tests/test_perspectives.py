@@ -9,7 +9,7 @@ import sys
 from jsonschema import Draft202012Validator
 import pytest
 
-from gdd_validator import perspectives, perspective_data, load_perspective_bundle
+from gdd_validator import perspectives, perspective_data, load_perspective_bundle, validate, exit_code
 from gdd_validator.loading import InputError, schema
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,8 +63,12 @@ def test_refactoring_keeps_journey_and_rule_with_changed_assignment():
                for link in after["component_data_links"])
 
 
-def test_partial_is_valid_and_advisory():
-    result = perspectives(EXAMPLES / "partial.gdd.json")
+@pytest.mark.parametrize("format", ["gdd/0.2", "gdd/0.3"])
+def test_partial_is_valid_and_advisory(tmp_path, format):
+    path = copied(tmp_path, "partial")
+    change(path, lambda model: model.update(format=format))
+    assert exit_code(validate(path, profiles=["model"])) == 0
+    result = perspectives(path)
     assert {g["code"] for g in result["gaps"]} == {
         "MISSING_ACTOR", "MISSING_USER_ACTION", "MISSING_SYSTEM_RESPONSE",
         "MISSING_RESPONSIBLE_COMPONENT", "MISSING_DATA_COMPONENT"}
@@ -72,21 +76,38 @@ def test_partial_is_valid_and_advisory():
 
 
 @pytest.mark.parametrize("format", ["gdd/0.2", "gdd/0.3"])
-def test_plain_core_and_unbound_global_rule(tmp_path, format):
+@pytest.mark.parametrize("scope", ["global", "targeted"])
+def test_plain_core_rule_target_semantics(tmp_path, format, scope):
     model = {"format": format, "project": {"id": "example.core", "title": "Core", "goal": "Inspect data."},
              "nodes": {"entity.item": {"kind": "entity", "description": "An item."},
                        "component.store": {"kind": "component", "description": "Owns items."},
                        "rule.valid": {"kind": "rule", "description": "Valid data.",
-                                      "rule": {"category": "invariant", "scope": "global", "statement": "Items must be valid.",
+                                      "rule": {"category": "invariant", "scope": scope, "statement": "Items must be valid.",
                                                "blocking": False, "verification": ["Review."]}}},
              "edges": [{"id": "edge.owner", "from": "entity.item", "relation": "owned_by", "to": "component.store"}]}
     path = tmp_path / "core.json"
     path.write_text(json.dumps(model))
+    from gdd_validator.readiness import context_closure
+
+    report = validate(path, profiles=["model"])
+    if scope == "targeted":
+        assert exit_code(report) == 1
+        with pytest.raises(InputError, match="CONSTRAINT_INVALID"):
+            perspectives(path)
+        command = subprocess.run([sys.executable, "-m", "gdd_validator", "perspectives", str(path)], capture_output=True, text=True)
+        assert command.returncode == 1 and not command.stdout
+        assert "CONSTRAINT_INVALID" in command.stderr
+        return
+    assert exit_code(report) == 0
     result = perspectives(path)
+    assert result["views"]["data"]["nodes"]["rule.valid"] == model["nodes"]["rule.valid"]
+    bundle = load_perspective_bundle(path)
+    for seed in ["entity.item", "component.store"]:
+        assert "rule.valid" in context_closure(bundle, [seed])
     assert result["views"]["journey"]["nodes"] == {}
     assert result["product_extension"] is None
     assert result["component_data_links"][0]["edge_ids"] == ["edge.owner"]
-    assert [g["code"] for g in result["gaps"]] == ["MISSING_RULE_TARGET"]
+    assert result["gaps"] == []
 
 
 @pytest.mark.parametrize("mutation", ["endpoint", "reference", "hash", "blank", "cardinality"])
@@ -179,8 +200,6 @@ def test_extension_copy_is_byte_exact():
 
 @pytest.mark.parametrize("format", ["gdd/0.2", "gdd/0.3"])
 def test_product_extension_on_both_core_formats(tmp_path, format):
-    from gdd_validator import validate, exit_code
-
     path = copied(tmp_path)
     change(path, lambda model: model.update(format=format))
     assert exit_code(validate(path, profiles=["model"])) == 0
