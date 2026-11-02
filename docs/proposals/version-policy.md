@@ -1,53 +1,37 @@
 # Proposed compatibility and 1.0 policy
 
-**Status: PROPOSED — maintainer decisions pending.** This is the bounded design
-response to [issue #15](https://github.com/mikkelkrogsholm/gdd/issues/15), based on
-package 0.8.0 development at `b5bfcce`. It records recommendations, not adopted
-support promises. [RELEASING.md](../../RELEASING.md) remains the release policy.
-No version, supported format, interpreter requirement or normative asset changes
-as a result of this proposal.
+**Status: PARTIALLY ADOPTED — GDD 0.2 lifecycle, independent contract versions
+and Python verification policy accepted October 20, 2026; 1.0 criteria pending.**
+This is the bounded design response to
+[issue #15](https://github.com/mikkelkrogsholm/gdd/issues/15), originally based on
+package 0.8.0 development at `b5bfcce`. [RELEASING.md](../../RELEASING.md)
+records the three active decisions. Only the 1.0 readiness criteria remain
+proposed. No version, supported format, interpreter requirement or normative
+asset bytes change as a result of these decisions.
 
 ## Decisions recommended
 
 | Decision | Recommendation | Practical consequence if accepted |
 | --- | --- | --- |
-| GDD 0.2 lifecycle | Keep full explicit 0.2 validation and legacy replay through the pre-1.0 series. | Do not reduce support to loading or silently migrate inputs. Reconsider the 1.0 support set in a separate explicit decision. |
-| Envelope versions | Keep versions independent and maintain the compatibility inventory below. | Change only affected contracts; avoid a forced simultaneous protocol bump. |
-| Python support | Declare tested minor lines 3.11–3.14, with exact patches and coverage attached to each release. | Admission of a new line requires local focused, full-suite, conformance and installed-wheel verification before calling it tested. |
+| GDD 0.2 lifecycle — ADOPTED October 20, 2026 | Keep full explicit 0.2 validation and legacy replay throughout the package 0.x series. | Do not reduce support to loading or silently migrate inputs. Reconsider the 1.0 support set in a separate explicit decision. |
+| Envelope versions — ADOPTED October 20, 2026 | Keep versions independent and maintain the single compatibility inventory in RELEASING. | Change only affected contracts; avoid a forced simultaneous protocol bump. |
+| Python support — ADOPTED October 20, 2026 | Keep `>=3.11` installation eligibility and document actual test coverage per release. | A new minor line requires full local tests, conformance and installed-wheel verification before being declared supported; focused coverage alone is not admission evidence. |
 | 1.0 readiness | Use the observable gates below; decide package and standard readiness separately. | A package 1.0 tag cannot imply a standard 1.0 or complete runtime coverage. |
 
 These are four independent decisions. Accepting one does not adopt the others.
 
 ## Compatibility inventory
 
-This compact inventory describes current contracts, not an exhaustive list of
-all serialized artifacts. Exact `format` or profile identifiers remain the
-compatibility selectors; a package version is not a substitute.
-
-| Surface | Current contract | Version trigger |
-| --- | --- | --- |
-| Package / CLI / public Python API | 0.8.0, unreleased | Distributed behavior and API compatibility; package release policy in RELEASING |
-| Model and fragment | `gdd/0.3`, `gdd-fragment/0.3`; explicit 0.2 support | Changed interpretation or required structure needs a new format version |
-| Records, report, snapshot, context, parallel plan | Respective `gdd-…/0.2` formats | Only the affected serialized contract changes version |
-| Workflow request, plan, run and run status | Respective `gdd-…/0.1` formats | Only the affected workflow contract changes version |
-| Status / impact | `gdd-status/0.1`, `gdd-impact/0.1` | Projection/output contract changes independently of core graph semantics |
-| Model comparison | `gdd-model-diff/0.1`, added in this development milestone | Exact declaration comparison and advisory indicators evolve independently of core graph semantics |
-| Code observation / Python observer | `gdd-code-observation/0.1`, `python-imports/0.1` | Observation structure and analysis profile are separate compatibility surfaces |
-| Boundaries / design review | `gdd-boundaries/0.3`, `gdd-design-review/0.3` | Affected output or design interpretation contract changes |
-| Graphify adapter | Named `graphify-0.9.75-ast` and `graphify-0.9.75-node-link` profiles | A new source dialect needs an explicit profile; unsupported input stays visible |
-| Viewer | Renderer 0.3.0; `gdd-viewer-html/0.1`; `gdd-view/0.2` | Renderer implementation, verification profile and serialized projection version independently |
-
-New tool formats should document their own scope and compatibility instead of
-inheriting the standard version by convention. A defect fix that restores the
-existing documented contract does not itself require a new format identifier.
-Normative asset byte changes still affect revision identity even when a version
-identifier remains appropriate. Preserve historical reports and snapshots;
-never relabel their digests or claim they were executed against a new release.
+The adopted [single compatibility inventory](../../RELEASING.md#compatibility-inventory)
+is maintained in RELEASING.md. It lists exact current contracts and their version
+triggers; this proposal does not maintain a second copy. The adopted rules for
+independent versions, public contracts and preserved historical identities are
+recorded alongside that inventory.
 
 ## Legacy lifecycle
 
 Keep the existing 0.2 schemas, version dispatch, explicit-input behavior and
-installed-wheel legacy replay while the recommendation above applies. Maintain
+installed-wheel legacy replay throughout the package 0.x series, as adopted October 20, 2026. Maintain
 fixes necessary to honor the already supported interpretation. New 0.3-only
 features need not be backported into the 0.2 format.
 
@@ -70,20 +54,15 @@ proposal or a promise about every future patch or platform:
 | Python 3.12.12 | Full suite: 1,692 tests; eight conformance runners; installed wheel: 28 CLI checks |
 | Python 3.11.11, 3.12.12, 3.13.13, 3.14.7 | Focused matrix: 325 tests on each exact interpreter |
 
-The package metadata `requires-python = ">=3.11"` describes installation
-eligibility. It does not verify all future Python versions. The recommendation
-is to keep that metadata and describe verification separately, rather than add
-an untested upper bound. Existing resolved Python defects are not current
-failures; the receipts above supersede the original issue's old failure counts.
-
-For each release, identify the host platform, exact interpreter patches, full
-versus focused coverage and installed-wheel results. Run the current local
-release checks and focused matrix. A new minor line may be added to the declared
-tested range after its full suite, conformance runners and fresh installed-wheel
-checks also pass locally; retain those receipts and update the matrix list.
-Focused checks on an admitted line are continuing regression coverage, not a
-claim of a fresh full execution. Missing interpreters or failed checks remain
-visible. No GitHub CI is required or proposed.
+The adopted [Python compatibility policy](../../RELEASING.md#python-compatibility--adopted-october-20-2026)
+keeps `>=3.11` metadata and requires actual release coverage and local admission
+checks. The table above is historical focused/full evidence, not a declaration
+that all four minor lines passed full admission. More recent
+[tutorial verification](../../evidence/tutorial-0.1/README.md) records 1,723 full-suite
+tests on Python 3.12.12 and 356 focused tests on each of the four exact
+interpreters, plus the composed conformance and corrected wheel evidence.
+Neither adopting the policy nor documenting focused coverage creates missing
+full-suite or per-interpreter wheel executions.
 
 ## Observable 1.0 criteria
 
@@ -118,8 +97,18 @@ choices; this proposal authorizes none of them.
 
 ## Decision record to complete
 
-After discussion, record accept/revise/defer for each of the four decisions
-above, the approved wording and the deciding date in RELEASING.md. Update this
+The maintainer accepted the GDD 0.2 lifecycle on October 20, 2026: full
+0.2 support throughout package 0.x; the 1.0 support decision remains deferred.
+The maintainer also accepted independent contract versions and a single
+compatibility overview on October 20, 2026. RELEASING.md contains that inventory.
+The maintainer accepted the Python verification policy on October 20, 2026:
+keep `>=3.11`, report actual coverage and require full local tests, conformance
+and installed-wheel verification before declaring a new minor line supported.
+No runtime implementation, version bump or metadata change is required for these
+three adopted decisions.
+
+After discussion, record accept/revise/defer for the remaining 1.0 criteria,
+the approved wording and the deciding date in RELEASING.md. Update this
 proposal's status and issue #15 accordingly. File concrete follow-up issues only
 for adopted changes that require implementation; do not close #15 while its
 required maintainer decisions are pending.
