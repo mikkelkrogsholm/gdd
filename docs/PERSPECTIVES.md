@@ -72,7 +72,12 @@ Unknown extension nodes/relations may appear as canonical context but are not
 interpreted as product concepts; `unsupported_extensions` identifies their
 namespaces. An unsupported or altered product definition is an explicit error
 (exit 2), never silently interpreted as this version. Invalid bundles, references
-or extension hashes fail (exit 1); `gdd validate PATH` provides diagnostics.
+or extension hashes fail (exit 1). Missing or unavailable assets, unsupported
+formats or semantics, and parser/projection capacity limits are unresolved
+(exit 2). A known failure takes precedence over unresolved checks in the same
+bundle. Rejections retain validation diagnostics on stderr, emit no projection,
+and do not create or modify the requested output file. `gdd validate PATH`
+provides the full validation report.
 
 `component_data_links` lists explicit product usage and core entity ownership or
 storage, plus action effects derived through the action's `owned_by` component.

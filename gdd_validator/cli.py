@@ -306,9 +306,12 @@ def main() -> int:
                         code = 2
                 else:
                     result = context_manifest(bundle, args.scope)
-        output = (
-            json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
-        )
+        try:
+            output = json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
+        except RecursionError as error:
+            if args.command != "perspectives":
+                raise
+            raise InputError("FORMAT_UNSUPPORTED", "Perspective output exceeded this runtime's nesting capacity.") from error
         if args.command in {"status", "impact", "diff"} and args.format == "text":
             output = {"status": status_text, "impact": impact_text, "diff": diff_text}[args.command](result)
         if args.command not in {"graphify", "view"} and args.output:

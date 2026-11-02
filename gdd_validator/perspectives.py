@@ -32,16 +32,43 @@ def _product_supported(bundle: Bundle) -> bool:
     return found
 
 
+def _require_valid_checks(bundle: Bundle) -> None:
+    problems = [c for c in bundle.checks if c["result"] != "PASS"]
+    if not problems:
+        return
+    # A demonstrated failure outranks unresolved checks in the same bundle.
+    failed = any(c["result"] == "FAIL" for c in problems)
+    details = []
+    for item in problems:
+        for diagnostic in item.get("diagnostics", []):
+            location = diagnostic["location"]
+            details.append(f"{diagnostic['code']} at {location['file'] or bundle.path}"
+                           f"{location['pointer']}: {diagnostic['message']}")
+        if not item.get("diagnostics"):
+            details.append(f"{item['check_id']}: {item['reason']}")
+    raise InputError("MODEL_INVALID" if failed else "FORMAT_UNSUPPORTED",
+                     "Projection requires a resolved, valid model bundle. " + "\n".join(details))
+
+
+def _load_projection_bundle(path: str | Path) -> Bundle:
+    """Shared validation boundary for model projections, including the viewer."""
+    try:
+        bundle = load_bundle(Path(path))
+        _require_valid_checks(bundle)
+        if bundle.model.get("format") not in {"gdd/0.2", "gdd/0.3"}:
+            raise InputError("FORMAT_UNSUPPORTED", "Projection requires a supported GDD 0.2 or 0.3 manifest.")
+        validate_model(bundle)
+        _require_valid_checks(bundle)
+        if not bundle.revision:
+            raise InputError("FORMAT_UNSUPPORTED", "Projection requires a resolved model snapshot.")
+        return bundle
+    except RecursionError as error:
+        raise InputError("FORMAT_UNSUPPORTED", "Projection validation exceeded this runtime's nesting capacity; input validity is unresolved.") from error
+
+
 def load_perspective_bundle(path: str | Path) -> Bundle:
-    """Load and validate local assets before exposing any projection."""
-    bundle = load_bundle(Path(path))
-    if bundle.model.get("format") not in {"gdd/0.2", "gdd/0.3"}:
-        raise ValueError("Perspectives require a supported GDD 0.2 or 0.3 manifest.")
-    if any(c["result"] != "PASS" for c in bundle.checks):
-        raise ValueError("Perspectives require a resolved, valid model bundle; run gdd validate for diagnostics.")
-    validate_model(bundle)
-    if any(c["result"] != "PASS" for c in bundle.checks) or not bundle.revision:
-        raise ValueError("Perspectives require a semantically valid model and snapshot; run gdd validate for diagnostics.")
+    """Load and validate local assets before exposing any product projection."""
+    bundle = _load_projection_bundle(path)
     _product_supported(bundle)
     return bundle
 
@@ -57,6 +84,13 @@ def perspective_data(bundle: Bundle) -> dict:
     Call load_perspective_bundle for untrusted manifests. Viewer integrations can
     reuse the validated bundle and retain its exact snapshot revision.
     """
+    try:
+        return _perspective_data(bundle)
+    except RecursionError as error:
+        raise InputError("FORMAT_UNSUPPORTED", "Perspective projection exceeded this runtime's nesting capacity.") from error
+
+
+def _perspective_data(bundle: Bundle) -> dict:
     if not bundle.revision or any(c["result"] != "PASS" for c in bundle.checks):
         raise ValueError("Projection requires an already validated bundle and revision.")
     product = _product_supported(bundle)

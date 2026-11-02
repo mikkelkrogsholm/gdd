@@ -7,12 +7,11 @@ from pathlib import Path
 import re
 from typing import Any
 
-from .loading import Bundle, InputError, canonical, load_bundle
-from .model import validate_model
+from .loading import Bundle, InputError, canonical
 from .readiness import context_closure
 from .report import check, diagnostic
 from .boundaries import boundary_view
-from .perspectives import perspective_data
+from .perspectives import _load_projection_bundle, perspective_data
 
 __all__ = ["render_view", "verify_view", "view_data", "html_document"]
 GENERATOR = {"name": "gdd-viewer", "version": "0.4.0", "profile": "gdd-viewer-html/0.1"}
@@ -33,15 +32,7 @@ def _json_text(value: Any, **options: Any) -> str:
 
 
 def model_bundle(path: str | Path) -> Bundle:
-    bundle = load_bundle(Path(path))
-    if bundle.model.get("format") not in {"gdd/0.2", "gdd/0.3"}:
-        raise ValueError("The viewer requires a supported GDD 0.2 or 0.3 model manifest.")
-    if any(c["result"] != "PASS" for c in bundle.checks):
-        raise ValueError("The viewer requires a resolved, valid model bundle.")
-    validate_model(bundle)
-    if any(c["result"] != "PASS" for c in bundle.checks) or not bundle.revision:
-        raise ValueError("The viewer requires a semantically valid model and snapshot.")
-    return bundle
+    return _load_projection_bundle(path)
 
 
 def view_data(bundle: Bundle, scope: list[str] | None = None) -> dict:
