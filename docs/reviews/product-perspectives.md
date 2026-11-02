@@ -129,3 +129,63 @@ Local execution evidence (temporary machine-local logs, not historical evidence)
 
 The authoritative perspective guide and its portable skill copy were synchronized.
 No full-suite, wheel or remote CI execution was performed for this bounded round.
+
+## Round 3: independent canonical and adversarial confirmation
+
+Scope: the shipped product projection, CLI rejection/output boundaries, and the
+unchanged offline viewer. Review included the actual implementation and rounds
+1–2 changes. No further runtime defect was reproduced within this bounded round.
+
+Fifteen additional deterministic regression cases exercise included fragments
+containing product and unrelated custom nodes, legal `constructor` and `prototype`
+IDs, Unicode text and integers beyond JavaScript's exact-number range. They
+compare canonical fields, directions, parallel edges, exact shown/omitted
+partitions and cross-view witnesses; ordering edges between contextual neighbors
+remain omitted from Components. Seven independently authored routes between the
+same component/entity pair retain their separate explicit usage, ownership,
+storage, read, create and change witnesses. Six input-order permutations change
+the byte-bound snapshot revision while preserving the complete sorted semantic
+projection, including gaps and witnesses. Returned custom records do not alias
+the validated bundle, and inspector text retains the large integers exactly.
+
+CLI controls refuse output to the input manifest, its symlink, and a normative
+extension asset without changing any source bytes. Semantically identical but
+reformatted product definitions, with their correctly updated declared hashes,
+remain explicitly unsupported (exit 2). Existing valid partial/global-rule,
+invalid targeted-rule/dangling-reference, capacity and mixed-status controls also
+passed. No model, normative extension, version or historical evidence was changed.
+
+Local execution evidence (temporary machine-local receipts):
+
+- `/tmp/gdd-review-r3-focused.log`: **92 passed in 14.48s**, including all 15
+  new adversarial cases. Command:
+
+  ```sh
+  uv run --no-sync python -m pytest tests/test_perspectives_adversarial.py tests/test_perspectives.py tests/test_perspectives_inputs.py tests/test_perspectives_viewer.py -q
+  ```
+
+- `/tmp/gdd-review-r3-browser-product.log`: **11 passed**, Chromium
+  **151.0.7922.34**, offline. The existing adversarial browser controls confirm
+  exact inert hostile text, canonical lens/filter/folding intersections, scoped
+  navigation and no network assets or browser errors. Command:
+
+  ```sh
+  GDD_PLAYWRIGHT_MODULE=/Users/mikkelfreltoftkrogsholm/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright node conformance/run_perspectives_browser.cjs
+  ```
+
+- `/tmp/gdd-review-final-legacy-browser/browser-conformance.json`: the manager's
+  original browser suite reports **32 passed**, Chromium **151.0.7922.34**,
+  offline, with empty error and request arrays. Command:
+
+  ```sh
+  GDD_PLAYWRIGHT_MODULE=/Users/mikkelfreltoftkrogsholm/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright GDD_BROWSER_OUTPUT=/tmp/gdd-review-final-legacy-browser node conformance/run_browser.cjs
+  ```
+
+- `git diff --check` passed. All worker-associated tool/test jobs were terminal;
+  an overlapping duplicate original-browser run was stopped and is not counted
+  as execution evidence.
+
+This confirmation is bounded to the documented scenarios and finite deterministic
+permutations, not a guarantee that all bugs are absent. Full-suite, wheel and
+integrated release verification remain the manager's final local checks; this
+round did not run remote CI or change historical execution records.
