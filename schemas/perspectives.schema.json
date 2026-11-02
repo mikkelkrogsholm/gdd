@@ -1,0 +1,530 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/schemas/tools/perspectives-0.1.schema.json",
+  "title": "Advisory GDD perspectives 0.1",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-perspectives/0.1"
+    },
+    "spec_revision": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "advisory": {
+      "const": true
+    },
+    "product_extension": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "namespace": {
+              "const": "gdd.product"
+            },
+            "version": {
+              "const": "0.1.0"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+            }
+          },
+          "required": [
+            "namespace",
+            "version",
+            "sha256"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "unsupported_extensions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "views": {
+      "type": "object",
+      "properties": {
+        "journey": {
+          "type": "object",
+          "properties": {
+            "primary_node_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "nodes": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            },
+            "edges": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "from",
+                  "relation",
+                  "to"
+                ]
+              }
+            },
+            "cross_links": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "node_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "views": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "journey",
+                        "components",
+                        "data"
+                      ]
+                    },
+                    "uniqueItems": true
+                  },
+                  "edge_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "node_id",
+                  "views",
+                  "edge_ids"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "shown": {
+              "type": "object",
+              "properties": {
+                "node_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                },
+                "edge_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "node_ids",
+                "edge_ids"
+              ],
+              "additionalProperties": false
+            },
+            "omitted": {
+              "type": "object",
+              "properties": {
+                "node_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                },
+                "edge_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "node_ids",
+                "edge_ids"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "primary_node_ids",
+            "nodes",
+            "edges",
+            "cross_links",
+            "shown",
+            "omitted"
+          ],
+          "additionalProperties": false
+        },
+        "components": {
+          "type": "object",
+          "properties": {
+            "primary_node_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "nodes": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            },
+            "edges": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "from",
+                  "relation",
+                  "to"
+                ]
+              }
+            },
+            "cross_links": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "node_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "views": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "journey",
+                        "components",
+                        "data"
+                      ]
+                    },
+                    "uniqueItems": true
+                  },
+                  "edge_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "node_id",
+                  "views",
+                  "edge_ids"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "shown": {
+              "type": "object",
+              "properties": {
+                "node_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                },
+                "edge_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "node_ids",
+                "edge_ids"
+              ],
+              "additionalProperties": false
+            },
+            "omitted": {
+              "type": "object",
+              "properties": {
+                "node_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                },
+                "edge_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "node_ids",
+                "edge_ids"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "primary_node_ids",
+            "nodes",
+            "edges",
+            "cross_links",
+            "shown",
+            "omitted"
+          ],
+          "additionalProperties": false
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "primary_node_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "nodes": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            },
+            "edges": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "from",
+                  "relation",
+                  "to"
+                ]
+              }
+            },
+            "cross_links": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "node_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "views": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "journey",
+                        "components",
+                        "data"
+                      ]
+                    },
+                    "uniqueItems": true
+                  },
+                  "edge_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "node_id",
+                  "views",
+                  "edge_ids"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "shown": {
+              "type": "object",
+              "properties": {
+                "node_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                },
+                "edge_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "node_ids",
+                "edge_ids"
+              ],
+              "additionalProperties": false
+            },
+            "omitted": {
+              "type": "object",
+              "properties": {
+                "node_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                },
+                "edge_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "node_ids",
+                "edge_ids"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "primary_node_ids",
+            "nodes",
+            "edges",
+            "cross_links",
+            "shown",
+            "omitted"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "journey",
+        "components",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "component_data_links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "component": {
+            "type": "string",
+            "minLength": 1
+          },
+          "entity": {
+            "type": "string",
+            "minLength": 1
+          },
+          "via": {
+            "enum": [
+              "uses",
+              "owned_by",
+              "stored_in",
+              "reads",
+              "creates",
+              "changes"
+            ]
+          },
+          "edge_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "component",
+          "entity",
+          "via",
+          "edge_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "node_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "code",
+          "node_id",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "format",
+    "spec_revision",
+    "advisory",
+    "product_extension",
+    "unsupported_extensions",
+    "views",
+    "component_data_links",
+    "gaps"
+  ],
+  "additionalProperties": false
+}

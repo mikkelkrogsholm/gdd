@@ -1,0 +1,28 @@
+{
+  "format": "gdd/0.3",
+  "project": {
+    "id": "example.partial",
+    "title": "Partial booking sketch",
+    "goal": "Capture one useful part before the rest is known."
+  },
+  "nodes": {
+    "step.reserve": {
+      "kind": "gdd.product.journey_step",
+      "description": "Reserve a seat.",
+      "data": {}
+    },
+    "entity.reservation": {
+      "kind": "entity",
+      "description": "A reservation; fields are still unknown."
+    }
+  },
+  "edges": [],
+  "extensions": {
+    "extension.product": {
+      "namespace": "gdd.product",
+      "version": "0.1.0",
+      "path": "extensions/product-0.1.json",
+      "sha256": "a78514e534911cb3859b9c4fb2d6eb8f46e98691d2341e6b9a43ddd78ebbb832"
+    }
+  }
+}

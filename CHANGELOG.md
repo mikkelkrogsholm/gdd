@@ -7,6 +7,10 @@ imply a registry publication or a certified standard.
 
 ## Unreleased
 
+- Add the optional hashed `gdd.product` 0.1.0 extension and advisory
+  `gdd perspectives` / Python projections for connected human journey, component
+  and domain data views, with partial sketches and stable-ID refactoring examples.
+
 - Complete the small graph-to-code tutorial with real Python tests, host-captured
   receipts and current evidence assessment; simplify first-use navigation and
   relocate historical working notes with preserved original provenance.

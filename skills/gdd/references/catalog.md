@@ -22,8 +22,10 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `WORKFLOW.md` | [WORKFLOW.md](gdd/WORKFLOW.md) |
 | `agents/gdd-lead.md` | [agents/gdd-lead.md](gdd/agents/gdd-lead.md) |
 | `agents/gdd-worker.md` | [agents/gdd-worker.md](gdd/agents/gdd-worker.md) |
+| `docs/PERSPECTIVES.md` | [docs/PERSPECTIVES.md](gdd/docs/PERSPECTIVES.md) |
 | `docs/inspection.md` | [docs/inspection.md](gdd/docs/inspection.md) |
 | `docs/model-diff.md` | [docs/model-diff.md](gdd/docs/model-diff.md) |
+| `gdd_validator/extensions/product-0.1.json` | [gdd_validator/extensions/product-0.1.json](gdd/gdd_validator/extensions/product-0.1.json) |
 | `schemas/README.md` | [schemas/README.md](gdd/schemas/README.md) |
 | `schemas/boundaries.schema.json` | [schemas/boundaries.schema.json](gdd/schemas/boundaries.schema.json) |
 | `schemas/code-observation.schema.json` | [schemas/code-observation.schema.json](gdd/schemas/code-observation.schema.json) |
@@ -37,6 +39,7 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `schemas/impact.schema.json` | [schemas/impact.schema.json](gdd/schemas/impact.schema.json) |
 | `schemas/model-diff.schema.json` | [schemas/model-diff.schema.json](gdd/schemas/model-diff.schema.json) |
 | `schemas/observations.schema.json` | [schemas/observations.schema.json](gdd/schemas/observations.schema.json) |
+| `schemas/perspectives.schema.json` | [schemas/perspectives.schema.json](gdd/schemas/perspectives.schema.json) |
 | `schemas/records.schema.json` | [schemas/records.schema.json](gdd/schemas/records.schema.json) |
 | `schemas/report.schema.json` | [schemas/report.schema.json](gdd/schemas/report.schema.json) |
 | `schemas/snapshot.schema.json` | [schemas/snapshot.schema.json](gdd/schemas/snapshot.schema.json) |
@@ -87,6 +90,9 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `examples/concert.graph.html`
 - `examples/graphify/README.md`
 - `examples/graphify/producer-evidence.json`
+- `examples/product/greenfield.gdd.json`
+- `examples/product/partial.gdd.json`
+- `examples/product/refactoring.gdd.json`
 - `gdd_validator/validator.py`
 - `gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt`
 - `research/2026-10-13-existing-work.md`

@@ -67,6 +67,12 @@
       "bytes": 2021
     },
     {
+      "path": "references/gdd/docs/PERSPECTIVES.md",
+      "source": "docs/PERSPECTIVES.md",
+      "sha256": "f02b06785cc77976056491657e73044ea0fbb866dfcce4b310a3a9ad0903dd83",
+      "bytes": 6545
+    },
+    {
       "path": "references/gdd/docs/inspection.md",
       "source": "docs/inspection.md",
       "sha256": "9efc8a2e0b9651b610ec430327cc41755248afc156ebcca52355c58d4315f804",
@@ -77,6 +83,12 @@
       "source": "docs/model-diff.md",
       "sha256": "dea9c966bfbc84b7c3cf8fca04bb8be2bfdcd5c240881e97de075315ec457510",
       "bytes": 5197
+    },
+    {
+      "path": "references/gdd/gdd_validator/extensions/product-0.1.json",
+      "source": "gdd_validator/extensions/product-0.1.json",
+      "sha256": "a78514e534911cb3859b9c4fb2d6eb8f46e98691d2341e6b9a43ddd78ebbb832",
+      "bytes": 3478
     },
     {
       "path": "references/gdd/schemas/README.md",
@@ -155,6 +167,12 @@
       "source": "schemas/observations.schema.json",
       "sha256": "c59d7caba9c54853dbbe9ea326a93b8c6e3069fc31683bc0c2ef1bfe23de3c58",
       "bytes": 7462
+    },
+    {
+      "path": "references/gdd/schemas/perspectives.schema.json",
+      "source": "schemas/perspectives.schema.json",
+      "sha256": "7f3f8909a9698dd95ff35b3d6787f145bf3e9432579edbd5f5ece54e4a02921d",
+      "bytes": 13860
     },
     {
       "path": "references/gdd/schemas/records.schema.json",
@@ -414,6 +432,24 @@
       "from": "WORKFLOW.md",
       "href": "examples/agent-native/README.md",
       "source_target": "examples/agent-native/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/PERSPECTIVES.md",
+      "href": "../examples/product/greenfield.gdd.json",
+      "source_target": "examples/product/greenfield.gdd.json",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/PERSPECTIVES.md",
+      "href": "../examples/product/refactoring.gdd.json",
+      "source_target": "examples/product/refactoring.gdd.json",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/PERSPECTIVES.md",
+      "href": "../examples/product/partial.gdd.json",
+      "source_target": "examples/product/partial.gdd.json",
       "role": "optional-repository-reference"
     },
     {

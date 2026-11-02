@@ -12,6 +12,9 @@ real-source architecture controls and a portable replay. Its complete original
 experiment is recoverable from the [indexed archive](../archive/experiments/README.md).
 For a new project, use `gdd init` and the [GDD skill](../skills/gdd/SKILL.md).
 
+- [Product perspectives](../docs/PERSPECTIVES.md): `product/greenfield.gdd.json`,
+  `product/refactoring.gdd.json` and `product/partial.gdd.json` connect human journeys,
+  components and domain data with stable IDs and an exact local extension asset.
 - `sketch.gdd.yaml`: valid minimal sketch; the action lacks a contract and is not ready for implementation.
 - `concert.gdd.yaml`: explicit migration of the existing reservation material. Original node, edge, rule, scenario, machine, and transition IDs are preserved. New scenarios make error/risk coverage structurally explicit.
 - `concert.records.yaml`: planned bindings and check plans. No executed application checks or invented PASS evidence.

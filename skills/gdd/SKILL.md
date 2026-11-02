@@ -29,6 +29,12 @@ skill's standard. Copied assets retain their original text and revisions.
   Reconcile current work, preserve fixed meaningful assertions, integrate actual
   code, and bind evidence to the resulting model and code revisions.
 
+For human journeys, domain data and their responsible components, use the optional
+[product perspectives guide](references/gdd/docs/PERSPECTIVES.md). Copy its bundled
+exact extension asset into the model bundle, preserve stable IDs during refactoring,
+and keep missing links advisory. Inspect with `gdd perspectives PATH` when available.
+This adds no implementation or acceptance evidence.
+
 ## Keep the decisions separate
 
 The project's trusted mandate and platform permissions determine authority. Reuse

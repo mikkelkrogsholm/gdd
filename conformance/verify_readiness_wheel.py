@@ -15,6 +15,8 @@ import subprocess
 import sys
 import tempfile
 import tomllib
+
+from jsonschema import Draft202012Validator
 from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -152,6 +154,29 @@ def run(wheel: Path) -> dict:
             command(name + "-verify-view", ["validate", model, "--profile", "visualization", "--view", str(html)])
             if (ROOT / "examples" / view_name).read_bytes() != html.read_bytes():
                 raise AssertionError(f"Installed renderer differs from the shipped {name} artifact.")
+
+        product = {
+            name: command("product-perspectives-" + name, [
+                "perspectives", str(ROOT / "examples/product" / (name + ".gdd.json"))])
+            for name in ("greenfield", "partial", "refactoring")
+        }
+        perspective_schema = json.loads((installed_root / "schemas/perspectives.schema.json").read_text())
+        for name, projection in product.items():
+            Draft202012Validator(perspective_schema).validate(projection)
+            if projection["format"] != "gdd-perspectives/0.1" or projection["advisory"] is not True:
+                raise AssertionError(f"Installed {name} perspectives lost its advisory envelope.")
+            if projection["product_extension"]["version"] != "0.1.0":
+                raise AssertionError("Installed perspectives did not recognize the shipped extension.")
+        if product["greenfield"]["gaps"] or {g["code"] for g in product["partial"]["gaps"]} != {
+                "MISSING_ACTOR", "MISSING_USER_ACTION", "MISSING_SYSTEM_RESPONSE",
+                "MISSING_RESPONSIBLE_COMPONENT", "MISSING_DATA_COMPONENT"}:
+            raise AssertionError("Installed perspectives did not preserve partial-model advisory gaps.")
+        if product["greenfield"]["spec_revision"] == product["refactoring"]["spec_revision"]:
+            raise AssertionError("Installed refactoring did not change the model revision.")
+        for ident in product["greenfield"]["views"]["journey"]["primary_node_ids"]:
+            if (product["greenfield"]["views"]["journey"]["nodes"][ident]
+                    != product["refactoring"]["views"]["journey"]["nodes"][ident]):
+                raise AssertionError("Installed refactoring did not preserve journey identity and content.")
 
         current = str(ROOT / "examples/concert-0.3.gdd.yaml")
         boundaries = command("current-boundaries", ["boundaries", current])

@@ -22,6 +22,7 @@ from .code_check import check_code
 from .project_status import project_status, status_text
 from .impact import analyze_impact, impact_text
 from .model_diff import diff_models, diff_text
+from .perspectives import perspectives
 
 __all__ = ["main"]
 
@@ -131,6 +132,9 @@ def main() -> int:
     impact.add_argument("--implementation")
     impact.add_argument("--format", choices=["json", "text"], default="json")
     impact.add_argument("--output", type=Path)
+    perspective = commands.add_parser("perspectives", help="Inspect advisory journey, component and data perspectives")
+    perspective.add_argument("path", type=Path)
+    perspective.add_argument("--output", type=Path)
     comparison = commands.add_parser("diff", help="Compare declared models by stable IDs with advisory weakening indicators")
     comparison.add_argument("base", type=Path)
     comparison.add_argument("head", type=Path)
@@ -150,7 +154,10 @@ def main() -> int:
             result = init_project(args.path, project_id=args.project_id, title=args.title)
             sys.stdout.write(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n")
             return 0
-        if args.command == "diff":
+        if args.command == "perspectives":
+            result = perspectives(args.path)
+            code = 0
+        elif args.command == "diff":
             result = diff_models(args.base, args.head)
             code = result["exit_code"]
         elif args.command == "status":

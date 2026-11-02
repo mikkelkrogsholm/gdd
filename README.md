@@ -48,6 +48,10 @@ cross-component calls explicit. KISS, DRY, separation of concerns and modularity
 are review topics; precise rules can become blocking checks when a trusted
 checker can verify the actual implementation.
 
+For a compact product model, describe [human journeys, components and domain data](docs/PERSPECTIVES.md)
+as three connected perspectives of the same graph, including partial sketches and
+component refactoring with stable IDs.
+
 ## Start with the tutorial
 
 [Build a small Python implementation from a GDD graph](docs/tutorial.md).

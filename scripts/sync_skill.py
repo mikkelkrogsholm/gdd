@@ -17,6 +17,8 @@ CORE_REFERENCES = (
     "GRAPHIFY.md", "VIEWER.md", "HOST.md", "agents/gdd-lead.md", "agents/gdd-worker.md",
     "docs/inspection.md",
     "docs/model-diff.md",
+    "docs/PERSPECTIVES.md",
+    "gdd_validator/extensions/product-0.1.json",
 )
 COPY_DIRECTORY = Path("references/gdd")
 INDEX_PATH = Path("references/source-index.json")

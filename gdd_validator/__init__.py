@@ -12,6 +12,7 @@ from .workflow_run import create_run, run_status, advance_run
 from .code_check import check_code
 from .project_status import project_status
 from .impact import analyze_impact
+from .perspectives import perspectives, perspective_data, load_perspective_bundle
 from .model_diff import diff_models
 
 __all__ = [
@@ -32,4 +33,7 @@ __all__ = [
     "project_status",
     "analyze_impact",
     "diff_models",
+    "perspectives",
+    "perspective_data",
+    "load_perspective_bundle",
 ]

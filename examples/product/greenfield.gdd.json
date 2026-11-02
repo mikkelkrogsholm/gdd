@@ -1,0 +1,171 @@
+{
+  "format": "gdd/0.3",
+  "project": {
+    "id": "example.product",
+    "title": "Reserve a seat",
+    "goal": "Let a guest reserve a seat while keeping capacity valid."
+  },
+  "nodes": {
+    "actor.guest": {
+      "kind": "gdd.product.actor",
+      "description": "A human guest.",
+      "data": {
+        "goal": "Reserve a seat."
+      }
+    },
+    "step.choose": {
+      "kind": "gdd.product.journey_step",
+      "description": "Choose a performance.",
+      "data": {
+        "user_action": "Select a performance.",
+        "system_response": "Show available seats."
+      }
+    },
+    "step.reserve": {
+      "kind": "gdd.product.journey_step",
+      "description": "Reserve a seat.",
+      "data": {
+        "user_action": "Confirm the selected seat.",
+        "system_response": "Show the reservation confirmation."
+      }
+    },
+    "component.booking": {
+      "kind": "component",
+      "description": "Handles the booking experience."
+    },
+    "component.reservations": {
+      "kind": "component",
+      "description": "Maintains reservations and capacity."
+    },
+    "entity.performance": {
+      "kind": "entity",
+      "description": "A scheduled performance.",
+      "fields": {
+        "capacity": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "entity.reservation": {
+      "kind": "entity",
+      "description": "A guest reservation.",
+      "fields": {
+        "performance": {
+          "type": "reference",
+          "target": "entity.performance"
+        }
+      }
+    },
+    "action.reserve": {
+      "kind": "action",
+      "description": "Create a reservation."
+    },
+    "rule.capacity": {
+      "kind": "rule",
+      "description": "Capacity is never exceeded.",
+      "rule": {
+        "category": "invariant",
+        "statement": "Confirmed reservations must not exceed the performance capacity.",
+        "scope": "targeted",
+        "blocking": true,
+        "verification": [
+          "Capacity boundary scenarios."
+        ]
+      }
+    }
+  },
+  "edges": [
+    {
+      "id": "edge.guest.choose",
+      "from": "actor.guest",
+      "relation": "gdd.product.participates",
+      "to": "step.choose",
+      "data": {}
+    },
+    {
+      "id": "edge.guest.reserve",
+      "from": "actor.guest",
+      "relation": "gdd.product.participates",
+      "to": "step.reserve",
+      "data": {}
+    },
+    {
+      "id": "edge.choose.reserve",
+      "from": "step.choose",
+      "relation": "gdd.product.next",
+      "to": "step.reserve",
+      "data": {}
+    },
+    {
+      "id": "edge.choose.component",
+      "from": "step.choose",
+      "relation": "gdd.product.realized_by",
+      "to": "component.booking",
+      "data": {}
+    },
+    {
+      "id": "edge.reserve.component",
+      "from": "step.reserve",
+      "relation": "gdd.product.realized_by",
+      "to": "component.booking",
+      "data": {}
+    },
+    {
+      "id": "edge.booking.performance",
+      "from": "component.booking",
+      "relation": "gdd.product.uses",
+      "to": "entity.performance",
+      "data": {}
+    },
+    {
+      "id": "edge.booking.reservation",
+      "from": "component.booking",
+      "relation": "gdd.product.uses",
+      "to": "entity.reservation",
+      "data": {}
+    },
+    {
+      "id": "edge.reserve.owner",
+      "from": "action.reserve",
+      "relation": "owned_by",
+      "to": "component.booking"
+    },
+    {
+      "id": "edge.reserve.creates",
+      "from": "action.reserve",
+      "relation": "creates",
+      "to": "entity.reservation"
+    },
+    {
+      "id": "edge.capacity.performance",
+      "from": "rule.capacity",
+      "relation": "constrains",
+      "to": "entity.performance"
+    },
+    {
+      "id": "edge.capacity.reservation",
+      "from": "rule.capacity",
+      "relation": "constrains",
+      "to": "entity.reservation"
+    },
+    {
+      "id": "edge.reservation.performance",
+      "from": "entity.reservation",
+      "relation": "gdd.product.relates_to",
+      "to": "entity.performance",
+      "data": {
+        "from_cardinality": "0..*",
+        "to_cardinality": "1"
+      }
+    }
+  ],
+  "extensions": {
+    "extension.product": {
+      "namespace": "gdd.product",
+      "version": "0.1.0",
+      "path": "extensions/product-0.1.json",
+      "sha256": "a78514e534911cb3859b9c4fb2d6eb8f46e98691d2341e6b9a43ddd78ebbb832"
+    }
+  }
+}
