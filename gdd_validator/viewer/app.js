@@ -86,10 +86,17 @@
       ? "Overlap is represented in the first visible community by ID. All memberships can be inspected."
       : "Membership is grouping, not ownership.";
     $("empty").hidden = Boolean(p.nodes.length);
+    const lens = data.perspectives.views[state.perspective];
+    $("empty").textContent = lens && !lens.primary_node_ids.length
+      ? `No ${$("perspective").selectedOptions[0].textContent.toLowerCase()} concepts are declared in this model. Choose another perspective to explore it.`
+      : "No nodes match this perspective, artifact scope and filters. Reset filters to explore the artifact scope.";
+    $("perspective-hint").textContent = lens
+      ? `${lens.primary_node_ids.filter((id) => data.manifest.shown_nodes.includes(id)).length} primary nodes in artifact scope; direct contextual neighbors retain canonical IDs.`
+      : "Connected perspectives of the same canonical graph.";
     GDD.showOverview();
     GDD.fit();
   }
-  for (const key of ["search", "kind", "relation", "community"])
+  for (const key of ["search", "kind", "relation", "community", "perspective"])
     $(key).addEventListener(key === "search" ? "input" : "change", () => {
       state[key] = $(key).value;
       refresh(false);
@@ -111,9 +118,9 @@
     list();
   };
   $("reset").onclick = () => {
-    for (const key of ["search", "kind", "relation", "community"]) {
-      state[key] = "";
-      $(key).value = "";
+    for (const key of ["search", "kind", "relation", "community", "perspective"]) {
+      state[key] = key === "perspective" ? "all" : "";
+      $(key).value = state[key];
     }
     state.fold = false;
     $("fold").checked = false;
@@ -122,6 +129,32 @@
     state.tab = "nodes";
     refresh();
   };
+  // Explicit navigation can reveal a canonical record, but never widen artifact scope.
+  GDD.navigate = (type, id, perspective = state.perspective) => {
+    const allowed = type === "node" ? data.manifest.shown_nodes : data.manifest.shown_edges;
+    if (allowed.includes(id)) {
+      state.perspective = perspective;
+      $("perspective").value = perspective;
+      for (const key of ["search", "kind", "relation", "community"]) {
+        state[key] = "";
+        $(key).value = "";
+      }
+      state.scenarios = true;
+      $("scenarios").checked = true;
+      refresh(false);
+    }
+    GDD.select(type, id);
+  };
+  const gaps = $("perspective-gaps");
+  for (const gap of data.perspectives.gaps) {
+    const item = el("button", `${gap.node_id} · ${gap.message}`, "detail-link");
+    item.dataset.gapNode = gap.node_id;
+    const within = data.manifest.shown_nodes.includes(gap.node_id);
+    item.title = within ? "Inspect and reveal within artifact scope" : "Inspect only: outside artifact scope";
+    item.onclick = () => GDD.navigate("node", gap.node_id, "all");
+    gaps.append(item);
+  }
+  if (!data.perspectives.gaps.length) gaps.append(el("p", "No advisory gaps reported. This is not a completeness or readiness assessment.", "hint"));
   $("overview").onclick = GDD.showOverview;
   $("manifest-download").onclick = () => {
     const url = URL.createObjectURL(

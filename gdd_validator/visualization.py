@@ -12,9 +12,10 @@ from .model import validate_model
 from .readiness import context_closure
 from .report import check, diagnostic
 from .boundaries import boundary_view
+from .perspectives import perspective_data
 
 __all__ = ["render_view", "verify_view", "view_data", "html_document"]
-GENERATOR = {"name": "gdd-viewer", "version": "0.3.0", "profile": "gdd-viewer-html/0.1"}
+GENERATOR = {"name": "gdd-viewer", "version": "0.4.0", "profile": "gdd-viewer-html/0.1"}
 ASSETS = Path(__file__).parent / "viewer"
 PAYLOAD = re.compile(
     r'<script id="gdd-data" type="application/json">(.*?)</script>', re.S
@@ -93,7 +94,8 @@ def view_data(bundle: Bundle, scope: list[str] | None = None) -> dict:
     text["project"] = _json_text(bundle.model["project"], ensure_ascii=False, indent=2)
     text["snapshot"] = _json_text(bundle.snapshot, ensure_ascii=False, indent=2)
     payload = {
-        "format": "gdd-view/0.2",
+        "format": "gdd-view/0.3",
+        "perspectives": perspective_data(bundle),
         "generator": dict(GENERATOR),
         "spec_revision": bundle.revision,
         "observation_inputs": [],

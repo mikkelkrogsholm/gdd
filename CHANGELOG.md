@@ -7,6 +7,11 @@ imply a registry publication or a certified standard.
 
 ## Unreleased
 
+- Add offline viewer lenses for user journeys, components and domain data with
+  canonical cross-perspective navigation and advisory gap inspection. Renderer
+  0.4.0 emits `gdd-view/0.3` and `gdd-view-state/0.3`; prior renderer artifacts
+  explicitly verify as UNKNOWN under this renderer, with historical evidence retained.
+
 - Add the optional hashed `gdd.product` 0.1.0 extension and advisory
   `gdd perspectives` / Python projections for connected human journey, component
   and domain data views, with partial sketches and stable-ID refactoring examples.
@@ -20,7 +25,7 @@ imply a registry publication or a certified standard.
   structural weakening indicators.
 
 Target package: 0.8.0. Standard: draft GDD 0.3 with explicit 0.2 support.
-Viewer renderer: 0.3.0.
+Viewer renderer: 0.4.0.
 
 - Add read-only `gdd status` and `gdd impact` with Python APIs, deterministic
   JSON/text projections and separate informative tool envelopes. Status composes

@@ -50,7 +50,7 @@ def exhaust(monkeypatch, phase):
         original = view.json.loads
 
         def failed(value, *args, **kwargs):
-            if isinstance(value, str) and '"gdd-view/0.2"' in value:
+            if isinstance(value, str) and '"gdd-view/0.3"' in value:
                 raise RecursionError("simulated payload decoding capacity")
             return original(value, *args, **kwargs)
 
@@ -63,7 +63,7 @@ def exhaust(monkeypatch, phase):
                 phase == "text"
                 and value.get("description") == "Capacity fixture"
                 or phase == "payload"
-                and value.get("format") == "gdd-view/0.2"
+                and value.get("format") == "gdd-view/0.3"
             )
             if selected:
                 raise RecursionError("simulated serialization capacity")

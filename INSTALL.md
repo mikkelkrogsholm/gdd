@@ -10,7 +10,7 @@ Python version from the focused compatibility matrix. No GitHub Actions CI is co
 The current standard is draft GDD 0.3, with explicit GDD 0.2 compatibility.
 The published 0.7.0 package uses viewer renderer 0.2.0. Current `main` targets
 package 0.8.0 (unreleased), with Cytoscape.js/fCoSE and overlapping community
-areas in renderer 0.3.0. The required JavaScript and license notices are bundled
+areas in renderer 0.4.0. The required JavaScript and license notices are bundled
 in each exported HTML file; CLI users need no Node.js installation.
 
 ## Install from source

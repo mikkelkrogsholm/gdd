@@ -47,6 +47,7 @@ ordering, never a code execution dependency. All product relations have
 From a current source checkout:
 
 ```sh
+uv run gdd view examples/product/greenfield.gdd.json --output /tmp/product.html
 uv run gdd perspectives examples/product/greenfield.gdd.json
 uv run gdd perspectives examples/product/partial.gdd.json --output /tmp/partial-perspectives.json
 uv run gdd diff examples/product/greenfield.gdd.json examples/product/refactoring.gdd.json
@@ -84,6 +85,14 @@ the already validated, unchanged bundle without reading arbitrary model paths.
 Do not mutate the bundle between validation and projection. Returned records
 are copies and may be used by a consumer without mutating the model.
 
+Open the HTML file offline and use **User journey**, **Components** and **Data
+model** in the Perspective selector. The viewer embeds this same Python projection;
+its lenses intersect with the artifact scope and other filters. Inspector links
+retain canonical IDs across views. Human action/response, actor role/goal, fields,
+rules and cardinalities are inspectable. The visible advisory gap list links to
+canonical targets without making incomplete sketches invalid. See the
+[viewer guide](../VIEWER.md) and [openable demo](../examples/product/greenfield.graph.html).
+
 ## Advisory limits and compatibility
 
 Gaps flag steps without actors, user actions, system responses or responsible
@@ -96,9 +105,8 @@ present but invalid do not become advisory omissions: normal validation fails.
 A successful inspection or an empty gap list establishes no implementation PASS,
 readiness, authorization, domain completeness or acceptance. This command does
 not extract a model from code, migrate code, generate a database, or generate an
-implementation. It does not alter the existing HTML viewer. Continue through
+implementation. The offline HTML viewer also exposes these perspectives. Continue through
 normal scoped contracts and revision-bound verification for actual development.
 
-| Compatibility surface | Version | Boundary |
-| --- | --- | --- |
-| Product authoring extension / advisory projection | `gdd.product` 0.1.0 / `gdd-perspectives/0.1` | Optional exact hashed `gdd-extension/0.2` asset on unchanged `gdd/0.2` and `gdd/0.3` cores; independent tool output schema. |
+See the single [compatibility inventory](../RELEASING.md#compatibility-inventory)
+for the independent product, projection, view/state and renderer versions.

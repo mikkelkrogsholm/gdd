@@ -6,7 +6,7 @@ GDD has three independent version lines:
 | --- | --- | --- |
 | Python package and CLI | 0.8.0 (unreleased) | Distributed tool behavior and public Python APIs |
 | GDD standard | Draft 0.3; explicit 0.2 support | Document schemas and interpretation contracts |
-| Viewer renderer | 0.3.0 | Generated HTML renderer; profile remains `gdd-viewer-html/0.1` |
+| Viewer renderer | 0.4.0 | Generated HTML renderer; profile remains `gdd-viewer-html/0.1` |
 
 Git tags identify **package releases** and use `vMAJOR.MINOR.PATCH`, starting
 with `v0.7.0`. A tag does not change the standard's version or certify it.
@@ -64,6 +64,7 @@ number in separate rows does not couple their release schedules.
 | Package / CLI / public Python API | 0.8.0 (unreleased) | Distributed behavior or public API changes; package rules above apply |
 | Model and fragment | `gdd/0.3`, `gdd-fragment/0.3`; explicit `gdd/0.2`, `gdd-fragment/0.2` support | Required structure or interpretation changes |
 | Extensions | `gdd-extension/0.2` | Extension contract changes |
+| Product extension and advisory perspectives | `gdd.product` 0.1.0; `gdd-perspectives/0.1` | Exact hashed optional extension semantics or projection contract changes; supported on unchanged GDD 0.2/0.3 cores |
 | Records, reports and snapshots | `gdd-records/0.2`, `gdd-report/0.2`, `gdd-snapshot/0.2` | The affected serialized contract changes |
 | Context, parallel planning and import audit | `gdd-context/0.2`, `gdd-parallel-plan/0.2`, `gdd-import-audit/0.2` | The affected projection or planning contract changes |
 | Workplan and workflow result | `gdd-workplan/0.1`, `gdd-workflow-result/0.1` | The affected workflow contract changes |
@@ -75,7 +76,7 @@ number in separate rows does not couple their release schedules.
 | Boundaries and design review | `gdd-boundaries/0.3`, `gdd-design-review/0.3`, `gdd-design-review-status/0.3` | The affected design contract changes |
 | Graphify observations and proposals | `gdd-observations/0.2`, `gdd-graphify-proposal/0.2` | The affected adapter output contract changes |
 | Graphify input profiles | `graphify-0.9.75-ast`, `graphify-0.9.75-node-link` | A new source dialect or interpretation needs an explicit profile |
-| Viewer | Renderer 0.3.0; `gdd-viewer-html/0.1`; `gdd-view/0.2` | Renderer implementation, verification profile or serialized projection changes independently |
+| Viewer | Renderer 0.4.0; `gdd-viewer-html/0.1`; `gdd-view/0.3`, `gdd-view-state/0.3` | Renderer implementation, verification profile or serialized projection changes independently |
 
 ## Python compatibility — adopted October 20, 2026
 

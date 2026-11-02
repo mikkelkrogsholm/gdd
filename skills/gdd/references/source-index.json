@@ -45,8 +45,8 @@
     {
       "path": "references/gdd/VIEWER.md",
       "source": "VIEWER.md",
-      "sha256": "86b86e4d3288bafa10a18759f5c75c51d1dd6a4690e804248e99aebce538feca",
-      "bytes": 11899
+      "sha256": "638a574701d207d87ba994b6f62338fb6db343e35144d2a380e7f088b8a86258",
+      "bytes": 13480
     },
     {
       "path": "references/gdd/WORKFLOW.md",
@@ -69,8 +69,8 @@
     {
       "path": "references/gdd/docs/PERSPECTIVES.md",
       "source": "docs/PERSPECTIVES.md",
-      "sha256": "f02b06785cc77976056491657e73044ea0fbb866dfcce4b310a3a9ad0903dd83",
-      "bytes": 6545
+      "sha256": "7619baa46bf2bfdc16ab598b11fa0412b6538503d173db1be604521bf17e4158",
+      "bytes": 7071
     },
     {
       "path": "references/gdd/docs/inspection.md",
@@ -207,14 +207,14 @@
     {
       "path": "references/gdd/schemas/view-state.schema.json",
       "source": "schemas/view-state.schema.json",
-      "sha256": "bc68ed77373e12fc31782b4f8287347daa1425f62d02999b4bafd7dfab4640c7",
-      "bytes": 5555
+      "sha256": "94c6277daa1b62bbd308d00f4fdad6dbcc7c87f38c9ac8979cc76c9331fa6c92",
+      "bytes": 5739
     },
     {
       "path": "references/gdd/schemas/view.schema.json",
       "source": "schemas/view.schema.json",
-      "sha256": "66098bccf49bc607117cfc7e99bba7a488a6012e1a5f0ea0cfde9a28499537bb",
-      "bytes": 12752
+      "sha256": "c4be11acd065cea56cc4111372c28c784161901b68e0cb0229a43f1769f812dc",
+      "bytes": 12886
     },
     {
       "path": "references/gdd/schemas/workflow.schema.json",
@@ -388,6 +388,18 @@
     },
     {
       "from": "VIEWER.md",
+      "href": "examples/product/greenfield.graph.html",
+      "source_target": "examples/product/greenfield.graph.html",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "examples/product/partial.gdd.json",
+      "source_target": "examples/product/partial.gdd.json",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
       "href": "gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt",
       "source_target": "gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt",
       "role": "optional-repository-reference"
@@ -450,6 +462,18 @@
       "from": "docs/PERSPECTIVES.md",
       "href": "../examples/product/partial.gdd.json",
       "source_target": "examples/product/partial.gdd.json",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/PERSPECTIVES.md",
+      "href": "../examples/product/greenfield.graph.html",
+      "source_target": "examples/product/greenfield.graph.html",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/PERSPECTIVES.md",
+      "href": "../RELEASING.md#compatibility-inventory",
+      "source_target": "RELEASING.md",
       "role": "optional-repository-reference"
     },
     {

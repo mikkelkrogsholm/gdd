@@ -59,6 +59,20 @@
       raw(box, "Reference", ref, false, data.text.references[id][index]);
     });
   }
+  function perspectiveLinks(type, id) {
+    const box = section("Related perspectives");
+    const names = {journey: "User journey", components: "Components", data: "Data model"};
+    for (const [name, view] of Object.entries(data.perspectives.views)) {
+      const ids = type === "node" ? view.shown.node_ids : view.shown.edge_ids;
+      if (!ids.includes(id)) continue;
+      const item = el("button", `${names[name]} · ${id}`, "detail-link");
+      item.dataset.perspective = name;
+      item.onclick = () => GDD.navigate(type, id, name);
+      box.append(item);
+    }
+    const within = (type === "node" ? data.manifest.shown_nodes : data.manifest.shown_edges).includes(id);
+    box.append(el("p", within ? "Perspective links clear other filters to reveal this record within artifact scope." : "Outside artifact scope: inspectable here, never added to the canvas.", "hint"));
+  }
   function edgeDetails(edge) {
     heading("Canonical relation", edge.relation, edge.id, edge.description);
     const box = section("Direction");
@@ -73,6 +87,9 @@
         button(group, `${e.id} · ${e.relation}`, "edge", e.id),
       );
     }
+    perspectiveLinks("edge", edge.id);
+    if (edge.data !== undefined)
+      raw(section("Relationship metadata / cardinality"), "Canonical relation metadata", edge.data, true, data.text.edges[edge.id]);
     sourceReferences(edge, edge.id);
     location(edge.id);
     raw(detail, "All relation fields", edge, true, data.text.edges[edge.id]);
@@ -94,6 +111,17 @@
         "notice",
       ),
     );
+    perspectiveLinks("node", id);
+    if (node.kind === "gdd.product.journey_step") {
+      const box = section("Human journey step");
+      kv(box, "User action", node.data.user_action ?? "Not declared (advisory gap)");
+      kv(box, "System response", node.data.system_response ?? "Not declared (advisory gap)");
+    }
+    if (node.kind === "gdd.product.actor") {
+      const box = section("Human role and goal");
+      kv(box, "Role", node.label || id);
+      kv(box, "Goal", node.data.goal ?? "Not declared");
+    }
     const memberOf = memberships.get(id);
     if (memberOf.length) {
       const box = section("Member of communities");

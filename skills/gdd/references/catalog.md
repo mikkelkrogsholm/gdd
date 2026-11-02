@@ -67,6 +67,7 @@ The complete source/target list is in [source-index.json](source-index.json).
 
 - `CONTRIBUTING.md`
 - `INSTALL.md`
+- `RELEASING.md`
 - `archive/experiments/README.md`
 - `archive/gdd-0.1/SPEC.md`
 - `archive/gdd-0.1/concert.gdd.yaml`
@@ -91,6 +92,7 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `examples/graphify/README.md`
 - `examples/graphify/producer-evidence.json`
 - `examples/product/greenfield.gdd.json`
+- `examples/product/greenfield.graph.html`
 - `examples/product/partial.gdd.json`
 - `examples/product/refactoring.gdd.json`
 - `gdd_validator/validator.py`

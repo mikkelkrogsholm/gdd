@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://gdd.example/schemas/0.2/view-state.schema.json",
-  "title": "Informative gdd-viewer 0.1 view-state envelope",
+  "$id": "https://gdd.example/schemas/tools/view-state-0.3.schema.json",
+  "title": "Informative gdd-viewer 0.4 view-state envelope",
   "type": "object",
   "properties": {
     "format": {
-      "const": "gdd-view-state/0.2"
+      "const": "gdd-view-state/0.3"
     },
     "generator": {
       "type": "object",
@@ -14,7 +14,7 @@
           "const": "gdd-viewer"
         },
         "version": {
-          "const": "0.3.0"
+          "const": "0.4.0"
         },
         "profile": {
           "const": "gdd-viewer-html/0.1"
@@ -103,6 +103,14 @@
         },
         "scenarios": {
           "type": "boolean"
+        },
+        "perspective": {
+          "enum": [
+            "all",
+            "journey",
+            "components",
+            "data"
+          ]
         }
       },
       "required": [
@@ -110,7 +118,8 @@
         "kind",
         "relation",
         "community",
-        "scenarios"
+        "scenarios",
+        "perspective"
       ],
       "additionalProperties": false
     },

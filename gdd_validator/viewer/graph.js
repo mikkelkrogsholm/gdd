@@ -5,6 +5,7 @@ const GDD = (() => {
   const model = data.model;
   const $ = (id) => document.getElementById(id);
   const state = {
+    perspective: "all",
     search: "",
     kind: "",
     relation: "",
@@ -44,6 +45,8 @@ const GDD = (() => {
   ];
   const symbols = new Map([
     ["component", "C"],
+    ["gdd.product.actor", "H"],
+    ["gdd.product.journey_step", "J"],
     ["action", "A"],
     ["entity", "E"],
     ["rule", "R"],
@@ -68,7 +71,11 @@ const GDD = (() => {
   const label = (id) => model.nodes[id].label || id;
   const short = (text) => (text.length > 27 ? text.slice(0, 24) + "…" : text);
   function project() {
-    const available = new Set(data.manifest.shown_nodes);
+    const lens = data.perspectives.views[state.perspective];
+    const available = new Set(data.manifest.shown_nodes.filter(
+      (id) => !lens || lens.shown.node_ids.includes(id)));
+    const availableEdges = new Set(data.manifest.shown_edges.filter(
+      (id) => !lens || lens.shown.edge_ids.includes(id)));
     const query = state.search.trim().toLocaleLowerCase();
     const matchingEdges = new Set(
       model.edges
@@ -97,6 +104,7 @@ const GDD = (() => {
     const included = new Set(nodes);
     const edges = model.edges.filter(
       (e) =>
+        availableEdges.has(e.id) &&
         included.has(e.from) &&
         included.has(e.to) &&
         (!state.relation || e.relation === state.relation),
@@ -142,13 +150,14 @@ const GDD = (() => {
   }
   function manifest() {
     return {
-      format: "gdd-view-state/0.2",
+      format: "gdd-view-state/0.3",
       generator: data.generator,
       spec_revision: data.spec_revision,
       observation_inputs: data.observation_inputs,
       scope: data.scope,
       artifact_scope: data.manifest,
       filters: {
+        perspective: state.perspective,
         search: state.search,
         kind: state.kind,
         relation: state.relation,

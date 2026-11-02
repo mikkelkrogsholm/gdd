@@ -13,7 +13,7 @@ work. Agents refine that description, use it to scope development, and show the
 result through interactive views. The implementation language and agent runtime
 remain project choices.
 
-**Current development status:** GDD 0.3 draft · CLI/package 0.8.0 (unreleased) · viewer 0.3.0 · Python 3.11+ ·
+**Current development status:** GDD 0.3 draft · CLI/package 0.8.0 (unreleased) · viewer 0.4.0 · Python 3.11+ ·
 [MIT licensed](LICENSE). The repo includes the method, deterministic CLI, offline
 viewer, Graphify adapter, safe project starter and a portable agent skill.
 The viewer includes Cytoscape.js and fCoSE; [third-party notices](gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt) accompany the MIT-licensed GDD code.
@@ -50,7 +50,8 @@ checker can verify the actual implementation.
 
 For a compact product model, describe [human journeys, components and domain data](docs/PERSPECTIVES.md)
 as three connected perspectives of the same graph, including partial sketches and
-component refactoring with stable IDs.
+component refactoring with stable IDs. Open the [product viewer demo](examples/product/greenfield.graph.html)
+and switch between User journey, Components and Data model.
 
 ## Start with the tutorial
 

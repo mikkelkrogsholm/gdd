@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://gdd.example/schemas/0.2/view.schema.json",
-  "title": "Informative gdd-viewer 0.1 view envelope",
+  "$id": "https://gdd.example/schemas/tools/view-0.3.schema.json",
+  "title": "Informative gdd-viewer 0.4 view envelope",
   "type": "object",
   "properties": {
     "format": {
-      "const": "gdd-view/0.2"
+      "const": "gdd-view/0.3"
     },
     "generator": {
       "type": "object",
@@ -14,7 +14,7 @@
           "const": "gdd-viewer"
         },
         "version": {
-          "const": "0.3.0"
+          "const": "0.4.0"
         },
         "profile": {
           "const": "gdd-viewer-html/0.1"
@@ -460,6 +460,9 @@
         "omitted_calls"
       ],
       "additionalProperties": false
+    },
+    "perspectives": {
+      "$ref": "https://gdd.example/schemas/tools/perspectives-0.1.schema.json"
     }
   },
   "required": [
@@ -472,7 +475,8 @@
     "locations",
     "snapshot",
     "text",
-    "manifest"
+    "manifest",
+    "perspectives"
   ],
   "additionalProperties": false,
   "$defs": {
