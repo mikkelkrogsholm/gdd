@@ -144,6 +144,34 @@ its producer in `tool` and `runner`. To run the corresponding Python tests
 and collect pytest output, use
 `uv run python conformance/run_status.py --output python-status-run.json`.
 
+## Declared-model impact
+
+Run the 17 named impact cases (28 parameter instances) locally.
+
+```sh
+cargo run --offline --locked -p gdd-conformance -- impact --output native-impact-run.json
+```
+
+The runner reads [impact.cases.json](impact.cases.json) and exercises the Rust
+impact and context APIs in process. Private copies of the tutorial model provide
+reverse dependency paths, refinements and cycles. Cases also load extension
+definitions and record ledgers to check missing inputs, revision matching and
+supersession. The read-only case compares the fixture files before and after
+analysis and validates the report against [the impact schema](../schemas/impact.schema.json).
+
+Rust accepts scope as a slice of strings. For the two Python scope inputs
+`"action.add"` and `[42]`, the native case checks that decoding the JSON value
+as a vector of strings fails. Empty scopes, malformed IDs, unknown nodes and
+edge IDs reach the impact assessor. A single CLI argument `--scope action.add`
+supplies a one-element scope.
+
+Omit `--output` for JSON on standard output. With `--output`, the runner creates
+a new receipt and prints the matched case count. The native receipt identifies
+its producer in `tool` and `runner`. Each row preserves the catalog ID and
+assertion and reports the verdict and number of attempted instances. Failed
+expectations produce a nonzero exit. To collect the Python receipt with pytest
+output, run `uv run python conformance/run_impact.py --output python-impact-run.json`.
+
 ## GDD 0.3 boundaries and design principles
 
 [design.cases.json](design.cases.json) names the new boundary, contract, community,

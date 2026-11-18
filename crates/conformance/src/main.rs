@@ -1,6 +1,7 @@
 mod code;
 mod fixture;
 mod graphify;
+mod impact;
 mod named;
 mod receipt;
 mod standard;
@@ -26,6 +27,11 @@ enum Command {
         #[arg(long, value_name = "NEW_FILE")]
         output: Option<PathBuf>,
     },
+    /// Execute the named declared-model impact cases.
+    Impact {
+        #[arg(long, value_name = "NEW_FILE")]
+        output: Option<PathBuf>,
+    },
     /// Execute the named project status cases.
     Status {
         #[arg(long, value_name = "NEW_FILE")]
@@ -47,6 +53,7 @@ fn main() -> Result<ExitCode> {
     let directory = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../conformance");
     match Command::parse() {
         Command::Code { output } => code::command(&directory, output),
+        Command::Impact { output } => impact::command(&directory, output),
         Command::Status { output } => status::command(&directory, output),
         Command::Standard { output } => standard::command(&directory, output),
         Command::Graphify { output } => graphify::command(&directory, output),

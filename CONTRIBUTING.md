@@ -77,6 +77,9 @@ with `cargo run --offline --locked -p gdd-conformance -- code --output native-co
 
 Run the 13 [native project status cases](conformance/README.md#project-status)
 with `cargo run --offline --locked -p gdd-conformance -- status --output native-status-run.json`.
+
+Run the 17 [native impact cases](conformance/README.md#declared-model-impact)
+with `cargo run --offline --locked -p gdd-conformance -- impact --output native-impact-run.json`.
 Use a new file path for each receipt.
 
 Verification runs locally; GitHub Actions CI is intentionally absent. For an
