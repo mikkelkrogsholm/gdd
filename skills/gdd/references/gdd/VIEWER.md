@@ -35,7 +35,16 @@ the node list and canvas. **Community** includes the community and its
 direct `member_of` members, including shared members. **Relation** limits
 the edges between the remaining nodes. Counts report visible nodes and edges
 against the full model. **Reset filters** restores All graph within the saved
-scope.
+scope and turns folding off.
+
+Enable **Fold communities** to draw each direct member inside its first visible
+community by canonical ID. The node list keeps every matching node. Select a
+figure to inspect its represented nodes, internal edge IDs and directed
+bundles. Each bundle joins an ordered pair of figures and retains every
+original edge ID. Click the arrow or count badge to inspect its edges and
+follow their declared endpoints. A representative’s own self-loop remains a
+drawn bundle. A loop on a folded member is internal to its figure. Folding
+applies to the current window and follows the active filters and perspective.
 
 In the inspector, a **Related perspectives** link reveals the selected node
 in another lens and clears the filters when the node is in scope.

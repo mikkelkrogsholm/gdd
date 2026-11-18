@@ -4,8 +4,8 @@ use std::thread;
 use eframe::egui::{self, Button, Color32, Key, Modifiers, RichText, Ui};
 
 use crate::{
-    canvas::Layout,
-    model::{Filters, Graph, HumanConcept, Lens, Visible},
+    canvas::{Layout, Scene},
+    model::{EdgeBundle, Filters, FoldProjection, Graph, HumanConcept, Lens, Selection, Visible},
 };
 
 enum LayoutState {
@@ -15,13 +15,16 @@ enum LayoutState {
 }
 
 impl LayoutState {
-    fn start(graph: Arc<Graph>, context: egui::Context) -> Self {
+    fn start(graph: Arc<Graph>, fold: Option<Arc<FoldProjection>>, context: egui::Context) -> Self {
         let (sender, receiver) = mpsc::channel();
         match thread::Builder::new()
             .name("graph-layout".into())
             .spawn(move || {
-                let result = std::panic::catch_unwind(|| Layout::new(&graph))
-                    .unwrap_or_else(|_| Err("The layout worker panicked.".into()));
+                let result = std::panic::catch_unwind(|| match fold {
+                    Some(fold) => Layout::folded(&graph, &fold),
+                    None => Layout::new(&graph),
+                })
+                .unwrap_or_else(|_| Err("The layout worker panicked.".into()));
                 if sender.send(result).is_ok() {
                     context.request_repaint();
                 }
@@ -53,13 +56,15 @@ pub struct Viewer {
     zoom_percent: u16,
     reveal_selected: bool,
     filename: String,
-    selected: Option<usize>,
+    selected: Option<Selection>,
+    folded: Option<Arc<FoldProjection>>,
+    folded_layout: Option<(Arc<FoldProjection>, LayoutState)>,
 }
 
 impl Viewer {
     pub fn new(graph: Graph, filename: String, context: egui::Context) -> Self {
         let graph = Arc::new(graph);
-        let layout = LayoutState::start(Arc::clone(&graph), context);
+        let layout = LayoutState::start(Arc::clone(&graph), None, context);
         let filters = Filters::default();
         Self {
             visible: graph.visible(&filters),
@@ -70,15 +75,74 @@ impl Viewer {
             reveal_selected: false,
             filename,
             selected: None,
+            folded: None,
+            folded_layout: None,
         }
     }
 
     fn refresh(&mut self) {
-        self.visible = self.graph.visible(&self.filters);
+        let visible = self.graph.visible(&self.filters);
+        if self.visible.nodes != visible.nodes || self.visible.edges != visible.edges {
+            self.visible = visible;
+            self.set_folded(self.folded.is_some());
+        }
+    }
+
+    fn set_folded(&mut self, enabled: bool) {
+        if !enabled && self.folded.is_none() {
+            return;
+        }
+        let next = enabled.then(|| Arc::new(self.visible.project(&self.graph, true)));
+        if let Some(Selection::Bundle(from, to)) = self.selected
+            && !next
+                .as_ref()
+                .is_some_and(|fold| fold.bundles.iter().any(|b| (b.from, b.to) == (from, to)))
+        {
+            self.selected = self
+                .folded
+                .as_ref()
+                .and_then(|fold| fold.bundles.iter().find(|b| (b.from, b.to) == (from, to)))
+                .map(|b| Selection::Edge(b.edges[0]));
+        }
+        self.folded = next;
+        self.reveal_selected = true;
+    }
+
+    fn update_layout(&mut self, context: &egui::Context) {
+        self.layout.update();
+        if let Some((_, state)) = &mut self.folded_layout {
+            state.update();
+        }
+        if let Some(fold) = &self.folded
+            && !fold.glyphs.is_empty()
+            && !self.folded_layout.as_ref().is_some_and(|(prior, state)| {
+                Arc::ptr_eq(prior, fold) || matches!(state, LayoutState::Pending(_))
+            })
+        {
+            // At most one folded computation runs. While it runs, newer filter
+            // changes replace the requested projection; only the latest is laid out.
+            let state = LayoutState::start(
+                Arc::clone(&self.graph),
+                Some(Arc::clone(fold)),
+                context.clone(),
+            );
+            self.folded_layout = Some((Arc::clone(fold), state));
+        }
+    }
+
+    fn current_layout(&self) -> Option<&LayoutState> {
+        match &self.folded {
+            None => Some(&self.layout),
+            Some(current) => self
+                .folded_layout
+                .as_ref()
+                .filter(|(prior, _)| Arc::ptr_eq(prior, current))
+                .map(|(_, state)| state),
+        }
     }
 
     fn navigate(&mut self, index: usize, lens: Lens) {
-        self.selected = Some(index);
+        self.selected = Some(Selection::Node(index));
         if index < self.graph.shown_nodes {
             self.filters = Filters {
                 lens,
@@ -105,7 +169,7 @@ impl Viewer {
     }
 
     fn show(&mut self, ui: &mut Ui) {
-        self.layout.update();
+        self.update_layout(ui.ctx());
         ui.spacing_mut().item_spacing = egui::vec2(8.0, 8.0);
         let white = Color32::WHITE;
         egui::Panel::top("model")
@@ -126,7 +190,7 @@ impl Viewer {
                         self.refresh();
                         self.reveal_selected = true;
                     }
-                    if matches!(self.layout, LayoutState::Ready(_))
+                    if matches!(self.current_layout(), Some(LayoutState::Ready(_)))
                         && !self.visible.nodes.is_empty()
                     {
                         egui::ComboBox::from_label("Graph zoom")
@@ -164,7 +228,13 @@ impl Viewer {
                         &mut self.filters.community,
                         choices.communities.keys(),
                     );
+                    let mut fold = self.folded.is_some();
+                    if ui.checkbox(&mut fold, "Fold communities").changed() {
+                        self.set_folded(fold);
+                        ui.ctx().request_repaint();
+                    }
                     if ui.button("Reset filters").clicked() {
+                        self.set_folded(false);
                         self.filters = Filters::default();
                         self.refresh();
                     } else if kind || relation || community {
@@ -192,13 +262,15 @@ impl Viewer {
                     ui.centered_and_justified(|ui| ui.label(self.empty_message()));
                     return;
                 }
-                let layout = match &self.layout {
-                    LayoutState::Ready(layout) => layout,
-                    LayoutState::Pending(_) => {
+                self.update_layout(ui.ctx());
+                let reveal = self.reveal_selected;
+                let layout = match self.current_layout() {
+                    Some(LayoutState::Ready(layout)) => layout,
+                    None | Some(LayoutState::Pending(_)) => {
                         ui.centered_and_justified(|ui| ui.label("Calculating graph layout…"));
                         return;
                     }
-                    LayoutState::Failed(error) => {
+                    Some(LayoutState::Failed(error)) => {
                         ui.centered_and_justified(|ui| {
                             ui.label(format!("Cannot lay out this graph: {error}"))
                         });
@@ -206,15 +278,16 @@ impl Viewer {
                     }
                 };
                 let zoom = f32::from(self.zoom_percent) / 100.0;
-                if let Some(index) = layout.show(
-                    ui,
-                    &self.graph,
-                    &self.visible,
-                    self.selected,
-                    zoom,
-                    std::mem::take(&mut self.reveal_selected),
-                ) {
-                    self.selected = Some(index);
+                let scene = Scene {
+                    graph: &self.graph,
+                    visible: &self.visible,
+                    folded: self.folded.as_deref(),
+                    selected: self.selected,
+                };
+                let clicked = layout.show(ui, &scene, zoom, reveal);
+                self.reveal_selected = false;
+                if let Some(selection) = clicked {
+                    self.selected = Some(selection);
                     ui.ctx().request_repaint();
                 }
             });
@@ -248,6 +321,16 @@ impl Viewer {
             self.graph.edges.len()
         ));
 
+        if let Some(fold) = &self.folded {
+            let internal: usize = fold.glyphs.iter().map(|g| g.internal.len()).sum();
+            ui.label(format!(
+                "{} figures · {} bundles · {} internal edges",
+                fold.glyphs.len(),
+                fold.bundles.len(),
+                internal
+            ));
+        }
+
         egui::ScrollArea::vertical()
             .auto_shrink([false; 2])
             .show(ui, |ui| {
@@ -260,7 +343,7 @@ impl Viewer {
                         .find(|&&i| self.graph.nodes[i].id.eq_ignore_ascii_case(query))
                         .or_else(|| self.visible.nodes.first())
                     {
-                        self.selected = Some(index);
+                        self.selected = Some(Selection::Node(index));
                         self.reveal_selected = true;
                     }
                 }
@@ -268,10 +351,14 @@ impl Viewer {
                     let node = &self.graph.nodes[index];
                     let row = ui.add_sized(
                         [ui.available_width(), 30.0],
-                        Button::selectable(self.selected == Some(index), &node.label).truncate(),
+                        Button::selectable(
+                            self.selected == Some(Selection::Node(index)),
+                            &node.label,
+                        )
+                        .truncate(),
                     );
                     if row.on_hover_text(&node.id).clicked() {
-                        self.selected = Some(index);
+                        self.selected = Some(Selection::Node(index));
                         self.reveal_selected = true;
                     }
                 }
@@ -301,10 +388,21 @@ impl Viewer {
 
     fn show_details(&mut self, ui: &mut Ui) {
         ui.set_min_width(ui.available_width());
-        let Some(index) = self.selected else {
-            ui.heading("Node details");
-            ui.label("Select a node to see its details.");
-            return;
+        let index = match self.selected {
+            Some(Selection::Node(index)) => index,
+            Some(Selection::Edge(index)) => {
+                self.show_edge(ui, index);
+                return;
+            }
+            Some(Selection::Bundle(from, to)) => {
+                self.show_bundle(ui, from, to);
+                return;
+            }
+            None => {
+                ui.heading("Node details");
+                ui.label("Select a node or connection to see its details.");
+                return;
+            }
         };
         let graph = Arc::clone(&self.graph);
         let node = &graph.nodes[index];
@@ -323,6 +421,7 @@ impl Viewer {
                 } else if self.visible.nodes.binary_search(&index).is_err() {
                     ui.label("Hidden by current filters");
                 }
+                self.show_folded_node(ui, index);
                 if let Ok(projection) = &graph.perspectives {
                     if projection.has_product_extension
                         && let Some(human) = &node.human
@@ -376,13 +475,14 @@ impl Viewer {
                 let mut connections = graph
                     .edges
                     .iter()
-                    .filter(|edge| edge.from == index || edge.to == index)
+                    .enumerate()
+                    .filter(|(_, edge)| edge.from == index || edge.to == index)
                     .peekable();
                 ui.heading("Connections");
                 if connections.peek().is_none() {
                     ui.label("No incident edges.");
                 }
-                for edge in connections {
+                for (edge_index, edge) in connections {
                     let (direction, neighbor) = match (edge.from == index, edge.to == index) {
                         (true, true) => ("Self-loop", index),
                         (true, false) => ("Outgoing to", edge.to),
@@ -390,7 +490,9 @@ impl Viewer {
                     };
                     ui.separator();
                     ui.push_id(&edge.id, |ui| {
-                        ui.label(RichText::new(&edge.id).monospace().strong());
+                        if ui.link(RichText::new(&edge.id).monospace()).clicked() {
+                            self.selected = Some(Selection::Edge(edge_index));
+                        }
                         ui.label(RichText::new(&edge.relation).monospace());
                         ui.horizontal_wrapped(|ui| {
                             ui.label(direction);
@@ -400,20 +502,169 @@ impl Viewer {
                                 .on_hover_text(&neighbor_node.id)
                                 .clicked()
                             {
-                                let in_lens = self.filters.lens == Lens::All
-                                    || graph
-                                        .perspectives
-                                        .as_ref()
-                                        .is_ok_and(|p| p.includes(self.filters.lens, neighbor));
-                                if in_lens && self.visible.nodes.binary_search(&neighbor).is_err() {
-                                    self.navigate(neighbor, self.filters.lens);
-                                } else {
-                                    self.selected = Some(neighbor);
-                                    self.reveal_selected = true;
-                                }
+                                self.follow_node(neighbor);
                                 ui.ctx().request_repaint();
                             }
                         });
+                    });
+                }
+            });
+    }
+
+    fn follow_node(&mut self, node: usize) {
+        let in_lens = self.filters.lens == Lens::All
+            || self
+                .graph
+                .perspectives
+                .as_ref()
+                .is_ok_and(|p| p.includes(self.filters.lens, node));
+        if in_lens && self.visible.nodes.binary_search(&node).is_err() {
+            self.navigate(node, self.filters.lens);
+        } else {
+            self.selected = Some(Selection::Node(node));
+            self.reveal_selected = true;
+        }
+    }
+
+    fn node_link(&mut self, ui: &mut Ui, index: usize) {
+        let node = &self.graph.nodes[index];
+        if ui.link(&node.label).on_hover_text(&node.id).clicked() {
+            self.follow_node(index);
+        }
+    }
+
+    fn edge_link(&mut self, ui: &mut Ui, index: usize) {
+        let edge = &self.graph.edges[index];
+        if ui.link(&edge.id).on_hover_text(&edge.relation).clicked() {
+            self.selected = Some(Selection::Edge(index));
+        }
+    }
+
+    fn bundle_name(&self, b: &EdgeBundle) -> String {
+        format!(
+            "{} → {} ({})",
+            self.graph.nodes[b.from].label,
+            self.graph.nodes[b.to].label,
+            b.edges.len()
+        )
+    }
+
+    fn show_folded_node(&mut self, ui: &mut Ui, index: usize) {
+        let Some(fold) = self.folded.clone() else {
+            return;
+        };
+        let Some(glyph) = fold
+            .glyph_for
+            .get(index)
+            .copied()
+            .flatten()
+            .map(|i| &fold.glyphs[i])
+        else {
+            return;
+        };
+        let graph = Arc::clone(&self.graph);
+        let memberships = &graph.choices.memberships[index];
+        if !memberships.is_empty() {
+            ui.strong(format!("Direct communities ({})", memberships.len()));
+            for &community in memberships {
+                ui.horizontal_wrapped(|ui| {
+                    self.node_link(ui, community);
+                    if glyph.node == community && glyph.node != index {
+                        ui.weak("Representative");
+                    }
+                });
+            }
+        }
+        if glyph.node != index {
+            return;
+        }
+        if glyph.members.len() > 1 {
+            ui.strong(format!("Represented nodes ({})", glyph.members.len()));
+            for &member in &glyph.members {
+                self.node_link(ui, member);
+            }
+        }
+        if !glyph.internal.is_empty() {
+            ui.strong(format!("Internal edges ({})", glyph.internal.len()));
+            for &edge in &glyph.internal {
+                self.edge_link(ui, edge);
+            }
+        }
+        let bundles: Vec<_> = fold
+            .bundles
+            .iter()
+            .filter(|b| b.from == index || b.to == index)
+            .collect();
+        if !bundles.is_empty() {
+            ui.strong(format!("Directed bundles ({})", bundles.len()));
+            for b in bundles {
+                if ui.link(self.bundle_name(b)).clicked() {
+                    self.selected = Some(Selection::Bundle(b.from, b.to));
+                }
+            }
+        }
+    }
+
+    fn show_bundle(&mut self, ui: &mut Ui, from: usize, to: usize) {
+        let Some(fold) = self.folded.clone() else {
+            return;
+        };
+        let Some(b) = fold.bundles.iter().find(|b| (b.from, b.to) == (from, to)) else {
+            return;
+        };
+        egui::ScrollArea::vertical()
+            .id_salt(("bundle", from, to))
+            .show(ui, |ui| {
+                ui.heading("Directed bundle");
+                ui.label("From");
+                self.node_link(ui, from);
+                ui.label("To");
+                self.node_link(ui, to);
+                ui.strong(format!("Edges ({})", b.edges.len()));
+                for &edge in &b.edges {
+                    self.edge_link(ui, edge);
+                }
+            });
+    }
+
+    fn show_edge(&mut self, ui: &mut Ui, index: usize) {
+        let graph = Arc::clone(&self.graph);
+        let edge = &graph.edges[index];
+        egui::ScrollArea::vertical()
+            .id_salt(("edge", index))
+            .show(ui, |ui| {
+                ui.heading("Edge details");
+                ui.label(RichText::new(&edge.id).monospace().strong());
+                ui.label(RichText::new(&edge.relation).monospace());
+                if index >= graph.shown_edges {
+                    ui.label("Outside the saved view scope");
+                } else if self.visible.edges.binary_search(&index).is_err() {
+                    ui.label("Hidden by current filters");
+                } else if let Some(fold) = self.folded.clone() {
+                    let glyph = &fold.glyphs[fold.glyph_for[edge.from].unwrap()];
+                    if glyph.internal.binary_search(&index).is_ok() {
+                        ui.strong("Internal edge in");
+                        self.node_link(ui, glyph.node);
+                    } else {
+                        let to = fold.glyphs[fold.glyph_for[edge.to].unwrap()].node;
+                        if ui.link("Inspect directed bundle").clicked() {
+                            self.selected = Some(Selection::Bundle(glyph.node, to));
+                        }
+                    }
+                }
+                ui.strong("From");
+                self.node_link(ui, edge.from);
+                ui.strong("To");
+                self.node_link(ui, edge.to);
+                if let Some(data) = &graph.artifact {
+                    ui.collapsing("Canonical edge record", |ui| {
+                        if let Some(record) = data["model"]["edges"].as_array().and_then(|items| {
+                            items
+                                .iter()
+                                .find(|item| item["id"].as_str() == Some(edge.id.as_str()))
+                        }) {
+                            ui.monospace(format!("{record:#}"));
+                        }
                     });
                 }
             });
@@ -474,7 +725,9 @@ mod tests {
             zoom_percent: 100,
             reveal_selected: false,
             filename: "fragmented.gdd.yaml".into(),
-            selected: Some(0),
+            selected: Some(Selection::Node(0)),
+            folded: None,
+            folded_layout: None,
         };
         let context = egui::Context::default();
         let frame = |viewer: &mut Viewer, events| {
@@ -498,14 +751,14 @@ mod tests {
         frame(&mut viewer, vec![egui::Event::Text("entity.note".into())]);
         frame(&mut viewer, vec![press(Key::Enter, Modifiers::NONE)]);
         assert!(matches!(viewer.layout, LayoutState::Pending(_)));
-        assert_eq!(viewer.selected, Some(1));
+        assert_eq!(viewer.selected, Some(Selection::Node(1)));
         assert!(viewer.reveal_selected);
 
         sender.send(Layout::new(&graph)).unwrap();
         frame(&mut viewer, Vec::new());
         assert!(matches!(viewer.layout, LayoutState::Ready(_)));
         assert_eq!(viewer.filters.search, "entity.note");
-        assert_eq!(viewer.selected, Some(1));
+        assert_eq!(viewer.selected, Some(Selection::Node(1)));
         assert!(!viewer.reveal_selected);
     }
 
@@ -547,9 +800,11 @@ mod tests {
             reveal_selected: false,
             filename: "partial.gddview".into(),
             selected: None,
+            folded: None,
+            folded_layout: None,
         };
         viewer.navigate(entity, Lens::All);
-        assert_eq!(viewer.selected, Some(entity));
+        assert_eq!(viewer.selected, Some(Selection::Node(entity)));
         assert_eq!(viewer.filters.lens, Lens::Components);
         assert_eq!(viewer.filters.search, "missing");
         assert_eq!(viewer.filters.community, "absent");
@@ -558,15 +813,61 @@ mod tests {
         assert!(viewer.visible.nodes.is_empty() && !viewer.reveal_selected);
         viewer.navigate(step, Lens::All);
         assert_eq!(viewer.filters.lens, Lens::All);
-        assert_eq!(viewer.selected, Some(step));
+        assert_eq!(viewer.selected, Some(Selection::Node(step)));
         assert!(!viewer.filters.narrowed());
         assert_eq!(viewer.visible.nodes, [step]);
         assert!(viewer.reveal_selected);
         viewer.navigate(step, Lens::Journey);
         assert_eq!(viewer.filters.lens, Lens::Journey);
-        assert_eq!(viewer.selected, Some(step));
+        assert_eq!(viewer.selected, Some(Selection::Node(step)));
         assert_eq!(viewer.visible.nodes, [step]);
         assert!(matches!(viewer.layout, LayoutState::Pending(_)));
+    }
+
+    #[test]
+    fn folded_layout_finishes_current_work_before_starting_latest_projection() {
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../conformance/fixtures/viewer-multigraph.json");
+        let graph = Arc::new(Graph::load(&path).unwrap());
+        let context = egui::Context::default();
+        let visible = graph.visible(&Filters::default());
+        let prior = Arc::new(visible.project(&graph, true));
+        let (sender, receiver) = mpsc::channel();
+        let mut viewer = Viewer {
+            filters: Filters::default(),
+            visible,
+            graph,
+            layout: LayoutState::Failed("Unfolded layout fixture".into()),
+            zoom_percent: 100,
+            reveal_selected: false,
+            filename: "fixture".into(),
+            selected: None,
+            folded: Some(Arc::clone(&prior)),
+            folded_layout: Some((Arc::clone(&prior), LayoutState::Pending(receiver))),
+        };
+        for query in ["backend", "second", "community"] {
+            viewer.filters.search = query.into();
+            viewer.refresh();
+            viewer.update_layout(&context);
+            let (in_flight, state) = viewer.folded_layout.as_ref().unwrap();
+            assert!(Arc::ptr_eq(&prior, in_flight));
+            assert!(matches!(state, LayoutState::Pending(_)));
+            assert!(viewer.current_layout().is_none());
+        }
+
+        sender.send(Err("Previous layout finished".into())).unwrap();
+        viewer.update_layout(&context);
+        let (latest, state) = viewer.folded_layout.take().unwrap();
+        assert!(Arc::ptr_eq(&latest, viewer.folded.as_ref().unwrap()));
+        let LayoutState::Pending(receiver) = state else {
+            panic!("Expected latest layout worker")
+        };
+        assert!(receiver.recv().unwrap().is_ok());
+        viewer.set_folded(false);
+        assert!(matches!(
+            viewer.current_layout(),
+            Some(LayoutState::Failed(_))
+        ));
     }
 
     #[test]

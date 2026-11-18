@@ -228,9 +228,14 @@ cargo run --locked -p gdd-viewer -- reserve.gddview
 Open a model or a saved view with `gdd-viewer` to switch between All graph,
 User journey, Components and Data model. On a model, the viewer derives the
 perspectives from its existing capture. On a saved view it uses the embedded
-perspectives and intersects them with the saved drawing scope. Lens and search
-changes reuse the original layout. The node list, gap links and inspector
-remain interactive while layout is pending.
+perspectives and intersects them with the saved drawing scope. The unfolded
+canvas reuses its original layout across lens and search changes. Enable
+**Fold communities** to group direct members under their first visible
+community by canonical ID. The folded layout routes one arrow per directed
+pair of representatives. Select an arrow to see its edge IDs, or inspect a
+community figure for represented nodes and internal edges. The node list,
+gap links and inspector remain interactive while graphlay computes the
+drawing. The fold setting applies to the current window.
 
 Use `gdd::view::render_view(model: &Path, output: &Path, scope: &[String])`
 to publish a new artifact and receive the scoped JSON report. Use

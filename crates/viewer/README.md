@@ -28,7 +28,7 @@ current perspective and saved scope.
 
 Choose **All graph**, **User journey**, **Components**, or **Data model** under
 **Perspective**. Each lens includes its primary concepts and direct context.
-The list and canvas show the same nodes. An edge appears when the perspective
+The node list includes every visible canonical node. An edge appears when the perspective
 includes that edge and both endpoints remain visible. Use **Kind** for a
 specific node kind and **Community** for a community and its direct
 `member_of` members. Shared members belong to each declared community.
@@ -36,7 +36,23 @@ specific node kind and **Community** for a community and its direct
 matches in the list and canvas. These filters combine with search in the
 current perspective. Counts show visible nodes and edges against the complete
 model. **Reset filters** clears search and all three selectors and restores
-All graph within the saved scope.
+All graph within the saved scope, with folding off.
+
+Enable **Fold communities** to represent direct members inside a visible
+community. A shared member appears in the first visible community by canonical
+ID. Select a folded member in the list to see its **Direct communities**
+and the community marked **Representative**. Its original membership edges
+appear under **Connections**. Search, perspective changes and navigation keep
+folding enabled.
+
+A folded figure shows how many canonical nodes it represents. Select the
+figure to inspect its **Represented nodes**, **Internal edges** and **Directed
+bundles**. Each arrow groups all visible edges with that ordered pair of
+representatives. A badge such as **×3** marks three edges. Click the arrow,
+badge or inspector bundle link to inspect each edge ID and its original
+endpoints. A self-loop on the representative remains an arrow. A self-loop
+on a folded member appears among the figure’s internal edges. The drawing
+counts appear beneath the canonical node and edge counts.
 
 Select a journey step to read its user action and system response, or an actor
 to read its goal. A **Related perspectives** link clears the filters and reveals
@@ -51,17 +67,19 @@ Following a connection to an omitted node opens its inspector and leaves the
 drawing in scope. A saved node's inspector also shows its source location and
 full record. See the [artifact contract](../../VIEWER.md#share-a-native-view).
 
-The viewer computes a left-to-right layered layout once when it opens a model,
-using the pure Rust graphlay library. While the layout runs in the background,
-you can search the node list, inspect nodes, and follow connections. When the
-drawing is ready, the canvas scrolls to your current selection.
+The viewer computes the unfolded left-to-right layered layout once using the
+pure Rust graphlay library. Folding lays out the visible figures and directed
+bundles. If the filters change during layout, the viewer draws the latest
+projection. You can search the node list, inspect nodes and follow connections
+while graphlay runs. When the drawing is ready, the canvas scrolls to your
+selected node or its representative.
 
-Arrows follow the routed paths into
-their declared target nodes, including links that run back across a cycle.
-Parallel links have separate routes, and repeated self-loops nest outside the
-node box. Dense graphs can still have crossings. Scroll in both directions
-to explore them, or use **Graph zoom** to change the canvas scale from 50% to
-200%. The list and inspector retain their text size.
+Arrows follow the routed paths into their declared target nodes, including
+links that run back across a cycle.
+In the unfolded drawing, parallel links have separate routes and repeated
+self-loops nest outside the node box. Dense graphs can still have crossings.
+Scroll in both directions to explore them, or use **Graph zoom** to change the
+canvas scale from 50% to 200%. The list and inspector retain their text size.
 
 Open a GDD 0.2 or 0.3 JSON or YAML manifest. The preview uses the Rust CLI's
 bundle loader to combine the manifest and its declared local fragments.

@@ -137,28 +137,35 @@ impl Filters {
 pub struct FilterChoices {
     pub kinds: BTreeSet<String>,
     pub relations: BTreeSet<String>,
-    // A community includes itself and every distinct direct member in the full model.
-    pub communities: BTreeMap<String, BTreeSet<usize>>,
+    pub communities: BTreeMap<String, usize>,
+    // Each node's distinct direct communities in canonical ID order.
+    pub memberships: Vec<Vec<usize>>,
 }
 
 impl FilterChoices {
     fn new(nodes: &[Node], edges: &[Edge]) -> Self {
-        let mut choices = Self::default();
+        let mut choices = Self {
+            memberships: vec![Vec::new(); nodes.len()],
+            ..Default::default()
+        };
         for (i, node) in nodes.iter().enumerate() {
             choices.kinds.insert(node.kind.clone());
             if node.kind == "community" {
-                choices
-                    .communities
-                    .insert(node.id.clone(), BTreeSet::from([i]));
+                choices.communities.insert(node.id.clone(), i);
             }
         }
         for edge in edges {
             choices.relations.insert(edge.relation.clone());
-            if edge.relation == "member_of"
-                && let Some(members) = choices.communities.get_mut(&nodes[edge.to].id)
-            {
-                members.insert(edge.from);
+            if edge.relation == "member_of" && nodes[edge.to].kind == "community" {
+                choices.memberships[edge.from].push(edge.to);
             }
+        }
+        for memberships in &mut choices.memberships {
+            // The released viewer sorts canonical IDs by UTF-16 code unit.
+            memberships.sort_unstable_by(|&a, &b| {
+                nodes[a].id.encode_utf16().cmp(nodes[b].id.encode_utf16())
+            });
+            memberships.dedup();
         }
         choices
     }
@@ -168,6 +175,87 @@ impl FilterChoices {
 pub struct Visible {
     pub nodes: Vec<usize>,
     pub edges: Vec<usize>,
+}
+
+/// A drawing of the visible canonical records. Member and edge indices
+/// address the full model, including when a saved view reorders the shown slice.
+#[derive(Default)]
+pub struct FoldProjection {
+    pub glyphs: Vec<Glyph>,
+    pub bundles: Vec<EdgeBundle>,
+    pub glyph_for: Vec<Option<usize>>,
+}
+
+pub struct Glyph {
+    pub node: usize,
+    pub members: Vec<usize>,
+    pub internal: Vec<usize>,
+}
+
+pub struct EdgeBundle {
+    pub from: usize,
+    pub to: usize,
+    pub edges: Vec<usize>,
+}
+
+impl Visible {
+    pub fn project(&self, graph: &Graph, fold: bool) -> FoldProjection {
+        let mut result = FoldProjection {
+            glyph_for: vec![None; graph.shown_nodes],
+            ..Default::default()
+        };
+        for &member in &self.nodes {
+            let node = if fold && graph.nodes[member].kind != "community" {
+                graph.choices.memberships[member]
+                    .iter()
+                    .copied()
+                    .find(|community| self.nodes.binary_search(community).is_ok())
+                    .unwrap_or(member)
+            } else {
+                member
+            };
+            let glyph = *result.glyph_for[node].get_or_insert_with(|| {
+                result.glyphs.push(Glyph {
+                    node,
+                    members: Vec::new(),
+                    internal: Vec::new(),
+                });
+                result.glyphs.len() - 1
+            });
+            result.glyph_for[member] = Some(glyph);
+            result.glyphs[glyph].members.push(member);
+        }
+
+        let mut bundles = BTreeMap::new();
+        for &index in &self.edges {
+            let edge = &graph.edges[index];
+            let source = result.glyph_for[edge.from].unwrap();
+            let target = result.glyph_for[edge.to].unwrap();
+            let from = result.glyphs[source].node;
+            let to = result.glyphs[target].node;
+            if from == to && (edge.from != from || edge.to != to) {
+                result.glyphs[source].internal.push(index);
+            } else {
+                let bundle = *bundles.entry((from, to)).or_insert_with(|| {
+                    result.bundles.push(EdgeBundle {
+                        from,
+                        to,
+                        edges: Vec::new(),
+                    });
+                    result.bundles.len() - 1
+                });
+                result.bundles[bundle].edges.push(index);
+            }
+        }
+        result
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Selection {
+    Node(usize),
+    Edge(usize),
+    Bundle(usize, usize),
 }
 
 pub struct Node {
@@ -356,7 +444,7 @@ impl Graph {
                 }
             }
         }
-        let members = self.choices.communities.get(&filters.community);
+        let community = self.choices.communities.get(&filters.community);
         let nodes = self.nodes[..self.shown_nodes]
             .iter()
             .enumerate()
@@ -364,7 +452,8 @@ impl Graph {
                 matched[i] = view.is_none_or(|v| v.nodes[i])
                     && (filters.kind.is_empty() || node.kind == filters.kind)
                     && (filters.community.is_empty()
-                        || members.is_some_and(|set| set.contains(&i)))
+                        || community
+                            .is_some_and(|c| i == *c || self.choices.memberships[i].contains(c)))
                     && (matched[i] || node.search_text.contains(&query));
                 matched[i].then_some(i)
             })
@@ -547,6 +636,75 @@ mod tests {
                 ]
             );
         }
+    }
+
+    #[test]
+    fn folding_partitions_canonical_ids_after_filtering_and_keeps_representative_loops() {
+        let mut model = document("gdd/0.3");
+        for community in ["group.z", "group.a"] {
+            model["nodes"][community] = json!({"kind":"community","description":community});
+        }
+        let edges = model["edges"].as_array_mut().unwrap();
+        for (id, from, to) in [
+            ("member.z", "node.a", "group.z"),
+            ("member.a", "node.a", "group.a"),
+            ("member.duplicate", "node.a", "group.a"),
+            ("member.group", "group.a", "group.z"),
+        ] {
+            edges.push(json!({"id":id,"from":from,"relation":"member_of","to":to}));
+        }
+        edges.push(json!({"id":"loop.rep","from":"group.a","relation":"uses","to":"group.a"}));
+        let graph = load_fixture(&model.to_string()).unwrap();
+        let index = |id: &str| graph.nodes.iter().position(|n| n.id == id).unwrap();
+        let ids = |indices: &[usize]| {
+            indices
+                .iter()
+                .map(|&i| graph.edges[i].id.as_str())
+                .collect::<Vec<_>>()
+        };
+        let visible = graph.visible(&Filters::default());
+        let fold = visible.project(&graph, true);
+        let glyph = &fold.glyphs[fold.glyph_for[index("node.a")].unwrap()];
+        assert_eq!(graph.nodes[glyph.node].id, "group.a");
+        assert_eq!(glyph.members.len(), 2);
+        assert_eq!(
+            ids(&glyph.internal),
+            ["edge.4", "member.a", "member.duplicate"]
+        );
+        let bundle = |from: &str, to: &str| {
+            ids(&fold
+                .bundles
+                .iter()
+                .find(|b| (b.from, b.to) == (index(from), index(to)))
+                .unwrap()
+                .edges)
+        };
+        assert_eq!(bundle("group.a", "node.b"), ["edge.1", "edge.2"]);
+        assert_eq!(bundle("node.b", "group.a"), ["edge.3"]);
+        assert_eq!(bundle("group.a", "group.a"), ["loop.rep"]);
+        assert_eq!(bundle("group.a", "group.z"), ["member.z", "member.group"]);
+
+        // Membership is canonical even when the active relation hides every member_of.
+        let filtered = graph.visible(&Filters {
+            relation: "uses".into(),
+            ..Default::default()
+        });
+        let fold = filtered.project(&graph, true);
+        assert_eq!(fold.bundles.len(), 1);
+        assert_eq!(ids(&fold.bundles[0].edges), ["loop.rep"]);
+        let glyph = &fold.glyphs[fold.glyph_for[index("node.a")].unwrap()];
+        assert_eq!(ids(&glyph.internal), ["edge.4"]);
+
+        // A scope with only the other community visible chooses that representative.
+        let mut subset = visible;
+        subset.nodes.retain(|&i| i != index("group.a"));
+        subset.edges.retain(|&i| {
+            graph.edges[i].from != index("group.a") && graph.edges[i].to != index("group.a")
+        });
+        let fold = subset.project(&graph, true);
+        let glyph = &fold.glyphs[fold.glyph_for[index("node.a")].unwrap()];
+        assert_eq!(graph.nodes[glyph.node].id, "group.z");
+        assert_eq!(ids(&glyph.internal), ["edge.4", "member.z"]);
     }
 
     #[test]
