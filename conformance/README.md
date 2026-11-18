@@ -225,3 +225,41 @@ with its pytest output, run
 `uv run python conformance/run_design.py --output python-design-run.json`.
 Synthetic reviews exercise envelope completeness and applicability. The
 original 58 standard cases run under GDD 0.2.
+
+## Workflow
+
+Run the 20 named workflow cases (63 parameter instances) from a checkout.
+
+```sh
+cargo run --offline --locked -p gdd-conformance -- workflow --output native-workflow-run.json
+```
+
+The runner reads [workflow.cases.json](workflow.cases.json) in order. Private
+copies of the concert bundle exercise packet integrity, read context,
+write ownership and serialization. Synthetic host mandates, bindings and
+evidence records exercise the dispatch, integration and acceptance gates. The
+journal cases verify that malformed hosts, stale packets and declined events
+cannot publish work. Two synchronized publishers compete to append to the same
+head. Other cases cancel a run, replay a receipt, retry with a new attempt and
+retain a late submission after the model becomes unavailable.
+
+The final case reconstructs Rust counterparts of the historical Python agent
+patches in a fresh project. Cargo runs the quote application's acceptance target,
+including the compiled CLI. The seven expected floor-rounding failures on the
+baseline become 19 passing tests after the repairs. Each of the three
+integrations has a scoped Cargo receipt. The run reaches current acceptance
+after ten journal events. The receipt identifies the Rust implementation and
+the origin of its repair inputs in `demo_implementation` and `demo_inputs`.
+To retain the new Rust project, journal and raw Cargo evidence, run the
+replay directly with a new directory.
+
+```sh
+cargo run --offline --locked -p gdd-conformance -- workflow-demo --output native-workflow-demo
+```
+
+Omit `--output` from `workflow` to print the JSON receipt. With `--output`,
+the runner creates a new file and prints the matched case count. Each row gives
+the catalog ID, assertion, result and number of attempted instances. Failed
+expectations include the parameter and error and yield a nonzero exit.
+To run the original Python suite and capture its pytest output, use
+`uv run python conformance/run_workflow.py --output python-workflow-run.json`.

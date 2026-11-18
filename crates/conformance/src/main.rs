@@ -10,6 +10,7 @@ mod receipt;
 mod standard;
 mod status;
 mod visualization;
+mod workflow;
 mod workflow_demo;
 
 use anyhow::Result;
@@ -56,6 +57,11 @@ enum Command {
         #[arg(long, value_name = "NEW_FILE")]
         output: Option<PathBuf>,
     },
+    /// Execute the named workflow packet, protocol and application replay cases.
+    Workflow {
+        #[arg(long, value_name = "NEW_FILE")]
+        output: Option<PathBuf>,
+    },
     /// Replay the Rust quote repair and publish its journal and real Cargo evidence.
     WorkflowDemo {
         #[arg(long, value_name = "NEW_DIR")]
@@ -83,6 +89,7 @@ fn main() -> Result<ExitCode> {
         Command::Impact { output } => impact::command(&directory, output),
         Command::Status { output } => status::command(&directory, output),
         Command::Standard { output } => standard::command(&directory, output),
+        Command::Workflow { output } => workflow::command(&directory, output),
         Command::WorkflowDemo { output } => {
             let summary = workflow_demo::replay(&output)?;
             println!("{}", serde_json::to_string_pretty(&summary)?);
