@@ -3,7 +3,7 @@ use crate::bundle::LocatedRecord;
 use crate::input::Value;
 use crate::report::{Check, CheckResult, Diagnostic};
 use crate::{sha256, validation::to_json};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 impl<'a> Model<'a> {
     pub(super) fn model_id_counts(&self) -> BTreeMap<&'a str, usize> {
@@ -26,6 +26,69 @@ impl<'a> Model<'a> {
             }
         }
         ids
+    }
+
+    pub(super) fn record_only_ids(&self) -> BTreeSet<&'a str> {
+        if self.bundle.records().len() == 0 {
+            return BTreeSet::new();
+        }
+        let model_ids = self.model_id_counts();
+        self.bundle
+            .records()
+            .map(|r| r.id)
+            .filter(|id| !model_ids.contains_key(id))
+            .collect()
+    }
+
+    // Positive use of check plans and decision receipts requires current,
+    // unambiguous references and excludes members of supersession cycles.
+    pub(super) fn invalid_plans(
+        &self,
+        records: &BTreeMap<&'a str, &'a Value>,
+        kind: &str,
+        revision: &str,
+    ) -> BTreeSet<&'a str> {
+        let model_ids = self.model_id_counts();
+        let mut invalid = BTreeSet::new();
+        let mut visited = BTreeSet::new();
+        for (&id, record) in records {
+            if string(record, "kind") != kind {
+                continue;
+            }
+            if model_ids.contains_key(id)
+                || get(record, "spec_revision").and_then(text) == Some(revision)
+                    && strings(record, "scope").any(|s| model_ids.get(s) != Some(&1))
+                || strings(record, "checks").any(|s| {
+                    model_ids.contains_key(s)
+                        || records.get(s).is_none_or(|r| string(r, "kind") != "check")
+                })
+                || get(record, "supersedes").and_then(text).is_some_and(|s| {
+                    model_ids.contains_key(s)
+                        || records.get(s).is_none_or(|r| string(r, "kind") != kind)
+                })
+            {
+                invalid.insert(id);
+            }
+            let mut chain = Vec::new();
+            let mut positions = BTreeMap::new();
+            let mut current = id;
+            while let Some(record) = records.get(current) {
+                if visited.contains(current) {
+                    break;
+                }
+                if let Some(pos) = positions.insert(current, chain.len()) {
+                    invalid.extend(chain[pos..].iter().copied());
+                    break;
+                }
+                chain.push(current);
+                let Some(previous) = get(record, "supersedes").and_then(text) else {
+                    break;
+                };
+                current = previous;
+            }
+            visited.extend(chain);
+        }
+        invalid
     }
 
     pub(super) fn records(&mut self) {

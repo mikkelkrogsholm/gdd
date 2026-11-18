@@ -18,48 +18,7 @@ pub(super) fn accepted<'a>(
         return BTreeMap::new();
     }
     let records: BTreeMap<_, _> = model.bundle.records().map(|r| (r.id, r.value)).collect();
-    let model_ids = model.model_id_counts();
-    let mut invalid = BTreeSet::new();
-    let mut visited = BTreeSet::new();
-    for (&id, record) in &records {
-        if string(record, "kind") != "decision" {
-            continue;
-        }
-        if model_ids.contains_key(id)
-            || get(record, "spec_revision").and_then(text) == Some(revision)
-                && strings(record, "scope").any(|s| model_ids.get(s) != Some(&1))
-            || strings(record, "checks").any(|s| {
-                model_ids.contains_key(s)
-                    || records.get(s).is_none_or(|r| string(r, "kind") != "check")
-            })
-            || get(record, "supersedes").and_then(text).is_some_and(|s| {
-                model_ids.contains_key(s)
-                    || records
-                        .get(s)
-                        .is_none_or(|r| string(r, "kind") != "decision")
-            })
-        {
-            invalid.insert(id);
-        }
-        let mut chain = Vec::new();
-        let mut positions = BTreeMap::new();
-        let mut current = id;
-        while let Some(record) = records.get(current) {
-            if visited.contains(current) {
-                break;
-            }
-            if let Some(pos) = positions.insert(current, chain.len()) {
-                invalid.extend(chain[pos..].iter().copied());
-                break;
-            }
-            chain.push(current);
-            let Some(previous) = get(record, "supersedes").and_then(text) else {
-                break;
-            };
-            current = previous;
-        }
-        visited.extend(chain);
-    }
+    let invalid = model.invalid_plans(&records, "decision", revision);
     let mut retired = BTreeSet::new();
     for (&id, &decision) in &records {
         if !trusted.contains(id)

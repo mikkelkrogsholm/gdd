@@ -1319,6 +1319,7 @@ dependencies = [
  "serde_json",
  "sha2",
  "tempfile",
+ "unicode-general-category",
  "windows-sys 0.61.2",
 ]
 

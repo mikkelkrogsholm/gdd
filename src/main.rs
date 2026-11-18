@@ -54,6 +54,10 @@ enum Command {
         unsupported_extensions: Vec<String>,
         #[arg(long)]
         host_context: Option<PathBuf>,
+        #[arg(long)]
+        package: Option<PathBuf>,
+        #[arg(long)]
+        parallel_plan: Option<PathBuf>,
         /// Explain readiness diagnostics and their scope paths on stderr.
         #[arg(long)]
         explain: bool,
@@ -72,6 +76,16 @@ fn write_output(output: Option<&Path>, value: &impl Serialize) -> io::Result<()>
         write_json(&mut File::create_new(path)?, value)
     } else {
         write_json(&mut io::stdout().lock(), value)
+    }
+}
+
+fn tool_input(path: Option<PathBuf>) -> io::Result<Option<gdd::input::Value>> {
+    let Some(path) = path else {
+        return Ok(None);
+    };
+    match gdd::input::parse(&std::fs::read(path)?).map_err(io::Error::other)? {
+        gdd::input::Value::Null => Ok(None),
+        value => Ok(Some(value)),
     }
 }
 
@@ -121,38 +135,24 @@ fn run() -> io::Result<ExitCode> {
             scope,
             unsupported_extensions,
             host_context,
+            package,
+            parallel_plan,
             explain,
             output,
         } => {
-            let host = if let Some(path) = host_context {
-                match gdd::input::parse(&std::fs::read(path)?) {
-                    Ok(gdd::input::Value::Null) => None,
-                    Ok(value) => Some(value),
-                    Err(error @ gdd::input::InputError::UnsupportedDepth) => {
-                        eprintln!("gdd: {error}");
-                        return Ok(ExitCode::from(2));
-                    }
-                    Err(error) => return Err(io::Error::other(error)),
-                }
-            } else {
-                None
-            };
-            let bundle = if profile.contains(&Profile::Readiness) {
-                bundle::load_for_readiness(&path, &scope)
-            } else {
-                bundle::load_model_only(&path)
-            };
+            let host = tool_input(host_context)?;
+            let package = tool_input(package)?;
+            let parallel = tool_input(parallel_plan)?;
             let options = ValidationOptions {
                 profiles: &profile,
                 scope: &scope,
                 host_context: host.as_ref(),
+                package: package.as_ref(),
+                parallel_plan: parallel.as_ref(),
                 unsupported_extensions: &unsupported_extensions,
             };
-            let report = if explain {
-                validation::validate_explained(&bundle, options, &mut io::stderr().lock())?
-            } else {
-                validation::validate_with_options(&bundle, options)?
-            };
+            let mut stderr = io::stderr().lock();
+            let report = validation::validate_path(&path, options, explain.then_some(&mut stderr))?;
             write_output(output.as_deref(), &report)?;
             return Ok(ExitCode::from(report.exit_code()));
         }
@@ -165,7 +165,15 @@ fn main() -> ExitCode {
         Ok(code) => code,
         Err(error) => {
             eprintln!("gdd: {error}");
-            ExitCode::FAILURE
+            if error
+                .get_ref()
+                .and_then(|e| e.downcast_ref::<gdd::input::InputError>())
+                == Some(&gdd::input::InputError::UnsupportedDepth)
+            {
+                ExitCode::from(2)
+            } else {
+                ExitCode::FAILURE
+            }
         }
     }
 }

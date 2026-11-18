@@ -3,7 +3,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::io::{self, Write};
 
-use super::{entries, string, strings};
+use super::{ReadinessContexts, entries, string, strings};
 use crate::bundle::Bundle;
 use crate::context::ContextScope;
 use crate::report::{CheckResult, Diagnostic, Report};
@@ -11,20 +11,18 @@ use crate::report::{CheckResult, Diagnostic, Report};
 pub(crate) fn readiness(
     bundle: &Bundle,
     report: &Report,
-    context: Option<&ContextScope<'_>>,
-    output: &mut impl Write,
+    contexts: Option<&ReadinessContexts<'_>>,
+    output: &mut dyn Write,
 ) -> io::Result<()> {
     let mut groups: BTreeMap<_, Vec<_>> = BTreeMap::new();
-    for diagnostic in report
-        .checks
-        .iter()
-        .filter(|c| c.dimension == "readiness")
-        .flat_map(|c| &c.diagnostics)
-    {
-        groups
-            .entry(diagnostic.related_ids.as_slice())
-            .or_default()
-            .push(diagnostic);
+    for check in report.checks.iter().filter(|c| c.dimension == "readiness") {
+        let package = check.check_id == "context.package";
+        for diagnostic in &check.diagnostics {
+            groups
+                .entry((package, diagnostic.related_ids.as_slice()))
+                .or_default()
+                .push(diagnostic);
+        }
     }
     if groups.is_empty() {
         return Ok(());
@@ -33,12 +31,12 @@ pub(crate) fn readiness(
     // Model defects may be propagated to an implementation target. Such a
     // location does not establish a graph path to the underlying defect.
     let nodes: BTreeSet<_> = bundle.nodes().map(|node| node.id).collect();
-    let context = context.filter(|_| {
+    let contexts = contexts.filter(|_| {
         report.result("model") == CheckResult::Pass
             && report.spec_revision.is_some()
             && report.scope.iter().all(|id| nodes.contains(id.as_str()))
     });
-    let Some(context) = context else {
+    let Some(contexts) = contexts else {
         for diagnostic in report
             .checks
             .iter()
@@ -58,7 +56,16 @@ pub(crate) fn readiness(
         .flat_map(|manifest| entries(&manifest.value, "questions"))
         .map(|(id, value)| (id.as_str(), value))
         .collect();
-    for (ids, diagnostics) in groups {
+    for ((package, ids), diagnostics) in groups {
+        let context = if package {
+            contexts
+                .empty_package
+                .as_ref()
+                .unwrap_or(&contexts.structural)
+        } else {
+            &contexts.structural
+        };
+
         for diagnostic in diagnostics {
             write_diagnostic(output, diagnostic)?;
         }
@@ -90,7 +97,7 @@ pub(crate) fn readiness(
     Ok(())
 }
 
-fn write_diagnostic(output: &mut impl Write, diagnostic: &Diagnostic) -> io::Result<()> {
+fn write_diagnostic(output: &mut dyn Write, diagnostic: &Diagnostic) -> io::Result<()> {
     write!(output, "{}", diagnostic.code)?;
     if let Some(file) = &diagnostic.location.file {
         write!(output, " {file}#{}", diagnostic.location.pointer)?;
@@ -99,7 +106,7 @@ fn write_diagnostic(output: &mut impl Write, diagnostic: &Diagnostic) -> io::Res
 }
 
 fn write_path(
-    output: &mut impl Write,
+    output: &mut dyn Write,
     bundle: &Bundle,
     context: &ContextScope<'_>,
     id: &str,

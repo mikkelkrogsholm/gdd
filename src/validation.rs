@@ -10,7 +10,6 @@ use serde::Serialize;
 use serde_json::Value as JsonValue;
 
 use crate::bundle::{Bundle, Document, DocumentKind};
-use crate::context::ContextScope;
 use crate::input::Value;
 use crate::report::{Check, CheckResult, Diagnostic, Report};
 use crate::valid_id;
@@ -56,7 +55,67 @@ pub struct ValidationOptions<'a> {
     pub profiles: &'a [Profile],
     pub scope: &'a [String],
     pub host_context: Option<&'a Value>,
+    pub package: Option<&'a Value>,
+    pub parallel_plan: Option<&'a Value>,
     pub unsupported_extensions: &'a [String],
+}
+
+impl<'a> ValidationOptions<'a> {
+    /// Validate the input envelopes and resolve their scope in declared order.
+    pub fn effective_scope(&self) -> io::Result<Vec<&'a str>> {
+        for (kind, input) in [
+            ("host", self.host_context),
+            ("package", self.package),
+            ("parallel", self.parallel_plan),
+        ] {
+            if let Some(value) = present(input) {
+                validate_input(kind, value)?;
+            }
+        }
+        let package = present(self.package);
+        let parallel = present(self.parallel_plan);
+        let mut seen = BTreeSet::new();
+        let requested = self.scope.iter().map(String::as_str).collect::<Vec<_>>();
+        let scope: Vec<_> = match (package, parallel) {
+            (Some(_), Some(_)) => {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidInput,
+                    "Context package and parallel plan cannot be supplied together.",
+                ));
+            }
+            (Some(package), None) => crate::model::strings(package, "scope").collect(),
+            (None, Some(plan)) => crate::model::items(plan, "packages")
+                .iter()
+                .flat_map(|package| crate::model::strings(package, "scope"))
+                .filter(|id| seen.insert(*id))
+                .collect(),
+            (None, None) => requested
+                .iter()
+                .copied()
+                .filter(|id| seen.insert(*id))
+                .collect(),
+        };
+        if (package.is_some() || parallel.is_some())
+            && !requested.is_empty()
+            && requested.into_iter().collect::<BTreeSet<_>>() != scope.iter().copied().collect()
+        {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "Requested scope conflicts with the supplied envelope scope.",
+            ));
+        }
+        if let Some(invalid) = scope.iter().find(|id| !valid_id(id)) {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!("Scope ID must be a GDD ID string: {invalid:?}."),
+            ));
+        }
+        Ok(scope)
+    }
+}
+
+pub(crate) fn present(value: Option<&Value>) -> Option<&Value> {
+    value.filter(|v| !matches!(v, Value::Null))
 }
 
 /// Validate a loaded bundle without reading its files again.
@@ -75,7 +134,8 @@ pub fn validate_with_options(
     bundle: &Bundle,
     options: ValidationOptions<'_>,
 ) -> io::Result<Report> {
-    assess(bundle, options).map(|(report, _)| report)
+    let scope = options.effective_scope()?;
+    assess(bundle, options, &scope, None)
 }
 
 /// Validate once and write the scope paths for readiness diagnostics to the
@@ -85,36 +145,49 @@ pub fn validate_explained(
     options: ValidationOptions<'_>,
     output: &mut impl io::Write,
 ) -> io::Result<Report> {
-    if !options.profiles.contains(&Profile::Readiness) {
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidInput,
-            "--explain requires --profile readiness.",
-        ));
-    }
-    let (report, context) = assess(bundle, options)?;
-    crate::model::explain::readiness(bundle, &report, context.as_ref(), output)?;
-    Ok(report)
+    let scope = options.effective_scope()?;
+    assess(bundle, options, &scope, Some(output))
+}
+
+/// Validate tool inputs before capturing the model and the advisory sources
+/// needed by this assessment. Supply a writer for readiness explanations.
+pub fn validate_path(
+    path: &std::path::Path,
+    options: ValidationOptions<'_>,
+    explanation: Option<&mut dyn io::Write>,
+) -> io::Result<Report> {
+    let scope = options.effective_scope()?;
+    let bundle = if options.profiles.contains(&Profile::Readiness)
+        && present(options.parallel_plan).is_none()
+    {
+        crate::bundle::load_for_readiness(
+            path,
+            &scope.iter().copied().map(str::to_owned).collect::<Vec<_>>(),
+        )
+    } else {
+        crate::bundle::load_model_only(path)
+    };
+    assess(&bundle, options, &scope, explanation)
 }
 
 fn assess<'a>(
     bundle: &'a Bundle,
     options: ValidationOptions<'a>,
-) -> io::Result<(Report, Option<ContextScope<'a>>)> {
+    scope: &[&'a str],
+    explanation: Option<&mut dyn io::Write>,
+) -> io::Result<Report> {
+    if explanation.is_some() && !options.profiles.contains(&Profile::Readiness) {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "--explain requires --profile readiness.",
+        ));
+    }
     let profiles = if options.profiles.is_empty() {
         vec![Profile::Model]
     } else {
         distinct(options.profiles)
     };
-    if let Some(invalid) = options.scope.iter().find(|id| !valid_id(id)) {
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidInput,
-            format!("Scope ID must be a GDD ID string: {invalid:?}."),
-        ));
-    }
-    if let Some(host) = options.host_context {
-        validate_host(host)?;
-    }
-    let mut report = Report::new(profiles, distinct(options.scope));
+    let mut report = Report::new(profiles, scope.iter().copied().map(str::to_owned).collect());
     let mut normative_valid = true;
     let mut manifest_valid = bundle.manifest().is_some();
     for document in bundle.documents() {
@@ -170,12 +243,8 @@ fn assess<'a>(
     if wants_model {
         if let Some(manifest) = bundle.manifest().filter(|_| manifest_valid) {
             if representation_valid {
-                let (checks, assessed_scope) = crate::model::check(
-                    bundle,
-                    manifest,
-                    options.unsupported_extensions,
-                    wants_readiness.then_some((options.scope, options.host_context)),
-                );
+                let (checks, assessed_scope) =
+                    crate::model::check(bundle, manifest, &options, scope);
                 report.checks.extend(checks);
                 context = assessed_scope;
             }
@@ -210,21 +279,32 @@ fn assess<'a>(
         ));
         report.checks.push(check);
     }
-    Ok((report, context))
+    if let Some(output) = explanation {
+        crate::model::explain::readiness(bundle, &report, context.as_ref(), output)?;
+    }
+    Ok(report)
 }
 
-fn validate_host(host: &Value) -> io::Result<()> {
+fn validate_input(kind: &str, input: &Value) -> io::Result<()> {
     static HOST: OnceLock<Validator> = OnceLock::new();
-    let validator = HOST.get_or_init(|| {
+    static PACKAGE: OnceLock<Validator> = OnceLock::new();
+    static PARALLEL: OnceLock<Validator> = OnceLock::new();
+    let slot = match kind {
+        "host" => &HOST,
+        "package" => &PACKAGE,
+        "parallel" => &PARALLEL,
+        _ => unreachable!(),
+    };
+    let validator = slot.get_or_init(|| {
         let schema: JsonValue =
             serde_json::from_str(include_str!("../schemas/validator-inputs.schema.json"))
                 .expect("embedded tool schemas are JSON");
-        build_schema(&schema["$defs"]["host"]).expect("embedded host schema compiles offline")
+        build_schema(&schema["$defs"][kind]).expect("embedded tool schema compiles offline")
     });
-    validator.validate(&to_json(host)?).map_err(|error| {
+    validator.validate(&to_json(input)?).map_err(|error| {
         io::Error::new(
             io::ErrorKind::InvalidInput,
-            format!("Invalid host input: {error}"),
+            format!("Invalid {kind} input: {error}"),
         )
     })
 }

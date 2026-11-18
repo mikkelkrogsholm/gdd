@@ -318,6 +318,15 @@ pub fn context_manifest<'a>(
     }
     let graph = ContextGraph::new(bundle);
     let context = graph.scope(scope.iter().copied());
+    Ok(project(bundle, manifest, scope, &context))
+}
+
+pub(super) fn project<'a>(
+    bundle: &'a Bundle,
+    manifest: &'a crate::bundle::Document,
+    scope: BTreeSet<&'a str>,
+    context: &ContextScope<'a>,
+) -> ContextManifest<'a> {
     let mut sources = BTreeSet::new();
     for node in bundle.nodes().filter(|node| context.contains(node.id)) {
         for key in ["source_refs", "design_refs"] {
@@ -356,7 +365,7 @@ pub fn context_manifest<'a>(
             }
         }
     }
-    Ok(ContextManifest {
+    ContextManifest {
         format: "gdd-context/0.2",
         spec_revision: bundle.snapshot().map(|s| s.revision.as_str()),
         scope,
@@ -370,5 +379,5 @@ pub fn context_manifest<'a>(
         extensions: entries(&manifest.value, "extensions")
             .map(|(id, _)| id.as_str())
             .collect(),
-    })
+    }
 }

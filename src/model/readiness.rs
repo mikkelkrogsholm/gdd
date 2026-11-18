@@ -1,6 +1,6 @@
 //! Structural readiness of the selected implementation targets and their read context.
 
-use super::{Model, entries, escape, flag, get, items, string, strings, text};
+use super::{Model, blank_text, entries, escape, flag, get, items, string, strings, text};
 use crate::bundle::DocumentKind;
 use crate::context::{ContextGraph, ContextScope};
 use crate::input::Value;
@@ -16,7 +16,8 @@ const SCENARIO: &str = "SCENARIO_CATEGORY_MISSING";
 
 pub(super) fn check<'a>(
     model: &Model<'a>,
-    scope: &'a [String],
+    graph: &ContextGraph<'a>,
+    scope: &[&'a str],
     host: Option<&Value>,
 ) -> (Vec<Check>, ContextScope<'a>) {
     let seeds: Vec<_> = if scope.is_empty() {
@@ -26,9 +27,8 @@ pub(super) fn check<'a>(
             .filter_map(|(&id, node)| (!support(string(node, "kind"))).then_some(id))
             .collect()
     } else {
-        scope.iter().map(String::as_str).collect()
+        scope.to_vec()
     };
-    let graph = ContextGraph::new(model.bundle);
     let context = graph.scope(seeds.iter().copied());
     let mut readiness = Readiness {
         model,
@@ -154,10 +154,7 @@ fn support(kind: &str) -> bool {
 }
 
 fn blank(value: &Value, field: &str) -> bool {
-    get(value, field).and_then(text).is_none_or(|s| {
-        s.chars()
-            .all(|ch| ch.is_whitespace() || ('\u{1c}'..='\u{1f}').contains(&ch))
-    })
+    get(value, field).and_then(text).is_none_or(blank_text)
 }
 
 impl Readiness<'_, '_> {
@@ -201,13 +198,7 @@ impl Readiness<'_, '_> {
     }
 
     fn model_findings(&mut self, context: &ContextScope<'_>) {
-        let records: BTreeSet<_> = self
-            .model
-            .bundle
-            .records()
-            .map(|record| record.id)
-            .collect();
-        let model_ids = self.model.model_id_counts();
+        let record_only = self.model.record_only_ids();
         for check in self
             .model
             .checks
@@ -219,11 +210,7 @@ impl Readiness<'_, '_> {
                 .iter()
                 .flat_map(|d| d.related_ids.iter().map(String::as_str))
                 .collect();
-            if !related.is_empty()
-                && related
-                    .iter()
-                    .all(|id| records.contains(id) && !model_ids.contains_key(id))
-            {
+            if !related.is_empty() && related.is_subset(&record_only) {
                 continue;
             }
             if related.is_empty()

@@ -100,6 +100,22 @@ cargo run --manifest-path "$GDD_CHECKOUT/Cargo.toml" --bin gdd -- \
   --scope action.main --explain > readiness.json
 ```
 
+### Context packages and parallel plans
+
+Use `--package context.json` with `--profile readiness` to check a candidate
+package against the model's required nodes, edges, sources, questions and
+extensions. The same invocation assesses structural readiness for the package
+scope. Use `--parallel-plan plan.json` to assess declared write ownership,
+workspace independence, locked contracts and integration checks across packages.
+Each command takes one envelope. An explicit `--scope` must agree with it.
+
+Rust callers pass a parsed `gdd::input::Value` through `ValidationOptions::package`
+or `ValidationOptions::parallel_plan`. The `validation::validate_path` function
+captures the required inputs and returns the report. A full bundle also supports
+either assessment through `validate_with_options`. Parallel-plan evaluation
+resolves workspace paths relative to the model directory and checks the current
+model and record declarations.
+
 ## Snapshots, context and project creation
 
 For a model-only assessment, use `bundle::load_model_only(&path)` and
@@ -119,7 +135,7 @@ question, so its model passes and its structural readiness fails.
 
 | Python entry points | Current Rust support |
 | --- | --- |
-| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model and readiness. The Python records, visualization and Graphify profiles, activity authorization and work-package/parallel-plan checks still require Python. |
+| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model and readiness. Readiness includes context packages and parallel plans. The records, visualization and Graphify profiles and activity authorization still require Python. |
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Python-only Graphify operations. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow`, `create_run`, `run_status`, `advance_run` | Python-only work planning and run journals. |

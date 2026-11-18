@@ -8,11 +8,12 @@ use serde_json::Number;
 use crate::bundle::{Bundle, Document, DocumentKind};
 use crate::input::Value;
 use crate::report::{Check, CheckResult, Diagnostic};
-use crate::validation::{CORE_KINDS, CORE_RELATIONS};
+use crate::validation::{CORE_KINDS, CORE_RELATIONS, Profile, ValidationOptions, present};
 
 pub mod context;
 pub(crate) mod explain;
 mod extensions;
+mod planning;
 mod readiness;
 mod records;
 
@@ -28,12 +29,19 @@ const ACTION: &[&str] = &["action"];
 const COMPONENT: &[&str] = &["component"];
 const ENTITY: &[&str] = &["entity"];
 
+pub(crate) struct ReadinessContexts<'a> {
+    structural: context::ContextScope<'a>,
+    // An empty package scope includes global context. Ordinary structural
+    // readiness with no scope starts from every implementation target.
+    empty_package: Option<context::ContextScope<'a>>,
+}
+
 pub(crate) fn check<'a>(
     bundle: &'a Bundle,
     manifest: &'a Document,
-    unsupported_extensions: &'a [String],
-    readiness: Option<(&'a [String], Option<&Value>)>,
-) -> (Vec<Check>, Option<context::ContextScope<'a>>) {
+    options: &ValidationOptions<'a>,
+    scope: &[&'a str],
+) -> (Vec<Check>, Option<ReadinessContexts<'a>>) {
     let mut model = Model {
         bundle,
         manifest,
@@ -45,7 +53,7 @@ pub(crate) fn check<'a>(
             .collect(),
         custom_kinds: BTreeMap::new(),
         custom_relations: BTreeMap::new(),
-        unsupported_extensions,
+        unsupported_extensions: options.unsupported_extensions,
         checks: Vec::new(),
     };
     model.extensions();
@@ -66,11 +74,30 @@ pub(crate) fn check<'a>(
     if bundle.records().len() != 0 {
         model.records();
     }
-    let context = readiness.map(|(scope, host)| {
-        let (checks, context) = readiness::check(&model, scope, host);
-        model.checks.extend(checks);
-        context
-    });
+    let mut context = None;
+    if options.profiles.contains(&Profile::Readiness) {
+        let graph = context::ContextGraph::new(bundle);
+        if let Some(plan) = present(options.parallel_plan) {
+            model
+                .checks
+                .extend(planning::parallel(&model, &graph, plan));
+        } else {
+            let (checks, assessed) = readiness::check(&model, &graph, scope, options.host_context);
+            let package = present(options.package);
+            let empty_package = (package.is_some() && scope.is_empty()).then(|| graph.scope([]));
+            if let Some(package) = package {
+                let selected = empty_package.as_ref().unwrap_or(&assessed);
+                model
+                    .checks
+                    .push(planning::package(&model, package, scope, selected));
+            }
+            model.checks.extend(checks);
+            context = Some(ReadinessContexts {
+                structural: assessed,
+                empty_package,
+            });
+        }
+    }
     (model.checks, context)
 }
 
@@ -765,18 +792,24 @@ fn string<'a>(value: &'a Value, key: &str) -> &'a str {
         .expect("schema-validated string")
 }
 
+fn blank_text(value: &str) -> bool {
+    value
+        .chars()
+        .all(|ch| ch.is_whitespace() || ('\u{1c}'..='\u{1f}').contains(&ch))
+}
+
 fn flag(value: &Value, key: &str) -> bool {
     matches!(get(value, key), Some(Value::Boolean(true)))
 }
 
-fn items<'a>(value: &'a Value, key: &str) -> &'a [Value] {
+pub(crate) fn items<'a>(value: &'a Value, key: &str) -> &'a [Value] {
     match get(value, key) {
         Some(Value::Array(values)) => values,
         _ => &[],
     }
 }
 
-fn strings<'a>(value: &'a Value, key: &str) -> impl Iterator<Item = &'a str> + use<'a> {
+pub(crate) fn strings<'a>(value: &'a Value, key: &str) -> impl Iterator<Item = &'a str> + use<'a> {
     items(value, key).iter().filter_map(text)
 }
 
