@@ -1,0 +1,13 @@
+[package]
+name = "gdd-viewer"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+license = "MIT"
+description = "Native preview of a Graph-Driven Development model"
+publish = false
+
+[dependencies]
+eframe = { version = "0.37", default-features = false, features = ["accesskit", "default_fonts", "glow", "wayland", "x11"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
