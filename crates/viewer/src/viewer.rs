@@ -1,3 +1,5 @@
+mod overview;
+
 use std::sync::{Arc, mpsc};
 use std::thread;
 
@@ -9,7 +11,7 @@ use crate::{
     canvas::{Layout, Scene},
     model::{
         EdgeBundle, Filters, FoldProjection, Graph, HumanConcept, Lens, Node, NodeInspection,
-        RecordDetails, Selection, Visible,
+        RecordDetails, Selection, Source, Visible,
     },
 };
 
@@ -183,7 +185,7 @@ impl Viewer {
             .frame(egui::Frame::NONE.fill(white).inner_margin(16))
             .show(ui, |ui| {
                 ui.horizontal_wrapped(|ui| {
-                    ui.heading(RichText::new(&self.graph.title).size(24.0).strong());
+                    ui.heading(RichText::new(self.graph.title()).size(24.0).strong());
                     ui.label(RichText::new(&self.filename).weak());
                     let old_lens = self.filters.lens;
                     egui::ComboBox::from_label("Perspective")
@@ -335,13 +337,7 @@ impl Viewer {
         ));
 
         if let Some(fold) = &self.folded {
-            let internal: usize = fold.glyphs.iter().map(|g| g.internal.len()).sum();
-            ui.label(format!(
-                "{} figures · {} bundles · {} internal edges",
-                fold.glyphs.len(),
-                fold.bundles.len(),
-                internal
-            ));
+            ui.label(drawing_counts(fold));
         }
 
         egui::ScrollArea::vertical()
@@ -401,6 +397,15 @@ impl Viewer {
 
     fn show_details(&mut self, ui: &mut Ui) {
         ui.set_min_width(ui.available_width());
+        if self.selected.is_some() {
+            let back = ui.button("Model overview").on_hover_text("Alt+Home");
+            if back.clicked() || ui.input_mut(|input| input.consume_key(Modifiers::ALT, Key::Home))
+            {
+                self.selected = None;
+                self.reveal_selected = false;
+                ui.ctx().request_repaint();
+            }
+        }
         let index = match self.selected {
             Some(Selection::Node(index)) => index,
             Some(Selection::Edge(index)) => {
@@ -411,9 +416,24 @@ impl Viewer {
                 self.show_bundle(ui, from, to);
                 return;
             }
+            Some(Selection::Source(index)) => {
+                let (id, source) = self
+                    .graph
+                    .sources
+                    .iter()
+                    .nth(index)
+                    .expect("selected source");
+                egui::ScrollArea::vertical()
+                    .id_salt(("source", id))
+                    .show(ui, |ui| {
+                        ui.heading("Source declaration");
+                        ui.monospace(id);
+                        show_source(ui, source, true);
+                    });
+                return;
+            }
             None => {
-                ui.heading("Node details");
-                ui.label("Select a node or connection to see its details.");
+                self.show_overview(ui);
                 return;
             }
         };
@@ -474,7 +494,7 @@ impl Viewer {
                     }
                 }
                 show_record_details(ui, &graph, &node.id, &node.details);
-                if let Some(data) = &graph.artifact {
+                if let Some(data) = graph.input.artifact() {
                     ui.collapsing("Canonical node record", |ui| {
                         ui.monospace(format!("{:#}", data["model"]["nodes"][&node.id]));
                     });
@@ -797,7 +817,7 @@ impl Viewer {
                 ui.strong("To");
                 self.node_link(ui, edge.to);
                 show_record_details(ui, &graph, &edge.id, &edge.details);
-                if let Some(data) = &graph.artifact {
+                if let Some(data) = graph.input.artifact() {
                     ui.collapsing("Canonical edge record", |ui| {
                         if let Some(record) = data["model"]["edges"].as_array().and_then(|items| {
                             items
@@ -810,6 +830,21 @@ impl Viewer {
                 }
             });
     }
+}
+
+fn counted(number: usize, singular: &str) -> String {
+    let suffix = if number == 1 { "" } else { "s" };
+    format!("{number} {singular}{suffix}")
+}
+
+fn drawing_counts(fold: &FoldProjection) -> String {
+    let internal = fold.glyphs.iter().map(|glyph| glyph.internal.len()).sum();
+    format!(
+        "{} · {} · {}",
+        counted(fold.glyphs.len(), "figure"),
+        counted(fold.bundles.len(), "bundle"),
+        counted(internal, "internal edge")
+    )
 }
 
 fn show_location(ui: &mut Ui, location: &gdd::bundle::Location) {
@@ -867,17 +902,23 @@ fn show_reference(ui: &mut Ui, graph: &Graph, reference: &Json) {
         return;
     };
     ui.collapsing(format!("Inspect source {id}"), |ui| {
-        show_location(ui, &source.location);
-        ui.strong("URI");
-        ui.monospace(declared_text(source.declaration.get("uri")));
-        ui.strong("Declared SHA-256");
-        ui.monospace(declared_text(
-            source.declaration.pointer("/revision/sha256"),
-        ));
-        ui.collapsing("Full source declaration", |ui| {
+        show_source(ui, source, false);
+    });
+}
+
+fn show_source(ui: &mut Ui, source: &Source, full_declaration: bool) {
+    show_location(ui, &source.location);
+    ui.strong("URI");
+    ui.monospace(declared_text(source.declaration.get("uri")));
+    ui.strong("Declared SHA-256");
+    ui.monospace(declared_text(
+        source.declaration.pointer("/revision/sha256"),
+    ));
+    egui::CollapsingHeader::new("Full source declaration")
+        .default_open(full_declaration)
+        .show(ui, |ui| {
             ui.monospace(format!("{:#}", source.declaration));
         });
-    });
 }
 
 fn filter_choice<'a>(

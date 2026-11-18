@@ -12,6 +12,7 @@ impl Window {
     fn open(path: &Path) -> Self {
         let context = egui::Context::default();
         context.enable_accesskit();
+        context.global_style_mut(|style| style.animation_time = 0.0);
         let viewer = Viewer::new(
             Graph::load(path).unwrap(),
             "Fixture".into(),
@@ -331,4 +332,292 @@ fn reference_inspection_preserves_selectors_and_endpoint_navigation() {
             .count();
         assert_eq!(undeclared, 2, "Expected absent selector and absent digest");
     }
+}
+
+fn assert_labels(tree: &TreeUpdate, labels: &[&str]) {
+    for label in labels {
+        assert!(
+            widget(tree, Role::Label, label).is_some(),
+            "Missing {label}"
+        );
+    }
+}
+
+fn assert_json_display(tree: &TreeUpdate, expected: &Json) {
+    assert!(
+        tree.nodes
+            .iter()
+            .filter_map(|(_, node)| node.value())
+            .filter_map(|text| serde_json::from_str::<Json>(text).ok())
+            .any(|value| value == *expected),
+        "Missing complete JSON display: {expected}"
+    );
+}
+
+#[test]
+fn overview_opens_captured_project_questions_sources_and_snapshot() {
+    for (format, scope_counts) in [
+        ("gdd/0.2", "3 nodes · 6 edges"),
+        ("gdd/0.3", "5 nodes · 9 edges"),
+    ] {
+        assert_captured_overview(format, scope_counts);
+    }
+}
+
+fn assert_captured_overview(format: &str, scope_counts: &str) {
+    use serde_json::json;
+
+    let source = tempfile::tempdir().unwrap();
+    let saved = tempfile::tempdir().unwrap();
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let mut model: Json = serde_json::from_slice(&fs::read(fixture).unwrap()).unwrap();
+    model["format"] = json!(format);
+    model["project"]["scope"] = json!("Author-declared project scope");
+    model["project"]["assumptions"] = json!(["Literal <text> & Ω", "Second assumption"]);
+    model["questions"] = json!({"question.review": {
+        "statement": "Who reviews this contract? </script> & Ω",
+        "targets": ["component.orphan"], "blocks": ["implementation"], "status": "open"
+    }});
+    let source_bytes = b"Actual source captured in the normative snapshot.\n";
+    fs::write(source.path().join("source.txt"), source_bytes).unwrap();
+    let source_digest = gdd::sha256(source_bytes);
+    model["sources"]["source.pinned"] = json!({
+        "title":"Captured observation", "role":"observation", "uri":"source.txt",
+        "format":"text/plain", "normative":true, "revision":{"sha256":source_digest},
+        "producer":{"name":"Fixture producer", "version":"2026.1"}
+    });
+    let path = source.path().join("overview.json");
+    let bytes = serde_json::to_vec(&model).unwrap();
+    fs::write(&path, &bytes).unwrap();
+    let model_digest = gdd::sha256(&bytes);
+    let revision = gdd::snapshot_revision(&[
+        ("overview.json", &model_digest),
+        ("source.txt", &source_digest),
+    ])
+    .unwrap();
+    let snapshot = json!({
+        "format":"gdd-snapshot/0.2", "revision":revision,
+        "assets":[{"path":"overview.json", "sha256":model_digest}, {"path":"source.txt", "sha256":source_digest}]
+    });
+    let detached = saved.path().join("scoped.gddview");
+    gdd::view::render_view(&path, &detached, &["scenario.hidden".into()]).unwrap();
+    let direct = Window::open(&path);
+    source.close().unwrap();
+
+    for (mut window, scoped) in [(direct, false), (Window::open(&detached), true)] {
+        let tree = window.frame(Vec::new());
+        assert_labels(
+            &tree,
+            &[
+                "Model overview",
+                "Viewer fixture",
+                "viewer-fixture",
+                "Inspect without losing identity or executing data",
+                "Full model: 7 nodes · 9 edges",
+                "Node types: action, community, component, entity, scenario",
+                &revision,
+            ],
+        );
+        if scoped {
+            assert_labels(
+                &tree,
+                &[
+                    "Scope: scenario.hidden",
+                    &format!("In saved scope: {scope_counts}"),
+                    &format!("Saved view generator: gdd-viewer {}", gdd::view::VERSION),
+                    "Observation inputs in saved view: 0",
+                ],
+            );
+        } else {
+            assert_labels(
+                &tree,
+                &[
+                    "Scope: Entire model",
+                    "No external observation layers are displayed",
+                ],
+            );
+            assert!(
+                !tree
+                    .nodes
+                    .iter()
+                    .filter_map(|(_, node)| node.value())
+                    .any(|value| value.contains("Saved view generator"))
+            );
+        }
+        for (label, expected) in [
+            ("Project fields", &model["project"]),
+            ("question.review", &model["questions"]["question.review"]),
+            ("Model snapshot", &snapshot),
+        ] {
+            window.click(Role::DisclosureTriangle, label);
+            assert_json_display(&window.frame(Vec::new()), expected);
+            window.click(Role::DisclosureTriangle, label);
+        }
+        window.click(Role::Link, "source.pinned");
+        let tree = window.frame(Vec::new());
+        assert_labels(
+            &tree,
+            &[
+                "Source declaration",
+                "source.pinned",
+                "Model file: overview.json",
+                "JSON Pointer: /sources/source.pinned",
+                "source.txt",
+                &source_digest,
+            ],
+        );
+        assert_json_display(
+            &window.frame(Vec::new()),
+            &model["sources"]["source.pinned"],
+        );
+        window.click(Role::Button, "Model overview");
+        window.click(Role::Link, "source.test");
+        let tree = window.frame(Vec::new());
+        assert_labels(
+            &tree,
+            &[
+                "JSON Pointer: /sources/source.test",
+                "javascript:alert(1)",
+                "Not declared",
+            ],
+        );
+        assert!(widget(&tree, Role::Link, "javascript:alert(1)").is_none());
+        window.click(Role::Button, "Model overview");
+        window.click(Role::DisclosureTriangle, "Current view");
+        let tree = window.frame(Vec::new());
+        let visible = if scoped {
+            format!("Visible: {scope_counts}")
+        } else {
+            "Visible: 6 nodes · 8 edges".into()
+        };
+        assert!(widget(&tree, Role::DisclosureTriangle, &visible).is_some());
+        assert_eq!(
+            widget(&tree, Role::Button, "component.orphan").is_some(),
+            !scoped
+        );
+    }
+}
+
+#[test]
+fn overview_shortcut_preserves_scoped_filters_lens_folding_and_zoom() {
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let saved = tempfile::tempdir().unwrap();
+    let path = saved.path().join("scoped.gddview");
+    gdd::view::render_view(&fixture, &path, &["scenario.hidden".into()]).unwrap();
+    let mut window = Window::open(&path);
+    window.click(Role::ComboBox, "Perspective");
+    window.click(Role::Button, "Components");
+    window.click(Role::ComboBox, "Kind");
+    window.click(Role::Button, "action");
+    window.click(Role::ComboBox, "Relation");
+    window.click(Role::Button, "calls");
+    window.search("edge.call_one");
+    window.click(Role::CheckBox, "Show scenarios (1)");
+    window.click(Role::CheckBox, "Fold communities");
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+    while widget(&window.frame(Vec::new()), Role::ComboBox, "Graph zoom").is_none() {
+        assert!(
+            std::time::Instant::now() < deadline,
+            "No zoom control for {} visible nodes and {} visible edges",
+            window.viewer.visible.nodes.len(),
+            window.viewer.visible.edges.len()
+        );
+        std::thread::yield_now();
+    }
+    window.click(Role::ComboBox, "Graph zoom");
+    window.click(Role::Button, "150%");
+    window.click(Role::Button, "action.second");
+    window.click(Role::Link, "edge.call_one");
+    let tree = window.frame(Vec::new());
+    assert_labels(&tree, &["Edge details", "edge.call_one"]);
+    let badge = widget(&tree, Role::Unknown, "Inspect 2 edges")
+        .unwrap()
+        .bounds();
+    window.frame(vec![egui::Event::Key {
+        key: Key::Home,
+        physical_key: None,
+        pressed: true,
+        repeat: false,
+        modifiers: Modifiers::ALT,
+    }]);
+    window.click(Role::DisclosureTriangle, "Current view");
+    let tree = window.frame(Vec::new());
+    assert_labels(
+        &tree,
+        &[
+            "Model overview",
+            "Full model: 7 nodes · 9 edges",
+            "Scope: scenario.hidden",
+            "In saved scope: 3 nodes · 6 edges",
+            "Perspective: Components",
+            "Search: edge.call_one",
+            "Kind: action",
+            "Relation: calls",
+            "Show scenarios: off",
+            "Folding: 2 figures · 3 bundles · 0 internal edges",
+            "Graph zoom: 150%",
+        ],
+    );
+    assert_eq!(
+        widget(&tree, Role::Unknown, "Inspect 2 edges")
+            .unwrap()
+            .bounds(),
+        badge
+    );
+    for (partition, nodes, edges) in [
+        (
+            "Visible: 2 nodes · 4 edges",
+            "action.second\nconstructor",
+            "edge.call_one\nedge.call_two\nedge.loop\nedge.reverse",
+        ),
+        (
+            "Filtered within scope: 1 node · 2 edges",
+            "scenario.hidden",
+            "edge.depends\nedge.scenario",
+        ),
+        (
+            "Outside saved scope: 4 nodes · 3 edges",
+            "community.backend\ncommunity.frontend\ncomponent.orphan\nentity.precision",
+            "edge.member_backend\nedge.member_frontend\nedge.second_frontend",
+        ),
+    ] {
+        window.click(Role::DisclosureTriangle, partition);
+        assert_labels(&window.frame(Vec::new()), &[nodes, edges]);
+        window.click(Role::DisclosureTriangle, partition);
+    }
+    window.click(Role::Button, "action.second");
+    window.click(Role::Button, "Model overview");
+    assert_labels(
+        &window.frame(Vec::new()),
+        &["Model overview", "Perspective: Components"],
+    );
+    window.click(Role::Button, "action.second");
+    window.click(Role::Link, "edge.call_one");
+    window.click(Role::Link, "Inspect directed bundle");
+    assert_labels(&window.frame(Vec::new()), &["Directed bundle"]);
+    window.click(Role::Button, "Model overview");
+    let tree = window.frame(Vec::new());
+    assert_labels(
+        &tree,
+        &[
+            "Model overview",
+            "Search: edge.call_one",
+            "Graph zoom: 150%",
+        ],
+    );
+    assert_eq!(window.viewer.selected, None);
+    assert!(!window.viewer.reveal_selected);
+    assert!(widget(&tree, Role::Button, "scenario.hidden").is_none());
+    window.click(Role::Button, "Reset filters");
+    window.click(Role::CheckBox, "Show scenarios (1)");
+    window.click(
+        Role::DisclosureTriangle,
+        "Filtered within scope: 1 node · 1 edge",
+    );
+    assert_labels(
+        &window.frame(Vec::new()),
+        &["scenario.hidden", "edge.scenario"],
+    );
 }

@@ -12,6 +12,19 @@ Building the viewer requires Rust 1.95 or newer. Running it requires a desktop w
 uses X11 or Wayland. The native window was tested on Linux with Xvfb and Mesa
 software rendering. The root CLI remains the default Cargo package.
 
+The inspector opens on **Model overview** with the project title, ID and
+goal. Expand **Project fields** or a question to read its complete declaration.
+Select a declared source to inspect its origin and metadata. **Model snapshot**
+lists the asset paths and SHA-256 digests that identify the revision. A saved
+view also identifies its generator and the number of external observation
+inputs it contains.
+
+**Current view** shows the active perspective, filters, zoom and folding.
+Expand a count to select and copy the exact node and edge IDs that are visible,
+filtered within scope, or outside the saved scope. Choose **Model overview**
+or press Alt+Home to clear the selection and keep the filters, folding and
+camera position.
+
 Use the graph or the node list to select a node. Press Ctrl+F (Command+F on
 macOS) to **Search graph**. Search matches node IDs and the full text of node
 and edge records, including labels, descriptions, contracts, pseudocode and

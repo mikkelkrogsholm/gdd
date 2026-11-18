@@ -1,5 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
+use std::sync::Arc;
 
 use gdd::boundaries::boundary_view;
 use gdd::bundle::{self, Bundle, DocumentKind, Location};
@@ -8,18 +9,58 @@ use gdd::perspectives::{PerspectiveBundle, perspective_data};
 use serde_json::Value as Json;
 
 pub struct Graph {
-    pub title: String,
+    pub input: ViewInput,
     pub nodes: Vec<Node>,
     pub edges: Vec<Edge>,
     // Shown records occupy the leading slice. The inspector can address every index.
     pub shown_nodes: usize,
     pub shown_edges: usize,
     pub choices: FilterChoices,
-    pub artifact: Option<Json>,
-    pub source_boundaries: Option<Json>,
     pub sources: BTreeMap<String, Source>,
     pub actions: BTreeMap<String, usize>,
     pub perspectives: Result<Perspectives, String>,
+}
+
+pub enum ViewInput {
+    Model(Box<CapturedModel>),
+    Saved(Arc<Json>),
+}
+
+pub struct CapturedModel {
+    pub project: Json,
+    pub questions: Option<Json>,
+    pub snapshot: Option<Json>,
+    pub boundaries: Option<Json>,
+}
+
+pub struct Overview<'a> {
+    pub project: &'a Json,
+    pub questions: Option<&'a Json>,
+    pub snapshot: Option<&'a Json>,
+}
+
+impl ViewInput {
+    pub fn overview(&self) -> Overview<'_> {
+        match self {
+            Self::Model(model) => Overview {
+                project: &model.project,
+                questions: model.questions.as_ref(),
+                snapshot: model.snapshot.as_ref(),
+            },
+            Self::Saved(data) => Overview {
+                project: &data["model"]["project"],
+                questions: data["model"].get("questions"),
+                snapshot: data.get("snapshot"),
+            },
+        }
+    }
+
+    pub fn artifact(&self) -> Option<&Json> {
+        match self {
+            Self::Model(_) => None,
+            Self::Saved(data) => Some(data),
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
@@ -278,6 +319,7 @@ pub enum Selection {
     Node(usize),
     Edge(usize),
     Bundle(usize, usize),
+    Source(usize),
 }
 
 pub struct Source {
@@ -387,8 +429,8 @@ impl Graph {
             .manifest()
             .ok_or_else(|| "Expected a GDD 0.2 or 0.3 model manifest.".to_owned())?;
         let document = object(&manifest.value, "model")?;
-        let project = object(field(document, "project")?, "project")?;
-        let title = text(project, "title")?.to_owned();
+        let project = field(document, "project")?;
+        text(object(project, "project")?, "title")?;
         let location = |origin: &Location| Location {
             file: bundle.declared_fragment_path(&origin.file).to_owned(),
             pointer: origin.pointer.clone(),
@@ -417,8 +459,28 @@ impl Graph {
             .as_ref()
             .map_err(Clone::clone)
             .and_then(|capture| perspective_data(capture).map_err(|e| e.to_string()));
-        let mut graph = Self::project(
-            title,
+        let boundaries = match capture {
+            Ok(capture) if manifest.kind == DocumentKind::Manifest03 => {
+                Some(boundary_view(capture.bundle(), None).map_err(|e| e.to_string())?)
+            }
+            _ => None,
+        };
+        let input = ViewInput::Model(Box::new(CapturedModel {
+            project: gdd::validation::to_json(project).map_err(|e| e.to_string())?,
+            questions: document
+                .get("questions")
+                .map(gdd::validation::to_json)
+                .transpose()
+                .map_err(|e| e.to_string())?,
+            snapshot: bundle
+                .snapshot()
+                .map(serde_json::to_value)
+                .transpose()
+                .map_err(|e| e.to_string())?,
+            boundaries,
+        }));
+        Self::project(
+            input,
             sources,
             nodes,
             None,
@@ -432,27 +494,25 @@ impl Graph {
                     })
                     .collect()
             },
-        )?;
-        if let Ok(capture) = capture
-            && manifest.kind == DocumentKind::Manifest03
-        {
-            graph.source_boundaries =
-                Some(boundary_view(capture.bundle(), None).map_err(|e| e.to_string())?);
-        }
-        Ok(graph)
+        )
+    }
+
+    pub fn title(&self) -> &str {
+        self.input.overview().project["title"]
+            .as_str()
+            .expect("checked project title")
     }
 
     pub fn boundaries(&self) -> Option<&Json> {
-        self.artifact
-            .as_ref()
-            .and_then(|data| data.get("boundaries"))
-            .or(self.source_boundaries.as_ref())
+        match &self.input {
+            ViewInput::Model(model) => model.boundaries.as_ref(),
+            ViewInput::Saved(data) => data.get("boundaries"),
+        }
     }
 
     fn from_artifact(bytes: &[u8]) -> Result<Self, String> {
-        let data = gdd::view::read_view(bytes).map_err(|e| e.to_string())?;
+        let data = Arc::new(gdd::view::read_view(bytes).map_err(|e| e.to_string())?);
         let model = &data["model"];
-        let title = model["project"]["title"].as_str().unwrap().to_owned();
         // The artifact reader has checked every location against the merged registries.
         let location = |id: &str| {
             let origin = &data["locations"][id];
@@ -487,8 +547,8 @@ impl Graph {
             .iter()
             .map(|id| id.as_str().unwrap())
             .collect();
-        let mut graph = Self::project(
-            title,
+        Self::project(
+            ViewInput::Saved(Arc::clone(&data)),
             sources,
             nodes,
             Some(&shown),
@@ -504,13 +564,11 @@ impl Graph {
                     })
                     .collect()
             },
-        )?;
-        graph.artifact = Some(data);
-        Ok(graph)
+        )
     }
 
     fn project(
-        title: String,
+        input: ViewInput,
         sources: BTreeMap<String, Source>,
         mut nodes: Vec<Node>,
         shown: Option<&BTreeSet<&str>>,
@@ -546,19 +604,17 @@ impl Graph {
                 .collect(),
             choices: FilterChoices::new(&nodes, &edges),
             perspectives,
-            title,
+            input,
             sources,
             nodes,
             edges,
             shown_nodes,
             shown_edges,
-            artifact: None,
-            source_boundaries: None,
         })
     }
 
     pub fn initial_filters(&self) -> Filters {
-        let show_scenarios = self.artifact.as_ref().is_some_and(|data| {
+        let show_scenarios = self.input.artifact().is_some_and(|data| {
             data["scope"]
                 .as_array()
                 .unwrap()
@@ -1009,7 +1065,7 @@ mod tests {
             ),
         ] {
             let graph = Graph::load(&example(name)).unwrap();
-            assert_eq!(graph.title, title);
+            assert_eq!(graph.title(), title);
             assert_eq!(
                 graph
                     .nodes
@@ -1023,7 +1079,7 @@ mod tests {
     }
 
     fn assert_fragmented_graph(graph: &Graph) {
-        assert_eq!(graph.title, "Fragmented model");
+        assert_eq!(graph.title(), "Fragmented model");
         assert_eq!(
             graph
                 .nodes

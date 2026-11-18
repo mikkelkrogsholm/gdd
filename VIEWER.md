@@ -25,6 +25,14 @@ outside this scope and display the original source file, JSON pointer and
 canonical node record. A scoped file contains the complete model and should
 only be shared with someone who can read the whole model.
 
+The inspector opens on **Model overview**. Read the project goal, expand
+**Project fields**, inspect a declared source or question, or expand **Model
+snapshot** for the captured asset paths and digests. The overview shows the
+full graph counts and node types alongside the saved scope. Under **Current
+view**, expand a count to see the canonical node and edge IDs visible, filtered
+within scope, or outside the saved scope. Choose **Model overview** or press
+Alt+Home from any record to clear the selection and keep the current drawing.
+
 For both a direct model and a saved view, select a node or edge to see its
 declaring file and JSON Pointer. **Source references** and **Design references**
 show the source ID, purpose and exact selector. Expand **Inspect source** to

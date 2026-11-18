@@ -383,11 +383,14 @@ mod tests {
         };
         Graph {
             sources: Default::default(),
-            title: "Layout fixture".into(),
+            input: crate::model::ViewInput::Model(Box::new(crate::model::CapturedModel {
+                project: serde_json::json!({"title": "Layout fixture"}),
+                questions: None,
+                snapshot: None,
+                boundaries: None,
+            })),
             shown_nodes: ids.len(),
             shown_edges: pairs.len(),
-            artifact: None,
-            source_boundaries: None,
             actions: Default::default(),
             choices: Default::default(),
             perspectives: Err("Layout fixture".into()),
