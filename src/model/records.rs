@@ -5,14 +5,8 @@ use crate::report::{Check, CheckResult, Diagnostic};
 use crate::{sha256, validation::to_json};
 use std::collections::BTreeMap;
 
-impl Model<'_> {
-    pub(super) fn records(&mut self) {
-        let start = self.checks.len();
-        let records: BTreeMap<_, _> = self
-            .bundle
-            .records()
-            .map(|record| (record.id, record))
-            .collect();
+impl<'a> Model<'a> {
+    pub(super) fn model_id_counts(&self) -> BTreeMap<&'a str, usize> {
         let mut ids = BTreeMap::new();
         let mut count = |id| *ids.entry(id).or_insert(0) += 1;
         for field in ["sources", "questions", "extensions"] {
@@ -31,6 +25,17 @@ impl Model<'_> {
                 }
             }
         }
+        ids
+    }
+
+    pub(super) fn records(&mut self) {
+        let start = self.checks.len();
+        let records: BTreeMap<_, _> = self
+            .bundle
+            .records()
+            .map(|record| (record.id, record))
+            .collect();
+        let ids = self.model_id_counts();
 
         let revision = self
             .bundle

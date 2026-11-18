@@ -12,6 +12,7 @@ use crate::validation::{CORE_KINDS, CORE_RELATIONS};
 
 pub mod context;
 mod extensions;
+mod readiness;
 mod records;
 
 use extensions::Definition;
@@ -30,6 +31,7 @@ pub(crate) fn check(
     bundle: &Bundle,
     manifest: &Document,
     unsupported_extensions: &[String],
+    readiness: Option<(&[String], Option<&Value>)>,
 ) -> Vec<Check> {
     let mut model = Model {
         bundle,
@@ -62,6 +64,10 @@ pub(crate) fn check(
     }
     if bundle.records().len() != 0 {
         model.records();
+    }
+    if let Some((scope, host)) = readiness {
+        let checks = readiness::check(&model, scope, host);
+        model.checks.extend(checks);
     }
     model.checks
 }

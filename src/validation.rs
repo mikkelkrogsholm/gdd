@@ -47,12 +47,14 @@ pub(crate) const CORE_RELATIONS: &[&str] = &[
 pub enum Profile {
     Representation,
     Model,
+    Readiness,
 }
 
 #[derive(Debug, Default)]
 pub struct ValidationOptions<'a> {
     pub profiles: &'a [Profile],
     pub scope: &'a [String],
+    pub host_context: Option<&'a Value>,
     pub unsupported_extensions: &'a [String],
 }
 
@@ -83,18 +85,26 @@ pub fn validate_with_options(
             format!("Scope ID must be a GDD ID string: {invalid:?}."),
         ));
     }
+    if let Some(host) = options.host_context {
+        validate_host(host)?;
+    }
     let mut report = Report::new(profiles, distinct(options.scope));
     let mut normative_valid = true;
+    let mut manifest_valid = bundle.manifest().is_some();
     for document in bundle.documents() {
         if let Some(schema) = embedded_schema(document.kind) {
             let check = document_check(document, schema);
             if document.kind != DocumentKind::Records && check.result != CheckResult::Pass {
                 normative_valid = false;
+                if document.kind.is_manifest() {
+                    manifest_valid = false;
+                }
             }
             report.checks.push(check);
         }
     }
-    let wants_model = report.profiles.contains(&Profile::Model);
+    let wants_readiness = report.profiles.contains(&Profile::Readiness);
+    let wants_model = wants_readiness || report.profiles.contains(&Profile::Model);
     report.checks.extend(
         bundle
             .diagnostics()
@@ -105,7 +115,6 @@ pub fn validate_with_options(
     if normative_valid {
         report.spec_revision = bundle.snapshot().map(|snapshot| snapshot.revision.clone());
     }
-    let representation_valid = report.result("model") == CheckResult::Pass;
     for (namespace, document) in bundle.extensions() {
         if options
             .unsupported_extensions
@@ -130,31 +139,65 @@ pub fn validate_with_options(
         }
     }
 
+    let representation_valid = report.result("model") == CheckResult::Pass;
     if wants_model {
-        if let Some(manifest) = bundle.manifest() {
+        if let Some(manifest) = bundle.manifest().filter(|_| manifest_valid) {
             if representation_valid {
                 report.checks.extend(crate::model::check(
                     bundle,
                     manifest,
                     options.unsupported_extensions,
+                    wants_readiness.then_some((&report.scope, options.host_context)),
                 ));
             }
         } else {
-            let reason =
-                "Semantic model validation requires a supported GDD 0.2 or 0.3 model manifest.";
+            let reason = "Semantic model validation requires a supported GDD 0.2 or 0.3 model manifest; schema validation alone is representation-only.";
             let mut check = Check::new("model.unavailable", "model", CheckResult::Unknown, reason);
             check.scope.clone_from(&report.scope);
             check.diagnostics.push(Diagnostic::new(
                 "FORMAT_UNSUPPORTED",
                 check.result,
-                reason,
-                bundle.root_document().map(|doc| doc.asset.path.as_str()),
+                "No model semantics for this artifact without its model manifest.",
+                None,
                 "",
             ));
             report.checks.push(check);
         }
     }
+    if wants_readiness && (!representation_valid || bundle.manifest().is_none()) {
+        let mut check = Check::new(
+            "readiness.unavailable",
+            "readiness",
+            CheckResult::Unknown,
+            "A valid supported GDD model is required; no semantic PASS inferred.",
+        );
+        check.scope.clone_from(&report.scope);
+        check.diagnostics.push(Diagnostic::new(
+            "REVISION_UNRESOLVED",
+            check.result,
+            "Model unavailable or representation invalid.",
+            None,
+            "",
+        ));
+        report.checks.push(check);
+    }
     Ok(report)
+}
+
+fn validate_host(host: &Value) -> io::Result<()> {
+    static HOST: OnceLock<Validator> = OnceLock::new();
+    let validator = HOST.get_or_init(|| {
+        let schema: JsonValue =
+            serde_json::from_str(include_str!("../schemas/validator-inputs.schema.json"))
+                .expect("embedded tool schemas are JSON");
+        build_schema(&schema["$defs"]["host"]).expect("embedded host schema compiles offline")
+    });
+    validator.validate(&to_json(host)?).map_err(|error| {
+        io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("Invalid host input: {error}"),
+        )
+    })
 }
 
 fn distinct<T: Clone + Ord>(items: &[T]) -> Vec<T> {

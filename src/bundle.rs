@@ -133,6 +133,8 @@ pub struct Bundle {
     path: PathBuf,
     documents: Vec<Document>,
     normative_sources: BTreeMap<String, Asset>,
+    advisory_paths: BTreeMap<String, Result<String, String>>,
+    advisory_assets: BTreeMap<String, Asset>,
     extensions: BTreeMap<String, usize>,
     locations: BTreeMap<String, Location>,
     nodes: BTreeMap<String, usize>,
@@ -161,6 +163,31 @@ impl Bundle {
 
     pub fn normative_sources(&self) -> &BTreeMap<String, Asset> {
         &self.normative_sources
+    }
+
+    pub(crate) fn contract_asset(&self, id: &str) -> Result<&Asset, &str> {
+        if let Some(asset) = self.normative_sources.get(id) {
+            return Ok(asset);
+        }
+        let path = self
+            .advisory_paths
+            .get(id)
+            .ok_or("The source could not be loaded")?
+            .as_deref()
+            .map_err(String::as_str)?;
+        self.asset_at(path).ok_or("The source could not be loaded")
+    }
+
+    fn asset_at(&self, path: &str) -> Option<&Asset> {
+        self.advisory_assets
+            .get(path)
+            .or_else(|| self.normative_sources.values().find(|a| a.path == path))
+            .or_else(|| {
+                self.documents
+                    .iter()
+                    .map(|d| &d.asset)
+                    .find(|a| a.path == path)
+            })
     }
 
     pub fn extensions(&self) -> impl Iterator<Item = (&str, &Document)> {
@@ -226,9 +253,25 @@ impl Bundle {
     }
 }
 
-/// Load one root document and its model assets. Structural loading checks cover
-/// the fields used to select, combine and hash local assets.
+/// Load the model, records, and every referenced contract source so that any
+/// subsequent validation scope can be assessed without reopening files.
 pub fn load(path: &Path) -> Bundle {
+    load_with_contracts(path, Some(&[]))
+}
+
+/// Capture normative model inputs and records without opening advisory contracts.
+/// Use `load_for_readiness` when advisory contract diagnostics are needed.
+pub fn load_model_only(path: &Path) -> Bundle {
+    load_with_contracts(path, None)
+}
+
+/// Capture the model and advisory contracts in the selected read context. An
+/// empty scope captures all contract inputs for subsequent readiness queries.
+pub fn load_for_readiness(path: &Path, scope: &[String]) -> Bundle {
+    load_with_contracts(path, Some(scope))
+}
+
+fn load_with_contracts(path: &Path, scope: Option<&[String]>) -> Bundle {
     let mut bundle = Bundle {
         path: path.to_owned(),
         ..Bundle::default()
@@ -274,6 +317,9 @@ pub fn load(path: &Path) -> Bundle {
     bundle.documents.push(document);
     if kind.is_manifest() {
         load_model(&mut reader, &mut bundle);
+        if let Some(scope) = scope {
+            capture_advisory_contracts(&reader, &mut bundle, scope);
+        }
     } else if kind == DocumentKind::Records {
         index_records(&mut bundle, 0, None);
     } else if kind == DocumentKind::Other {
@@ -494,6 +540,67 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle) {
         if bundle.documents[index].kind == DocumentKind::Records {
             index_records(bundle, index, project_id.as_deref());
         }
+    }
+}
+
+// Capture advisory bytes only when a contract explicitly refers to them. They
+// remain outside the snapshot and cannot establish readiness on their own.
+fn capture_advisory_contracts(reader: &Reader, bundle: &mut Bundle, scope: &[String]) {
+    let declarations = registry(&bundle.documents[0].value, "sources");
+    if declarations.is_none_or(|sources| {
+        !sources
+            .values()
+            .any(|s| get(s, "normative") == Some(&Value::Boolean(false)))
+    }) {
+        return;
+    }
+    let graph = (!scope.is_empty()).then(|| crate::context::ContextGraph::new(bundle));
+    let context = graph
+        .as_ref()
+        .map(|g| g.scope(scope.iter().map(String::as_str)));
+    let mut references = BTreeSet::new();
+    let nodes = bundle
+        .nodes()
+        .filter(|item| context.as_ref().is_none_or(|c| c.contains(item.id)));
+    let edges = bundle.edges().filter(|item| {
+        context.as_ref().is_none_or(|c| {
+            ["from", "to"]
+                .iter()
+                .all(|key| get_string(item.value, key).is_some_and(|id| c.contains(id)))
+        })
+    });
+    for item in nodes.chain(edges) {
+        for field in ["source_refs", "design_refs"] {
+            for reference in array(get(item.value, field)).into_iter().flatten() {
+                if (field == "design_refs" || get_string(reference, "purpose") == Some("contract"))
+                    && let Some(id) = get_string(reference, "source")
+                {
+                    references.insert(id);
+                }
+            }
+        }
+    }
+    let advisory: Vec<_> = references
+        .into_iter()
+        .filter_map(|id| {
+            let source = declarations?.get(id)?;
+            if get(source, "normative") != Some(&Value::Boolean(false)) {
+                return None;
+            }
+            Some((id.to_owned(), get_string(source, "uri")?.to_owned()))
+        })
+        .collect();
+    for (id, uri) in advisory {
+        let result = reader.relative_path(&uri).and_then(|path| {
+            if bundle.asset_at(&path).is_none() {
+                let asset = reader.read_asset(path.clone())?;
+                bundle.advisory_assets.insert(path.clone(), asset);
+            }
+            Ok(path)
+        });
+        bundle
+            .advisory_paths
+            .insert(id, result.map_err(|issue| issue.message.into_string()));
     }
 }
 
@@ -843,6 +950,19 @@ impl Reader {
     }
 
     fn asset(&mut self, path: &str) -> Result<Asset, Diagnostic> {
+        let normalized = self.relative_path(path)?;
+        if !self.seen.insert(normalized.clone()) {
+            return Err(invalid(
+                "ASSET_PATH_INVALID",
+                path,
+                "",
+                "Asset has already been loaded.",
+            ));
+        }
+        self.read_asset(normalized)
+    }
+
+    fn relative_path(&self, path: &str) -> Result<String, Diagnostic> {
         if path.is_empty() || path.starts_with('/') || path.contains(['\\', ':', '\0']) {
             return Err(invalid(
                 "ASSET_PATH_INVALID",
@@ -864,15 +984,11 @@ impl Reader {
                 "Asset path must name a valid local file.",
             )
         })?;
-        if !self.seen.insert(normalized.clone()) {
-            return Err(invalid(
-                "ASSET_PATH_INVALID",
-                path,
-                "",
-                "Asset has already been loaded.",
-            ));
-        }
-        let bytes = read_regular(&self.root, relative).map_err(|error| {
+        Ok(normalized)
+    }
+
+    fn read_asset(&self, normalized: String) -> Result<Asset, Diagnostic> {
+        let bytes = read_regular(&self.root, Path::new(&normalized)).map_err(|error| {
             unknown(
                 "SOURCE_UNAVAILABLE",
                 &normalized,

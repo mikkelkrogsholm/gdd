@@ -53,6 +53,8 @@ enum Command {
         #[arg(long = "unsupported-extension")]
         unsupported_extensions: Vec<String>,
         #[arg(long)]
+        host_context: Option<PathBuf>,
+        #[arg(long)]
         output: Option<PathBuf>,
     },
 }
@@ -81,7 +83,7 @@ fn run() -> io::Result<ExitCode> {
             write_json(&mut io::stdout().lock(), &receipt)?;
         }
         Command::Snapshot { path, output } => {
-            let bundle = bundle::load(&path);
+            let bundle = bundle::load_model_only(&path);
             let report = validation::validate(&bundle, Profile::Model);
             let code = report.exit_code();
             if code == 0
@@ -98,7 +100,7 @@ fn run() -> io::Result<ExitCode> {
             scope,
             output,
         } => {
-            let bundle = bundle::load(&path);
+            let bundle = bundle::load_model_only(&path);
             let report = validation::validate(&bundle, Profile::Model);
             let code = report.exit_code();
             if code != 0 {
@@ -115,14 +117,32 @@ fn run() -> io::Result<ExitCode> {
             profile,
             scope,
             unsupported_extensions,
+            host_context,
             output,
         } => {
-            let bundle = bundle::load(&path);
+            let host = if let Some(path) = host_context {
+                match gdd::input::parse(&std::fs::read(path)?) {
+                    Ok(value) => Some(value),
+                    Err(error @ gdd::input::InputError::UnsupportedDepth) => {
+                        eprintln!("gdd: {error}");
+                        return Ok(ExitCode::from(2));
+                    }
+                    Err(error) => return Err(io::Error::other(error)),
+                }
+            } else {
+                None
+            };
+            let bundle = if profile.contains(&Profile::Readiness) {
+                bundle::load_for_readiness(&path, &scope)
+            } else {
+                bundle::load_model_only(&path)
+            };
             let report = validation::validate_with_options(
                 &bundle,
                 ValidationOptions {
                     profiles: &profile,
                     scope: &scope,
+                    host_context: host.as_ref(),
                     unsupported_extensions: &unsupported_extensions,
                 },
             )?;

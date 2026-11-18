@@ -26,7 +26,7 @@ pub struct Edge {
 
 impl Graph {
     pub fn load(path: &Path) -> Result<Self, String> {
-        Self::from_bundle(&bundle::load(path))
+        Self::from_bundle(&bundle::load_model_only(path))
             .map_err(|error| format!("Cannot open {}: {error}", path.display()))
     }
 

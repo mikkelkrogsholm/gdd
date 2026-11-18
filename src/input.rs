@@ -54,6 +54,14 @@ pub fn parse(raw: &[u8]) -> Result<Value, InputError> {
     }
 }
 
+/// Parse strict JSON without admitting YAML-only syntax.
+pub fn parse_json(source: &str) -> Result<Value, InputError> {
+    read_json(source).map_err(|error| match error {
+        JsonError::Input(error) => error,
+        JsonError::Syntax => InputError::Invalid("Invalid JSON syntax.".into()),
+    })
+}
+
 enum JsonError {
     Syntax,
     Input(InputError),
