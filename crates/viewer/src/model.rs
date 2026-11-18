@@ -1,6 +1,8 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
+use std::path::Path;
 
-use gdd::input::{self, Value};
+use gdd::bundle::{self, Bundle, Location};
+use gdd::input::Value;
 
 pub struct Graph {
     pub title: String,
@@ -23,80 +25,46 @@ pub struct Edge {
 }
 
 impl Graph {
-    pub fn parse(bytes: &[u8]) -> Result<Self, String> {
-        let value = input::parse(bytes).map_err(|error| error.to_string())?;
-        let document = object(&value, "model")?;
-        let format = text(document, "format")?;
-        if !matches!(format, "gdd/0.2" | "gdd/0.3") {
-            return Err(format!(
-                "unsupported format {format:?}, expected gdd/0.2 or gdd/0.3"
-            ));
-        }
-        if let Some(includes) = document.get("includes")
-            && !array(includes, "includes")?.is_empty()
-        {
-            return Err("the preview requires an embedded graph and cannot load includes".into());
-        }
+    pub fn load(path: &Path) -> Result<Self, String> {
+        Self::from_bundle(&bundle::load(path))
+            .map_err(|error| format!("Cannot open {}: {error}", path.display()))
+    }
 
+    fn from_bundle(bundle: &Bundle) -> Result<Self, String> {
+        if !bundle.diagnostics().is_empty() {
+            return Err(bundle
+                .diagnostics()
+                .iter()
+                .map(ToString::to_string)
+                .collect::<Vec<_>>()
+                .join("\n"));
+        }
+        let manifest = bundle
+            .manifest()
+            .ok_or_else(|| "Expected a GDD 0.2 or 0.3 model manifest.".to_owned())?;
+        let document = object(&manifest.value, "model")?;
         let project = object(field(document, "project")?, "project")?;
         let title = text(project, "title")?.to_owned();
-        let node_records = object(field(document, "nodes")?, "nodes")?;
-        let mut nodes = Vec::with_capacity(node_records.len());
-        for (id, record) in node_records {
-            let node = object(record, id)?;
-            let kind = text(node, "kind")?;
-            let description = text(node, "description")?;
-            if id.is_empty() || kind.is_empty() || description.is_empty() {
-                return Err(format!(
-                    "node {id:?} must have an ID, kind, and description"
-                ));
-            }
-            let label = match node.get("label") {
-                None => id,
-                Some(Value::String(label)) if label.is_empty() => id,
-                Some(Value::String(label)) => label,
-                Some(_) => return Err(format!("label for node {id:?} must be a string")),
-            };
-            nodes.push(Node {
-                id: id.clone(),
-                label: label.clone(),
-                kind: kind.to_owned(),
-                description: description.to_owned(),
-            });
-        }
+        let nodes = bundle
+            .nodes()
+            .map(|record| {
+                project_node(record.id, record.value)
+                    .map_err(|error| record_error(record.location, &error))
+            })
+            .collect::<Result<Vec<_>, _>>()?;
         let indices: BTreeMap<_, _> = nodes
             .iter()
             .enumerate()
             .map(|(index, node)| (node.id.as_str(), index))
             .collect();
 
-        let edge_records = array(field(document, "edges")?, "edges")?;
-        let mut edge_ids = BTreeSet::new();
-        let mut edges = Vec::with_capacity(edge_records.len());
-        for record in edge_records {
-            let edge = object(record, "edge")?;
-            let id = text(edge, "id")?;
-            let relation = text(edge, "relation")?;
-            if id.is_empty() || relation.is_empty() {
-                return Err(format!("edge {id:?} must have an ID and relation"));
-            }
-            if !edge_ids.insert(id) {
-                return Err(format!("duplicate edge ID {id:?}"));
-            }
-            let resolve = |field| {
-                let end = text(edge, field)?;
-                indices
-                    .get(end)
-                    .copied()
-                    .ok_or_else(|| format!("edge {id:?} refers to unknown node {end:?}"))
-            };
-            edges.push(Edge {
-                from: resolve("from")?,
-                to: resolve("to")?,
-                id: id.to_owned(),
-                relation: relation.to_owned(),
-            });
-        }
+        let edges = bundle
+            .edges()
+            .map(|record| {
+                project_edge(record.id, record.value, &indices)
+                    .map_err(|error| record_error(record.location, &error))
+            })
+            .collect::<Result<Vec<_>, _>>()?;
         Ok(Self {
             title,
             nodes,
@@ -105,19 +73,60 @@ impl Graph {
     }
 }
 
+fn project_node(id: &str, value: &Value) -> Result<Node, String> {
+    let node = object(value, id)?;
+    let kind = text(node, "kind")?;
+    let description = text(node, "description")?;
+    if id.is_empty() || kind.is_empty() || description.is_empty() {
+        return Err(format!(
+            "node {id:?} must have an ID, kind, and description"
+        ));
+    }
+    let label = match node.get("label") {
+        None => id,
+        Some(Value::String(label)) if label.is_empty() => id,
+        Some(Value::String(label)) => label,
+        Some(_) => return Err(format!("label for node {id:?} must be a string")),
+    };
+    Ok(Node {
+        id: id.to_owned(),
+        label: label.to_owned(),
+        kind: kind.to_owned(),
+        description: description.to_owned(),
+    })
+}
+
+fn project_edge(id: &str, value: &Value, indices: &BTreeMap<&str, usize>) -> Result<Edge, String> {
+    let edge = object(value, "edge")?;
+    let relation = text(edge, "relation")?;
+    if id.is_empty() || relation.is_empty() {
+        return Err(format!("edge {id:?} must have an ID and relation"));
+    }
+    let resolve = |field| {
+        let end = text(edge, field)?;
+        indices
+            .get(end)
+            .copied()
+            .ok_or_else(|| format!("edge {id:?} refers to unknown node {end:?}"))
+    };
+    Ok(Edge {
+        from: resolve("from")?,
+        to: resolve("to")?,
+        id: id.to_owned(),
+        relation: relation.to_owned(),
+    })
+}
+
+fn record_error(location: &Location, error: &str) -> String {
+    format!("{}{}: {error}", location.file, location.pointer)
+}
+
 type Object = BTreeMap<String, Value>;
 
 fn object<'a>(value: &'a Value, name: &str) -> Result<&'a Object, String> {
     match value {
         Value::Object(entries) => Ok(entries),
         _ => Err(format!("{name:?} must be an object")),
-    }
-}
-
-fn array<'a>(value: &'a Value, name: &str) -> Result<&'a [Value], String> {
-    match value {
-        Value::Array(items) => Ok(items),
-        _ => Err(format!("{name:?} must be an array")),
     }
 }
 
@@ -136,6 +145,10 @@ fn text<'a>(object: &'a Object, name: &str) -> Result<&'a str, String> {
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+    use std::path::{Path, PathBuf};
+
+    use gdd::bundle;
     use serde_json::{Value, json};
 
     use super::Graph;
@@ -143,7 +156,7 @@ mod tests {
     fn document(format: &str) -> Value {
         json!({
             "format": format,
-            "project": {"title": "Example"},
+            "project": {"id": "example.viewer", "title": "Example", "goal": "Preview a graph."},
             "nodes": {
                 "node.a": {"kind": "component", "description": "A"},
                 "node.b": {"kind": "action", "label": "B", "description": "B"}
@@ -157,10 +170,23 @@ mod tests {
         })
     }
 
+    fn load_fixture(source: &str) -> Result<Graph, String> {
+        let root = tempfile::tempdir().unwrap();
+        let file = root.path().join("model.gdd.yaml");
+        fs::write(&file, source).unwrap();
+        Graph::load(&file)
+    }
+
+    fn example(name: &str) -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../examples")
+            .join(name)
+    }
+
     #[test]
     fn keeps_parallel_reverse_and_self_edges() {
         for format in ["gdd/0.2", "gdd/0.3"] {
-            let graph = Graph::parse(document(format).to_string().as_bytes()).unwrap();
+            let graph = load_fixture(&document(format).to_string()).unwrap();
             assert_eq!(graph.nodes[0].label, "node.a");
             assert_eq!(graph.nodes[1].label, "B");
             assert_eq!(
@@ -194,23 +220,19 @@ mod tests {
         ] {
             let mut model = document("gdd/0.3");
             model[field] = malformed;
-            assert!(
-                Graph::parse(model.to_string().as_bytes()).is_err(),
-                "{field}"
-            );
+            assert!(load_fixture(&model.to_string()).is_err(), "{field}");
         }
         for field in ["nodes", "edges"] {
             let mut model = document("gdd/0.3");
             model.as_object_mut().unwrap().remove(field);
-            assert!(
-                Graph::parse(model.to_string().as_bytes()).is_err(),
-                "{field}"
-            );
+            assert!(load_fixture(&model.to_string()).is_err(), "{field}");
         }
         let mut model = document("gdd/0.3");
         model["edges"][0]["to"] = json!("node.unknown");
-        let error = Graph::parse(model.to_string().as_bytes()).err().unwrap();
-        assert!(error.contains("edge.1") && error.contains("node.unknown"));
+        let error = load_fixture(&model.to_string()).err().unwrap();
+        for part in ["model.gdd.yaml/edges/0", "edge.1", "node.unknown"] {
+            assert!(error.contains(part), "{error}");
+        }
     }
 
     #[test]
@@ -276,27 +298,27 @@ mod tests {
             "step.choose",
             "step.reserve",
         ];
-        for (bytes, title, node_ids, edge_count) in [
+        for (name, title, node_ids, edge_count) in [
             (
-                include_bytes!("../../../examples/concert.gdd.yaml").as_slice(),
+                "concert.gdd.yaml",
                 "Concert seat reservations",
                 CONCERT_NODES,
                 85,
             ),
             (
-                include_bytes!("../../../examples/concert-0.3.gdd.yaml").as_slice(),
+                "concert-0.3.gdd.yaml",
                 "Concert seat reservations",
                 concert_03_nodes.as_slice(),
                 87,
             ),
             (
-                include_bytes!("../../../examples/product/greenfield.gdd.json").as_slice(),
+                "product/greenfield.gdd.json",
                 "Reserve a seat",
                 product_nodes.as_slice(),
                 12,
             ),
         ] {
-            let graph = Graph::parse(bytes).unwrap();
+            let graph = Graph::load(&example(name)).unwrap();
             assert_eq!(graph.title, title);
             assert_eq!(
                 graph
@@ -310,8 +332,74 @@ mod tests {
         }
     }
 
+    fn assert_fragmented_graph(graph: &Graph) {
+        assert_eq!(graph.title, "Fragmented model");
+        assert_eq!(
+            graph
+                .nodes
+                .iter()
+                .map(|node| node.id.as_str())
+                .collect::<Vec<_>>(),
+            ["component.notes", "entity.note"]
+        );
+        let [edge] = graph.edges.as_slice() else {
+            panic!("expected one edge");
+        };
+        assert_eq!(edge.id, "edge.note.owner");
+        assert_eq!(edge.relation, "owned_by");
+        assert_eq!(graph.nodes[edge.from].id, "entity.note");
+        assert_eq!(graph.nodes[edge.to].id, "component.notes");
+    }
+
     #[test]
-    fn shared_parser_checks_node_ids_and_ignored_fields() {
+    fn opens_fragmented_example() {
+        let graph = Graph::load(&example("fragmented.gdd.yaml")).unwrap();
+        assert_fragmented_graph(&graph);
+    }
+
+    #[test]
+    fn projects_retained_bundle_after_source_files_are_removed() {
+        let root = tempfile::tempdir().unwrap();
+        let manifest = root.path().join("fragmented.gdd.yaml");
+        let fragment = root.path().join("note.fragment.yaml");
+        fs::copy(example("fragmented.gdd.yaml"), &manifest).unwrap();
+        fs::copy(example("note.fragment.yaml"), &fragment).unwrap();
+        let bundle = bundle::load(&manifest);
+        fs::remove_file(&manifest).unwrap();
+        fs::remove_file(&fragment).unwrap();
+        let graph = Graph::from_bundle(&bundle).unwrap();
+        assert_fragmented_graph(&graph);
+    }
+
+    #[test]
+    fn rejects_bad_fragments_with_source_diagnostics() {
+        let root = tempfile::tempdir().unwrap();
+        let manifest = root.path().join("fragmented.gdd.yaml");
+        let fragment = root.path().join("note.fragment.yaml");
+        fs::copy(example("fragmented.gdd.yaml"), &manifest).unwrap();
+
+        let error = Graph::load(&manifest).err().unwrap();
+        assert!(
+            error.contains("note.fragment.yaml") && error.contains("SOURCE_UNAVAILABLE"),
+            "{error}"
+        );
+
+        let source = fs::read_to_string(example("note.fragment.yaml")).unwrap();
+        fs::write(
+            &fragment,
+            source.replace("entity.note:", "component.notes:"),
+        )
+        .unwrap();
+        let error = Graph::load(&manifest).err().unwrap();
+        assert!(
+            error.contains("note.fragment.yaml/nodes/component.notes")
+                && error.contains("ID_COLLISION"),
+            "{error}"
+        );
+    }
+
+    #[test]
+    fn shared_loader_checks_node_ids_and_ignored_fields() {
         let json = document("gdd/0.3").to_string();
         for (source, expected) in [
             (
@@ -344,14 +432,14 @@ mod tests {
             ),
             (
                 json.replace(r#""id":"edge.2""#, r#""id":"edge.1""#),
-                "duplicate edge ID",
+                "ID_COLLISION",
             ),
             (
                 "format: gdd/0.3\nproject: {title: Example}\nnodes: {}\nedges: []\nannotations: &forbidden 1".into(),
                 "Anchors and aliases are forbidden",
             ),
         ] {
-            let error = Graph::parse(source.as_bytes()).err().unwrap();
+            let error = load_fixture(&source).err().unwrap();
             assert!(error.contains(expected), "{error}");
         }
         let with_deep_value = json.replace(
@@ -362,6 +450,6 @@ mod tests {
                 "]".repeat(252)
             ),
         );
-        assert!(Graph::parse(with_deep_value.as_bytes()).is_ok());
+        assert!(load_fixture(&with_deep_value).is_ok());
     }
 }

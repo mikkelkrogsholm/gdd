@@ -3,7 +3,6 @@ mod model;
 mod viewer;
 
 use std::ffi::OsStr;
-use std::fs;
 use std::path::Path;
 use std::process::ExitCode;
 
@@ -15,9 +14,7 @@ use viewer::Viewer;
 const USAGE: &str = "Usage: gdd-viewer <MODEL.gdd.json | MODEL.gdd.yaml>";
 
 fn run(path: &Path) -> Result<(), String> {
-    let path_error = |error: &dyn std::fmt::Display| format!("{}: {error}", path.display());
-    let bytes = fs::read(path).map_err(|error| path_error(&error))?;
-    let graph = Graph::parse(&bytes).map_err(|error| path_error(&error))?;
+    let graph = Graph::load(path)?;
     let filename = path
         .file_name()
         .unwrap_or(path.as_os_str())

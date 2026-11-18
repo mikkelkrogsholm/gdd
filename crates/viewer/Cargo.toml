@@ -13,3 +13,4 @@ gdd = { path = "../.." }
 
 [dev-dependencies]
 serde_json = "1.0"
+tempfile = "3.27"

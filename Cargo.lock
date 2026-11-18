@@ -1329,6 +1329,7 @@ dependencies = [
  "eframe",
  "gdd",
  "serde_json",
+ "tempfile",
 ]
 
 [[package]]
