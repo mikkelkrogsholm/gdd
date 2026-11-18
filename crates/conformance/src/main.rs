@@ -10,6 +10,7 @@ mod named;
 mod receipt;
 mod standard;
 mod status;
+mod verify_install;
 mod visualization;
 mod workflow;
 mod workflow_demo;
@@ -38,6 +39,15 @@ enum Command {
         #[arg(long)]
         quick: bool,
         #[arg(long, value_name = "NEW_DIR")]
+        output: Option<PathBuf>,
+    },
+    /// Verify an installed native CLI against a separate reference executable.
+    VerifyInstall {
+        #[arg(long, value_name = "FILE")]
+        installed: PathBuf,
+        #[arg(long, value_name = "FILE")]
+        reference: PathBuf,
+        #[arg(long, value_name = "NEW_FILE")]
         output: Option<PathBuf>,
     },
     /// Build, verify or restore an indexed concert experiment archive.
@@ -133,6 +143,19 @@ fn main() -> Result<ExitCode> {
             return local_check::run(
                 directory.parent().context("locate checkout")?,
                 quick,
+                output,
+            );
+        }
+        Command::VerifyInstall {
+            installed,
+            reference,
+            output,
+        } => {
+            let directory = suite_directory(cli.checkout.as_deref())?.canonicalize()?;
+            return verify_install::run(
+                directory.parent().context("locate checkout")?,
+                &installed,
+                &reference,
                 output,
             );
         }

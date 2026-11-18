@@ -16,6 +16,31 @@ preserve the relative paths of their inputs, including example bundles,
 schemas, tutorial models and archives used by the chosen suite. Relative
 output paths resolve from the directory where you run the command.
 
+## Installed native CLI
+
+Supply the installed `gdd` and a separate reference `gdd` built for the same
+checkout. Both paths may be relative to the directory where you start the runner.
+
+```sh
+gdd-conformance --checkout /path/to/gdd verify-install \
+  --installed "/path/to/install/bin/gdd" --reference /path/to/reference/gdd \
+  --output installed-cli.json
+```
+
+The runner stages checkout fixtures in a fresh temporary directory outside the
+checkout and invokes both programs directly. Its 33 controls cover GDD 0.2 and
+0.3 inspection, independently generated native view bytes, product perspectives,
+boundaries, planned review, acceptance, project creation, readiness, diff and
+static import observation with an explicit CPython target. It compares parsed
+read-only output and exit codes, validates the checked-in perspectives schema
+and boundaries, and checks the bytes of files that must survive inspection or
+refused initialization.
+
+The `gdd-verify-install/0.1` JSON receipt records both executable SHA-256 digests
+and the expected and observed exit codes of each attempted control. The first
+failure ends the run with a diagnostic and a nonzero exit. Use a fresh path
+for each receipt or omit `--output` to print it.
+
 ## Standard validator
 
 Run the 58 named cases from this checkout with the locked Cargo dependencies

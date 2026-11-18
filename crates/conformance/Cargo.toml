@@ -11,7 +11,7 @@ anyhow = "1.0"
 clap = { version = "4.6", features = ["derive"] }
 flate2 = { version = "1.1", default-features = false, features = ["rust_backend"] }
 gdd = { path = "../..", features = ["conformance"] }
-json-patch = { version = "4.2", default-features = false }
+json-patch = "4.2"
 jsonschema = { version = "0.61.2", default-features = false, features = ["arbitrary-precision"] }
 jsonschema-value = { version = "0.61.2", default-features = false, features = ["arbitrary-precision"] }
 libyaml-safer = "0.3.0"

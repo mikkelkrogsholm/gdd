@@ -115,6 +115,9 @@ Run the 32 [native design boundary and review cases](conformance/README.md#gdd-0
 with `cargo run --offline --locked -p gdd-conformance -- design --output native-design-run.json`.
 Use a new file path for each receipt.
 
+To exercise a separately installed native CLI, run the
+[33 installed CLI controls](conformance/README.md#installed-native-cli).
+
 ### Python migration and release checks
 
 The Python reference and distribution checks use the existing local runner.
