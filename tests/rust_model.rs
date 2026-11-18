@@ -116,6 +116,8 @@ fn compares_numeric_intervals_and_integer_inhabitance_exactly() {
             false,
             CheckResult::Fail,
         ),
+        ("number", "1e-4000", "2e-4000", false, CheckResult::Pass),
+        ("number", "1e-4000", "0", false, CheckResult::Fail),
         ("number", "1e10001", "2e10001", false, CheckResult::Unknown),
     ] {
         let mut model = manifest("gdd/0.3");

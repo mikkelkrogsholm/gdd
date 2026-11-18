@@ -140,6 +140,18 @@ in the authorization dimension. In Rust, set `ValidationOptions::activity` to
 the corresponding `gdd::validation::Activity`. Both assessments read the model
 and its declared ledgers from the same bundle capture.
 
+To assess a separate ledger, run `gdd validate observations.json --model
+project/gdd.json --profile records`. Supply the usual scope and host context.
+The ledger can live outside the primary project. When the primary already
+declares the same resolved file, the validator reads it once. The primary
+model supplies the project identity and snapshot revision. A project mismatch
+or duplicate record ID appears in the report.
+
+Rust callers can capture both inputs with
+`bundle::load_with_records(&model, &ledger)` and pass that bundle to
+`validate_with_options`. For a single scoped assessment, use
+`validation::validate_paths(&ledger, Some(&model), options, None)`.
+
 ## Snapshots, context and project creation
 
 For a model-only assessment, use `bundle::load_model_only(&path)` and
@@ -155,11 +167,28 @@ Choose an unused name under an existing parent. The returned `InitReceipt`
 identifies the manifest and spec revision. The starter contains an open scope
 question, so its model passes and its structural readiness fails.
 
+## Numeric validation differences
+
+The Rust parser preserves finite numeric literals such as `1e-4000` and
+compares model bounds using exact arithmetic. A number field with minimum
+`1e-4000` and maximum `2e-4000` passes this check. With maximum `0`, the
+same minimum produces `TYPE_CONSTRAINT_INVALID`. The Python validator reports
+`FORMAT_UNSUPPORTED` and UNKNOWN for these inputs because conversion to its
+numeric representation would lose the value. Those Python capacity tests
+intentionally have different native results. Rust hashes the original
+normative file bytes to compute the spec revision.
+
+Unquoted non-finite literals such as `NaN` and `Infinity` are invalid input.
+The native model interval comparison has a 10,000-digit budget, including
+zeros introduced by the exponent. A comparison that exceeds its capacity
+returns `FORMAT_UNSUPPORTED` and UNKNOWN. The parser also limits JSON and
+YAML nesting to 256 containers.
+
 ## Python API coverage
 
 | Python entry points | Current Rust support |
 | --- | --- |
-| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. A separate records input supplied via `--model`, visualization and Graphify validation still require Python. |
+| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Visualization and Graphify validation still require Python. |
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Python-only Graphify operations. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow`, `create_run`, `run_status`, `advance_run` | Python-only work planning and run journals. |

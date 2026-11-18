@@ -46,6 +46,9 @@ enum Command {
     /// Validate a GDD document or model bundle.
     Validate {
         path: PathBuf,
+        /// Primary GDD model when the positional input is a secondary records file.
+        #[arg(long)]
+        model: Option<PathBuf>,
         #[arg(long, value_enum, default_value = "model")]
         profile: Vec<Profile>,
         #[arg(long)]
@@ -133,6 +136,7 @@ fn run() -> io::Result<ExitCode> {
         }
         Command::Validate {
             path,
+            model,
             profile,
             scope,
             unsupported_extensions,
@@ -156,7 +160,12 @@ fn run() -> io::Result<ExitCode> {
                 unsupported_extensions: &unsupported_extensions,
             };
             let mut stderr = io::stderr().lock();
-            let report = validation::validate_path(&path, options, explain.then_some(&mut stderr))?;
+            let report = validation::validate_paths(
+                &path,
+                model.as_deref(),
+                options,
+                explain.then_some(&mut stderr),
+            )?;
             write_output(output.as_deref(), &report)?;
             return Ok(ExitCode::from(report.exit_code()));
         }

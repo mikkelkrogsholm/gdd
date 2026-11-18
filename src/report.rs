@@ -29,7 +29,7 @@ impl From<Outcome> for CheckResult {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Diagnostic {
     pub code: &'static str,
     pub severity: &'static str,
@@ -38,7 +38,7 @@ pub struct Diagnostic {
     pub related_ids: Vec<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct DiagnosticLocation {
     pub file: Option<String>,
     pub pointer: String,
@@ -79,7 +79,7 @@ impl Diagnostic {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Check {
     pub check_id: String,
     pub dimension: &'static str,
@@ -91,7 +91,7 @@ pub struct Check {
     pub details: Option<CheckDetails>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(untagged)]
 pub enum CheckDetails {
     Authorization {
@@ -131,18 +131,27 @@ impl From<&bundle::Diagnostic> for Check {
     fn from(issue: &bundle::Diagnostic) -> Self {
         let result = issue.outcome.into();
         let Location { file, pointer } = &issue.location;
-        let mut check = Self::new(
-            format!("check.{}", issue.code.to_ascii_lowercase()),
-            issue.dimension,
-            result,
-            issue.message.as_ref(),
-        );
+        let mut check = if issue.code == "FORMAT_UNSUPPORTED" && pointer == "/format" {
+            Self::new(
+                "representation.format",
+                issue.dimension,
+                result,
+                "Format is not supported.",
+            )
+        } else {
+            Self::new(
+                format!("check.{}", issue.code.to_ascii_lowercase()),
+                issue.dimension,
+                result,
+                issue.message.as_ref(),
+            )
+        };
         check.diagnostics.push(
             Diagnostic::new(
                 issue.code,
                 result,
                 issue.message.as_ref(),
-                Some(file),
+                (!file.is_empty()).then_some(file.as_str()),
                 pointer,
             )
             .with_related_ids(issue.related_ids.iter().map(String::as_str)),

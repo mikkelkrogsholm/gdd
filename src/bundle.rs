@@ -10,6 +10,7 @@ use std::path::{Component, Path, PathBuf};
 use serde::Serialize;
 
 use crate::input::{self, InputError, Value};
+use crate::report::{Check, CheckResult};
 use crate::{sha256, snapshot_revision};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -132,6 +133,11 @@ pub struct LocatedRecord<'a> {
 pub struct Bundle {
     path: PathBuf,
     documents: Vec<Document>,
+    secondary_start: Option<usize>,
+    declared_record_paths: BTreeSet<PathBuf>,
+    // A paired capture validates each contributing root before it can supply
+    // a project identity or record declarations. Reuse these checks in reports.
+    representation_checks: BTreeMap<usize, Check>,
     normative_sources: BTreeMap<String, Asset>,
     advisory_paths: BTreeMap<String, Result<String, String>>,
     advisory_assets: BTreeMap<String, Asset>,
@@ -151,15 +157,44 @@ impl Bundle {
     }
 
     pub fn root_document(&self) -> Option<&Document> {
-        self.documents.first()
+        self.primary_documents().first()
     }
 
     pub fn manifest(&self) -> Option<&Document> {
         self.root_document().filter(|doc| doc.kind.is_manifest())
     }
 
+    /// Documents read from the primary input, its fragments and declared assets.
+    pub fn primary_documents(&self) -> &[Document] {
+        &self.documents[..self.secondary_start.unwrap_or(self.documents.len())]
+    }
+
+    /// All captured documents, including an explicitly supplied secondary input.
     pub fn documents(&self) -> &[Document] {
         &self.documents
+    }
+
+    pub(crate) fn representation_check(&self, index: usize) -> Option<Check> {
+        self.representation_checks
+            .get(&index)
+            .cloned()
+            .or_else(|| crate::validation::representation_check(&self.documents[index]))
+    }
+
+    fn validate_document(&mut self, index: usize) -> bool {
+        let Some(check) = crate::validation::representation_check(&self.documents[index]) else {
+            return false;
+        };
+        let valid = check.result == CheckResult::Pass;
+        self.representation_checks.insert(index, check);
+        valid
+    }
+
+    fn accepted_root(&self) -> Option<&Document> {
+        self.representation_checks
+            .get(&0)
+            .filter(|c| c.result == CheckResult::Pass)
+            .and_then(|_| self.root_document())
     }
 
     pub fn normative_sources(&self) -> &BTreeMap<String, Asset> {
@@ -184,7 +219,7 @@ impl Bundle {
             .get(path)
             .or_else(|| self.normative_sources.values().find(|a| a.path == path))
             .or_else(|| {
-                self.documents
+                self.primary_documents()
                     .iter()
                     .map(|d| &d.asset)
                     .find(|a| a.path == path)
@@ -255,13 +290,24 @@ impl Bundle {
     }
 
     pub fn exit_code(&self) -> u8 {
+        let schema_results = self
+            .representation_checks
+            .values()
+            .map(|check| check.result);
         if self
             .diagnostics
             .iter()
             .any(|issue| issue.outcome == Outcome::Fail)
+            || schema_results
+                .clone()
+                .any(|result| result == CheckResult::Fail)
         {
             1
-        } else if self.diagnostics.is_empty() {
+        } else if self.diagnostics.is_empty()
+            && schema_results
+                .into_iter()
+                .all(|result| result == CheckResult::Pass)
+        {
             0
         } else {
             2
@@ -272,34 +318,128 @@ impl Bundle {
 /// Load the model, records, and every referenced contract source so that any
 /// subsequent validation scope can be assessed without reopening files.
 pub fn load(path: &Path) -> Bundle {
-    load_with_contracts(path, Some(&[]))
+    capture(path, None, Some(&[]))
 }
 
 /// Capture normative model inputs and records without opening advisory contracts.
 /// Use `load_for_readiness` when advisory contract diagnostics are needed.
 pub fn load_model_only(path: &Path) -> Bundle {
-    load_with_contracts(path, None)
+    capture(path, None, None)
 }
 
 /// Capture the model and advisory contracts in the selected read context. An
 /// empty scope captures all contract inputs for subsequent readiness queries.
 pub fn load_for_readiness(path: &Path, scope: &[String]) -> Bundle {
-    load_with_contracts(path, Some(scope))
+    capture(path, None, Some(scope))
 }
 
-fn load_with_contracts(path: &Path, scope: Option<&[String]>) -> Bundle {
+/// Capture a primary model, its contract sources, and an explicit secondary
+/// ledger. Reuse this bundle with any scope without reopening the input files.
+pub fn load_with_records(model: &Path, secondary: &Path) -> Bundle {
+    capture(model, Some(secondary), Some(&[]))
+}
+
+pub(crate) fn capture(model: &Path, secondary: Option<&Path>, scope: Option<&[String]>) -> Bundle {
+    let mut bundle = load_primary(model, scope, secondary.is_some());
+    if let Some(path) = secondary {
+        match resolve_local(path) {
+            Ok(resolved) if !bundle.declared_record_paths.contains(&resolved) => {
+                let other = load_resolved(resolved, None, true, Some(&bundle));
+                merge_records(&mut bundle, other);
+            }
+            Ok(_) => {}
+            Err(mut issue) => {
+                issue.message = format!(
+                    "Secondary record input cannot be resolved: {}",
+                    issue.message
+                )
+                .into();
+                bundle.diagnostics.push(issue);
+            }
+        }
+    }
+    bundle
+}
+
+fn merge_records(primary: &mut Bundle, mut secondary: Bundle) {
+    let first_secondary = primary.documents.len();
+    primary.diagnostics.extend(
+        secondary
+            .diagnostics
+            .drain(..)
+            .filter(|issue| !issue.semantic_only),
+    );
+    if let Some(document) = secondary.accepted_root() {
+        if document.kind != DocumentKind::Records {
+            primary.diagnostics.push(composition_issue(
+                "SCHEMA_INVALID",
+                "Secondary input must be gdd-records/0.2.",
+            ));
+        } else if let Some(project_id) = primary
+            .accepted_root()
+            .filter(|m| m.kind.is_manifest())
+            .and_then(|m| get(&m.value, "project"))
+            .and_then(|p| get_string(p, "id"))
+            && Some(project_id) != get_string(&document.value, "project_id")
+        {
+            primary.diagnostics.push(composition_issue(
+                "RECORD_INVALID",
+                "Secondary records belong to another project.",
+            ));
+        }
+    }
+    for (id, (index, location)) in secondary.records {
+        match primary.records.entry(id) {
+            Entry::Vacant(entry) => {
+                entry.insert((first_secondary + index, location));
+            }
+            Entry::Occupied(entry) => primary.diagnostics.push(composition_issue(
+                "ID_COLLISION",
+                format!("Record loaded twice: {}.", entry.key()),
+            )),
+        }
+    }
+    primary.secondary_start = Some(first_secondary);
+    primary.documents.extend(secondary.documents);
+    primary.representation_checks.extend(
+        secondary
+            .representation_checks
+            .into_iter()
+            .map(|(index, check)| (first_secondary + index, check)),
+    );
+}
+
+fn load_primary(path: &Path, scope: Option<&[String]>, paired: bool) -> Bundle {
+    let resolved = if paired {
+        resolve_local(path)
+    } else {
+        fs::canonicalize(path).map_err(|error| path_io(path, error))
+    };
+    match resolved {
+        Ok(path) => load_resolved(path, scope, paired, None),
+        Err(issue) => Bundle {
+            path: path.to_owned(),
+            diagnostics: vec![issue],
+            ..Bundle::default()
+        },
+    }
+}
+
+fn resolve_local(path: &Path) -> Result<PathBuf, Diagnostic> {
+    let absolute = std::path::absolute(path).map_err(|error| path_io(path, error))?;
+    resolve_asset_path(&absolute, &path.display().to_string())
+}
+
+fn load_resolved(
+    path: PathBuf,
+    scope: Option<&[String]>,
+    paired: bool,
+    primary: Option<&Bundle>,
+) -> Bundle {
     let mut bundle = Bundle {
-        path: path.to_owned(),
+        path,
         ..Bundle::default()
     };
-    let resolved = match fs::canonicalize(path) {
-        Ok(path) => path,
-        Err(error) => {
-            bundle.diagnostics.push(path_io(path, error));
-            return bundle;
-        }
-    };
-    bundle.path = resolved;
     let (Some(root), Some(name)) = (bundle.path.parent(), bundle.path.file_name()) else {
         bundle.diagnostics.push(invalid(
             "ASSET_PATH_INVALID",
@@ -319,6 +459,7 @@ fn load_with_contracts(path: &Path, scope: Option<&[String]>) -> Bundle {
         return bundle;
     };
     let mut reader = Reader {
+        primary,
         root: root.to_owned(),
         seen: BTreeSet::new(),
     };
@@ -331,8 +472,13 @@ fn load_with_contracts(path: &Path, scope: Option<&[String]>) -> Bundle {
     };
     let kind = document.kind;
     bundle.documents.push(document);
+    // An unrecognised or invalid input contributes its own representation
+    // result. Its fields cannot identify a project or declare other files.
+    if paired && kind != DocumentKind::Other && !bundle.validate_document(0) {
+        return bundle;
+    }
     if kind.is_manifest() {
-        load_model(&mut reader, &mut bundle);
+        load_model(&mut reader, &mut bundle, paired);
         if let Some(scope) = scope {
             capture_advisory_contracts(&reader, &mut bundle, scope);
         }
@@ -345,7 +491,7 @@ fn load_with_contracts(path: &Path, scope: Option<&[String]>) -> Bundle {
                 "FORMAT_UNSUPPORTED",
                 &document.asset.path,
                 "/format",
-                format!("Unsupported format {format:?}."),
+                format,
             ),
             None => shape(&document.asset.path, "/format", "a format string"),
         };
@@ -354,7 +500,7 @@ fn load_with_contracts(path: &Path, scope: Option<&[String]>) -> Bundle {
     bundle
 }
 
-fn load_model(reader: &mut Reader, bundle: &mut Bundle) {
+fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
     // Keep the original manifest intact while the other documents are loaded.
     let manifest = bundle.documents.pop().expect("a parsed manifest");
     let value = &manifest.value;
@@ -540,20 +686,33 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle) {
         .map(str::to_owned);
     let record_documents: Vec<_> = record_paths
         .into_iter()
-        .filter_map(
-            |relative| match reader.document(relative, Some(DocumentKind::Records)) {
+        .filter_map(|relative| {
+            let record = reader.relative_path(relative).and_then(|normalized| {
+                if paired {
+                    // Remember even an unreadable or malformed declaration so an
+                    // explicit alias never retries the same operational input.
+                    bundle
+                        .declared_record_paths
+                        .insert(reader.root.join(&normalized));
+                }
+                let asset = reader.resolved_asset(normalized, relative)?;
+                parse_document(asset, Some(DocumentKind::Records))
+            });
+            match record {
                 Ok(document) => Some(document),
                 Err(issue) => {
                     record_issues.push(issue);
                     None
                 }
-            },
-        )
+            }
+        })
         .collect();
     bundle.documents.extend(record_documents);
     bundle.diagnostics.extend(record_issues);
     for index in 1..bundle.documents.len() {
-        if bundle.documents[index].kind == DocumentKind::Records {
+        if bundle.documents[index].kind == DocumentKind::Records
+            && (!paired || bundle.validate_document(index))
+        {
             index_records(bundle, index, project_id.as_deref());
         }
     }
@@ -929,6 +1088,10 @@ fn escape_segment(segment: &str) -> String {
     segment.replace('~', "~0").replace('/', "~1")
 }
 
+fn composition_issue(code: &'static str, message: impl Into<String>) -> Diagnostic {
+    invalid(code, "", "", message)
+}
+
 fn shape(file: &str, pointer: &str, expected: &str) -> Diagnostic {
     invalid(
         "SCHEMA_INVALID",
@@ -970,12 +1133,13 @@ fn unknown(
     }
 }
 
-struct Reader {
+struct Reader<'a> {
+    primary: Option<&'a Bundle>,
     root: PathBuf,
     seen: BTreeSet<String>,
 }
 
-impl Reader {
+impl Reader<'_> {
     fn document(
         &mut self,
         path: &str,
@@ -986,6 +1150,10 @@ impl Reader {
 
     fn asset(&mut self, path: &str) -> Result<Asset, Diagnostic> {
         let normalized = self.relative_path(path)?;
+        self.resolved_asset(normalized, path)
+    }
+
+    fn resolved_asset(&mut self, normalized: String, path: &str) -> Result<Asset, Diagnostic> {
         if !self.seen.insert(normalized.clone()) {
             return Err(invalid(
                 "ASSET_PATH_INVALID",
@@ -1023,6 +1191,20 @@ impl Reader {
     }
 
     fn read_asset(&self, normalized: String) -> Result<Asset, Diagnostic> {
+        // A separate ledger may already be a pinned source. The model revision
+        // and the parsed records must refer to the same captured bytes.
+        if let Some(primary) = self.primary
+            && let Some(root) = primary.path().parent()
+            && let Ok(relative) = self.root.join(&normalized).strip_prefix(root)
+            && let Some(path) = portable_path(relative)
+            && let Some(asset) = primary.asset_at(&path)
+        {
+            return Ok(Asset {
+                path: normalized,
+                sha256: asset.sha256.clone(),
+                bytes: asset.bytes.clone(),
+            });
+        }
         let bytes = read_regular(&self.root, Path::new(&normalized)).map_err(|error| {
             unknown(
                 "SOURCE_UNAVAILABLE",
@@ -1050,6 +1232,11 @@ fn parse_document(asset: Asset, expected: Option<DocumentKind>) -> Result<Docume
     if let Some(expected) = expected
         && kind != expected
     {
+        if kind == DocumentKind::Other
+            && let Some(format) = get_string(&value, "format")
+        {
+            return Err(unknown("FORMAT_UNSUPPORTED", path, "/format", format));
+        }
         return Err(invalid(
             "SCHEMA_INVALID",
             path,
@@ -1213,4 +1400,33 @@ fn read_file(mut file: File) -> io::Result<Vec<u8>> {
     let mut bytes = Vec::new();
     file.read_to_end(&mut bytes)?;
     Ok(bytes)
+}
+
+#[cfg(test)]
+mod secondary_capture_tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn secondary_reads_previously_captured_source_bytes() {
+        let directory = tempfile::tempdir().unwrap();
+        let source = directory.path().join("observations.json");
+        let manifest = directory.path().join("model.json");
+        let original = br#"{"format":"gdd-records/0.2","project_id":"demo","records":{}}"#;
+        fs::write(&source, original).unwrap();
+        let model = json!({"format":"gdd/0.2","project":{"id":"demo","title":"Demo","goal":"Review."},"nodes":{},"edges":[],
+            "sources":{"source.observations":{"role":"input","title":"Recorded observations","uri":"observations.json",
+                "format":"json","normative":true,"revision":{"sha256":sha256(original)}}}});
+        fs::write(&manifest, serde_json::to_vec(&model).unwrap()).unwrap();
+        let mut primary = load_primary(&manifest, None, true);
+        assert!(primary.snapshot().is_some());
+        fs::write(&source, b"{}").unwrap();
+        let secondary = load_resolved(source, None, true, Some(&primary));
+        assert_eq!(secondary.root_document().unwrap().asset.bytes, original);
+        merge_records(&mut primary, secondary);
+        assert_eq!(
+            crate::validation::validate(&primary, crate::validation::Profile::Model).exit_code(),
+            0
+        );
+    }
 }

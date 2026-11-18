@@ -177,17 +177,27 @@ pub fn validate_path(
     options: ValidationOptions<'_>,
     explanation: Option<&mut dyn io::Write>,
 ) -> io::Result<Report> {
+    validate_paths(path, None, options, explanation)
+}
+
+/// Validate a positional input, optionally alongside its primary model. A
+/// distinct secondary ledger contributes records and representation checks.
+/// The report always uses the primary model's scope and snapshot.
+pub fn validate_paths(
+    input: &std::path::Path,
+    model: Option<&std::path::Path>,
+    options: ValidationOptions<'_>,
+    explanation: Option<&mut dyn io::Write>,
+) -> io::Result<Report> {
     let scope = options.effective_scope()?;
-    let bundle = if options.profiles.contains(&Profile::Readiness)
-        && present(options.parallel_plan).is_none()
-    {
-        crate::bundle::load_for_readiness(
-            path,
-            &scope.iter().copied().map(str::to_owned).collect::<Vec<_>>(),
-        )
-    } else {
-        crate::bundle::load_model_only(path)
-    };
+    let capture_scope = (options.profiles.contains(&Profile::Readiness)
+        && present(options.parallel_plan).is_none())
+    .then(|| scope.iter().copied().map(str::to_owned).collect::<Vec<_>>());
+    let bundle = crate::bundle::capture(
+        model.unwrap_or(input),
+        model.map(|_| input),
+        capture_scope.as_deref(),
+    );
     assess(&bundle, options, &scope, explanation)
 }
 
@@ -214,10 +224,12 @@ fn assess<'a>(
     let mut report = Report::new(profiles, scope.iter().copied().map(str::to_owned).collect());
     let mut normative_valid = true;
     let mut manifest_valid = bundle.manifest().is_some();
-    for document in bundle.documents() {
-        if let Some(schema) = embedded_schema(document.kind) {
-            let check = document_check(document, schema);
-            if document.kind != DocumentKind::Records && check.result != CheckResult::Pass {
+    for (index, document) in bundle.documents().iter().enumerate() {
+        if let Some(check) = bundle.representation_check(index) {
+            if index < bundle.primary_documents().len()
+                && document.kind != DocumentKind::Records
+                && check.result != CheckResult::Pass
+            {
                 normative_valid = false;
                 if document.kind.is_manifest() {
                     manifest_valid = false;
@@ -452,6 +464,10 @@ fn embedded_schema(kind: DocumentKind) -> Option<&'static Validator> {
         DocumentKind::Other => return None,
     };
     Some(schema.validator())
+}
+
+pub(crate) fn representation_check(document: &Document) -> Option<Check> {
+    embedded_schema(document.kind).map(|schema| document_check(document, schema))
 }
 
 fn document_check(document: &Document, validator: &Validator) -> Check {
