@@ -31,7 +31,11 @@ fn run(path: &Path) -> Result<(), String> {
         options,
         Box::new(move |context| {
             context.egui_ctx.set_theme(egui::Theme::Light);
-            Ok(Box::new(Viewer::new(graph, filename.into_owned())))
+            Ok(Box::new(Viewer::new(
+                graph,
+                filename.into_owned(),
+                context.egui_ctx.clone(),
+            )))
         }),
     )
     .map_err(|error| error.to_string())

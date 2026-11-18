@@ -1,10 +1,50 @@
+use std::sync::{Arc, mpsc};
+use std::thread;
+
 use eframe::egui::{self, Button, Color32, Key, Modifiers, RichText, Ui};
 
 use crate::{canvas::Layout, model::Graph};
 
+enum LayoutState {
+    Pending(mpsc::Receiver<Result<Layout, String>>),
+    Ready(Layout),
+    Failed(String),
+}
+
+impl LayoutState {
+    fn start(graph: Arc<Graph>, context: egui::Context) -> Self {
+        let (sender, receiver) = mpsc::channel();
+        match thread::Builder::new()
+            .name("graph-layout".into())
+            .spawn(move || {
+                let result = std::panic::catch_unwind(|| Layout::new(&graph))
+                    .unwrap_or_else(|_| Err("The layout worker panicked.".into()));
+                if sender.send(result).is_ok() {
+                    context.request_repaint();
+                }
+            }) {
+            Ok(_) => Self::Pending(receiver),
+            Err(error) => Self::Failed(format!("Could not start the layout worker: {error}")),
+        }
+    }
+
+    fn update(&mut self) {
+        if let Self::Pending(receiver) = self {
+            *self = match receiver.try_recv() {
+                Ok(Ok(layout)) => Self::Ready(layout),
+                Ok(Err(error)) => Self::Failed(error),
+                Err(mpsc::TryRecvError::Disconnected) => {
+                    Self::Failed("The layout worker stopped before returning a result.".into())
+                }
+                Err(mpsc::TryRecvError::Empty) => return,
+            };
+        }
+    }
+}
+
 pub struct Viewer {
-    graph: Graph,
-    layout: Result<Layout, String>,
+    graph: Arc<Graph>,
+    layout: LayoutState,
     zoom_percent: u16,
     reveal_selected: bool,
     filename: String,
@@ -13,8 +53,9 @@ pub struct Viewer {
 }
 
 impl Viewer {
-    pub fn new(graph: Graph, filename: String) -> Self {
-        let layout = Layout::new(&graph);
+    pub fn new(graph: Graph, filename: String, context: egui::Context) -> Self {
+        let graph = Arc::new(graph);
+        let layout = LayoutState::start(Arc::clone(&graph), context);
         Self {
             graph,
             layout,
@@ -27,6 +68,7 @@ impl Viewer {
     }
 
     fn show(&mut self, ui: &mut Ui) {
+        self.layout.update();
         ui.spacing_mut().item_spacing = egui::vec2(8.0, 8.0);
         let white = Color32::WHITE;
         egui::Panel::top("model")
@@ -35,7 +77,8 @@ impl Viewer {
                 ui.horizontal_wrapped(|ui| {
                     ui.heading(RichText::new(&self.graph.title).size(24.0).strong());
                     ui.label(RichText::new(&self.filename).weak());
-                    if self.layout.is_ok() && !self.graph.nodes.is_empty() {
+                    if matches!(self.layout, LayoutState::Ready(_)) && !self.graph.nodes.is_empty()
+                    {
                         egui::ComboBox::from_label("Graph zoom")
                             .selected_text(format!("{}%", self.zoom_percent))
                             .width(70.0)
@@ -73,8 +116,12 @@ impl Viewer {
             .frame(egui::Frame::NONE.fill(Color32::from_rgb(244, 247, 251)))
             .show(ui, |ui| {
                 let layout = match &self.layout {
-                    Ok(layout) => layout,
-                    Err(error) => {
+                    LayoutState::Ready(layout) => layout,
+                    LayoutState::Pending(_) => {
+                        ui.centered_and_justified(|ui| ui.label("Calculating graph layout…"));
+                        return;
+                    }
+                    LayoutState::Failed(error) => {
                         ui.centered_and_justified(|ui| {
                             ui.label(format!("Cannot lay out this graph: {error}"))
                         });
@@ -204,5 +251,74 @@ impl Viewer {
 impl eframe::App for Viewer {
     fn ui(&mut self, ui: &mut Ui, _frame: &mut eframe::Frame) {
         self.show(ui);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::Path;
+
+    use super::*;
+
+    #[test]
+    fn keyboard_selection_during_layout_is_revealed_when_the_drawing_arrives() {
+        let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/fragmented.gdd.yaml");
+        let graph = Arc::new(Graph::load(&path).unwrap());
+        let (sender, receiver) = mpsc::channel();
+        let mut viewer = Viewer {
+            graph: Arc::clone(&graph),
+            layout: LayoutState::Pending(receiver),
+            zoom_percent: 100,
+            reveal_selected: false,
+            filename: "fragmented.gdd.yaml".into(),
+            search: String::new(),
+            selected: Some(0),
+        };
+        let context = egui::Context::default();
+        let frame = |viewer: &mut Viewer, events| {
+            let input = egui::RawInput {
+                events,
+                ..Default::default()
+            };
+            context
+                .run_ui(input, |ui| viewer.show(ui))
+                .textures_delta
+                .clear();
+        };
+        let press = |key, modifiers| egui::Event::Key {
+            key,
+            physical_key: None,
+            pressed: true,
+            repeat: false,
+            modifiers,
+        };
+        frame(&mut viewer, vec![press(Key::F, Modifiers::COMMAND)]);
+        frame(&mut viewer, vec![egui::Event::Text("entity.note".into())]);
+        frame(&mut viewer, vec![press(Key::Enter, Modifiers::NONE)]);
+        assert!(matches!(viewer.layout, LayoutState::Pending(_)));
+        assert_eq!(viewer.selected, Some(1));
+        assert!(viewer.reveal_selected);
+
+        sender.send(Layout::new(&graph)).unwrap();
+        frame(&mut viewer, Vec::new());
+        assert!(matches!(viewer.layout, LayoutState::Ready(_)));
+        assert_eq!(viewer.search, "entity.note");
+        assert_eq!(viewer.selected, Some(1));
+        assert!(!viewer.reveal_selected);
+    }
+
+    #[test]
+    fn layout_failure_and_disconnect_leave_the_pending_state() {
+        let (sender, receiver) = mpsc::channel();
+        let mut state = LayoutState::Pending(receiver);
+        sender.send(Err("Invalid route".into())).unwrap();
+        state.update();
+        assert!(matches!(state, LayoutState::Failed(error) if error == "Invalid route"));
+
+        let (sender, receiver) = mpsc::channel();
+        let mut state = LayoutState::Pending(receiver);
+        drop(sender);
+        state.update();
+        assert!(matches!(state, LayoutState::Failed(_)));
     }
 }

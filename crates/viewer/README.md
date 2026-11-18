@@ -19,7 +19,11 @@ highlights its incoming and outgoing links. Selecting a search result or
 following a connection scrolls the graph to that node.
 
 The viewer computes a left-to-right layered layout once when it opens a model,
-using the pure Rust graphlay library. Arrows follow the routed paths into
+using the pure Rust graphlay library. While the layout runs in the background,
+you can search the node list, inspect nodes, and follow connections. When the
+drawing is ready, the canvas scrolls to your current selection.
+
+Arrows follow the routed paths into
 their declared target nodes, including links that run back across a cycle.
 Parallel links have separate routes, and repeated self-loops nest outside the
 node box. Dense graphs can still have crossings. Scroll in both directions
