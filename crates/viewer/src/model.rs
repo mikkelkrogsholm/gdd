@@ -35,7 +35,7 @@ impl Graph {
             .extension()
             .is_some_and(|s| s.eq_ignore_ascii_case("gddview"))
         {
-            std::fs::read(path)
+            gdd::view::read_view_bytes(path)
                 .map_err(|e| e.to_string())
                 .and_then(|bytes| Self::from_artifact(&bytes))
         } else {

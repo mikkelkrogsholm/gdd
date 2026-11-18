@@ -1,11 +1,24 @@
 //! Offline structural admission of a saved projection. All locators are passive strings.
 
 use super::{FORMAT, GENERATOR, PROFILE};
-use crate::bundle::DocumentKind;
+use crate::bundle::{DocumentKind, read_regular};
 use crate::input::parse_json;
 use crate::validation::{EmbeddedSchema, embedded_schema, to_json};
 use serde_json::Value as Json;
-use std::{collections::BTreeSet, io};
+use std::{collections::BTreeSet, io, path::Path};
+
+/// Capture a local regular file once. The returned bytes can be opened or
+/// verified repeatedly without resolving any paths inside the artifact.
+pub fn read_view_bytes(path: &Path) -> io::Result<Vec<u8>> {
+    let resolved = path.canonicalize()?;
+    let (Some(parent), Some(name)) = (resolved.parent(), resolved.file_name()) else {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "Expected a view file.",
+        ));
+    };
+    read_regular(parent, Path::new(name))
+}
 
 fn invalid(message: &str) -> io::Error {
     io::Error::new(io::ErrorKind::InvalidData, message)

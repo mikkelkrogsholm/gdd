@@ -279,6 +279,9 @@ enum Command {
         package: Option<PathBuf>,
         #[arg(long)]
         parallel_plan: Option<PathBuf>,
+        /// Portable view file to verify against the current model snapshot.
+        #[arg(long, allow_negative_numbers = true)]
+        view: Option<PathBuf>,
         /// Raw Graphify artifact or observations bundle for model-bound integration.
         #[arg(long, allow_negative_numbers = true)]
         graphify: Option<PathBuf>,
@@ -642,6 +645,7 @@ fn run() -> io::Result<ExitCode> {
             activity,
             package,
             parallel_plan,
+            view,
             graphify,
             graphify_profile,
             graphify_producer_version,
@@ -664,7 +668,7 @@ fn run() -> io::Result<ExitCode> {
                 unsupported_extensions: &unsupported_extensions,
             };
             let mut stderr = io::stderr().lock();
-            let report = validation::validate_paths_with_graphify(
+            let report = validation::validate_paths_with_integrations(
                 &cli_path(path),
                 model.map(cli_path).as_deref(),
                 options,
@@ -674,6 +678,7 @@ fn run() -> io::Result<ExitCode> {
                     producer_version: graphify_producer_version.as_deref(),
                     import_audit: audit.as_ref(),
                 },
+                view.map(cli_path).as_deref(),
                 explain.then_some(&mut stderr),
             )?;
             write_output(output.as_deref(), &report)?;

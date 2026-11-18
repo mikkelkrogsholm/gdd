@@ -1,7 +1,10 @@
 //! Offline validation of the original documents in a loaded GDD bundle.
 
 mod graphify;
-pub use graphify::{GraphifyValidationOptions, validate_captured, validate_paths_with_graphify};
+pub use graphify::{
+    GraphifyValidationOptions, validate_captured, validate_captured_with_view,
+    validate_paths_with_graphify, validate_paths_with_integrations,
+};
 
 use std::collections::BTreeSet;
 use std::io;
@@ -55,6 +58,7 @@ pub enum Profile {
     #[serde(rename = "import.graphify")]
     #[value(name = "import.graphify")]
     ImportGraphify,
+    Visualization,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, ValueEnum)]

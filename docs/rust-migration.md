@@ -215,10 +215,11 @@ captured model and extension bytes. The wrapper exposes the shared model via
 `bundle()`. Each call to `perspective_data` returns an owned `serde_json::Value`
 that consumers can edit independently, even after the source files are removed.
 
-## Save and open a portable native view
+## Save, verify and open a portable native view
 
 ```sh
 cargo run --locked -p gdd -- view examples/concert.gdd.yaml --scope action.reserve --output reserve.gddview
+cargo run --locked -p gdd -- validate examples/concert.gdd.yaml --profile visualization --view reserve.gddview
 cargo run --locked -p gdd-viewer -- reserve.gddview
 ```
 
@@ -229,9 +230,23 @@ existing `PerspectiveBundle` without reopening its inputs. An empty scope
 includes all nodes. Pass saved bytes to `gdd::view::read_view(&bytes)` to
 check the embedded schemas, snapshot identity and graph partition and obtain
 the JSON payload. All three functions return `io::Result<serde_json::Value>`.
-The reader uses embedded data only. Comparing an artifact with a current
-source bundle is a separate operation. The released Python renderer and
-verifier continue to serve the historical HTML format.
+The reader uses embedded data only. Use `gdd::view::read_view_bytes(path)`
+to capture a local regular file for opening or repeated verification.
+
+`gdd::view::verify_view(model, Some(view_path))` captures the source model
+and returns an `io::Result<serde_json::Value>` containing the verification
+report. With an admitted model and saved bytes already in memory, call
+`gdd::view::verify_view_captured(&capture, Some(&bytes))` to obtain the JSON
+report directly. Both compare the full artifact bytes, including the final
+newline. Pass `None` for an explicit missing-input verdict.
+
+Combine `Profile::Visualization` with other profiles via
+`validation::validate_paths_with_integrations` or
+`validation::validate_captured_with_view`. The root model report preserves
+its validation scope. Its passing visualization check carries the saved view
+scope. A model error blocks the visualization check with `REVISION_UNRESOLVED`.
+The released Python renderer and verifier continue to serve the historical
+HTML format.
 [Native artifact contract](../VIEWER.md#share-a-native-view)
 
 ## Workplans and packet verification
@@ -595,10 +610,10 @@ YAML nesting to 256 containers.
 
 | Python entry points | Current Rust support |
 | --- | --- |
-| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Use `Profile::ImportGraphify` for standalone observations and model-bound Graphify checks. Visualization validation still requires Python. |
+| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Use `Profile::ImportGraphify` for standalone observations and model-bound Graphify checks. Use `Profile::Visualization` to verify a portable native view against the current model. |
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Native file import, verification, byte recovery, in-memory observations and explicit proposals for both model formats via `gdd::graphify`. |
 | `perspectives`, `perspective_data`, `load_perspective_bundle` | Native path-based and captured model projections via `gdd::perspectives`. |
-| `render_view`, `view_data`, `verify_view` | Native file generation, captured projections and detached reading via `gdd::view`. HTML generation and verification use the released Python APIs. |
+| `render_view`, `view_data`, `verify_view` | Native file generation, captured projections, detached reading and exact-byte verification via `gdd::view`. HTML generation and verification use the released Python APIs. |
 | `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |
 | `run_status` | Native journal replay and current acceptance with path-based or captured inputs. |
 | `create_run`, `advance_run` | Native exclusive run creation, gated event publication and idempotent replay. |

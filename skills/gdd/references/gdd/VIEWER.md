@@ -8,6 +8,7 @@ the Rust CLI, then open its file in the native viewer.
 ```sh
 cargo build --locked -p gdd -p gdd-viewer
 target/debug/gdd view examples/fragmented.gdd.yaml --scope component.notes --output notes.gddview
+target/debug/gdd validate examples/fragmented.gdd.yaml --profile visualization --view notes.gddview
 target/debug/gdd-viewer notes.gddview
 ```
 
@@ -43,6 +44,18 @@ only to an unused output path and prints a scoped `gdd-report/0.2` with
 `integration.visualization` PASS after publication. Invalid models, unknown
 scope IDs and occupied outputs return 1. Unavailable model inputs, unsupported
 semantics and nesting capacity failures return 2.
+
+To verify a received file against a source model, run the native
+`gdd validate` command above. A PASS requires the saved generator, revision,
+and complete bytes to match a fresh projection of that model at the saved
+scope. The visualization check reports the saved scope. When you combine
+profiles, the root report uses the validation scope supplied on the command line
+or in its input package.
+
+The native verifier reports FAIL for a changed revision or altered artifact.
+An unavailable file, missing `--view`, unsupported generator or nesting limit
+produces UNKNOWN. A historical HTML view selects the released HTML renderer
+and produces UNKNOWN in the native verifier.
 
 ## Released browser viewer
 

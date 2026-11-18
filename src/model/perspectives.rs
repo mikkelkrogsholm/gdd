@@ -6,6 +6,7 @@ use crate::projection::{ProjectionError, validate_projection_bundle};
 use crate::validation::to_json;
 use serde::Serialize;
 use serde_json::{Map, Value as Json, json};
+use std::borrow::Borrow;
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
@@ -14,25 +15,21 @@ const PRODUCT_DEFINITION: &[u8] = include_bytes!("../../gdd_validator/extensions
 
 /// One captured model admitted for product perspectives.
 #[derive(Debug)]
-pub struct PerspectiveBundle {
-    bundle: Bundle,
+pub struct PerspectiveBundle<B = Bundle> {
+    bundle: B,
     product_hash: Option<String>,
 }
 
-impl PerspectiveBundle {
+impl<B: Borrow<Bundle>> PerspectiveBundle<B> {
     /// Share the same immutable model with other snapshot consumers.
     pub fn bundle(&self) -> &Bundle {
-        &self.bundle
+        self.bundle.borrow()
     }
-}
 
-impl TryFrom<Bundle> for PerspectiveBundle {
-    type Error = ProjectionError;
-
-    fn try_from(bundle: Bundle) -> Result<Self, Self::Error> {
-        validate_projection_bundle(&bundle)?;
+    // Callers have already admitted the model and resolved its snapshot.
+    pub(crate) fn from_validated(bundle: B) -> Result<Self, ProjectionError> {
         let mut product_hash = None;
-        for (namespace, doc) in bundle.extensions() {
+        for (namespace, doc) in bundle.borrow().extensions() {
             let defines_product_name = ["node_kinds", "relations"]
                 .iter()
                 .any(|key| entries(&doc.value, key).any(|(name, _)| has_namespace(name, PRODUCT)));
@@ -51,6 +48,15 @@ impl TryFrom<Bundle> for PerspectiveBundle {
             bundle,
             product_hash,
         })
+    }
+}
+
+impl TryFrom<Bundle> for PerspectiveBundle {
+    type Error = ProjectionError;
+
+    fn try_from(bundle: Bundle) -> Result<Self, Self::Error> {
+        validate_projection_bundle(&bundle)?;
+        Self::from_validated(bundle)
     }
 }
 
@@ -86,9 +92,9 @@ struct Graph<'a> {
 }
 
 impl<'a> Graph<'a> {
-    fn new(capture: &'a PerspectiveBundle) -> Self {
+    fn new(capture: &'a PerspectiveBundle<impl Borrow<Bundle>>) -> Self {
         let nodes = capture
-            .bundle
+            .bundle()
             .nodes()
             .map(|record| {
                 let kind = string(record.value, "kind");
@@ -113,7 +119,7 @@ impl<'a> Graph<'a> {
             })
             .collect();
         let mut edges: Vec<_> = capture
-            .bundle
+            .bundle()
             .edges()
             .map(|record| Edge {
                 value: record.value,
@@ -304,7 +310,9 @@ struct DataLink<'a> {
 }
 
 /// Derive detached JSON records without reading paths or repeating validation.
-pub fn perspective_data(capture: &PerspectiveBundle) -> Result<Json, ProjectionError> {
+pub fn perspective_data(
+    capture: &PerspectiveBundle<impl Borrow<Bundle>>,
+) -> Result<Json, ProjectionError> {
     let graph = Graph::new(capture);
     let mut views = Map::new();
     for name in ["journey", "components", "data"] {
@@ -316,14 +324,14 @@ pub fn perspective_data(capture: &PerspectiveBundle) -> Result<Json, ProjectionE
     let links = graph.component_data_links(capture.product_hash.is_some());
     let gaps = graph.gaps(&links);
     let unsupported: Vec<_> = capture
-        .bundle
+        .bundle()
         .extensions()
         .map(|(namespace, _)| namespace)
         .filter(|&namespace| namespace != PRODUCT)
         .collect();
     let mut result = json!({
         "format": "gdd-perspectives/0.1",
-        "spec_revision": capture.bundle.snapshot().expect("validated snapshot").revision,
+        "spec_revision": capture.bundle().snapshot().expect("validated snapshot").revision,
         "advisory": true,
         "product_extension": capture.product_hash.as_ref().map(|hash| json!({"namespace": PRODUCT, "version": "0.1.0", "sha256": hash})),
         "unsupported_extensions": unsupported,

@@ -1,11 +1,13 @@
-//! Compose Graphify observations with a GDD validation report.
+//! Compose Graphify observations and portable view verification with a model report.
 
 use std::{io, path::Path};
 
 use crate::bundle::{self, Bundle};
 use crate::graphify::{ImportReport, same_projection, verify_graphify};
 use crate::input::Value;
+use crate::perspectives::PerspectiveBundle;
 use crate::report::{Check, CheckResult, Diagnostic, Report};
+use crate::view::{ViewInput, verification_check, verification_issue};
 use serde_json::Value as JsonValue;
 
 use super::{Profile, ValidationOptions, assess, present, to_json};
@@ -40,6 +42,18 @@ pub fn validate_paths_with_graphify(
     graphify: GraphifyValidationOptions<'_>,
     explanation: Option<&mut dyn io::Write>,
 ) -> io::Result<Report> {
+    validate_paths_with_integrations(input, model, options, graphify, None, explanation)
+}
+
+/// Assess optional Graphify observations and a portable view against one model capture.
+pub fn validate_paths_with_integrations(
+    input: &Path,
+    model: Option<&Path>,
+    options: ValidationOptions<'_>,
+    graphify: GraphifyValidationOptions<'_>,
+    view: Option<&Path>,
+    explanation: Option<&mut dyn io::Write>,
+) -> io::Result<Report> {
     let audit = present(graphify.import_audit).map(to_json).transpose()?;
     let scope = options.scope_with_audit(audit.as_ref())?;
     let standalone = model.is_none() && graphify.path.is_none() && standalone(&options);
@@ -68,6 +82,7 @@ pub fn validate_paths_with_graphify(
         options,
         &scope,
         audit.as_ref(),
+        view.map(ViewInput::Path),
         explanation,
     )
 }
@@ -82,12 +97,39 @@ pub fn validate_captured(
     import_audit: Option<&Value>,
     explanation: Option<&mut dyn io::Write>,
 ) -> io::Result<Report> {
+    validate_captured_with_view(
+        bundle,
+        observations,
+        options,
+        import_audit,
+        None,
+        explanation,
+    )
+}
+
+/// Assess captured model, Graphify, and portable view inputs without reopening files.
+pub fn validate_captured_with_view(
+    bundle: Option<&Bundle>,
+    observations: Option<&ImportReport>,
+    options: ValidationOptions<'_>,
+    import_audit: Option<&Value>,
+    view: Option<&[u8]>,
+    explanation: Option<&mut dyn io::Write>,
+) -> io::Result<Report> {
     let audit = present(import_audit).map(to_json).transpose()?;
     let scope = options.scope_with_audit(audit.as_ref())?;
     let checks = observations
         .filter(|_| options.profiles.contains(&Profile::ImportGraphify))
         .map(|report| report.checks.clone());
-    assess_inputs(bundle, checks, options, &scope, audit.as_ref(), explanation)
+    assess_inputs(
+        bundle,
+        checks,
+        options,
+        &scope,
+        audit.as_ref(),
+        view.map(ViewInput::Bytes),
+        explanation,
+    )
 }
 
 fn assess_inputs(
@@ -96,6 +138,7 @@ fn assess_inputs(
     options: ValidationOptions<'_>,
     scope: &[&str],
     audit: Option<&JsonValue>,
+    view: Option<ViewInput<'_>>,
     explanation: Option<&mut dyn io::Write>,
 ) -> io::Result<Report> {
     let Some(bundle) = bundle else {
@@ -134,6 +177,28 @@ fn assess_inputs(
                 &report.scope,
             ));
         }
+    }
+    if report.profiles.contains(&Profile::Visualization) {
+        let check = if bundle.manifest().is_some()
+            && report.spec_revision.is_some()
+            && report.result("model") == CheckResult::Pass
+        {
+            match PerspectiveBundle::from_validated(bundle) {
+                Ok(capture) => verification_check(&capture, view),
+                Err(error) => verification_issue(
+                    CheckResult::Unknown,
+                    "FORMAT_UNSUPPORTED",
+                    error.to_string(),
+                ),
+            }
+        } else {
+            verification_issue(
+                CheckResult::Unknown,
+                "REVISION_UNRESOLVED",
+                "A valid supported GDD model is required for artifact verification.",
+            )
+        };
+        report.checks.push(check);
     }
     Ok(report)
 }

@@ -1,16 +1,20 @@
 //! Passive, self-contained native viewer projections of a validated model snapshot.
 
 mod read;
-pub use read::read_view;
+mod verify;
+pub use read::{read_view, read_view_bytes};
+pub(crate) use verify::{ViewInput, verification_check, verification_issue};
+pub use verify::{verify_view, verify_view_captured};
 
 use crate::boundaries::boundary_view;
-use crate::bundle::DocumentKind;
+use crate::bundle::{Bundle, DocumentKind};
 use crate::context::ContextGraph;
 use crate::input::check_output_depth;
 use crate::perspectives::{PerspectiveBundle, load_perspective_bundle, perspective_data};
 use crate::report::{Check, CheckResult};
 use crate::validation::to_json;
 use serde_json::{Map, Value as Json, json};
+use std::borrow::Borrow;
 use std::collections::BTreeSet;
 use std::io::{self, Write};
 use std::path::Path;
@@ -21,7 +25,10 @@ const GENERATOR: &str = "gdd-viewer";
 pub const VERSION: &str = "0.1.0";
 
 /// Project one admitted capture. Scope limits the drawing while retaining all records.
-pub fn view_data(capture: &PerspectiveBundle, scope: &[String]) -> io::Result<Json> {
+pub fn view_data(
+    capture: &PerspectiveBundle<impl Borrow<Bundle>>,
+    scope: &[String],
+) -> io::Result<Json> {
     let bundle = capture.bundle();
     let manifest = bundle.manifest().expect("admitted manifest");
     let snapshot = bundle.snapshot().expect("admitted snapshot");
@@ -101,6 +108,22 @@ pub fn view_data(capture: &PerspectiveBundle, scope: &[String]) -> io::Result<Js
     Ok(data)
 }
 
+fn write_artifact(mut writer: impl Write, payload: &Json) -> io::Result<()> {
+    serde_json::to_writer(&mut writer, payload)?;
+    writer.write_all(b"\n")?;
+    writer.flush()
+}
+
+fn view_report(capture: &PerspectiveBundle<impl Borrow<Bundle>>, check: Check) -> Json {
+    let snapshot = capture.bundle().snapshot().expect("admitted snapshot");
+    json!({
+        "format": "gdd-report/0.2",
+        "tool": {"name": GENERATOR, "version": VERSION},
+        "spec_revision": snapshot.revision, "scope": check.scope,
+        "profiles": ["visualization"], "checks": [check]
+    })
+}
+
 /// Publish a new artifact atomically and return its scoped generation report.
 pub fn render_view(model: &Path, output: &Path, scope: &[String]) -> io::Result<Json> {
     let capture = load_perspective_bundle(model)?;
@@ -117,12 +140,7 @@ pub fn render_view(model: &Path, output: &Path, scope: &[String]) -> io::Result<
         builder.permissions(std::fs::Permissions::from_mode(0o666));
     }
     let mut staging = builder.tempfile_in(parent)?;
-    {
-        let mut writer = io::BufWriter::new(staging.as_file_mut());
-        serde_json::to_writer(&mut writer, &payload)?;
-        writer.write_all(b"\n")?;
-        writer.flush()?;
-    }
+    write_artifact(io::BufWriter::new(staging.as_file_mut()), &payload)?;
     staging.persist_noclobber(output)?;
     let mut check = Check::new(
         "integration.visualization",
@@ -131,10 +149,5 @@ pub fn render_view(model: &Path, output: &Path, scope: &[String]) -> io::Result<
         format!("Generated a read-only {PROFILE} projection."),
     );
     check.scope = serde_json::from_value(payload["scope"].clone())?;
-    Ok(json!({
-        "format": "gdd-report/0.2",
-        "tool": {"name": GENERATOR, "version": VERSION},
-        "spec_revision": payload["spec_revision"], "scope": check.scope,
-        "profiles": ["visualization"], "checks": [check]
-    }))
+    Ok(view_report(&capture, check))
 }

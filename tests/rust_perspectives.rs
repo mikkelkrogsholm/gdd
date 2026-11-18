@@ -268,6 +268,14 @@ fn repinned_equal_definitions_and_namespaced_lookalikes_are_unsupported() {
         write(&path, &model);
         let error = load_perspective_bundle(&path).unwrap_err();
         assert_eq!(error.exit_code, 2, "{error}");
+        let report = gdd::validation::validate(
+            &load_model_only(&path),
+            gdd::validation::Profile::Visualization,
+        );
+        let integration = report.checks.last().unwrap();
+        assert_eq!(report.exit_code(), 2);
+        assert_eq!(integration.check_id, "integration.visualization");
+        assert_eq!(integration.diagnostics[0].code, "FORMAT_UNSUPPORTED");
         assert!(
             error
                 .to_string()
