@@ -1220,6 +1220,8 @@ name = "gdd"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "json-event-parser",
+ "libyaml-safer",
  "rustix 1.1.6",
  "serde",
  "serde_json",
@@ -1233,7 +1235,7 @@ name = "gdd-viewer"
 version = "0.1.0"
 dependencies = [
  "eframe",
- "serde",
+ "gdd",
  "serde_json",
 ]
 
@@ -1579,6 +1581,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "json-event-parser"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "574b0cd5e90ee2ba03a66d0611fc9a09c9a0c28b2ecc2dc8a181dd31a53ca5d7"
+
+[[package]]
 name = "khronos_api"
 version = "3.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1629,6 +1637,12 @@ dependencies = [
  "plain",
  "redox_syscall 0.9.5",
 ]
+
+[[package]]
+name = "libyaml-safer"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d325b93a27b93b93b7cf4a57d681c5b6a4d8f910e695db989c055eb1e4f657df"
 
 [[package]]
 name = "linebender_resource_handle"

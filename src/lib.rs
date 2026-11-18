@@ -1,4 +1,6 @@
-//! Initialize GDD project drafts and compute portable snapshot revisions.
+//! GDD document input, project initialization, and portable snapshot revisions.
+
+pub mod input;
 
 use serde::Serialize;
 use serde_json::Value;

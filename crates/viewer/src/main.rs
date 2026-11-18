@@ -12,7 +12,7 @@ use eframe::egui;
 use model::Graph;
 use viewer::Viewer;
 
-const USAGE: &str = "Usage: gdd-viewer <MODEL.gdd.json>";
+const USAGE: &str = "Usage: gdd-viewer <MODEL.gdd.json | MODEL.gdd.yaml>";
 
 fn run(path: &Path) -> Result<(), String> {
     let path_error = |error: &dyn std::fmt::Display| format!("{}: {error}", path.display());
