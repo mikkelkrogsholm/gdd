@@ -3,7 +3,9 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 
 use gdd::report::CheckResult;
-use gdd::validation::{Profile, build_schema, to_json, validate};
+use gdd::validation::{
+    Profile, ValidationOptions, build_schema, to_json, validate, validate_with_options,
+};
 use gdd::{bundle, input};
 use serde_json::{Value, json};
 
@@ -123,6 +125,129 @@ fn unsupported_and_overriding_extensions_keep_their_document_location() {
     assert_eq!(
         diagnostic["location"],
         json!({"file": "extension.json", "pointer": "/relations/calls"})
+    );
+}
+
+#[test]
+fn captured_extension_reports_read_results_before_pins_and_consumer_support() {
+    let directory = tempfile::tempdir().unwrap();
+    let manifest = directory.path().join("model.json");
+    let asset = directory.path().join("extension.json");
+    let definition = include_bytes!("../examples/extensions/sensors.extension.json");
+    let model = json!({
+        "format":"gdd/0.3", "project":{"id":"project.test","title":"Extension test","goal":"Assess declarations."},
+        "nodes":{}, "edges":[], "extensions":{"extension.test":{
+            "namespace":"example.sensors", "version":"9.9.9", "sha256":"0".repeat(64), "path":"extension.json"
+        }}
+    });
+    fs::write(&manifest, serde_json::to_vec(&model).unwrap()).unwrap();
+    let unsupported = ["example.sensors".to_owned()];
+    for (bytes, exit, expected) in [
+        (None, 2, vec!["SOURCE_UNAVAILABLE", "EXTENSION_UNSUPPORTED"]),
+        (
+            Some(br#"{"format":"gdd-extension/99"}"#.as_slice()),
+            2,
+            vec!["FORMAT_UNSUPPORTED", "EXTENSION_UNSUPPORTED"],
+        ),
+        (
+            Some(b"{".as_slice()),
+            1,
+            vec!["YAML_FEATURE_FORBIDDEN", "EXTENSION_UNSUPPORTED"],
+        ),
+        (
+            Some(
+                br#"{"format":"gdd-extension/0.2","namespace":"example.sensors","version":"1.0.0","relations":{}}"#
+                    .as_slice(),
+            ),
+            1,
+            vec!["SCHEMA_INVALID", "EXTENSION_UNSUPPORTED"],
+        ),
+        (
+            Some(definition.as_slice()),
+            1,
+            vec![
+                "EXTENSION_DATA_INVALID",
+                "EXTENSION_IDENTITY_MISMATCH",
+                "EXTENSION_UNSUPPORTED",
+            ],
+        ),
+    ] {
+        if let Some(bytes) = bytes {
+            fs::write(&asset, bytes).unwrap();
+        }
+        let capture = bundle::load_model_only(&manifest);
+        if bytes.is_some() {
+            fs::remove_file(&asset).unwrap();
+        }
+        assert!(capture.snapshot().is_none());
+        assert_eq!(capture.extensions().count(), 0);
+        let report = validate_with_options(
+            &capture,
+            ValidationOptions {
+                profiles: &[Profile::Representation],
+                unsupported_extensions: &unsupported,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert_eq!(report.exit_code(), exit);
+        assert!(report.spec_revision.is_none());
+        let diagnostics: Vec<_> = report.checks.iter().flat_map(|c| &c.diagnostics).collect();
+        assert!(
+            diagnostics
+                .iter()
+                .all(|d| d.location.file.as_deref() == Some("extension.json"))
+        );
+        assert_eq!(
+            diagnostics.iter().map(|d| d.code).collect::<Vec<_>>(),
+            expected
+        );
+    }
+}
+
+#[test]
+fn rejected_pinned_definition_keeps_its_archive_bytes_and_each_unavailable_declaration() {
+    use sha2::{Digest, Sha256};
+
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("model.json");
+    let bytes = br#"{"format":"gdd-extension/0.2","namespace":"example.test","version":"1.0.0","relations":{}}"#;
+    let declaration = json!({"namespace":"example.test","version":"9.9.9","path":"ext.json",
+        "sha256":format!("{:x}", Sha256::digest(bytes))});
+    let mut model = json!({"format":"gdd/0.3","project":{"id":"project.test","title":"Extensions","goal":"Assess declarations."},
+        "nodes":{},"edges":[],"extensions":{"extension.one":declaration}});
+    fs::write(dir.path().join("ext.json"), bytes).unwrap();
+    fs::write(&path, serde_json::to_vec(&model).unwrap()).unwrap();
+    let capture = bundle::load_model_only(&path);
+    assert!(capture.snapshot().is_some());
+    assert_eq!(capture.extensions().next().unwrap().1.asset.bytes, bytes);
+    let report = validate(&capture, Profile::Representation);
+    assert!(report.spec_revision.is_none());
+    let codes: Vec<_> = report
+        .checks
+        .iter()
+        .flat_map(|c| &c.diagnostics)
+        .map(|d| d.code)
+        .collect();
+    assert_eq!(codes, ["SCHEMA_INVALID", "EXTENSION_UNSUPPORTED"]);
+
+    model["extensions"]["extension.two"] = declaration;
+    fs::write(&path, serde_json::to_vec(&model).unwrap()).unwrap();
+    let duplicate = validate(&bundle::load_model_only(&path), Profile::Representation);
+    let codes: Vec<_> = duplicate
+        .checks
+        .iter()
+        .flat_map(|c| &c.diagnostics)
+        .map(|d| d.code)
+        .collect();
+    assert_eq!(
+        codes,
+        [
+            "SCHEMA_INVALID",
+            "EXTENSION_UNSUPPORTED",
+            "ASSET_PATH_INVALID",
+            "EXTENSION_UNSUPPORTED"
+        ]
     );
 }
 

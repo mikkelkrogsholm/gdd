@@ -79,7 +79,9 @@ why the concert entity belongs to its read context. The location identifies
 the file and JSON Pointer where that entity is defined. A scoped capture
 includes advisory contracts reachable from the selected scope. Use the same
 scope for validation, or capture once with `bundle::load(&path)` to assess
-multiple scopes. Validation uses the captured bytes.
+multiple scopes. Validation uses the captured bytes. Each extension declaration
+reports its read and schema result before checking the digest and identity.
+An unreadable or rejected definition also reports `EXTENSION_UNSUPPORTED`.
 
 An invalid option can return an I/O error. A completed assessment returns a
 report, including when the inputs are missing or the checks fail. Read

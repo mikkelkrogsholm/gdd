@@ -122,6 +122,20 @@ pub enum CheckDetails {
 }
 
 impl Check {
+    pub(crate) fn classify_format(&mut self, issue: bundle::FormatIssue) {
+        match issue {
+            bundle::FormatIssue::Expected(kind) => {
+                self.check_id = "representation.schema".into();
+                self.reason = format!("Expected {}.", kind.format());
+            }
+            bundle::FormatIssue::Missing => {
+                self.check_id = "representation.format".into();
+                self.reason = "Document requires a string format identifier.".into();
+                self.diagnostics[0].message = "Missing or invalid format identifier.".into();
+            }
+        }
+    }
+
     pub fn new(
         id: impl Into<String>,
         dimension: &'static str,

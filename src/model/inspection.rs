@@ -1,9 +1,8 @@
 //! Representation checks shared by captured model inspection commands.
 use std::collections::{BTreeMap, BTreeSet};
 
-use super::{entries, string};
-use crate::bundle::{Bundle, Document, FormatIssue};
-use crate::report::{Check, CheckResult, Diagnostic};
+use crate::bundle::{Bundle, Document};
+use crate::report::{Check, CheckResult};
 use crate::validation::{self, Profile};
 
 pub(crate) struct Inspection<'a> {
@@ -28,46 +27,8 @@ pub(crate) fn inspect(bundle: &Bundle) -> Inspection<'_> {
     let format_issues: BTreeMap<_, _> = bundle
         .diagnostics()
         .iter()
-        .chain(
-            bundle
-                .unpinned_extensions
-                .values()
-                .filter_map(|v| v.as_ref().err()),
-        )
         .filter_map(|d| Some((&d.location.file, d.format_issue?)))
         .collect();
-    let mut unread = bundle.unread_extensions.clone();
-    if let Some(root) = root.filter(|d| d.kind.is_manifest()) {
-        for (id, decl) in entries(&root.value, "extensions") {
-            let Some(observed) = bundle.unpinned_extensions.get(string(decl, "namespace")) else {
-                continue;
-            };
-            let check = match observed {
-                Ok(doc) => validation::representation_check(doc).expect("extension schema"),
-                Err(issue) => Check::from(issue),
-            };
-            if check.result != CheckResult::Pass {
-                unread.insert(id.clone());
-            }
-            let filename = match observed {
-                Ok(doc) => &doc.asset.path,
-                Err(issue) => &issue.location.file,
-            };
-            if let Some(i) = checks.iter().position(|c| {
-                c.diagnostics.iter().any(|d| {
-                    d.code == "EXTENSION_DATA_INVALID" && d.location.file.as_ref() == Some(filename)
-                })
-            }) {
-                if check.result == CheckResult::Pass {
-                    checks.insert(i, check);
-                } else {
-                    checks[i] = check;
-                }
-            } else {
-                checks.push(check);
-            }
-        }
-    }
     let rejected: BTreeSet<_> = checks
         .iter()
         .filter(|c| c.check_id == "representation.schema" && c.result != CheckResult::Pass)
@@ -79,63 +40,28 @@ pub(crate) fn inspect(bundle: &Bundle) -> Inspection<'_> {
     checks.retain(|c| {
         c.check_id == "representation.schema"
             || !c.diagnostics.iter().any(|d| {
-                d.location
-                    .file
-                    .as_ref()
-                    .is_some_and(|file| rejected.contains(file))
+                // Only diagnostics produced by indexing a rejected document are redundant.
+                matches!(d.code, "SCHEMA_INVALID" | "RECORD_INVALID" | "ID_COLLISION")
+                    && d.location
+                        .file
+                        .as_ref()
+                        .is_some_and(|file| rejected.contains(file))
             })
     });
     for check in &mut checks {
+        if check.check_id == "check.schema_invalid"
+            && let Some(format) = check
+                .diagnostics
+                .first()
+                .filter(|d| d.location.pointer == "/format")
+                .and_then(|d| d.location.file.as_ref())
+                .and_then(|path| format_issues.get(path))
+        {
+            check.classify_format(*format);
+        }
         for d in &mut check.diagnostics {
             if d.code == "RECORD_INVALID" && d.location.pointer == "/project_id" {
                 d.location.pointer.clear();
-            }
-            if d.code == "SCHEMA_INVALID"
-                && d.location.pointer == "/format"
-                && check.check_id == "check.schema_invalid"
-            {
-                match d
-                    .location
-                    .file
-                    .as_ref()
-                    .and_then(|path| format_issues.get(path))
-                {
-                    Some(FormatIssue::Expected(kind)) => {
-                        check.check_id = "representation.schema".into();
-                        check.reason = format!("Expected {}.", kind.format());
-                    }
-                    Some(FormatIssue::Missing) => {
-                        check.check_id = "representation.format".into();
-                        check.reason = "Document requires a string format identifier.".into();
-                        d.message = "Missing or invalid format identifier.".into();
-                    }
-                    None => {}
-                }
-            }
-        }
-    }
-    if let Some(manifest) = root.filter(|d| d.kind.is_manifest()) {
-        let extensions: BTreeMap<_, _> = bundle.extensions().collect();
-        for (id, decl) in entries(&manifest.value, "extensions") {
-            let invalid = extensions
-                .get(string(decl, "namespace"))
-                .is_some_and(|d| rejected.contains(&d.asset.path));
-            if invalid || unread.contains(id) {
-                let reason = format!("Unavailable extension {id}.");
-                let mut check = Check::new(
-                    "check.extension_unsupported",
-                    "model",
-                    CheckResult::Unknown,
-                    &reason,
-                );
-                check.diagnostics.push(Diagnostic::new(
-                    "EXTENSION_UNSUPPORTED",
-                    CheckResult::Unknown,
-                    reason,
-                    Some(string(decl, "path")),
-                    "",
-                ));
-                checks.push(check);
             }
         }
     }

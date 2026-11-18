@@ -229,6 +229,9 @@ pub(crate) fn assess<'a>(
     let mut normative_valid = true;
     let mut manifest_valid = bundle.manifest().is_some();
     for (index, document) in bundle.documents().iter().enumerate() {
+        if bundle.declared_extension(index) {
+            continue;
+        }
         if let Some(check) = bundle.representation_check(index) {
             if index < bundle.primary_documents().len()
                 && document.kind != DocumentKind::Records
@@ -242,6 +245,9 @@ pub(crate) fn assess<'a>(
             report.checks.push(check);
         }
     }
+    report
+        .checks
+        .extend(bundle.extension_checks(options.unsupported_extensions));
     let wants_readiness = report.profiles.contains(&Profile::Readiness);
     let wants_records = report.profiles.contains(&Profile::Records);
     let wants_model = report.profiles != [Profile::Representation];
@@ -249,36 +255,12 @@ pub(crate) fn assess<'a>(
         bundle
             .diagnostics()
             .iter()
-            .filter(|issue| !issue.semantic_only)
+            .filter(|issue| !issue.semantic_only && !issue.extension_capture)
             .map(Check::from),
     );
-    if normative_valid {
+    if normative_valid && bundle.primary_extensions_accepted() {
         report.spec_revision = bundle.snapshot().map(|snapshot| snapshot.revision.clone());
     }
-    for (namespace, document) in bundle.extensions() {
-        if options
-            .unsupported_extensions
-            .iter()
-            .any(|name| name == namespace)
-        {
-            let reason = "Extension explicitly unsupported by this consumer.";
-            let mut check = Check::new(
-                "check.extension_unsupported",
-                "model",
-                CheckResult::Unknown,
-                reason,
-            );
-            check.diagnostics.push(Diagnostic::new(
-                "EXTENSION_UNSUPPORTED",
-                check.result,
-                reason,
-                Some(&document.asset.path),
-                "",
-            ));
-            report.checks.push(check);
-        }
-    }
-
     let representation_valid = report.result("model") == CheckResult::Pass;
     let mut context = None;
     if wants_model {

@@ -82,7 +82,7 @@ pub enum Outcome {
     Unknown,
 }
 
-#[derive(Debug, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 pub struct Location {
     pub file: String,
     pub pointer: String,
@@ -94,7 +94,7 @@ pub(crate) enum FormatIssue {
     Expected(DocumentKind),
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Diagnostic {
     pub code: &'static str,
     pub outcome: Outcome,
@@ -104,6 +104,9 @@ pub struct Diagnostic {
     pub related_ids: Box<[String]>,
     pub(crate) semantic_only: bool,
     pub(crate) format_issue: Option<FormatIssue>,
+    // Raw pin and read failures also serve the archive API. The declaration
+    // assessment supplies their consumer-facing checks.
+    pub(crate) extension_capture: bool,
 }
 
 impl fmt::Display for Diagnostic {
@@ -136,6 +139,45 @@ pub struct LocatedRecord<'a> {
     pub location: &'a Location,
 }
 
+/// Keep the original observation even when it cannot enter a pinned snapshot.
+#[derive(Debug)]
+enum ExtensionAsset {
+    Pinned(usize),
+    Unpinned(Document),
+    Malformed(Asset),
+    Unreadable(Diagnostic),
+}
+
+#[derive(Debug)]
+struct ExtensionAssessment {
+    namespace: String,
+    path: String,
+    asset: ExtensionAsset,
+    representation: Check,
+    checks: Vec<Check>,
+}
+
+impl ExtensionAssessment {
+    fn accepted(&self) -> bool {
+        self.representation.result == CheckResult::Pass
+    }
+
+    fn checks(&self, unsupported: &[String]) -> impl Iterator<Item = Check> {
+        let consumer = (self.accepted() && unsupported.contains(&self.namespace)).then(|| {
+            Check::from(&unknown(
+                "EXTENSION_UNSUPPORTED",
+                &self.path,
+                "",
+                "Extension explicitly unsupported by this consumer.",
+            ))
+        });
+        std::iter::once(&self.representation)
+            .chain(&self.checks)
+            .cloned()
+            .chain(consumer)
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct Bundle {
     path: PathBuf,
@@ -150,12 +192,8 @@ pub struct Bundle {
     advisory_paths: BTreeMap<String, Result<String, String>>,
     advisory_assets: BTreeMap<String, Asset>,
     extensions: BTreeMap<String, usize>,
-    // Keep the identity of each unreadable declaration alongside the load
-    // diagnostic. Impact reports distinguish missing semantics from pin errors.
-    pub(crate) unread_extensions: BTreeSet<String>,
-    // A failed pin excludes these bytes from the model registry and snapshot.
-    // A partial comparison may still inspect a schema-accepted observation.
-    pub(crate) unpinned_extensions: BTreeMap<String, Result<Document, Diagnostic>>,
+    extension_assessments: Vec<ExtensionAssessment>,
+    secondary_extension_checks: Vec<Check>,
     locations: BTreeMap<String, Location>,
     nodes: BTreeMap<String, usize>,
     edges: Vec<(String, usize, usize)>,
@@ -220,6 +258,28 @@ impl Bundle {
             .or_else(|| crate::validation::representation_check(&self.documents[index]))
     }
 
+    pub(crate) fn declared_extension(&self, index: usize) -> bool {
+        self.documents[index].kind == DocumentKind::Extension
+            && index != 0
+            && Some(index) != self.secondary_start
+    }
+
+    pub(crate) fn primary_extensions_accepted(&self) -> bool {
+        self.extension_assessments
+            .iter()
+            .all(ExtensionAssessment::accepted)
+    }
+
+    pub(crate) fn extension_checks<'a>(
+        &'a self,
+        unsupported: &'a [String],
+    ) -> impl Iterator<Item = Check> + 'a {
+        self.extension_assessments
+            .iter()
+            .flat_map(|ext| ext.checks(unsupported))
+            .chain(self.secondary_extension_checks.iter().cloned())
+    }
+
     fn validate_document(&mut self, index: usize) -> bool {
         let Some(check) = crate::validation::representation_check(&self.documents[index]) else {
             return false;
@@ -244,12 +304,14 @@ impl Bundle {
                 d.kind,
                 DocumentKind::Manifest02
                     | DocumentKind::Manifest03
-                    | DocumentKind::Extension
                     | DocumentKind::Fragment02
                     | DocumentKind::Fragment03
             )
         };
-        if self.unpinned_extensions.is_empty()
+        if self
+            .extension_assessments
+            .iter()
+            .all(|ext| matches!(ext.asset, ExtensionAsset::Pinned(_)) == ext.accepted())
             && !self
                 .primary_documents()
                 .iter()
@@ -262,25 +324,27 @@ impl Bundle {
             fragment_declarations: self.fragment_declarations.clone(),
             ..Self::default()
         };
-        for (index, doc) in self.primary_documents().iter().enumerate() {
+        for doc in self.primary_documents() {
             if graph_document(doc) && !rejected.contains(&doc.asset.path) {
-                let new_index = graph.documents.len();
+                let index = graph.documents.len();
                 graph.documents.push(doc.clone());
-                index_model_document(&mut graph, new_index);
-                for (name, _) in self.extensions.iter().filter(|(_, i)| **i == index) {
-                    graph.extensions.insert(name.clone(), new_index);
-                }
+                index_model_document(&mut graph, index);
             }
         }
-        for (namespace, observed) in &self.unpinned_extensions {
-            if let Ok(doc) = observed
-                && !rejected.contains(&doc.asset.path)
-            {
-                graph
-                    .extensions
-                    .insert(namespace.clone(), graph.documents.len());
-                graph.documents.push(doc.clone());
-            }
+        for ext in self
+            .extension_assessments
+            .iter()
+            .filter(|ext| ext.accepted())
+        {
+            let doc = match &ext.asset {
+                ExtensionAsset::Pinned(i) => &self.documents[*i],
+                ExtensionAsset::Unpinned(doc) => doc,
+                _ => continue,
+            };
+            graph
+                .extensions
+                .insert(ext.namespace.clone(), graph.documents.len());
+            graph.documents.push(doc.clone());
         }
         Some(graph)
     }
@@ -299,10 +363,12 @@ impl Bundle {
             .ok_or("The source could not be loaded")?
             .as_deref()
             .map_err(String::as_str)?;
-        self.asset_at(path).ok_or("The source could not be loaded")
+        self.captured_asset(path)
+            .ok_or("The source could not be loaded")?
+            .map_err(|issue| issue.message.as_ref())
     }
 
-    fn asset_at(&self, path: &str) -> Option<&Asset> {
+    fn captured_asset(&self, path: &str) -> Option<Result<&Asset, &Diagnostic>> {
         self.advisory_assets
             .get(path)
             .or_else(|| self.normative_sources.values().find(|a| a.path == path))
@@ -311,6 +377,24 @@ impl Bundle {
                     .iter()
                     .map(|d| &d.asset)
                     .find(|a| a.path == path)
+            })
+            .map(Ok)
+            .or_else(|| {
+                self.extension_assessments
+                    .iter()
+                    .find_map(|ext| match &ext.asset {
+                        ExtensionAsset::Unpinned(doc) if doc.asset.path == path => {
+                            Some(Ok(&doc.asset))
+                        }
+                        ExtensionAsset::Malformed(asset) if asset.path == path => Some(Ok(asset)),
+                        ExtensionAsset::Unreadable(issue)
+                            if issue.code == "SOURCE_UNAVAILABLE"
+                                && issue.location.file == path =>
+                        {
+                            Some(Err(issue))
+                        }
+                        _ => None,
+                    })
             })
     }
 
@@ -501,6 +585,12 @@ fn merge_records(primary: &mut Bundle, mut secondary: Bundle) {
             )),
         }
     }
+    primary.secondary_extension_checks.extend(
+        secondary
+            .extension_assessments
+            .iter()
+            .flat_map(|ext| ext.checks(&[])),
+    );
     primary.secondary_start = Some(first_secondary);
     primary.documents.extend(secondary.documents);
     primary.representation_checks.extend(
@@ -669,49 +759,7 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
             issue.semantic_only = true;
             bundle.diagnostics.push(issue);
         }
-        let document = match reader.asset(path).and_then(|asset| {
-            if asset.sha256 != hash {
-                let issue = invalid(
-                    "EXTENSION_DATA_INVALID",
-                    &asset.path,
-                    "",
-                    "Extension bytehash mismatch.",
-                );
-                bundle.unpinned_extensions.insert(
-                    namespace.to_owned(),
-                    parse_document(asset, Some(DocumentKind::Extension)),
-                );
-                Err(issue)
-            } else {
-                parse_document(asset, Some(DocumentKind::Extension))
-            }
-        }) {
-            Ok(document) => document,
-            Err(issue) => {
-                if issue.code != "EXTENSION_DATA_INVALID" {
-                    bundle.unread_extensions.insert(id.clone());
-                }
-                bundle.diagnostics.push(issue);
-                continue;
-            }
-        };
-        let identity_matches = get_string(&document.value, "namespace") == Some(namespace)
-            && get_string(&document.value, "version") == Some(version);
-        // Workplans retain pinned extension bytes even when the declaration
-        // has an identity error. The loader check still fails the model report.
-        // The manifest will be inserted at index zero.
-        bundle
-            .extensions
-            .insert(namespace.into(), bundle.documents.len() + 1);
-        if !identity_matches {
-            bundle.diagnostics.push(invalid(
-                "EXTENSION_IDENTITY_MISMATCH",
-                &document.asset.path,
-                "",
-                "Extension namespace/version mismatch.",
-            ));
-        }
-        bundle.documents.push(document);
+        capture_extension(reader, bundle, id, path, namespace, version, hash);
     }
 
     for (id, source) in optional_registry(value, "sources", file, &mut bundle.diagnostics) {
@@ -831,6 +879,110 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
     }
 }
 
+// Assess what the consumer read before applying the pin or the declared identity.
+// The archive keeps its original pin-first diagnostics and pinned registry.
+fn capture_extension(
+    reader: &mut Reader,
+    bundle: &mut Bundle,
+    id: &str,
+    path: &str,
+    namespace: &str,
+    version: &str,
+    hash: &str,
+) {
+    let mut checks = Vec::new();
+    let (asset, mut representation, archive_issue) = match reader.asset(path) {
+        Err(issue) => {
+            let check = Check::from(&issue);
+            (
+                ExtensionAsset::Unreadable(issue.clone()),
+                check,
+                Some(issue),
+            )
+        }
+        Ok(asset) => {
+            let pin_error = (asset.sha256 != hash).then(|| {
+                invalid(
+                    "EXTENSION_DATA_INVALID",
+                    &asset.path,
+                    "",
+                    "Extension bytehash mismatch.",
+                )
+            });
+            match decode_document(&asset, Some(DocumentKind::Extension)) {
+                Err(issue) => {
+                    let mut check = Check::from(&issue);
+                    if let Some(format) = issue.format_issue {
+                        check.classify_format(format);
+                    }
+                    (
+                        ExtensionAsset::Malformed(asset),
+                        check,
+                        pin_error.or(Some(issue)),
+                    )
+                }
+                Ok((kind, value)) => {
+                    let document = Document { kind, asset, value };
+                    let schema = crate::validation::representation_check(&document)
+                        .expect("extension schema");
+                    let identity_error = (get_string(&document.value, "namespace")
+                        != Some(namespace)
+                        || get_string(&document.value, "version") != Some(version))
+                    .then(|| {
+                        invalid(
+                            "EXTENSION_IDENTITY_MISMATCH",
+                            &document.asset.path,
+                            "",
+                            "Extension namespace/version mismatch.",
+                        )
+                    });
+                    if schema.result == CheckResult::Pass {
+                        checks.extend(pin_error.iter().chain(&identity_error).map(Check::from));
+                    }
+                    let observed = if pin_error.is_some() {
+                        ExtensionAsset::Unpinned(document)
+                    } else {
+                        // The manifest will return to index zero after its declarations are read.
+                        let index = bundle.documents.len() + 1;
+                        bundle.extensions.insert(namespace.to_owned(), index);
+                        bundle.documents.push(document);
+                        ExtensionAsset::Pinned(index)
+                    };
+                    (observed, schema, pin_error.or(identity_error))
+                }
+            }
+        }
+    };
+    if let Some(issue) = archive_issue {
+        bundle.diagnostics.push(Diagnostic {
+            extension_capture: true,
+            ..issue
+        });
+    }
+    if representation.result != CheckResult::Pass {
+        checks.push(Check::from(&unknown(
+            "EXTENSION_UNSUPPORTED",
+            path,
+            "",
+            format!("Unavailable extension {id}."),
+        )));
+    }
+    // Reports identify the declaration's spelling, including a local symlink.
+    for diagnostic in std::iter::once(&mut representation)
+        .chain(&mut checks)
+        .flat_map(|c| &mut c.diagnostics)
+    {
+        diagnostic.location.file = Some(path.to_owned());
+    }
+    bundle.extension_assessments.push(ExtensionAssessment {
+        namespace: namespace.into(),
+        path: path.into(),
+        asset,
+        representation,
+        checks,
+    });
+}
+
 // Capture advisory bytes only when a contract explicitly refers to them. They
 // remain outside the snapshot and cannot establish readiness on their own.
 fn capture_advisory_contracts(reader: &Reader, bundle: &mut Bundle, scope: &[String]) {
@@ -880,7 +1032,9 @@ fn capture_advisory_contracts(reader: &Reader, bundle: &mut Bundle, scope: &[Str
         .collect();
     for (id, uri) in advisory {
         let result = reader.relative_path(&uri).and_then(|path| {
-            if bundle.asset_at(&path).is_none() {
+            if let Some(observed) = bundle.captured_asset(&path) {
+                observed.map_err(Clone::clone)?;
+            } else {
                 let asset = reader.read_asset(path.clone())?;
                 bundle.advisory_assets.insert(path.clone(), asset);
             }
@@ -1232,6 +1386,7 @@ fn invalid(
         related_ids: Box::new([]),
         semantic_only: false,
         format_issue: None,
+        extension_capture: false,
     }
 }
 
@@ -1311,8 +1466,9 @@ impl Reader<'_> {
             && let Some(root) = primary.path().parent()
             && let Ok(relative) = self.root.join(&normalized).strip_prefix(root)
             && let Some(path) = portable_path(relative)
-            && let Some(asset) = primary.asset_at(&path)
+            && let Some(observed) = primary.captured_asset(&path)
         {
+            let asset = observed.map_err(Clone::clone)?;
             return Ok(Asset {
                 path: normalized,
                 sha256: asset.sha256.clone(),
@@ -1340,6 +1496,14 @@ impl Reader<'_> {
 }
 
 fn parse_document(asset: Asset, expected: Option<DocumentKind>) -> Result<Document, Diagnostic> {
+    let (kind, value) = decode_document(&asset, expected)?;
+    Ok(Document { kind, asset, value })
+}
+
+fn decode_document(
+    asset: &Asset,
+    expected: Option<DocumentKind>,
+) -> Result<(DocumentKind, Value), Diagnostic> {
     let path = &asset.path;
     let value = input::parse(&asset.bytes).map_err(|error| match error {
         InputError::UnsupportedDepth => unknown("FORMAT_UNSUPPORTED", path, "", error.to_string()),
@@ -1375,7 +1539,7 @@ fn parse_document(asset: Asset, expected: Option<DocumentKind>) -> Result<Docume
             )
         });
     }
-    Ok(Document { kind, asset, value })
+    Ok((kind, value))
 }
 
 fn portable_path(path: &Path) -> Option<String> {
