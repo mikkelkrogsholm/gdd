@@ -1,5 +1,6 @@
 mod code;
 mod concert_archive;
+mod diff;
 mod fixture;
 mod graphify;
 mod impact;
@@ -33,6 +34,11 @@ enum Command {
         #[arg(long, value_name = "NEW_FILE")]
         output: Option<PathBuf>,
     },
+    /// Execute the named stable-identity model diff cases.
+    Diff {
+        #[arg(long, value_name = "NEW_FILE")]
+        output: Option<PathBuf>,
+    },
     /// Execute the named declared-model impact cases.
     Impact {
         #[arg(long, value_name = "NEW_FILE")]
@@ -60,6 +66,7 @@ fn main() -> Result<ExitCode> {
     match Command::parse() {
         Command::ConcertArchive { action } => concert_archive::command(action),
         Command::Code { output } => code::command(&directory, output),
+        Command::Diff { output } => diff::command(&directory, output),
         Command::Impact { output } => impact::command(&directory, output),
         Command::Status { output } => status::command(&directory, output),
         Command::Standard { output } => standard::command(&directory, output),

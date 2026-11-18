@@ -172,6 +172,27 @@ assertion and reports the verdict and number of attempted instances. Failed
 expectations produce a nonzero exit. To collect the Python receipt with pytest
 output, run `uv run python conformance/run_impact.py --output python-impact-run.json`.
 
+## Stable-identity model diff
+
+Run the 16 named diff cases (25 parameter instances) locally.
+
+```sh
+cargo run --offline --locked -p gdd-conformance -- diff --output native-diff-run.json
+```
+
+The runner reads [diff.cases.json](diff.cases.json) and exercises the Rust
+model diff and text renderer in process. It compares private copies of the
+tutorial model to check exact field changes, structural advisories, fragment
+relocation, extension packaging and partial comparisons. It validates results
+against [the diff schema](../schemas/model-diff.schema.json) and restores the
+indexed concert experiment to compare the phase A and final requirements.
+
+Omit `--output` to print the JSON receipt. With `--output`, the runner creates
+a new file and prints the matched case count. Each row records the catalog ID,
+assertion, verdict and number of attempted instances. Failed expectations
+produce a nonzero exit. To collect the Python receipt with pytest output, run
+`uv run python conformance/run_diff.py --output python-diff-run.json`.
+
 ## GDD 0.3 boundaries and design principles
 
 [design.cases.json](design.cases.json) names the new boundary, contract, community,
