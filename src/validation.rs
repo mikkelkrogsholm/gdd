@@ -100,6 +100,7 @@ pub fn validate_with_options(
     if normative_valid {
         report.spec_revision = bundle.snapshot().map(|snapshot| snapshot.revision.clone());
     }
+    let representation_valid = report.result("model") == CheckResult::Pass;
     for (namespace, document) in bundle.extensions() {
         if options
             .unsupported_extensions
@@ -125,21 +126,28 @@ pub fn validate_with_options(
     }
 
     if report.profiles.contains(&Profile::Model) {
-        let reason = if bundle.manifest().is_none() {
-            "Semantic model validation requires a supported GDD 0.2 or 0.3 model manifest."
+        if let Some(manifest) = bundle.manifest() {
+            if representation_valid {
+                report.checks.extend(crate::model::check(
+                    bundle,
+                    manifest,
+                    options.unsupported_extensions,
+                ));
+            }
         } else {
-            "Semantic model validation is unavailable in this build."
-        };
-        let mut check = Check::new("model.unavailable", "model", CheckResult::Unknown, reason);
-        check.scope.clone_from(&report.scope);
-        check.diagnostics.push(Diagnostic::new(
-            "FORMAT_UNSUPPORTED",
-            check.result,
-            reason,
-            bundle.root_document().map(|doc| doc.asset.path.as_str()),
-            "",
-        ));
-        report.checks.push(check);
+            let reason =
+                "Semantic model validation requires a supported GDD 0.2 or 0.3 model manifest.";
+            let mut check = Check::new("model.unavailable", "model", CheckResult::Unknown, reason);
+            check.scope.clone_from(&report.scope);
+            check.diagnostics.push(Diagnostic::new(
+                "FORMAT_UNSUPPORTED",
+                check.result,
+                reason,
+                bundle.root_document().map(|doc| doc.asset.path.as_str()),
+                "",
+            ));
+            report.checks.push(check);
+        }
     }
     Ok(report)
 }

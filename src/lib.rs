@@ -2,6 +2,7 @@
 
 pub mod bundle;
 pub mod input;
+mod model;
 pub mod report;
 pub mod validation;
 
