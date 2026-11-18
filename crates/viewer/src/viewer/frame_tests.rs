@@ -100,6 +100,50 @@ fn widget<'a>(tree: &'a TreeUpdate, role: Role, name: &str) -> Option<&'a Node> 
 }
 
 #[test]
+fn inspector_keeps_its_scroll_until_a_different_record_opens() {
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let mut window = Window::open(&fixture);
+    let graph = &window.viewer.graph;
+    let first = graph.nodes[graph.actions["constructor"]].label.clone();
+    let connections_y = |tree: &TreeUpdate| {
+        widget(tree, Role::Label, "Connections")
+            .unwrap()
+            .bounds()
+            .unwrap()
+            .y0
+    };
+
+    window.click(Role::Button, "action.second");
+    let second_top = connections_y(&window.frame(Vec::new()));
+    window.click(Role::Button, &first);
+    let top = connections_y(&window.frame(Vec::new()));
+    let wheel = |phase| egui::Event::MouseWheel {
+        unit: egui::MouseWheelUnit::Point,
+        delta: egui::vec2(0.0, -180.0),
+        phase,
+        source: egui::MouseWheelSource::Trackpad,
+        modifiers: Modifiers::NONE,
+    };
+    window.frame(vec![
+        egui::Event::PointerMoved(egui::pos2(1150.0, 520.0)),
+        wheel(egui::TouchPhase::Start),
+        wheel(egui::TouchPhase::Move),
+    ]);
+    let scrolled = connections_y(&window.frame(Vec::new()));
+    assert!(
+        top - scrolled > 100.0,
+        "Expected to scroll the record, got {top} → {scrolled}"
+    );
+    assert_eq!(connections_y(&window.frame(Vec::new())), scrolled);
+
+    window.click(Role::Button, "action.second");
+    assert_eq!(connections_y(&window.frame(Vec::new())), second_top);
+    window.click(Role::Button, &first);
+    assert_eq!(connections_y(&window.frame(Vec::new())), top);
+}
+
+#[test]
 fn scenario_controls_work_in_native_frames_for_source_and_detached_views() {
     let source = tempfile::tempdir().unwrap();
     let saved = tempfile::tempdir().unwrap();

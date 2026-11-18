@@ -4,75 +4,70 @@ impl Viewer {
     pub(super) fn show_overview(&mut self, ui: &mut Ui) {
         let graph = Arc::clone(&self.graph);
         let overview = graph.input.overview();
-        egui::ScrollArea::vertical()
-            .id_salt("overview")
-            .auto_shrink([false; 2])
-            .show(ui, |ui| {
-                ui.heading("Model overview");
-                ui.strong(graph.title());
-                if let Some(id) = overview.project.get("id") {
-                    ui.monospace(declared_text(Some(id)));
+        ui.heading("Model overview");
+        ui.strong(graph.title());
+        if let Some(id) = overview.project.get("id") {
+            ui.monospace(declared_text(Some(id)));
+        }
+        if let Some(goal) = overview.project.get("goal") {
+            ui.label(declared_text(Some(goal)));
+        }
+        ui.collapsing("Project fields", |ui| {
+            ui.monospace(format!("{:#}", overview.project));
+        });
+
+        ui.separator();
+        ui.strong("The graph");
+        ui.label(format!(
+            "Full model: {}",
+            graph_counts(graph.nodes.len(), graph.edges.len())
+        ));
+        let kinds: Vec<_> = graph.choices.kinds.iter().map(String::as_str).collect();
+        if !kinds.is_empty() {
+            ui.label(format!("Node types: {}", kinds.join(", ")));
+        }
+        let artifact = graph.input.artifact();
+        let scope = artifact
+            .and_then(|data| data["scope"].as_array())
+            .filter(|ids| !ids.is_empty());
+        if let Some(ids) = scope {
+            let seeds: Vec<_> = ids.iter().map(|id| id.as_str().unwrap()).collect();
+            ui.label(format!("Scope: {}", seeds.join(", ")));
+            ui.label(format!(
+                "In saved scope: {}",
+                graph_counts(graph.shown_nodes, graph.shown_edges)
+            ));
+        } else {
+            ui.label("Scope: Entire model");
+        }
+        ui.collapsing("Current view", |ui| {
+            self.show_current_view(ui);
+        });
+
+        if !graph.sources.is_empty() {
+            ui.separator();
+            ui.strong("Declared sources");
+            for (index, id) in graph.sources.keys().enumerate() {
+                if ui.link(id).clicked() {
+                    self.selected = Some(Selection::Source(index));
+                    ui.ctx().request_repaint();
                 }
-                if let Some(goal) = overview.project.get("goal") {
-                    ui.label(declared_text(Some(goal)));
-                }
-                ui.collapsing("Project fields", |ui| {
-                    ui.monospace(format!("{:#}", overview.project));
+            }
+        }
+        if let Some(questions) = overview.questions.and_then(Json::as_object)
+            && !questions.is_empty()
+        {
+            ui.separator();
+            ui.strong("Questions");
+            for (id, question) in questions {
+                ui.collapsing(id, |ui| {
+                    ui.monospace(format!("{question:#}"));
                 });
+            }
+        }
 
-                ui.separator();
-                ui.strong("The graph");
-                ui.label(format!(
-                    "Full model: {}",
-                    graph_counts(graph.nodes.len(), graph.edges.len())
-                ));
-                let kinds: Vec<_> = graph.choices.kinds.iter().map(String::as_str).collect();
-                if !kinds.is_empty() {
-                    ui.label(format!("Node types: {}", kinds.join(", ")));
-                }
-                let artifact = graph.input.artifact();
-                let scope = artifact
-                    .and_then(|data| data["scope"].as_array())
-                    .filter(|ids| !ids.is_empty());
-                if let Some(ids) = scope {
-                    let seeds: Vec<_> = ids.iter().map(|id| id.as_str().unwrap()).collect();
-                    ui.label(format!("Scope: {}", seeds.join(", ")));
-                    ui.label(format!(
-                        "In saved scope: {}",
-                        graph_counts(graph.shown_nodes, graph.shown_edges)
-                    ));
-                } else {
-                    ui.label("Scope: Entire model");
-                }
-                ui.collapsing("Current view", |ui| {
-                    self.show_current_view(ui);
-                });
-
-                if !graph.sources.is_empty() {
-                    ui.separator();
-                    ui.strong("Declared sources");
-                    for (index, id) in graph.sources.keys().enumerate() {
-                        if ui.link(id).clicked() {
-                            self.selected = Some(Selection::Source(index));
-                            ui.ctx().request_repaint();
-                        }
-                    }
-                }
-                if let Some(questions) = overview.questions.and_then(Json::as_object)
-                    && !questions.is_empty()
-                {
-                    ui.separator();
-                    ui.strong("Questions");
-                    for (id, question) in questions {
-                        ui.collapsing(id, |ui| {
-                            ui.monospace(format!("{question:#}"));
-                        });
-                    }
-                }
-
-                ui.separator();
-                show_traceability(ui, overview.snapshot, artifact);
-            });
+        ui.separator();
+        show_traceability(ui, overview.snapshot, artifact);
     }
 
     fn show_current_view(&self, ui: &mut Ui) {

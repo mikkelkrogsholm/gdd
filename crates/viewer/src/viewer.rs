@@ -64,6 +64,7 @@ pub struct Viewer {
     reveal_selected: bool,
     filename: String,
     selected: Option<Selection>,
+    inspector_scroll: Option<(Option<Selection>, egui::Id)>,
     folded: Option<Arc<FoldProjection>>,
     folded_layout: Option<(Arc<FoldProjection>, LayoutState)>,
 }
@@ -82,6 +83,7 @@ impl Viewer {
             reveal_selected: false,
             filename,
             selected: None,
+            inspector_scroll: None,
             folded: None,
             folded_layout: None,
         }
@@ -406,138 +408,130 @@ impl Viewer {
                 ui.ctx().request_repaint();
             }
         }
-        let index = match self.selected {
-            Some(Selection::Node(index)) => index,
-            Some(Selection::Edge(index)) => {
-                self.show_edge(ui, index);
-                return;
-            }
-            Some(Selection::Bundle(from, to)) => {
-                self.show_bundle(ui, from, to);
-                return;
-            }
-            Some(Selection::Source(index)) => {
-                let (id, source) = self
-                    .graph
-                    .sources
-                    .iter()
-                    .nth(index)
-                    .expect("selected source");
-                egui::ScrollArea::vertical()
-                    .id_salt(("source", id))
-                    .show(ui, |ui| {
-                        ui.heading("Source declaration");
-                        ui.monospace(id);
-                        show_source(ui, source, true);
-                    });
-                return;
-            }
-            None => {
-                self.show_overview(ui);
-                return;
-            }
-        };
+        let selection = self.selected;
+        if let Some((previous, id)) = self.inspector_scroll
+            && previous != selection
+        {
+            egui::scroll_area::State::default().store(ui.ctx(), id);
+        }
+        let shrink = !matches!(selection, None | Some(Selection::Node(_)));
+        let area = egui::ScrollArea::vertical()
+            .id_salt("inspector")
+            .auto_shrink([shrink; 2])
+            .show(ui, |ui| match selection {
+                Some(Selection::Node(index)) => self.show_node(ui, index),
+                Some(Selection::Edge(index)) => self.show_edge(ui, index),
+                Some(Selection::Bundle(from, to)) => self.show_bundle(ui, from, to),
+                Some(Selection::Source(index)) => {
+                    let (id, source) = self
+                        .graph
+                        .sources
+                        .iter()
+                        .nth(index)
+                        .expect("selected source");
+                    ui.heading("Source declaration");
+                    ui.monospace(id);
+                    show_source(ui, source, true);
+                }
+                None => self.show_overview(ui),
+            });
+        // An inspector link can change self.selected while this record is being drawn.
+        self.inspector_scroll = Some((selection, area.id));
+    }
+
+    fn show_node(&mut self, ui: &mut Ui, index: usize) {
         let graph = Arc::clone(&self.graph);
         let node = &graph.nodes[index];
-        egui::ScrollArea::vertical()
-            .id_salt(index)
-            .auto_shrink([false; 2])
-            .show(ui, |ui| {
-                ui.heading(&node.label);
-                if node.label != node.id {
-                    ui.label(RichText::new(&node.id).monospace());
-                }
-                ui.label(RichText::new(&node.kind).monospace().weak());
-                ui.label(&node.description);
-                if index >= graph.shown_nodes {
-                    ui.label("Outside the saved view scope");
-                } else if self.visible.nodes.binary_search(&index).is_err() {
-                    ui.label("Hidden by current filters");
-                }
-                self.show_boundary_details(ui, &graph, node);
-                self.show_folded_node(ui, index);
-                if let Ok(projection) = &graph.perspectives {
-                    if projection.has_product_extension
-                        && let Some(human) = &node.human
-                    {
-                        match human {
-                            HumanConcept::Step { action, response } => {
-                                ui.strong("User action");
-                                ui.label(
-                                    action.as_deref().unwrap_or("Not declared (advisory gap)"),
-                                );
-                                ui.strong("System response");
-                                ui.label(
-                                    response.as_deref().unwrap_or("Not declared (advisory gap)"),
-                                );
-                            }
-                            HumanConcept::Actor { goal } => {
-                                ui.strong("Goal");
-                                ui.label(goal.as_deref().unwrap_or("Not declared"));
-                            }
-                        }
+        ui.heading(&node.label);
+        if node.label != node.id {
+            ui.label(RichText::new(&node.id).monospace());
+        }
+        ui.label(RichText::new(&node.kind).monospace().weak());
+        ui.label(&node.description);
+        if index >= graph.shown_nodes {
+            ui.label("Outside the saved view scope");
+        } else if self.visible.nodes.binary_search(&index).is_err() {
+            ui.label("Hidden by current filters");
+        }
+        self.show_boundary_details(ui, &graph, node);
+        self.show_folded_node(ui, index);
+        if let Ok(projection) = &graph.perspectives {
+            if projection.has_product_extension
+                && let Some(human) = &node.human
+            {
+                match human {
+                    HumanConcept::Step { action, response } => {
+                        ui.strong("User action");
+                        ui.label(action.as_deref().unwrap_or("Not declared (advisory gap)"));
+                        ui.strong("System response");
+                        ui.label(response.as_deref().unwrap_or("Not declared (advisory gap)"));
                     }
-                    let related: Vec<_> = Lens::PRODUCT
-                        .into_iter()
-                        .filter(|&lens| projection.includes(lens, index))
-                        .collect();
-                    if !related.is_empty() {
-                        ui.strong("Related perspectives");
-                        ui.horizontal_wrapped(|ui| {
-                            for lens in related {
-                                if ui.link(lens.label()).clicked() {
-                                    self.navigate(index, lens);
-                                    ui.ctx().request_repaint();
-                                }
-                            }
-                        });
+                    HumanConcept::Actor { goal } => {
+                        ui.strong("Goal");
+                        ui.label(goal.as_deref().unwrap_or("Not declared"));
                     }
                 }
-                show_record_details(ui, &graph, &node.id, &node.details);
-                if let Some(data) = graph.input.artifact() {
-                    ui.collapsing("Canonical node record", |ui| {
-                        ui.monospace(format!("{:#}", data["model"]["nodes"][&node.id]));
-                    });
-                }
-                ui.add_space(10.0);
-
-                let mut connections = graph
-                    .edges
-                    .iter()
-                    .enumerate()
-                    .filter(|(_, edge)| edge.from == index || edge.to == index)
-                    .peekable();
-                ui.heading("Connections");
-                if connections.peek().is_none() {
-                    ui.label("No incident edges.");
-                }
-                for (edge_index, edge) in connections {
-                    let (direction, neighbor) = match (edge.from == index, edge.to == index) {
-                        (true, true) => ("Self-loop", index),
-                        (true, false) => ("Outgoing to", edge.to),
-                        (false, _) => ("Incoming from", edge.from),
-                    };
-                    ui.separator();
-                    ui.push_id(&edge.id, |ui| {
-                        if ui.link(RichText::new(&edge.id).monospace()).clicked() {
-                            self.selected = Some(Selection::Edge(edge_index));
+            }
+            let related: Vec<_> = Lens::PRODUCT
+                .into_iter()
+                .filter(|&lens| projection.includes(lens, index))
+                .collect();
+            if !related.is_empty() {
+                ui.strong("Related perspectives");
+                ui.horizontal_wrapped(|ui| {
+                    for lens in related {
+                        if ui.link(lens.label()).clicked() {
+                            self.navigate(index, lens);
+                            ui.ctx().request_repaint();
                         }
-                        ui.label(RichText::new(&edge.relation).monospace());
-                        ui.horizontal_wrapped(|ui| {
-                            ui.label(direction);
-                            let neighbor_node = &graph.nodes[neighbor];
-                            if ui
-                                .link(&neighbor_node.label)
-                                .on_hover_text(&neighbor_node.id)
-                                .clicked()
-                            {
-                                self.follow_node(neighbor);
-                                ui.ctx().request_repaint();
-                            }
-                        });
-                    });
-                }
+                    }
+                });
+            }
+        }
+        show_record_details(ui, &graph, &node.id, &node.details);
+        if let Some(data) = graph.input.artifact() {
+            ui.collapsing("Canonical node record", |ui| {
+                ui.monospace(format!("{:#}", data["model"]["nodes"][&node.id]));
             });
+        }
+        ui.add_space(10.0);
+
+        let mut connections = graph
+            .edges
+            .iter()
+            .enumerate()
+            .filter(|(_, edge)| edge.from == index || edge.to == index)
+            .peekable();
+        ui.heading("Connections");
+        if connections.peek().is_none() {
+            ui.label("No incident edges.");
+        }
+        for (edge_index, edge) in connections {
+            let (direction, neighbor) = match (edge.from == index, edge.to == index) {
+                (true, true) => ("Self-loop", index),
+                (true, false) => ("Outgoing to", edge.to),
+                (false, _) => ("Incoming from", edge.from),
+            };
+            ui.separator();
+            ui.push_id(&edge.id, |ui| {
+                if ui.link(RichText::new(&edge.id).monospace()).clicked() {
+                    self.selected = Some(Selection::Edge(edge_index));
+                }
+                ui.label(RichText::new(&edge.relation).monospace());
+                ui.horizontal_wrapped(|ui| {
+                    ui.label(direction);
+                    let neighbor_node = &graph.nodes[neighbor];
+                    if ui
+                        .link(&neighbor_node.label)
+                        .on_hover_text(&neighbor_node.id)
+                        .clicked()
+                    {
+                        self.follow_node(neighbor);
+                        ui.ctx().request_repaint();
+                    }
+                });
+            });
+        }
     }
 
     fn show_boundary_details(&mut self, ui: &mut Ui, graph: &Graph, node: &Node) {
@@ -772,63 +766,55 @@ impl Viewer {
         let Some(b) = fold.bundles.iter().find(|b| (b.from, b.to) == (from, to)) else {
             return;
         };
-        egui::ScrollArea::vertical()
-            .id_salt(("bundle", from, to))
-            .show(ui, |ui| {
-                ui.heading("Directed bundle");
-                ui.label("From");
-                self.node_link(ui, from);
-                ui.label("To");
-                self.node_link(ui, to);
-                ui.strong(format!("Edges ({})", b.edges.len()));
-                for &edge in &b.edges {
-                    self.edge_link(ui, edge);
-                }
-            });
+        ui.heading("Directed bundle");
+        ui.label("From");
+        self.node_link(ui, from);
+        ui.label("To");
+        self.node_link(ui, to);
+        ui.strong(format!("Edges ({})", b.edges.len()));
+        for &edge in &b.edges {
+            self.edge_link(ui, edge);
+        }
     }
 
     fn show_edge(&mut self, ui: &mut Ui, index: usize) {
         let graph = Arc::clone(&self.graph);
         let edge = &graph.edges[index];
-        egui::ScrollArea::vertical()
-            .id_salt(("edge", index))
-            .show(ui, |ui| {
-                ui.heading("Edge details");
-                ui.label(RichText::new(&edge.id).monospace().strong());
-                ui.label(RichText::new(&edge.relation).monospace());
-                if index >= graph.shown_edges {
-                    ui.label("Outside the saved view scope");
-                } else if self.visible.edges.binary_search(&index).is_err() {
-                    ui.label("Hidden by current filters");
-                } else if let Some(fold) = self.folded.clone() {
-                    let glyph = &fold.glyphs[fold.glyph_for[edge.from].unwrap()];
-                    if glyph.internal.binary_search(&index).is_ok() {
-                        ui.strong("Internal edge in");
-                        self.node_link(ui, glyph.node);
-                    } else {
-                        let to = fold.glyphs[fold.glyph_for[edge.to].unwrap()].node;
-                        if ui.link("Inspect directed bundle").clicked() {
-                            self.selected = Some(Selection::Bundle(glyph.node, to));
-                        }
-                    }
+        ui.heading("Edge details");
+        ui.label(RichText::new(&edge.id).monospace().strong());
+        ui.label(RichText::new(&edge.relation).monospace());
+        if index >= graph.shown_edges {
+            ui.label("Outside the saved view scope");
+        } else if self.visible.edges.binary_search(&index).is_err() {
+            ui.label("Hidden by current filters");
+        } else if let Some(fold) = self.folded.clone() {
+            let glyph = &fold.glyphs[fold.glyph_for[edge.from].unwrap()];
+            if glyph.internal.binary_search(&index).is_ok() {
+                ui.strong("Internal edge in");
+                self.node_link(ui, glyph.node);
+            } else {
+                let to = fold.glyphs[fold.glyph_for[edge.to].unwrap()].node;
+                if ui.link("Inspect directed bundle").clicked() {
+                    self.selected = Some(Selection::Bundle(glyph.node, to));
                 }
-                ui.strong("From");
-                self.node_link(ui, edge.from);
-                ui.strong("To");
-                self.node_link(ui, edge.to);
-                show_record_details(ui, &graph, &edge.id, &edge.details);
-                if let Some(data) = graph.input.artifact() {
-                    ui.collapsing("Canonical edge record", |ui| {
-                        if let Some(record) = data["model"]["edges"].as_array().and_then(|items| {
-                            items
-                                .iter()
-                                .find(|item| item["id"].as_str() == Some(edge.id.as_str()))
-                        }) {
-                            ui.monospace(format!("{record:#}"));
-                        }
-                    });
+            }
+        }
+        ui.strong("From");
+        self.node_link(ui, edge.from);
+        ui.strong("To");
+        self.node_link(ui, edge.to);
+        show_record_details(ui, &graph, &edge.id, &edge.details);
+        if let Some(data) = graph.input.artifact() {
+            ui.collapsing("Canonical edge record", |ui| {
+                if let Some(record) = data["model"]["edges"].as_array().and_then(|items| {
+                    items
+                        .iter()
+                        .find(|item| item["id"].as_str() == Some(edge.id.as_str()))
+                }) {
+                    ui.monospace(format!("{record:#}"));
                 }
             });
+        }
     }
 }
 
@@ -976,6 +962,7 @@ mod tests {
             reveal_selected: false,
             filename: "fragmented.gdd.yaml".into(),
             selected: Some(Selection::Node(0)),
+            inspector_scroll: None,
             folded: None,
             folded_layout: None,
         };
@@ -1051,6 +1038,7 @@ mod tests {
             reveal_selected: false,
             filename: "partial.gddview".into(),
             selected: None,
+            inspector_scroll: None,
             folded: None,
             folded_layout: None,
         };
@@ -1095,6 +1083,7 @@ mod tests {
             reveal_selected: false,
             filename: "fixture".into(),
             selected: None,
+            inspector_scroll: None,
             folded: Some(Arc::clone(&prior)),
             folded_layout: Some((Arc::clone(&prior), LayoutState::Pending(receiver))),
         };
