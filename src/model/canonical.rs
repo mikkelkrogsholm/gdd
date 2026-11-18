@@ -5,7 +5,7 @@ use serde_json::Value as Json;
 // Align integer and decimal spelling with the portable Python consumer for its
 // supported values. Work directly on the coefficient so finer finite decimals
 // accepted by the native parser retain every digit.
-pub(super) fn comparison_number(raw: &str) -> String {
+pub(crate) fn comparison_number(raw: &str) -> String {
     number(raw, true)
 }
 

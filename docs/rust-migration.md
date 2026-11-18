@@ -399,6 +399,41 @@ in Rust. Python reports UNKNOWN when its numeric projection would round a
 value. Observation IDs bind to the original byte digest and the JSON Pointer,
 including for numerically equivalent IDs in different records.
 
+## Import, verify and recover Graphify files
+
+```sh
+cargo run --bin gdd -- graphify import examples/graphify/raw.ast.json \
+  --profile graphify-0.9.75-ast --output new-observations
+cargo run --bin gdd -- graphify validate new-observations
+cargo run --bin gdd -- graphify export new-observations --output recovered.json
+```
+
+Import creates the bundle only after verifying the staged original and index.
+Import and export require unused destinations. Each command writes its report
+to stdout and uses the report's exit code. Export can create a byte-identical
+file with exit 1 or 2 when the producer claims fail or remain unknown. A
+failed integrity, manifest or projection check prevents recovery, as does an
+unavailable original.
+
+Use `gdd::graphify::import_graphify(input, output, options)` with
+`GraphifyOptions`. File import derives the locator from the resolved input
+path. The CLI requires an explicit `--profile` and accepts `--source-id`,
+`--producer-version` and `--code-revision` as unverified claims.
+`verify_graphify(path, profile, producer_version)` accepts a bundle directory,
+an observations index, or raw JSON. A raw file named `observations.json`
+requires an explicit profile. `load_observations(path)` returns the index,
+original bytes and report together. `export_graphify(path, output)` performs
+verification and writes the captured bytes.
+
+Verification recognizes importer versions 0.1.0 through 0.1.2. It recomputes
+the projection using the recorded claims and checks the original's length and
+SHA-256. A historical compact index for a number such as `1e-4000` can be
+recovered with an UNKNOWN projection. Fresh native imports project that number
+exactly. A historical full index can embed producer data beyond the 256-container
+raw projection limit. The native index reader supports up to 1,024 containers
+including the index root. An index exceeding its reading limit cannot establish
+the original's identity for export.
+
 ## Numeric validation differences
 
 The Rust parser preserves finite numeric literals such as `1e-4000` and
@@ -420,8 +455,8 @@ YAML nesting to 256 containers.
 
 | Python entry points | Current Rust support |
 | --- | --- |
-| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Visualization and Graphify validation still require Python. |
-| `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Native raw-byte observation and compact indexes via `gdd::graphify`. File import, verification, export and proposals use the Python API. |
+| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Visualization and the root `validate --profile import.graphify` integration still require Python. |
+| `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Native file import, verification, byte recovery and in-memory observations via `gdd::graphify`. Proposals still use the Python API. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |
 | `run_status` | Native journal replay and current acceptance with path-based or captured inputs. |

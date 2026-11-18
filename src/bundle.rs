@@ -497,7 +497,7 @@ fn load_primary(path: &Path, scope: Option<&[String]>, paired: bool) -> Bundle {
     }
 }
 
-fn resolve_local(path: &Path) -> Result<PathBuf, Diagnostic> {
+pub(crate) fn resolve_local(path: &Path) -> Result<PathBuf, Diagnostic> {
     let absolute = std::path::absolute(path).map_err(|error| path_io(path, error))?;
     resolve_asset_path(&absolute, &path.display().to_string())
 }
@@ -1456,7 +1456,7 @@ fn link_or_io(path: &str, error: io::Error) -> Diagnostic {
 }
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
-fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> {
+pub(crate) fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> {
     use rustix::fs::{Mode, OFlags, openat};
 
     // Open the canonical root and its descendants without following links that
@@ -1488,7 +1488,7 @@ fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> {
 }
 
 #[cfg(not(any(target_os = "linux", target_os = "macos")))]
-fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> {
+pub(crate) fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> {
     read_file(File::open(root.join(relative))?)
 }
 

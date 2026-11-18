@@ -80,7 +80,50 @@ enum WorkflowCommand {
 }
 
 #[derive(Subcommand)]
+enum GraphifyCommand {
+    /// Preserve a raw artifact and publish a new observation bundle.
+    #[command(args_override_self = true)]
+    Import {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        output: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        profile: String,
+        #[arg(long, allow_negative_numbers = true)]
+        producer_version: Option<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        code_revision: Option<String>,
+        #[arg(long, default_value = "source.graphify", allow_negative_numbers = true)]
+        source_id: String,
+    },
+    /// Assess a raw artifact or revalidate an observation bundle.
+    #[command(args_override_self = true)]
+    Validate {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        profile: Option<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        producer_version: Option<String>,
+    },
+    /// Recover the original bytes to a new file.
+    #[command(args_override_self = true)]
+    Export {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        output: PathBuf,
+    },
+}
+
+#[derive(Subcommand)]
 enum Command {
+    /// Preserve, verify and recover Graphify observation artifacts.
+    Graphify {
+        #[command(subcommand)]
+        command: GraphifyCommand,
+    },
     /// Prepare and verify development packets, manage runs, and publish run events.
     Workflow {
         #[command(subcommand)]
@@ -325,6 +368,44 @@ fn workflow_command(command: WorkflowCommand) -> io::Result<ExitCode> {
     Ok(ExitCode::from(code))
 }
 
+fn graphify_command(command: GraphifyCommand) -> io::Result<ExitCode> {
+    use gdd::graphify::{GraphifyOptions, export_graphify, import_graphify, verify_graphify};
+    let report = match command {
+        GraphifyCommand::Import {
+            path,
+            output,
+            profile,
+            producer_version,
+            code_revision,
+            source_id,
+        } => import_graphify(
+            &cli_path(path),
+            &cli_path(output),
+            GraphifyOptions {
+                profile: Some(&profile),
+                producer_version: producer_version.as_deref(),
+                code_revision: code_revision.as_deref(),
+                source_id: &source_id,
+                ..Default::default()
+            },
+        )?,
+        GraphifyCommand::Validate {
+            path,
+            profile,
+            producer_version,
+        } => verify_graphify(
+            &cli_path(path),
+            profile.as_deref(),
+            producer_version.as_deref(),
+        )?,
+        GraphifyCommand::Export { path, output } => {
+            export_graphify(&cli_path(path), &cli_path(output))?
+        }
+    };
+    write_output(None, &report)?;
+    Ok(ExitCode::from(report.exit_code()))
+}
+
 fn run() -> io::Result<ExitCode> {
     match Cli::parse().command {
         Command::Init {
@@ -336,6 +417,7 @@ fn run() -> io::Result<ExitCode> {
             write_json(&mut io::stdout().lock(), &receipt)?;
         }
         Command::Workflow { command } => return workflow_command(command),
+        Command::Graphify { command } => return graphify_command(command),
         Command::Status {
             path,
             run,

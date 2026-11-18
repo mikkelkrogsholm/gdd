@@ -12,7 +12,7 @@ use crate::validation::{CORE_KINDS, CORE_RELATIONS, Profile, ValidationOptions, 
 
 mod authorization;
 pub mod boundaries;
-mod canonical;
+pub(crate) mod canonical;
 pub mod context;
 pub mod design_review;
 pub(crate) mod explain;

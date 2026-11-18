@@ -1,6 +1,10 @@
 //! Pure observations of one supplied Graphify artifact.
 
 mod decode;
+mod files;
+pub use files::{
+    LoadedObservations, export_graphify, import_graphify, load_observations, verify_graphify,
+};
 mod records;
 
 use crate::input::MAX_CONTAINER_DEPTH;
