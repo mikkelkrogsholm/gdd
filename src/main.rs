@@ -49,6 +49,26 @@ enum WorkflowCommand {
         #[arg(long, allow_negative_numbers = true)]
         plan: PathBuf,
     },
+    /// Publish a new draft run from a verified workplan.
+    #[command(args_override_self = true)]
+    Create {
+        #[command(flatten)]
+        args: WorkflowArgs,
+        #[arg(long, allow_negative_numbers = true)]
+        plan: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        run: PathBuf,
+    },
+    /// Publish or replay one host-reported workflow transition.
+    #[command(args_override_self = true)]
+    Event {
+        #[command(flatten)]
+        args: WorkflowArgs,
+        #[arg(long, allow_negative_numbers = true)]
+        run: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        event: PathBuf,
+    },
     /// Replay a run journal and assess its current gates.
     #[command(args_override_self = true)]
     Status {
@@ -61,7 +81,7 @@ enum WorkflowCommand {
 
 #[derive(Subcommand)]
 enum Command {
-    /// Prepare and verify revision-bound development packets.
+    /// Prepare and verify development packets, manage runs, and publish run events.
     Workflow {
         #[command(subcommand)]
         command: WorkflowCommand,
@@ -217,6 +237,8 @@ fn workflow_command(command: WorkflowCommand) -> io::Result<ExitCode> {
     let args = match &command {
         WorkflowCommand::Plan { args, .. }
         | WorkflowCommand::Verify { args, .. }
+        | WorkflowCommand::Create { args, .. }
+        | WorkflowCommand::Event { args, .. }
         | WorkflowCommand::Status { args, .. } => args,
     };
     let path = cli_path(args.path.clone());
@@ -245,6 +267,20 @@ fn workflow_command(command: WorkflowCommand) -> io::Result<ExitCode> {
             let report = gdd::workflow::verify_workflow(&path, &input, host.as_ref())?;
             write_output(output.as_deref(), &report)?;
             report.exit_code()
+        }
+        WorkflowCommand::Create { plan, run, .. } => {
+            let plan = read_input(cli_path(plan))?;
+            let result =
+                gdd::workflow_run::create_run(&path, &plan, &cli_path(run), host.as_ref())?;
+            write_output(output.as_deref(), &result)?;
+            result.report.exit_code()
+        }
+        WorkflowCommand::Event { run, event, .. } => {
+            let event = read_input(cli_path(event))?;
+            let result =
+                gdd::workflow_run::advance_run(&path, &cli_path(run), &event, host.as_ref())?;
+            write_output(output.as_deref(), &result)?;
+            result.exit_code()
         }
         WorkflowCommand::Status { run, .. } => {
             let result = gdd::workflow_run::run_status(&path, &cli_path(run), host.as_ref())?;

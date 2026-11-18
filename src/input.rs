@@ -62,6 +62,26 @@ impl fmt::Display for InputError {
 
 impl std::error::Error for InputError {}
 
+/// Check a generated artifact that a later invocation will parse as input.
+pub(crate) fn check_output_depth(value: &serde_json::Value) -> Result<(), InputError> {
+    fn fits_depth(value: &serde_json::Value, remaining: usize) -> bool {
+        match value {
+            serde_json::Value::Object(fields) => {
+                remaining > 0 && fields.values().all(|v| fits_depth(v, remaining - 1))
+            }
+            serde_json::Value::Array(items) => {
+                remaining > 0 && items.iter().all(|v| fits_depth(v, remaining - 1))
+            }
+            _ => true,
+        }
+    }
+    if fits_depth(value, MAX_CONTAINER_DEPTH) {
+        Ok(())
+    } else {
+        Err(InputError::UnsupportedDepth)
+    }
+}
+
 /// Parse JSON first, then try YAML on a JSON syntax error. The result contains
 /// one document's values. This function applies syntax and value restrictions.
 pub fn parse(raw: &[u8]) -> Result<Value, InputError> {

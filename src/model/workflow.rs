@@ -215,7 +215,7 @@ fn prepare(
         "spec_revision":snapshot.revision, "snapshot":snapshot, "scope":scope, "packages":packages,
         "notice":"Derived product data; not authorization, executed evidence or an instruction to launch tools."
     });
-    artifact["revision"] = format!("sha256:{}", crate::sha256(&canonical::bytes(&artifact))).into();
+    artifact["revision"] = canonical::digest(&artifact).into();
     Ok(WorkflowResult {
         format: "gdd-workflow-result/0.1",
         report,

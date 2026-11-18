@@ -233,6 +233,15 @@ fn rename_exclusive(source: &Path, destination: &Path) -> io::Result<()> {
     use std::os::windows::ffi::OsStrExt;
     use windows_sys::Win32::Storage::FileSystem::MoveFileExW;
 
+    if [source, destination]
+        .iter()
+        .any(|path| path.as_os_str().encode_wide().any(|ch| ch == 0))
+    {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "Embedded NUL in rename path.",
+        ));
+    }
     let source: Vec<_> = source.as_os_str().encode_wide().chain([0]).collect();
     let destination: Vec<_> = destination.as_os_str().encode_wide().chain([0]).collect();
     // SAFETY: Both arrays are NUL-terminated and remain live for the call.

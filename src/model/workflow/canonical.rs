@@ -80,3 +80,7 @@ pub(super) fn bytes(value: &Json) -> Vec<u8> {
     append(value, &mut bytes);
     bytes
 }
+
+pub(super) fn digest(value: &Json) -> String {
+    format!("sha256:{}", crate::sha256(&bytes(value)))
+}

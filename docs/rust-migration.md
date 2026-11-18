@@ -219,8 +219,56 @@ their hashes, idempotency keys, transitions and changed-file ownership.
 
 Rust callers use `gdd::workflow_run::run_status(&model_path, &run_dir, host)`.
 Call `load_journal(&run_dir)` and `run_status_from_bundle(&bundle, &journal, host)`
-to reuse both captures. Journal publication through `create` and `event`
-remains available in Python.
+to reuse both captures.
+
+## Publish a workflow run and its events
+
+Create a run at a new directory under an existing parent. For the archived
+agent-native example, the following command writes the initial status to a
+new JSON file and creates the journal in the same temporary directory.
+
+```sh
+GDD_QUEUE_DIR="$(mktemp -d)"
+cargo run --locked --bin gdd -- workflow create examples/agent-native/model.gdd.json \
+  --plan examples/agent-native/workflow.plan.json --run "$GDD_QUEUE_DIR/run" \
+  --output "$GDD_QUEUE_DIR/created.json"
+```
+
+The host supplies each event with an `idempotency_key` and the
+`expected_revision` returned by create or status. To publish a dispatch
+from a host-prepared `dispatch.json`, use the following command.
+
+```sh
+cargo run --locked --bin gdd -- workflow event examples/agent-native/model.gdd.json \
+  --run "$GDD_QUEUE_DIR/run" --event dispatch.json \
+  --host-context examples/agent-native/host.implementation.json
+```
+
+Dispatch and resume check current readiness, implementation authority and the
+current code identity. Integration also requires the host to attest the
+reviewed new code revision. Acceptance checks the selected evidence, current
+authority and blockers. A successful dispatch returns the package for the host
+to deliver. Retrying the identical event returns its recorded receipt and the
+current status. A changed event requires a fresh key and the current head.
+
+The CLI returns the gate report for a blocked event and appends a receipt
+only for an applied transition. Applied events and idempotent replays exit
+with code 0. Create can publish a current, unready draft and return its
+nonzero assessment exit code. It rejects a stale or altered plan. Create and
+event write their result to stdout by default. With `--output`, an existing
+destination is refused before processing the run or event. Competing writers
+publish to each journal name using an exclusive same-filesystem rename.
+
+The parser accepts up to 256 nested containers. Plan generation can write a
+derived workplan beyond that limit. Verifying the saved file then returns
+exit code 2. If the plan fits but its run manifest exceeds the limit, create
+publishes the run directory and then returns 2. Reading its status also
+returns 2.
+
+Rust callers use `gdd::workflow_run::create_run(&model_path, &plan, &run_dir,
+host)` and `advance_run(&model_path, &run_dir, &event, host)`. Inspect
+the returned `applied`, `replayed`, `receipt` and `artifact` fields, or use
+`exit_code()` for CLI-compatible event status.
 
 ## Project status
 
@@ -288,7 +336,7 @@ YAML nesting to 256 containers.
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |
 | `run_status` | Native journal replay and current acceptance with path-based or captured inputs. |
-| `create_run`, `advance_run` | Python-only run publication. |
+| `create_run`, `advance_run` | Native exclusive run creation, gated event publication and idempotent replay. |
 | `boundary_view`, `design_checklist`, `review_design` | Native GDD 0.3 boundary views, scoped review questions and advisory review applicability. |
 | `project_status` | Native project assessments with an optional workflow journal, JSON and text output, and captured-bundle entry points. |
 | `check_code`, `analyze_impact`, `diff_models` | Python-only code observation and project inspection APIs. |

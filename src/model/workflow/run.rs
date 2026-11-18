@@ -17,7 +17,10 @@ use std::{
     path::Path,
 };
 
+mod publication;
+pub use publication::{AdvanceResult, advance_run, create_run};
 mod replay;
+const MAX_RECEIPTS: usize = 999_999;
 pub use replay::{PackagePhase, PackageState, RunPhase, RunState};
 
 #[derive(Debug)]
@@ -100,10 +103,7 @@ fn payload_digest(value: &Value) -> String {
         unreachable!("validated object")
     };
     doc.remove("revision");
-    format!(
-        "sha256:{}",
-        crate::sha256(&canonical::bytes(&Json::Object(doc)))
-    )
+    canonical::digest(&Json::Object(doc))
 }
 
 /// A validated manifest and its contiguous sequence of published receipts.
@@ -113,6 +113,7 @@ pub struct Journal {
     revision: String,
     state: RunState,
     receipts: Vec<Value>,
+    used_attempts: BTreeSet<String>,
 }
 impl Journal {
     pub fn plan(&self) -> &Value {
@@ -129,11 +130,20 @@ impl Journal {
     }
     /// Declared package targets, suitable as seeds for a scoped model capture.
     pub fn request_scope(&self) -> impl Iterator<Item = &str> {
-        let request = get(&self.plan, "request").expect("validated plan");
-        items(request, "packages")
-            .iter()
-            .flat_map(|p| strings(p, "scope"))
+        request_scope(&self.plan)
     }
+}
+
+fn request_scope(plan: &Value) -> impl Iterator<Item = &str> {
+    let request = get(plan, "request").expect("validated plan");
+    items(request, "packages")
+        .iter()
+        .flat_map(|p| strings(p, "scope"))
+}
+
+fn capture_model(path: &Path, plan: &Value) -> Bundle {
+    let scope = request_scope(plan).map(str::to_owned).collect::<Vec<_>>();
+    bundle::load_for_readiness(path, &scope)
 }
 
 /// Read and structurally replay the journal once, including its hash chain.
@@ -171,7 +181,7 @@ pub fn load_journal(directory: &Path) -> Result<Journal, JournalError> {
             continue;
         }
         let number = receipts.len() + 1;
-        if number > 999_999 || name.to_str() != Some(format!("{number:06}.json").as_str()) {
+        if number > MAX_RECEIPTS || name.to_str() != Some(format!("{number:06}.json").as_str()) {
             return Err(JournalError::invalid(
                 "Workflow log has a gap or unsupported filename.",
             ));
@@ -209,6 +219,7 @@ pub fn load_journal(directory: &Path) -> Result<Journal, JournalError> {
         revision: head,
         state,
         receipts,
+        used_attempts,
     })
 }
 
@@ -239,11 +250,7 @@ pub fn run_status(
 ) -> Result<RunStatus, JournalError> {
     validate_host(host_context)?;
     let journal = load_journal(directory)?;
-    let scope = journal
-        .request_scope()
-        .map(str::to_owned)
-        .collect::<Vec<_>>();
-    let bundle = bundle::load_for_readiness(path, &scope);
+    let bundle = capture_model(path, &journal.plan);
     reconcile(&bundle, &journal, host_context)
 }
 
@@ -288,25 +295,51 @@ pub(crate) fn reconcile(
         assess_acceptance(bundle, plan, &journal.state, host, &mut report)
             .map_err(|e| JournalError::invalid(e.to_string()))?;
     }
-    let available_packages = if ready && journal.state.status == RunPhase::Active {
-        journal.state.available(plan)?
-    } else {
-        Vec::new()
-    };
-    let acceptance_current = accepted
-        && ready
+    status_with_report(
+        plan,
+        journal.state.clone(),
+        journal.revision.clone(),
+        journal.receipts.len(),
+        report,
+    )
+}
+
+fn accepted(report: &Report) -> bool {
+    report.result("readiness") == CheckResult::Pass
         && report.result("implementation") == CheckResult::Pass
         && report.result("authorization") == CheckResult::Granted
-        && report.result("integration") == CheckResult::Pass;
+        && report.result("integration") == CheckResult::Pass
+}
+
+fn status_with_report(
+    plan: &Value,
+    state: RunState,
+    revision: String,
+    event_count: usize,
+    report: Report,
+) -> Result<RunStatus, JournalError> {
+    let available_packages =
+        if state.status == RunPhase::Active && report.result("readiness") == CheckResult::Pass {
+            state.available(plan)?
+        } else {
+            Vec::new()
+        };
+    let acceptance_current = state.status == RunPhase::Accepted && accepted(&report);
     Ok(RunStatus {
         format: "gdd-run-status/0.1",
-        revision: journal.revision.clone(),
-        state: journal.state.clone(),
+        revision,
+        state,
         available_packages,
-        event_count: journal.receipts.len(),
+        event_count,
         acceptance_current,
         report,
     })
+}
+
+fn bound_host(host: &Value, plan: &Value, code_revision: &str) -> bool {
+    let request = get(plan, "request").expect("validated plan");
+    get(host, "implementation") == get(request, "implementation")
+        && get(host, "code_revision").and_then(text) == Some(code_revision)
 }
 
 fn gate(id: &str, result: CheckResult, reason: &str, scope: &[String]) -> Check {
@@ -324,9 +357,7 @@ fn assess_acceptance(
 ) -> io::Result<()> {
     report.profiles = vec![Profile::Model, Profile::Readiness, Profile::Records];
     let host = validation::present(host).unwrap_or(&Value::Null);
-    let request = get(plan, "request").expect("validated plan");
-    let bound = get(host, "implementation") == get(request, "implementation")
-        && get(host, "code_revision").and_then(text) == Some(state.code_revision.as_str());
+    let bound = bound_host(host, plan, &state.code_revision);
     report.checks.push(gate(
         "workflow.code_binding",
         if bound {
