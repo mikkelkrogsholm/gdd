@@ -60,7 +60,7 @@ impl DocumentKind {
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Asset {
     /// Resolved path relative to the bundle root, with POSIX separators.
     pub path: String,
@@ -68,7 +68,7 @@ pub struct Asset {
     pub bytes: Vec<u8>,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Document {
     pub kind: DocumentKind,
     pub asset: Asset,
@@ -88,6 +88,12 @@ pub struct Location {
     pub pointer: String,
 }
 
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum FormatIssue {
+    Missing,
+    Expected(DocumentKind),
+}
+
 #[derive(Debug)]
 pub struct Diagnostic {
     pub code: &'static str,
@@ -97,6 +103,7 @@ pub struct Diagnostic {
     pub location: Location,
     pub related_ids: Box<[String]>,
     pub(crate) semantic_only: bool,
+    pub(crate) format_issue: Option<FormatIssue>,
 }
 
 impl fmt::Display for Diagnostic {
@@ -146,6 +153,9 @@ pub struct Bundle {
     // Keep the identity of each unreadable declaration alongside the load
     // diagnostic. Impact reports distinguish missing semantics from pin errors.
     pub(crate) unread_extensions: BTreeSet<String>,
+    // A failed pin excludes these bytes from the model registry and snapshot.
+    // A partial comparison may still inspect a schema-accepted observation.
+    pub(crate) unpinned_extensions: BTreeMap<String, Result<Document, Diagnostic>>,
     locations: BTreeMap<String, Location>,
     nodes: BTreeMap<String, usize>,
     edges: Vec<(String, usize, usize)>,
@@ -199,6 +209,55 @@ impl Bundle {
             .get(&0)
             .filter(|c| c.result == CheckResult::Pass)
             .and_then(|_| self.root_document())
+    }
+
+    // Reindex the accepted graph when a partial capture contains rejected
+    // fragments or extension definitions. This uses only captured documents.
+    pub(crate) fn accepted_graph(&self, rejected: &BTreeSet<String>) -> Option<Self> {
+        let graph_document = |d: &Document| {
+            matches!(
+                d.kind,
+                DocumentKind::Manifest02
+                    | DocumentKind::Manifest03
+                    | DocumentKind::Extension
+                    | DocumentKind::Fragment02
+                    | DocumentKind::Fragment03
+            )
+        };
+        if self.unpinned_extensions.is_empty()
+            && !self
+                .primary_documents()
+                .iter()
+                .any(|d| graph_document(d) && rejected.contains(&d.asset.path))
+        {
+            return None;
+        }
+        let mut graph = Self {
+            path: self.path.clone(),
+            fragment_declarations: self.fragment_declarations.clone(),
+            ..Self::default()
+        };
+        for (index, doc) in self.primary_documents().iter().enumerate() {
+            if graph_document(doc) && !rejected.contains(&doc.asset.path) {
+                let new_index = graph.documents.len();
+                graph.documents.push(doc.clone());
+                index_model_document(&mut graph, new_index);
+                for (name, _) in self.extensions.iter().filter(|(_, i)| **i == index) {
+                    graph.extensions.insert(name.clone(), new_index);
+                }
+            }
+        }
+        for (namespace, observed) in &self.unpinned_extensions {
+            if let Ok(doc) = observed
+                && !rejected.contains(&doc.asset.path)
+            {
+                graph
+                    .extensions
+                    .insert(namespace.clone(), graph.documents.len());
+                graph.documents.push(doc.clone());
+            }
+        }
+        Some(graph)
     }
 
     pub fn normative_sources(&self) -> &BTreeMap<String, Asset> {
@@ -506,7 +565,10 @@ fn load_resolved(
                 "/format",
                 format,
             ),
-            None => shape(&document.asset.path, "/format", "a format string"),
+            None => Diagnostic {
+                format_issue: Some(FormatIssue::Missing),
+                ..shape(&document.asset.path, "/format", "a format string")
+            },
         };
         bundle.diagnostics.push(issue);
     }
@@ -584,12 +646,17 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
         }
         let document = match reader.asset(path).and_then(|asset| {
             if asset.sha256 != hash {
-                Err(invalid(
+                let issue = invalid(
                     "EXTENSION_DATA_INVALID",
                     &asset.path,
                     "",
                     "Extension bytehash mismatch.",
-                ))
+                );
+                bundle.unpinned_extensions.insert(
+                    namespace.to_owned(),
+                    parse_document(asset, Some(DocumentKind::Extension)),
+                );
+                Err(issue)
             } else {
                 parse_document(asset, Some(DocumentKind::Extension))
             }
@@ -1139,6 +1206,7 @@ fn invalid(
         },
         related_ids: Box::new([]),
         semantic_only: false,
+        format_issue: None,
     }
 }
 
@@ -1262,16 +1330,25 @@ fn parse_document(asset: Asset, expected: Option<DocumentKind>) -> Result<Docume
         {
             return Err(unknown("FORMAT_UNSUPPORTED", path, "/format", format));
         }
-        return Err(invalid(
-            "SCHEMA_INVALID",
-            path,
-            "/format",
-            format!(
-                "Expected {}, got {}.",
-                expected.format(),
-                get_string(&value, "format").unwrap_or("an invalid format")
-            ),
-        ));
+        let actual = get_string(&value, "format");
+        let format_issue = if actual.is_some() {
+            FormatIssue::Expected(expected)
+        } else {
+            FormatIssue::Missing
+        };
+        return Err(Diagnostic {
+            format_issue: Some(format_issue),
+            ..invalid(
+                "SCHEMA_INVALID",
+                path,
+                "/format",
+                format!(
+                    "Expected {}, got {}.",
+                    expected.format(),
+                    actual.unwrap_or("an invalid format")
+                ),
+            )
+        });
     }
     Ok(Document { kind, asset, value })
 }

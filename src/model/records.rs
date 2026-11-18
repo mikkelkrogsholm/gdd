@@ -2,7 +2,7 @@ use super::{Graph, Model, entries, get, has_cycle, items, string, strings, text}
 use crate::bundle::LocatedRecord;
 use crate::input::Value;
 use crate::report::{Check, CheckResult, Diagnostic};
-use crate::{sha256, validation::to_json};
+use crate::validation::to_json;
 use std::collections::{BTreeMap, BTreeSet};
 
 impl<'a> Model<'a> {
@@ -313,11 +313,10 @@ pub(super) fn covers(replacement: &Value, previous: &Value, field: &str) -> bool
 }
 
 pub(super) fn record_digest(record: &Value) -> String {
-    // Check and binding declarations contain only objects, arrays and strings.
-    // The strict parser sorts object keys, yielding canonical compact UTF-8 JSON.
+    // Selector ordinals can be written as exact decimal or exponential integers.
+    // Use the same portable number spelling as workplan identities.
     let json = to_json(record).expect("schema-validated record");
-    let bytes = serde_json::to_vec(&json).expect("JSON serializes to bytes");
-    format!("sha256:{}", sha256(&bytes))
+    super::canonical::digest(&json)
 }
 
 pub(super) fn compatible_decision(replacement: &Value, previous: &Value) -> bool {

@@ -14,7 +14,7 @@ use super::{Model, entries, flag, get, string, strings, text};
 use crate::bundle::{self, Bundle, Document, DocumentKind};
 use crate::input::Value;
 use crate::report::{Check, CheckResult, Diagnostic};
-use crate::validation::{self, CORE_KINDS, Profile, to_json};
+use crate::validation::{CORE_KINDS, to_json};
 
 #[derive(Debug, Serialize)]
 pub struct ImpactCoverage {
@@ -180,80 +180,19 @@ impl ImpactReport {
     }
 
     fn admit<'a>(&mut self, bundle: &'a Bundle) -> Option<&'a Document> {
-        let representation = validation::validate(bundle, Profile::Representation);
-        self.spec_revision = representation.spec_revision;
-        let root_valid = representation
-            .checks
-            .first()
-            .is_some_and(|c| c.result == CheckResult::Pass);
-        let Some(manifest) = bundle.manifest().filter(|_| root_valid) else {
+        let inspected = super::inspection::inspect(bundle);
+        self.spec_revision = inspected.revision;
+        let manifest = inspected.root.filter(|doc| doc.kind.is_manifest());
+        if manifest.is_none() {
             self.issue(
                 "FORMAT_UNSUPPORTED",
                 "Impact requires a supported current GDD model manifest.",
                 None,
                 CheckResult::Unknown,
             );
-            // A rejected manifest cannot declare additional assets or records.
-            if bundle.manifest().is_some() {
-                self.include_checks(&representation.checks[..1]);
-            } else {
-                self.include_checks(&representation.checks);
-            }
-            return None;
-        };
-        if representation
-            .checks
-            .iter()
-            .all(|c| c.result == CheckResult::Pass)
-        {
-            return Some(manifest);
         }
-
-        // The general-purpose loader may have indexed fields before their
-        // containing document failed schema validation. Its identity and
-        // project ID cannot supply additional model or ledger diagnostics.
-        let rejected: BTreeSet<_> = representation
-            .checks
-            .iter()
-            .filter(|c| c.check_id == "representation.schema" && c.result != CheckResult::Pass)
-            .flat_map(|c| &c.diagnostics)
-            .filter_map(|d| d.location.file.as_deref())
-            .collect();
-        for check in &representation.checks {
-            if check.check_id == "representation.schema"
-                || !check.diagnostics.iter().any(|d| {
-                    d.location
-                        .file
-                        .as_deref()
-                        .is_some_and(|f| rejected.contains(f))
-                })
-            {
-                self.include_checks(std::slice::from_ref(check));
-            }
-        }
-        for diagnostic in &mut self.diagnostics {
-            if diagnostic.code == "RECORD_INVALID" && diagnostic.location.pointer == "/project_id" {
-                // The entire declared ledger is inapplicable to this project.
-                diagnostic.location.pointer.clear();
-            }
-        }
-        let extensions: BTreeMap<_, _> = bundle.extensions().collect();
-        for (id, declaration) in entries(&manifest.value, "extensions") {
-            let rejected_document = extensions
-                .get(string(declaration, "namespace"))
-                .is_some_and(|doc| rejected.contains(doc.asset.path.as_str()));
-            if bundle.unread_extensions.contains(id) || rejected_document {
-                self.diagnostics.push(Diagnostic::new(
-                    "EXTENSION_UNSUPPORTED",
-                    CheckResult::Unknown,
-                    format!("Unavailable extension {id}."),
-                    Some(string(declaration, "path")),
-                    "",
-                ));
-                self.combine(CheckResult::Unknown);
-            }
-        }
-        None
+        self.include_checks(&inspected.checks);
+        manifest.filter(|_| self.exit_code == 0)
     }
 
     fn assess(&mut self, bundle: &Bundle) -> io::Result<()> {

@@ -80,7 +80,7 @@ fn quoted(value: &str) -> String {
     label
 }
 
-fn list<'a>(ids: impl IntoIterator<Item = &'a str>) -> String {
+pub(super) fn list<'a>(ids: impl IntoIterator<Item = &'a str>) -> String {
     format!(
         "[{}]",
         ids.into_iter().map(quoted).collect::<Vec<_>>().join(", ")

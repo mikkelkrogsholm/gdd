@@ -118,6 +118,18 @@ enum Command {
         #[arg(long, allow_negative_numbers = true)]
         output: Option<PathBuf>,
     },
+    /// Compare two model snapshots by stable identity.
+    #[command(args_override_self = true)]
+    Diff {
+        #[arg(allow_negative_numbers = true)]
+        base: PathBuf,
+        #[arg(allow_negative_numbers = true)]
+        head: PathBuf,
+        #[arg(long, value_enum, default_value = "json")]
+        format: DisplayFormat,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
+    },
     /// Explain declared change consumers and supporting model context.
     #[command(args_override_self = true)]
     Impact {
@@ -359,6 +371,22 @@ fn run() -> io::Result<ExitCode> {
                 }
             }
             return Ok(ExitCode::from(status.exit_code));
+        }
+        Command::Diff {
+            base,
+            head,
+            format,
+            output,
+        } => {
+            let result = gdd::model_diff::diff_models(&cli_path(base), &cli_path(head))?;
+            let output = output.map(cli_path);
+            match format {
+                DisplayFormat::Json => write_output(output.as_deref(), &result)?,
+                DisplayFormat::Text => {
+                    write_text(output.as_deref(), &gdd::model_diff::diff_text(&result))?
+                }
+            }
+            return Ok(ExitCode::from(result.exit_code));
         }
         Command::Impact {
             path,

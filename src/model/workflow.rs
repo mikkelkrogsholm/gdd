@@ -17,7 +17,7 @@ use std::{
     sync::OnceLock,
 };
 
-mod canonical;
+use super::canonical;
 pub mod run;
 
 #[derive(Debug, Serialize)]

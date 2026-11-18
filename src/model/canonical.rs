@@ -1,11 +1,15 @@
-//! Compact sorted UTF-8 JSON used for workplan identities.
+//! Portable sorted UTF-8 JSON for model comparisons and revision identities.
 
 use serde_json::Value as Json;
 
 // Align integer and decimal spelling with the portable Python consumer for its
 // supported values. Work directly on the coefficient so finer finite decimals
 // accepted by the native parser retain every digit.
-fn number(raw: &str) -> String {
+pub(super) fn comparison_number(raw: &str) -> String {
+    number(raw, true)
+}
+
+fn number(raw: &str, compare_wide: bool) -> String {
     if !raw.contains(['.', 'e', 'E']) {
         return if raw == "-0" { "0" } else { raw }.into();
     }
@@ -18,18 +22,19 @@ fn number(raw: &str) -> String {
     if digits.is_empty() {
         return format!("{sign}0.0");
     }
-    let Some(adjusted) = exp
-        .parse::<i64>()
-        .ok()
-        .and_then(|exp| exp.checked_add(integer.len() as i64 - leading as i64 - 1))
-    else {
-        // An arbitrarily long exponent still represents an exact finite value.
-        return raw.into();
+    let shift = integer.len() as i64 - leading as i64 - 1;
+    let Some(adjusted) = exp.parse::<i64>().ok().and_then(|n| n.checked_add(shift)) else {
+        if !compare_wide {
+            // Existing workplan and journal identities preserve this spelling.
+            return raw.into();
+        }
+        // Keep very large exponent spellings comparable without expanding the
+        // represented number. Only the exponent itself needs big integers.
+        let adjusted = exp.parse::<num_bigint::BigInt>().expect("JSON exponent") + shift;
+        return scientific(sign, digits, &format!("{adjusted:+}"));
     };
     if !(-4..16).contains(&adjusted) {
-        let (first, rest) = digits.split_at(1);
-        let separator = if rest.is_empty() { "" } else { "." };
-        return format!("{sign}{first}{separator}{rest}e{adjusted:+03}");
+        return scientific(sign, digits, &format!("{adjusted:+03}"));
     }
     let point = adjusted + 1;
     if point <= 0 {
@@ -43,6 +48,12 @@ fn number(raw: &str) -> String {
         let (integer, fraction) = digits.split_at(point as usize);
         format!("{sign}{integer}.{fraction}")
     }
+}
+
+fn scientific(sign: &str, digits: &str, exponent: &str) -> String {
+    let (first, rest) = digits.split_at(1);
+    let separator = if rest.is_empty() { "" } else { "." };
+    format!("{sign}{first}{separator}{rest}e{exponent}")
 }
 
 pub(super) fn bytes(value: &Json) -> Vec<u8> {
@@ -72,7 +83,7 @@ pub(super) fn bytes(value: &Json) -> Vec<u8> {
                 }
                 bytes.push(b'}');
             }
-            Json::Number(n) => bytes.extend(number(n.as_str()).bytes()),
+            Json::Number(n) => bytes.extend(number(n.as_str(), false).bytes()),
             _ => serde_json::to_writer(bytes, value).expect("scalar serializes"),
         }
     }

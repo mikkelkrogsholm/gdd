@@ -4,7 +4,7 @@ pub mod bundle;
 pub mod input;
 mod model;
 pub use model::workflow::run as workflow_run;
-pub use model::{boundaries, context, design_review, impact, workflow};
+pub use model::{boundaries, context, design_review, impact, model_diff, workflow};
 pub mod projection;
 pub mod report;
 pub mod status;

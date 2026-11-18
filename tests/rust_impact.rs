@@ -445,3 +445,35 @@ fn cli_text_json_schema_and_exclusive_output_share_the_same_report() {
     assert_eq!(fs::read_to_string(output).unwrap(), expected);
     assert_eq!(cli(&path, &[]).status.code(), Some(2));
 }
+
+#[test]
+fn selector_ordinal_digests_preserve_integer_and_decimal_identity() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("model.json");
+    let ledger = dir.path().join("ledger.json");
+    let mut doc = tutorial();
+    doc["record_files"] = json!(["ledger.json"]);
+    write(&path, &doc);
+    let mut records =
+        json!({"format":"gdd-records/0.2","project_id":doc["project"]["id"],"records":{}});
+    write(&ledger, &records);
+    let revision = bundle::load_model_only(&path)
+        .snapshot()
+        .unwrap()
+        .revision
+        .clone();
+    records["records"]["binding.candidate"] = json!({"kind":"binding","spec_revision":revision,"targets":["action.add"],
+        "implementation":"impl.demo","role":"code","resource":"module.py","status":"planned",
+        "selector":{"kind":"markdown-heading","value":"Heading","ordinal":"NUMBER"}});
+    let raw = records.to_string();
+    let hash = |number: &str| {
+        fs::write(&ledger, raw.replace("\"NUMBER\"", number)).unwrap();
+        let result = assess(&path, &["action.add"], None);
+        assert_eq!(result.exit_code, 0, "{:?}", result.diagnostics);
+        result.records[0].record_revision.clone()
+    };
+    assert_ne!(hash("1"), hash("1.0"));
+    for spelling in ["1.00", "1e0", "10e-1"] {
+        assert_eq!(hash(spelling), hash("1.0"));
+    }
+}

@@ -318,6 +318,27 @@ or `analyze_impact_from_bundle(&bundle, &scope, implementation)` to reuse
 one capture. Each returns an `ImpactReport` with an `exit_code`. Use
 `gdd::impact::impact_text(&report)` to render the same witnesses in text.
 
+## Compare model snapshots
+
+Run `gdd diff BASE HEAD` to compare nodes, sources, questions and edges by
+stable ID across GDD 0.2 and 0.3 models. The result includes exact field changes
+with JSON pointers, separate project and extension changes, and relocations
+between manifest and fragment files. Reordering edges or moving a declaration
+can change the byte revision while preserving the declared model.
+
+Use `--format text` to render the same result, or `--output NEW_FILE` for
+exclusive publication. Exit 0 means both sides were completely assessed and
+may have changes. Exit 1 includes known failures, and exit 2 means unresolved
+coverage. Partial comparisons report differences between known common IDs and
+suppress additions, removals and metadata comparisons.
+
+Rust callers use `gdd::model_diff::{diff_models, diff_models_from_bundles,
+diff_text}`. The path API captures aliases of one resolved manifest once.
+The bundle API compares the two supplied captures, even if both were taken
+from the same path at different times. Numeric comparison preserves integer
+versus decimal declarations and compares equivalent finite decimal spellings
+without rounding through a machine float.
+
 ## Snapshots, context and project creation
 
 For a model-only assessment, use `bundle::load_model_only(&path)` and
@@ -363,5 +384,6 @@ YAML nesting to 256 containers.
 | `boundary_view`, `design_checklist`, `review_design` | Native GDD 0.3 boundary views, scoped review questions and advisory review applicability. |
 | `project_status` | Native project assessments with an optional workflow journal, JSON and text output, and captured-bundle entry points. |
 | `analyze_impact`, `impact_text` | Native declared consumers, supporting context, applicable records, JSON and text output, with path-based and captured-bundle entry points. |
-| `check_code`, `diff_models` | Python-only code observation and model comparison APIs. |
+| `diff_models`, `diff_text` | Native comparison of paths or captured models with scoped diagnostics, field changes, relocations and structural advisories. |
+| `check_code` | Python-only code observation API. |
 | `gdd_validator.host` helpers `snapshot_code`, `execute_check`, `verification_records`, `append_records` | Python-only trusted host operations. A code snapshot identifies selected implementation files, while a model snapshot identifies normative GDD assets. See the [host guide](../HOST.md). |

@@ -12,12 +12,15 @@ use crate::validation::{CORE_KINDS, CORE_RELATIONS, Profile, ValidationOptions, 
 
 mod authorization;
 pub mod boundaries;
+mod canonical;
 pub mod context;
 pub mod design_review;
 pub(crate) mod explain;
 mod extensions;
 pub mod impact;
 mod implementation;
+mod inspection;
+pub mod model_diff;
 mod planning;
 mod readiness;
 mod records;
