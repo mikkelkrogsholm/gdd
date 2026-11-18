@@ -11,7 +11,7 @@ fn unsupported_path(value: &str) -> bool {
 #[derive(Debug)]
 pub(super) struct WriteResource {
     pub(super) path: String,
-    directory: bool,
+    pub(super) directory: bool,
 }
 
 impl WriteResource {

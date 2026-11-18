@@ -21,31 +21,41 @@ enum StatusFormat {
     Text,
 }
 
+#[derive(clap::Args)]
+struct WorkflowArgs {
+    #[arg(allow_negative_numbers = true)]
+    path: PathBuf,
+    #[arg(long, allow_negative_numbers = true)]
+    host_context: Option<PathBuf>,
+    #[arg(long, allow_negative_numbers = true)]
+    output: Option<PathBuf>,
+}
+
 #[derive(Subcommand)]
 enum WorkflowCommand {
     /// Derive complete development packets and assess package readiness.
     #[command(args_override_self = true)]
     Plan {
-        #[arg(allow_negative_numbers = true)]
-        path: PathBuf,
+        #[command(flatten)]
+        args: WorkflowArgs,
         #[arg(long, allow_negative_numbers = true)]
         request: PathBuf,
-        #[arg(long, allow_negative_numbers = true)]
-        host_context: Option<PathBuf>,
-        #[arg(long, allow_negative_numbers = true)]
-        output: Option<PathBuf>,
     },
     /// Re-derive a supplied workplan and compare its entire payload.
     #[command(args_override_self = true)]
     Verify {
-        #[arg(allow_negative_numbers = true)]
-        path: PathBuf,
+        #[command(flatten)]
+        args: WorkflowArgs,
         #[arg(long, allow_negative_numbers = true)]
         plan: PathBuf,
+    },
+    /// Replay a run journal and assess its current gates.
+    #[command(args_override_self = true)]
+    Status {
+        #[command(flatten)]
+        args: WorkflowArgs,
         #[arg(long, allow_negative_numbers = true)]
-        host_context: Option<PathBuf>,
-        #[arg(long, allow_negative_numbers = true)]
-        output: Option<PathBuf>,
+        run: PathBuf,
     },
 }
 
@@ -75,6 +85,8 @@ enum Command {
         scope: Vec<String>,
         #[arg(long, allow_negative_numbers = true)]
         host_context: Option<PathBuf>,
+        #[arg(long, allow_negative_numbers = true)]
+        run: Option<PathBuf>,
         #[arg(long, allow_negative_numbers = true)]
         implementation: Option<String>,
         #[arg(long, allow_negative_numbers = true)]
@@ -202,21 +214,13 @@ fn read_input(path: PathBuf) -> io::Result<gdd::input::Value> {
 }
 
 fn workflow_command(command: WorkflowCommand) -> io::Result<ExitCode> {
-    let (preparing, path, input, host, output) = match command {
-        WorkflowCommand::Plan {
-            path,
-            request,
-            host_context,
-            output,
-        } => (true, path, request, host_context, output),
-        WorkflowCommand::Verify {
-            path,
-            plan,
-            host_context,
-            output,
-        } => (false, path, plan, host_context, output),
+    let args = match &command {
+        WorkflowCommand::Plan { args, .. }
+        | WorkflowCommand::Verify { args, .. }
+        | WorkflowCommand::Status { args, .. } => args,
     };
-    let output = output.map(cli_path);
+    let path = cli_path(args.path.clone());
+    let output = args.output.clone().map(cli_path);
     if let Some(output) = &output
         && output.exists()
     {
@@ -225,22 +229,30 @@ fn workflow_command(command: WorkflowCommand) -> io::Result<ExitCode> {
             format!("Output already exists: {}", output.display()),
         ));
     }
-    let host = tool_input(host.map(cli_path))?;
-    let input = read_input(cli_path(input))?;
-    let path = cli_path(path);
-    let result = if preparing {
-        let result = gdd::workflow::prepare_workflow(&path, &input, host.as_ref())?;
-        if let Some(output) = &output {
-            write_output(Some(output), &result.artifact)?;
+    let host = tool_input(args.host_context.clone().map(cli_path))?;
+    let code = match command {
+        WorkflowCommand::Plan { request, .. } => {
+            let input = read_input(cli_path(request))?;
+            let receipt = gdd::workflow::prepare_workflow(&path, &input, host.as_ref())?;
+            if let Some(output) = &output {
+                write_output(Some(output), &receipt.artifact)?;
+            }
+            write_output(None, &receipt)?;
+            receipt.report.exit_code()
         }
-        write_output(None, &result)?;
-        result.report.exit_code()
-    } else {
-        let report = gdd::workflow::verify_workflow(&path, &input, host.as_ref())?;
-        write_output(output.as_deref(), &report)?;
-        report.exit_code()
+        WorkflowCommand::Verify { plan, .. } => {
+            let input = read_input(cli_path(plan))?;
+            let report = gdd::workflow::verify_workflow(&path, &input, host.as_ref())?;
+            write_output(output.as_deref(), &report)?;
+            report.exit_code()
+        }
+        WorkflowCommand::Status { run, .. } => {
+            let result = gdd::workflow_run::run_status(&path, &cli_path(run), host.as_ref())?;
+            write_output(output.as_deref(), &result)?;
+            result.report.exit_code()
+        }
     };
-    Ok(ExitCode::from(result))
+    Ok(ExitCode::from(code))
 }
 
 fn run() -> io::Result<ExitCode> {
@@ -256,6 +268,7 @@ fn run() -> io::Result<ExitCode> {
         Command::Workflow { command } => return workflow_command(command),
         Command::Status {
             path,
+            run,
             scope,
             host_context,
             implementation,
@@ -267,16 +280,19 @@ fn run() -> io::Result<ExitCode> {
             let path = cli_path(path);
             let output = output.map(cli_path);
             let host = tool_input(host_context.map(cli_path))?;
-            let status = gdd::status::project_status(
-                &path,
-                gdd::status::StatusOptions {
-                    scope: &scope,
-                    host_context: host.as_ref(),
-                    implementation: implementation.as_deref(),
-                    code_revision: code_revision.as_deref(),
-                    activity,
-                },
-            )?;
+            let options = gdd::status::StatusOptions {
+                scope: &scope,
+                host_context: host.as_ref(),
+                implementation: implementation.as_deref(),
+                code_revision: code_revision.as_deref(),
+                activity,
+            };
+            let status = match run {
+                Some(directory) => {
+                    gdd::status::project_status_with_run(&path, &cli_path(directory), options)?
+                }
+                None => gdd::status::project_status(&path, options)?,
+            };
             match format {
                 StatusFormat::Json => write_output(output.as_deref(), &status)?,
                 StatusFormat::Text => {
@@ -389,6 +405,12 @@ fn main() -> ExitCode {
         Ok(code) => code,
         Err(error) => {
             eprintln!("gdd: {error}");
+            if let Some(journal) = error
+                .get_ref()
+                .and_then(|e| e.downcast_ref::<gdd::workflow_run::JournalError>())
+            {
+                return ExitCode::from(journal.exit_code());
+            }
             if let Some(projection) = error
                 .get_ref()
                 .and_then(|e| e.downcast_ref::<gdd::projection::ProjectionError>())

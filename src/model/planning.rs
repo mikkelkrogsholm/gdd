@@ -428,6 +428,19 @@ fn active_checks<'a>(model: &Model<'a>) -> BTreeMap<&'a str, &'a Value> {
     )
 }
 
+pub(super) fn owns_files<'a>(
+    declaration: &Value,
+    mut files: impl Iterator<Item = &'a str>,
+) -> bool {
+    let declared: Vec<_> = strings(declaration, "write_resources")
+        .filter_map(WriteResource::parse)
+        .collect();
+    files.all(|file| {
+        WriteResource::parse(file)
+            .is_some_and(|file| !file.directory && declared.iter().any(|area| area.contains(&file)))
+    })
+}
+
 pub(super) fn valid_ownership(model: &Model<'_>, package: &Value) -> bool {
     strings(package, "write_resources")
         .chain(strings(package, "read_resources"))

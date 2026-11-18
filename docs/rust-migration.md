@@ -199,8 +199,28 @@ Rust callers use `gdd::workflow::{prepare_workflow, verify_workflow}` with a
 model path, a parsed request or plan, and optional host context. The companion
 `prepare_workflow_from_bundle` and `verify_workflow_from_bundle` reuse captured
 model, ledger and contract bytes. Use `gdd::input::Value::from(&result.artifact)`
-to pass a prepared artifact directly to verification. A workplan describes
-proposed work. Run journals and execution gates are available through Python.
+to pass a prepared artifact directly to verification.
+
+## Read a workflow run
+
+Replay a run journal and assess its current acceptance against the captured
+model, operational ledger, contracts and supplied host context.
+
+```sh
+cargo run --locked --bin gdd -- workflow status examples/agent-native/model.gdd.json \
+  --run examples/agent-native/native-run --host-context examples/agent-native/host.acceptance.json
+```
+
+`state` describes the published event history. `acceptance_current` also
+requires current scoped readiness, the frozen check selection, matching code
+identity, evidence, authorization and resolution of any acceptance blockers.
+The command reads the manifest and contiguous numbered receipts and verifies
+their hashes, idempotency keys, transitions and changed-file ownership.
+
+Rust callers use `gdd::workflow_run::run_status(&model_path, &run_dir, host)`.
+Call `load_journal(&run_dir)` and `run_status_from_bundle(&bundle, &journal, host)`
+to reuse both captures. Journal publication through `create` and `event`
+remains available in Python.
 
 ## Project status
 
@@ -213,14 +233,19 @@ shown. The exit code includes failures and unresolved integration checks.
 Authorization and implementation appear as UNASSESSED until the caller
 supplies `--host-context`, `--implementation` or `--code-revision`.
 An explicit empty host context requests both assessments. Select the
-authorization activity with `--activity`. Status with a workflow journal
-(`--run`) is available in the Python CLI.
+authorization activity with `--activity`. Add `--run DIR` to include the
+journal status in JSON or text. An unusable journal adds a `workflow_error`
+and contributes to the exit code alongside the independent model assessments.
 
 Rust callers use `gdd::status::project_status(&path, options)`, or
 `project_status_from_bundle(&bundle, options)` to reuse captured model,
 ledger and contract bytes. Read `status.assessments` for the individual
 verdicts and `status.exit_code` for the combined outcome. The
-`status_text(&status)` function renders the existing result.
+`status_text(&status)` function renders the existing result. For an explicit
+run, use `project_status_with_run(&path, &directory, options)` or
+`project_status_with_run_from_bundle(&bundle, &directory, options)`. The
+path-based operation captures contracts for the project and journal scopes
+together.
 
 ## Snapshots, context and project creation
 
@@ -262,8 +287,9 @@ YAML nesting to 256 containers.
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Python-only Graphify operations. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |
-| `create_run`, `run_status`, `advance_run` | Python-only run journals. |
+| `run_status` | Native journal replay and current acceptance with path-based or captured inputs. |
+| `create_run`, `advance_run` | Python-only run publication. |
 | `boundary_view`, `design_checklist`, `review_design` | Native GDD 0.3 boundary views, scoped review questions and advisory review applicability. |
-| `project_status` | `gdd::status::{project_status, project_status_from_bundle, status_text}` for assessments without a supplied workflow run. |
+| `project_status` | Native project assessments with an optional workflow journal, JSON and text output, and captured-bundle entry points. |
 | `check_code`, `analyze_impact`, `diff_models` | Python-only code observation and project inspection APIs. |
 | `gdd_validator.host` helpers `snapshot_code`, `execute_check`, `verification_records`, `append_records` | Python-only trusted host operations. A code snapshot identifies selected implementation files, while a model snapshot identifies normative GDD assets. See the [host guide](../HOST.md). |

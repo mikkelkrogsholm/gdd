@@ -3,7 +3,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 /// Return the current trusted accepted decisions that remain applicable after
 /// compatible supersession. Only decision records can confer readiness.
-pub(super) fn accepted<'a>(
+pub(in crate::model) fn accepted<'a>(
     model: &Model<'a>,
     host: Option<&Value>,
 ) -> BTreeMap<&'a str, &'a Value> {
@@ -47,4 +47,16 @@ pub(super) fn accepted<'a>(
                 && get(record, "spec_revision").and_then(text) == Some(revision)
         })
         .collect()
+}
+
+pub(in crate::model) fn resolves(question: &Value, accepted: &BTreeMap<&str, &Value>) -> bool {
+    get(question, "resolution")
+        .and_then(|r| get(r, "decision"))
+        .and_then(text)
+        .and_then(|id| accepted.get(id))
+        .is_some_and(|decision| {
+            super::items(decision, "scope").is_empty()
+                || strings(question, "targets")
+                    .all(|target| strings(decision, "scope").any(|member| member == target))
+        })
 }

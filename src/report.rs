@@ -218,10 +218,14 @@ impl Report {
     }
 
     pub fn exit_code(&self) -> u8 {
-        match self.checks.iter().map(|check| check.result).max() {
-            Some(CheckResult::Pass | CheckResult::Granted) => 0,
-            Some(CheckResult::Fail | CheckResult::Denied) => 1,
-            Some(CheckResult::Unknown | CheckResult::Unresolved) | None => 2,
-        }
+        checks_exit_code(self.checks.iter())
+    }
+}
+
+pub(crate) fn checks_exit_code<'a>(checks: impl Iterator<Item = &'a Check>) -> u8 {
+    match checks.map(|check| check.result).max() {
+        Some(CheckResult::Pass | CheckResult::Granted) => 0,
+        Some(CheckResult::Fail | CheckResult::Denied) => 1,
+        Some(CheckResult::Unknown | CheckResult::Unresolved) | None => 2,
     }
 }

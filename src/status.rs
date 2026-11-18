@@ -10,8 +10,9 @@ use serde_json::Value as JsonValue;
 
 use crate::bundle::{self, Bundle};
 use crate::input::Value;
-use crate::report::{CheckResult, DiagnosticLocation, Report};
+use crate::report::{Check, CheckResult, Diagnostic, DiagnosticLocation, Report, checks_exit_code};
 use crate::validation::{self, Activity, Profile, ValidationOptions};
+use crate::workflow_run::{self, Journal, JournalError};
 
 const MAX_ACTIONS: usize = 12;
 const DIMENSIONS: [&str; 4] = ["model", "readiness", "authorization", "implementation"];
@@ -178,7 +179,7 @@ impl Request {
 pub fn project_status(path: &Path, options: StatusOptions<'_>) -> io::Result<ProjectStatus> {
     let request = Request::new(path, options)?;
     let bundle = bundle::load_for_readiness(path, &request.scope);
-    compose(&bundle, request)
+    compose(&bundle, request, None)
 }
 
 /// Assess an existing capture. The resulting commands use the capture's model
@@ -187,7 +188,39 @@ pub fn project_status_from_bundle(
     bundle: &Bundle,
     options: StatusOptions<'_>,
 ) -> io::Result<ProjectStatus> {
-    compose(bundle, Request::new(bundle.path(), options)?)
+    compose(bundle, Request::new(bundle.path(), options)?, None)
+}
+
+/// Reconcile an explicitly supplied workflow run with the independent project
+/// assessments. Capture the journal request scope and project scope together.
+pub fn project_status_with_run(
+    path: &Path,
+    directory: &Path,
+    options: StatusOptions<'_>,
+) -> io::Result<ProjectStatus> {
+    let mut request = Request::new(path, options)?;
+    request.inputs.run = Some(directory.display().to_string());
+    let journal = workflow_run::load_journal(directory);
+    let mut capture_scope = request.scope.clone();
+    if !capture_scope.is_empty()
+        && let Ok(journal) = &journal
+    {
+        capture_scope.extend(journal.request_scope().map(str::to_owned));
+    }
+    let bundle = bundle::load_for_readiness(path, &capture_scope);
+    compose(&bundle, request, Some(journal))
+}
+
+/// Reuse a captured model while reading the supplied journal once. The model
+/// capture should cover both the project scope and all workplan packages.
+pub fn project_status_with_run_from_bundle(
+    bundle: &Bundle,
+    directory: &Path,
+    options: StatusOptions<'_>,
+) -> io::Result<ProjectStatus> {
+    let mut request = Request::new(bundle.path(), options)?;
+    request.inputs.run = Some(directory.display().to_string());
+    compose(bundle, request, Some(workflow_run::load_journal(directory)))
 }
 
 fn canonical(value: &impl Serialize) -> Vec<u8> {
@@ -196,7 +229,11 @@ fn canonical(value: &impl Serialize) -> Vec<u8> {
     serde_json::to_vec(&json).expect("JSON serializes to bytes")
 }
 
-fn compose(bundle: &Bundle, request: Request) -> io::Result<ProjectStatus> {
+fn compose(
+    bundle: &Bundle,
+    request: Request,
+    journal: Option<Result<Journal, JournalError>>,
+) -> io::Result<ProjectStatus> {
     let Request {
         scope: original,
         host,
@@ -272,9 +309,59 @@ fn compose(bundle: &Bundle, request: Request) -> io::Result<ProjectStatus> {
             )
         })
         .collect();
-    let (mut actions, mut next_action_count) = diagnostic_actions(&reports, &inputs.model, &scope);
+    let reconciled =
+        journal.map(|j| j.and_then(|j| workflow_run::reconcile(bundle, &j, Some(&host))));
+    let (workflow, workflow_error) = match reconciled {
+        Some(Ok(mut workflow)) => {
+            workflow.report.checks.sort_by_cached_key(canonical);
+            (Some(workflow), None)
+        }
+        Some(Err(error)) => {
+            let reason = error.to_string();
+            let mut check = Check::new(
+                "status.workflow_input",
+                "integration",
+                error.result,
+                &reason,
+            );
+            check.diagnostics.push(Diagnostic::new(
+                error.code,
+                error.result,
+                reason,
+                inputs.run.as_deref(),
+                "",
+            ));
+            (None, Some(check))
+        }
+        None => (None, None),
+    };
+    let workflow_report = workflow.as_ref().map(|s| &s.report);
+    let (mut actions, mut next_action_count) =
+        diagnostic_actions(&reports, workflow_report, &inputs.model, &scope);
+    if let Some(check) = &workflow_error {
+        next_action_count += 1;
+        if actions.len() < MAX_ACTIONS {
+            let diagnostic = &check.diagnostics[0];
+            actions.push(NextAction {
+                reason: check.reason.clone(),
+                source: "/workflow_error/check/diagnostics/0".into(),
+                diagnostic_code: Some(diagnostic.code),
+                location: Some(diagnostic.location.clone()),
+                argv: [
+                    "gdd",
+                    "workflow",
+                    "status",
+                    &inputs.model,
+                    "--run",
+                    inputs.run.as_deref().expect("supplied run"),
+                ]
+                .map(str::to_owned)
+                .into(),
+            });
+        }
+    }
     for (name, missing) in [
-        ("run", true),
+        ("run", inputs.run.is_none()),
         ("host_context", !inputs.host_context_supplied),
         ("implementation", inputs.implementation.is_none()),
         ("code_revision", inputs.code_revision.is_none()),
@@ -298,13 +385,16 @@ fn compose(bundle: &Bundle, request: Request) -> io::Result<ProjectStatus> {
         }
     }
     // All assessed reports contribute integration/load checks to the process verdict.
-    let exit_code = if reports.values().any(|r| r.exit_code() == 1) {
-        1
-    } else if reports.values().any(|r| r.exit_code() == 2) {
-        2
-    } else {
-        0
-    };
+    let exit_code = checks_exit_code(
+        reports
+            .values()
+            .chain(workflow_report)
+            .flat_map(|r| &r.checks)
+            .chain(workflow_error.iter()),
+    );
+    let workflow = workflow.map(serde_json::to_value).transpose()?;
+    let workflow_error =
+        workflow_error.map(|check| serde_json::json!({"input":inputs.run,"check":check}));
     Ok(ProjectStatus {
         format: "gdd-status/0.1",
         tool: StatusTool {
@@ -316,8 +406,8 @@ fn compose(bundle: &Bundle, request: Request) -> io::Result<ProjectStatus> {
         inputs,
         assessments,
         reports,
-        workflow: None,
-        workflow_error: None,
+        workflow,
+        workflow_error,
         open_questions,
         next_actions: actions,
         next_action_count,
@@ -365,15 +455,21 @@ fn questions(bundle: &Bundle, model: &Report) -> io::Result<Vec<OpenQuestion>> {
 
 fn diagnostic_actions(
     reports: &BTreeMap<&str, Report>,
+    workflow: Option<&Report>,
     path: &str,
     scope: &[String],
 ) -> (Vec<NextAction>, usize) {
     let mut seen = BTreeSet::new();
     let mut first = BTreeMap::new();
-    for dimension in DIMENSIONS {
-        let Some(report) = reports.get(dimension) else {
-            continue;
-        };
+    let sources = DIMENSIONS
+        .into_iter()
+        .filter_map(|dimension| {
+            reports
+                .get(dimension)
+                .map(|r| (format!("/reports/{dimension}"), r))
+        })
+        .chain(workflow.map(|r| ("/workflow/report".to_owned(), r)));
+    for (prefix, report) in sources {
         for (index, check) in report.checks.iter().enumerate() {
             if matches!(check.result, CheckResult::Pass | CheckResult::Granted) {
                 continue;
@@ -387,7 +483,7 @@ fn diagnostic_actions(
                 if !seen.insert(canonical(diag)) {
                     continue;
                 }
-                let source = format!("/reports/{dimension}/checks/{index}/diagnostics/{number}");
+                let source = format!("{prefix}/checks/{index}/diagnostics/{number}");
                 first.insert((diag.code, diag.message.as_str(), source), (diag, profile));
                 if first.len() > MAX_ACTIONS {
                     first.pop_last();
@@ -457,7 +553,38 @@ pub fn status_text(status: &ProjectStatus) -> String {
         )
         .unwrap();
     }
-    text.push_str("Workflow: UNASSESSED (no run supplied)\n");
+    if let Some(workflow) = &status.workflow {
+        let state = &workflow["state"];
+        writeln!(
+            text,
+            "Workflow: {}; acceptance_current={}",
+            state["status"].as_str().unwrap_or_default(),
+            workflow["acceptance_current"].as_bool().unwrap_or(false)
+        )
+        .unwrap();
+        if let Some(packages) = state["packages"].as_object() {
+            let ordered: BTreeMap<_, _> = packages.iter().collect();
+            for (id, p) in ordered {
+                writeln!(
+                    text,
+                    "  {id}: {}; attempt={}",
+                    p["status"].as_str().unwrap_or_default(),
+                    p["attempt"].as_str().unwrap_or("None")
+                )
+                .unwrap();
+            }
+        }
+    } else if let Some(error) = &status.workflow_error {
+        writeln!(
+            text,
+            "Workflow: {}; {}",
+            error["check"]["result"].as_str().unwrap_or_default(),
+            error["check"]["reason"].as_str().unwrap_or_default()
+        )
+        .unwrap();
+    } else {
+        text.push_str("Workflow: UNASSESSED (no run supplied)\n");
+    }
     for q in &status.open_questions {
         writeln!(
             text,

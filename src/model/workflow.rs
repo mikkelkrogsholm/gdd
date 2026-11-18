@@ -18,6 +18,7 @@ use std::{
 };
 
 mod canonical;
+pub mod run;
 
 #[derive(Debug, Serialize)]
 pub struct WorkflowResult {
@@ -33,9 +34,11 @@ fn invalid(message: impl Into<String>) -> io::Error {
 fn require(value: &Value, kind: &'static str, label: &str) -> io::Result<()> {
     static REQUEST: OnceLock<jsonschema::Validator> = OnceLock::new();
     static PLAN: OnceLock<jsonschema::Validator> = OnceLock::new();
+    static EVENT: OnceLock<jsonschema::Validator> = OnceLock::new();
     let slot = match kind {
         "request" => &REQUEST,
         "plan" => &PLAN,
+        "event" => &EVENT,
         _ => unreachable!(),
     };
     let validator = slot.get_or_init(|| {
@@ -93,6 +96,10 @@ pub fn verify_workflow_from_bundle(
 
 fn verify(source: Source<'_>, plan: &Value, host: Option<&Value>) -> io::Result<Report> {
     require(plan, "plan", "workplan")?;
+    verify_valid_plan(source, plan, host)
+}
+
+fn verify_valid_plan(source: Source<'_>, plan: &Value, host: Option<&Value>) -> io::Result<Report> {
     let expected = prepare(source, get(plan, "request").expect("validated plan"), host)?;
     let mut report = expected.report;
     let mut check = Check::new(

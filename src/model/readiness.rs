@@ -8,7 +8,7 @@ use crate::report::{Check, CheckResult, Diagnostic};
 use crate::validation::CORE_KINDS;
 use std::collections::{BTreeMap, BTreeSet};
 
-mod decisions;
+pub(super) mod decisions;
 mod sources;
 
 const MISSING: &str = "READINESS_CONTRACT_MISSING";
@@ -96,22 +96,12 @@ pub(super) fn check<'a>(
                 "Open question blocks implementation context.",
                 &[],
             );
-        } else {
-            let receipt = get(question, "resolution").map(|r| string(r, "decision"));
-            if !receipt
-                .and_then(|id| readiness.decisions.get(id))
-                .is_some_and(|decision| {
-                    items(decision, "scope").is_empty()
-                        || strings(question, "targets")
-                            .all(|target| strings(decision, "scope").any(|member| member == target))
-                })
-            {
-                readiness.unknown(
-                    id,
-                    "QUESTION_BLOCKS_SCOPE",
-                    "Resolved question has no applicable trusted current decision.",
-                );
-            }
+        } else if !decisions::resolves(question, &readiness.decisions) {
+            readiness.unknown(
+                id,
+                "QUESTION_BLOCKS_SCOPE",
+                "Resolved question has no applicable trusted current decision.",
+            );
         }
     }
     if readiness.checks.is_empty() {

@@ -263,12 +263,14 @@ fn starter_actions_and_questions_link_to_their_sources_and_text_quotes_paths() {
     );
     assert_eq!(repeated.status.code(), Some(1));
     assert_eq!(fs::read_to_string(&output).unwrap(), text);
-    let unsupported = cli(&path, &["--run", root.to_str().unwrap()]);
-    assert_eq!(unsupported.status.code(), Some(2));
-    assert!(
-        String::from_utf8(unsupported.stderr)
-            .unwrap()
-            .contains("--run")
+    let missing_run = cli(&path, &["--run", root.to_str().unwrap()]);
+    // Known project failures outrank the unavailable workflow journal.
+    assert_eq!(missing_run.status.code(), Some(1));
+    let combined: Value = serde_json::from_slice(&missing_run.stdout).unwrap();
+    assert_eq!(combined["workflow_error"]["check"]["result"], "UNKNOWN");
+    assert_eq!(
+        combined["workflow_error"]["check"]["diagnostics"][0]["code"],
+        "SOURCE_UNAVAILABLE"
     );
 }
 
