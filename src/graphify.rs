@@ -25,6 +25,20 @@ const RAW: &str = "graphify.raw.json";
 pub(crate) const IMPORTER: &str = "gdd-graphify";
 pub(crate) const VERSION: &str = "0.1.2";
 
+/// Decode a producer JSON value, preserving field order, arbitrary keys and exact numbers.
+/// Duplicate keys, invalid syntax and values deeper than the projection limit are errors.
+pub fn decode_json(raw: &[u8]) -> io::Result<Value> {
+    let (value, too_deep) = decode::decode(raw, MAX_CONTAINER_DEPTH)
+        .map_err(|message| io::Error::new(io::ErrorKind::InvalidData, message))?;
+    if too_deep {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            format!("Graphify JSON exceeds the {MAX_CONTAINER_DEPTH}-container projection limit."),
+        ));
+    }
+    Ok(value)
+}
+
 /// Caller-supplied layout, locator and provenance claims for one byte snapshot.
 #[derive(Clone, Copy, Debug)]
 pub struct GraphifyOptions<'a> {

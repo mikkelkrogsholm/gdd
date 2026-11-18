@@ -26,5 +26,5 @@ rustix = { version = "1.1", features = ["fs"] }
 windows-sys = { version = "0.61", features = ["Win32_Storage_FileSystem"] }
 
 [workspace]
-members = ["crates/viewer"]
+members = ["crates/conformance", "crates/viewer"]
 default-members = ["."]

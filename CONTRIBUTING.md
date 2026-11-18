@@ -54,6 +54,12 @@ welcome; contributors remain responsible for understanding and verifying them.
 
 ## Check a change
 
+Run native tests with `cargo test --locked --workspace`. To run the 18 named
+Graphify adapter cases and keep their full Rust import reports, use
+`cargo run --locked -p gdd-conformance -- graphify --output graphify-run.json`.
+The suite and its precision expectation are documented in
+[Conformance cases](conformance/README.md#graphify-adapter).
+
 Verification runs locally; GitHub Actions CI is intentionally absent. For an
 ordinary change, run the checks relevant to the affected behavior. The local
 entry point records actual interpreter versions, durations, commands and logs

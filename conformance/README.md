@@ -15,7 +15,33 @@ The harness checks the expected dimension/result and required diagnostic. It pre
 
 Synthetic receipts in case patches are test inputs to the representation schema. They are not registered approvals, observed code files or executed application evidence.
 
-[graphify-cases.yaml](graphify-cases.yaml) adds 18 adapter cases. Run `uv run python conformance/run_graphify.py`; the original 58 expectations are preserved. Import conditions in the original runner are now materialized as actual Graphify JSON inputs. The actually produced AST/export fixture and its hashes are under [examples/graphify](../examples/graphify/README.md). Pytest also checks tampering, the CLI, typed IDs and unaccepted proposals.
+## Graphify adapter
+
+Run the 18 named adapter cases with Cargo. Omit `--output` to print the
+summary alone on a successful run.
+
+```sh
+cargo run --locked -p gdd-conformance -- graphify --output graphify-run.json
+```
+
+The runner reads [graphify-cases.yaml](graphify-cases.yaml), applies each case's
+patches and conditions to its base graph, and imports the resulting bytes into
+a temporary bundle. It compares the recovered bytes, declared node and edge
+counts, verdict and required diagnostic. A case can select one check using
+`check_id`. The receipt includes the full native import report even when the
+case assesses a single check. A matching expected FAIL or UNKNOWN counts as a
+success. Any mismatch or case error produces a nonzero exit after the remaining
+cases run. `cargo test --locked --workspace` also executes the named suite.
+
+The precision case uses the literal endpoint `9007199254740993.0` and node ID
+`9007199254740992`. Rust distinguishes the two and expects FAIL with
+`REFERENCE_UNRESOLVED`. The Python adapter reports UNKNOWN with
+`FORMAT_UNSUPPORTED` at its numeric projection limit. The native receipt
+records the Rust expectation. Replay the Python expectations with
+`uv run python conformance/run_graphify.py`. Producer fixtures and their hashes
+are documented in [examples/graphify](../examples/graphify/README.md).
+
+## Visualization
 
 [visualization-cases.yaml](visualization-cases.yaml) adds 16 artifact cases for `gdd-viewer-html/0.1`. Run `uv run python conformance/run_visualization.py`. [run_browser.cjs](run_browser.cjs) also tests actual offline browser actions, graph identity, hostile text, numeric precision, folding, downloads and responsiveness. See [VIEWER.md](../VIEWER.md) for runtime and verification scope.
 

@@ -399,6 +399,11 @@ in Rust. Python reports UNKNOWN when its numeric projection would round a
 value. Observation IDs bind to the original byte digest and the JSON Pointer,
 including for numerically equivalent IDs in different records.
 
+Use `gdd::graphify::decode_json` to read a producer JSON value up to the
+projection depth limit while preserving field order and exact numbers. The
+[Graphify conformance suite](../conformance/README.md#graphify-adapter)
+executes the named fixtures and records the native precision verdict.
+
 ## Import, verify and recover Graphify files
 
 ```sh
