@@ -7,7 +7,7 @@ use super::{
 use crate::bundle::DocumentKind;
 use crate::context::{ContextGraph, ContextScope};
 use crate::input::Value;
-use crate::report::{Check, CheckResult, Diagnostic};
+use crate::report::{Check, CheckResult, Diagnostic, quoted};
 use crate::validation::CORE_KINDS;
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::PathBuf;
@@ -32,52 +32,6 @@ fn uncertain(model: &Model<'_>) -> bool {
             let mut ids = c.diagnostics.iter().flat_map(|d| &d.related_ids).peekable();
             ids.peek().is_none() || ids.any(|id| !record_only.contains(id.as_str()))
         })
-}
-
-fn quoted(value: &str) -> String {
-    let quote = if value.contains('\'') && !value.contains('"') {
-        '"'
-    } else {
-        '\''
-    };
-    use std::fmt::Write;
-    use unicode_general_category::{GeneralCategory as Category, get_general_category};
-
-    let mut label = String::from(quote);
-    for ch in value.chars() {
-        match ch {
-            '\n' => label.push_str("\\n"),
-            '\t' => label.push_str("\\t"),
-            '\r' => label.push_str("\\r"),
-            ch if ch == quote || ch == '\\' => {
-                label.push('\\');
-                label.push(ch);
-            }
-            ch if ch != ' '
-                && matches!(
-                    get_general_category(ch),
-                    Category::Control
-                        | Category::Format
-                        | Category::PrivateUse
-                        | Category::Unassigned
-                        | Category::LineSeparator
-                        | Category::ParagraphSeparator
-                        | Category::SpaceSeparator
-                ) =>
-            {
-                let code = u32::from(ch);
-                match code {
-                    0..=0xff => write!(label, "\\x{code:02x}"),
-                    0x100..=0xffff => write!(label, "\\u{code:04x}"),
-                    _ => write!(label, "\\U{code:08x}"),
-                }
-                .expect("writing to a string cannot fail");
-            }
-            ch => label.push(ch),
-        }
-    }
-    label.push(quote);
-    label
 }
 
 pub(super) fn list<'a>(ids: impl IntoIterator<Item = &'a str>) -> String {

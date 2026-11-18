@@ -354,6 +354,51 @@ Choose an unused name under an existing parent. The returned `InitReceipt`
 identifies the manifest and spec revision. The starter contains an open scope
 question, so its model passes and its structural readiness fails.
 
+## Observe Graphify JSON in memory
+
+The Rust library projects the original bytes of a Graphify 0.9.75 AST or
+node-link export. The index follows `gdd-observations/0.2` and the report
+follows `gdd-report/0.2`. Caller-supplied source locators, producer versions
+and code revisions are recorded as unverified claims.
+
+```rust
+use gdd::graphify::{AST_PROFILE, GraphifyOptions, observe_graphify};
+
+fn inspect(raw: &[u8]) -> std::io::Result<()> {
+    let options = GraphifyOptions {
+        profile: Some(AST_PROFILE),
+        locator: "graphify-out/graph.json",
+        ..Default::default()
+    };
+    let (index, report) = observe_graphify(raw, options)?;
+    println!("Artifact {}", index["artifact"]["revision"]);
+    for check in &report.checks {
+        println!("{} {}", check.check_id, check.result);
+    }
+    Ok(())
+}
+```
+
+Use `NODE_LINK_PROFILE` for node-link exports. With no profile the report
+records the byte identity and returns UNKNOWN. With an explicit profile the
+adapter validates strict UTF-8 JSON, including duplicate object keys, and
+checks the layout, references, edge directions and code classifications.
+`report.exit_code()` returns 0 for PASS, 1 for FAIL and 2 for UNKNOWN.
+The API returns an argument error for an invalid source ID.
+
+A raw object can contain up to 256 nested containers, including the root.
+Valid deeper objects yield a compact index and UNKNOWN. The adapter still
+checks JSON syntax and duplicate keys at greater depths. For example, a
+missing closing brace after 1,200 nested containers produces FAIL in Rust.
+Python can return UNKNOWN when its parser exhausts the runtime stack before
+reaching the malformed suffix.
+
+Numeric producer identities compare by exact decimal value, so `1` and `1.0` collide,
+while `"1"` is a distinct ID. Values such as `1e-4000` retain their identity
+in Rust. Python reports UNKNOWN when its numeric projection would round a
+value. Observation IDs bind to the original byte digest and the JSON Pointer,
+including for numerically equivalent IDs in different records.
+
 ## Numeric validation differences
 
 The Rust parser preserves finite numeric literals such as `1e-4000` and
@@ -376,7 +421,7 @@ YAML nesting to 256 containers.
 | Python entry points | Current Rust support |
 | --- | --- |
 | `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Visualization and Graphify validation still require Python. |
-| `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Python-only Graphify operations. |
+| `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Native raw-byte observation and compact indexes via `gdd::graphify`. File import, verification, export and proposals use the Python API. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |
 | `run_status` | Native journal replay and current acceptance with path-based or captured inputs. |

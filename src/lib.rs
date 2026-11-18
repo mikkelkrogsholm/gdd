@@ -1,6 +1,7 @@
 //! GDD document input, project initialization, and portable snapshot revisions.
 
 pub mod bundle;
+pub mod graphify;
 pub mod input;
 mod model;
 pub use model::workflow::run as workflow_run;

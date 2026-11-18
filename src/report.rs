@@ -229,3 +229,49 @@ pub(crate) fn checks_exit_code<'a>(checks: impl Iterator<Item = &'a Check>) -> u
         Some(CheckResult::Unknown | CheckResult::Unresolved) | None => 2,
     }
 }
+
+pub(crate) fn quoted(value: &str) -> String {
+    let quote = if value.contains('\'') && !value.contains('"') {
+        '"'
+    } else {
+        '\''
+    };
+    use std::fmt::Write;
+    use unicode_general_category::{GeneralCategory as Category, get_general_category};
+
+    let mut label = String::from(quote);
+    for ch in value.chars() {
+        match ch {
+            '\n' => label.push_str("\\n"),
+            '\t' => label.push_str("\\t"),
+            '\r' => label.push_str("\\r"),
+            ch if ch == quote || ch == '\\' => {
+                label.push('\\');
+                label.push(ch);
+            }
+            ch if ch != ' '
+                && matches!(
+                    get_general_category(ch),
+                    Category::Control
+                        | Category::Format
+                        | Category::PrivateUse
+                        | Category::Unassigned
+                        | Category::LineSeparator
+                        | Category::ParagraphSeparator
+                        | Category::SpaceSeparator
+                ) =>
+            {
+                let code = u32::from(ch);
+                match code {
+                    0..=0xff => write!(label, "\\x{code:02x}"),
+                    0x100..=0xffff => write!(label, "\\u{code:04x}"),
+                    _ => write!(label, "\\U{code:08x}"),
+                }
+                .expect("writing to a string cannot fail");
+            }
+            ch => label.push(ch),
+        }
+    }
+    label.push(quote);
+    label
+}
