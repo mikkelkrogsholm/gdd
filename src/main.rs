@@ -115,11 +115,23 @@ enum GraphifyCommand {
         #[arg(long, allow_negative_numbers = true)]
         output: PathBuf,
     },
+    /// Build an unaccepted model sketch from an explicit observation mapping.
+    #[command(args_override_self = true)]
+    Propose {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        mapping: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        output: PathBuf,
+        #[arg(long, default_value = "gdd/0.3", value_parser = ["gdd/0.2", "gdd/0.3"])]
+        format: String,
+    },
 }
 
 #[derive(Subcommand)]
 enum Command {
-    /// Preserve, verify and recover Graphify observation artifacts.
+    /// Import, verify, recover or propose from Graphify observations.
     Graphify {
         #[command(subcommand)]
         command: GraphifyCommand,
@@ -398,6 +410,22 @@ fn graphify_command(command: GraphifyCommand) -> io::Result<ExitCode> {
             profile.as_deref(),
             producer_version.as_deref(),
         )?,
+        GraphifyCommand::Propose {
+            path,
+            mapping,
+            output,
+            format,
+        } => {
+            let mapping = validation::to_json(&read_input(cli_path(mapping))?)?;
+            let proposal = gdd::graphify::propose_graphify_to_file(
+                &cli_path(path),
+                &mapping,
+                &cli_path(output),
+                &format,
+            )?;
+            write_output(None, &proposal)?;
+            return Ok(ExitCode::SUCCESS);
+        }
         GraphifyCommand::Export { path, output } => {
             export_graphify(&cli_path(path), &cli_path(output))?
         }

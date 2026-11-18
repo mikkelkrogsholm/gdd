@@ -434,6 +434,32 @@ raw projection limit. The native index reader supports up to 1,024 containers
 including the index root. An index exceeding its reading limit cannot establish
 the original's identity for export.
 
+## Propose a model from Graphify observations
+
+```sh
+cargo run --bin gdd -- graphify propose examples/graphify/observations \
+  --mapping examples/graphify/mapping.json --output reviewed-proposal.json
+```
+
+The mapping file accepts the same JSON or restricted YAML as other GDD inputs.
+Identify each selected code observation and supply its proposed target ID, kind,
+interpretation and rationale. Each selected edge needs a known direction and
+matching selected endpoints. A bundle can contain unresolved observations.
+The proposal lists omissions and copies only the selected nodes' unverified
+binding candidates. A failed import check or an unverified original or
+projection prevents proposal generation.
+
+The CLI creates a new file and emits the proposal on stdout. The candidate is
+a `gdd/0.3` sketch with a non-normative source and an open question blocking
+implementation and acceptance. Use `--format gdd/0.2` for a legacy candidate.
+Both formats pass representation and model checks before publication.
+
+Rust callers use `gdd::graphify::propose_graphify(path, &mapping, source_uri, format)`
+with a `serde_json::Value` mapping and receive the proposal as JSON. Pass
+`"graphify.raw.json"` when the candidate will reside beside the original.
+`propose_graphify_to_file(path, &mapping, output, format)` computes the locator
+relative to the output directory and publishes the proposal exclusively.
+
 ## Numeric validation differences
 
 The Rust parser preserves finite numeric literals such as `1e-4000` and
@@ -456,7 +482,7 @@ YAML nesting to 256 containers.
 | Python entry points | Current Rust support |
 | --- | --- |
 | `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Visualization and the root `validate --profile import.graphify` integration still require Python. |
-| `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Native file import, verification, byte recovery and in-memory observations via `gdd::graphify`. Proposals still use the Python API. |
+| `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Native file import, verification, byte recovery, in-memory observations and explicit proposals for both model formats via `gdd::graphify`. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |
 | `run_status` | Native journal replay and current acceptance with path-based or captured inputs. |

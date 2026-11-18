@@ -21,8 +21,8 @@
     {
       "path": "references/gdd/GRAPHIFY.md",
       "source": "GRAPHIFY.md",
-      "sha256": "16bd131b93dfad199182f5821e193896f389bc2872b3bff9a9200406480527a5",
-      "bytes": 11349
+      "sha256": "b023210ad5f3897513317d39123ceb5dcf66b27acea928a340d5cce8e22d7f43",
+      "bytes": 12041
     },
     {
       "path": "references/gdd/HOST.md",
@@ -276,6 +276,12 @@
       "from": "AGENTS.md",
       "href": "CONTRIBUTING.md",
       "source_target": "CONTRIBUTING.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "GRAPHIFY.md",
+      "href": "docs/rust-migration.md#observe-graphify-json-in-memory",
+      "source_target": "docs/rust-migration.md",
       "role": "optional-repository-reference"
     },
     {

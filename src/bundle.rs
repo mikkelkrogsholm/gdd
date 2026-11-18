@@ -166,6 +166,31 @@ pub struct Bundle {
 }
 
 impl Bundle {
+    /// Index a generated, single-document proposal with no external declarations.
+    /// Its provenance source is advisory and is never opened for validation.
+    pub(crate) fn proposal_candidate(model: &serde_json::Value) -> io::Result<Self> {
+        let name = "candidate.gdd.json";
+        let bytes = serde_json::to_vec(model)?;
+        let asset = Asset {
+            path: name.into(),
+            sha256: sha256(&bytes),
+            bytes,
+        };
+        let value = Value::from(model);
+        let document = Document {
+            kind: DocumentKind::from_value(&value),
+            asset,
+            value,
+        };
+        let mut bundle = Self {
+            path: name.into(),
+            documents: vec![document],
+            ..Self::default()
+        };
+        index_model_document(&mut bundle, 0);
+        Ok(bundle)
+    }
+
     pub fn path(&self) -> &Path {
         &self.path
     }

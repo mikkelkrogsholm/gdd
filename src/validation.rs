@@ -420,20 +420,20 @@ pub fn to_json(value: &Value) -> serde_json::Result<JsonValue> {
     }
 }
 
-struct EmbeddedSchema {
+pub(crate) struct EmbeddedSchema {
     source: &'static str,
     validator: OnceLock<Validator>,
 }
 
 impl EmbeddedSchema {
-    const fn new(source: &'static str) -> Self {
+    pub(crate) const fn new(source: &'static str) -> Self {
         Self {
             source,
             validator: OnceLock::new(),
         }
     }
 
-    fn validator(&self) -> &Validator {
+    pub(crate) fn validator(&self) -> &Validator {
         self.validator.get_or_init(|| {
             let schema = serde_json::from_str(self.source).expect("embedded schema is JSON");
             build_schema(&schema).expect("embedded schema compiles offline")

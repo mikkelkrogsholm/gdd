@@ -483,6 +483,11 @@ pub fn export_graphify(path: &Path, output: &Path) -> io::Result<ImportReport> {
             "Cannot export a corrupt/unavailable observation bundle.",
         ));
     }
+    publish_bytes(output, loaded.raw.as_deref().unwrap())?;
+    Ok(loaded.report)
+}
+
+fn publish_bytes(output: &Path, bytes: &[u8]) -> io::Result<()> {
     require_unused(output)?;
     let mut builder = tempfile::Builder::new();
     builder.prefix(".gdd-graphify-");
@@ -492,10 +497,57 @@ pub fn export_graphify(path: &Path, output: &Path) -> io::Result<ImportReport> {
         builder.permissions(fs::Permissions::from_mode(0o666));
     }
     let mut staged = builder.tempfile_in(output_parent(output))?;
-    staged.write_all(loaded.raw.as_deref().unwrap())?;
+    staged.write_all(bytes)?;
     staged.flush()?;
     let mut temporary = staged.into_temp_path();
     crate::rename_exclusive(&temporary, output)?;
     temporary.disable_cleanup(true);
-    Ok(loaded.report)
+    Ok(())
+}
+
+// Return a POSIX locator from the resolved output directory to the original.
+fn relative_source(source: &Path, parent: &Path) -> io::Result<String> {
+    for (levels, ancestor) in parent.ancestors().enumerate() {
+        if let Ok(rest) = source.strip_prefix(ancestor) {
+            let mut parts = vec![".."; levels];
+            for part in rest.components() {
+                parts.push(part.as_os_str().to_str().ok_or_else(|| {
+                    io::Error::other("Proposal source path must be valid Unicode.")
+                })?);
+            }
+            return Ok(parts.join("/"));
+        }
+    }
+    Err(io::Error::other(
+        "Cannot express the original relative to the proposal directory.",
+    ))
+}
+
+/// Publish an explicit proposal exclusively and return the same envelope. Its
+/// source URI is relative to the output directory, including through aliases.
+pub fn propose_graphify_to_file(
+    path: &Path,
+    mapping: &Value,
+    output: &Path,
+    format: &str,
+) -> io::Result<Value> {
+    let manifest = if path.is_dir() {
+        path.join(MANIFEST)
+    } else {
+        path.to_owned()
+    };
+    let manifest = resolve_local(&manifest).map_err(|e| io::Error::other(e.to_string()))?;
+    let root = manifest
+        .parent()
+        .ok_or_else(|| io::Error::other("Expected an observations manifest."))?;
+    let parent = output_parent(output).canonicalize()?;
+    let name = output
+        .file_name()
+        .ok_or_else(|| io::Error::other("Expected a new proposal filename."))?;
+    let uri = relative_source(&root.join(RAW), &parent)?;
+    let proposal = super::propose_graphify(&manifest, mapping, &uri, format)?;
+    let mut bytes = serde_json::to_vec_pretty(&proposal)?;
+    bytes.push(b'\n');
+    publish_bytes(&parent.join(name), &bytes)?;
+    Ok(proposal)
 }

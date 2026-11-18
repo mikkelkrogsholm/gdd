@@ -78,6 +78,7 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `conformance/graphify-cases.yaml`
 - `docs/consumer-input-limits.md`
 - `docs/python-imports.md`
+- `docs/rust-migration.md`
 - `docs/tutorial.md`
 - `evidence/README.md`
 - `evidence/graphify-review.md`

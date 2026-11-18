@@ -3,9 +3,12 @@
 mod decode;
 mod files;
 pub use files::{
-    LoadedObservations, export_graphify, import_graphify, load_observations, verify_graphify,
+    LoadedObservations, export_graphify, import_graphify, load_observations,
+    propose_graphify_to_file, verify_graphify,
 };
+mod proposal;
 mod records;
+pub use proposal::propose_graphify;
 
 use crate::input::MAX_CONTAINER_DEPTH;
 use crate::report::CheckResult::{Fail, Pass, Unknown};

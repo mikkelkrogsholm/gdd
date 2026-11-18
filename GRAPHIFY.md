@@ -1,15 +1,23 @@
 # Graphify → GDD
 
-Adapter 0.1.2 in `gdd-validator` imports Graphify as a separate observation layer. It preserves the received artifact's bytes and indexes every node and relation without a Graph/DiGraph builder. The agent can then choose an explicit interpretation and prepare an unaccepted GDD proposal. Known 0.1.0/0.1.1 bundles are revalidated under the current rules; the importer's version field bypasses no checks.
+The Graphify adapter preserves the received artifact's bytes and indexes its nodes and relations as observations. An explicit mapping selects observations for an unaccepted GDD model proposal.
+
+## Native CLI
+
+Run these commands from the Rust checkout. The example mapping identifies records in this exact AST snapshot.
 
 ```sh
-uv run gdd graphify import graphify-out/graph.json \
-  --profile graphify-0.9.75-node-link --output observations
-uv run gdd validate observations --profile import.graphify
-uv run gdd graphify export observations --output recovered.graph.json
+cargo run --bin gdd -- graphify import examples/graphify/raw.ast.json \
+  --profile graphify-0.9.75-ast --output observations
+cargo run --bin gdd -- graphify validate observations
+cargo run --bin gdd -- graphify export observations --output recovered.graph.json
+cargo run --bin gdd -- graphify propose observations \
+  --mapping examples/graphify/mapping.json --output reviewed-proposal.json
 ```
 
-`recovered.graph.json` is byte-identical to the imported input, including whitespace, unknown fields, and order. Output files and bundles are created exclusively: existing files are not overwritten. Choose a new output name when rerunning.
+`recovered.graph.json` contains the original bytes, including whitespace, unknown fields and order. Import, export and propose each require a new output name. The proposal command writes the same JSON envelope to the file and stdout. Its model defaults to `gdd/0.3`. Use `--format gdd/0.2` for a legacy model.
+
+Rust compares numeric identities exactly, including finite values such as `1e-4000`. Python adapter 0.1.2 reports UNKNOWN when conversion to its numeric representation would lose the value. Both implementations revalidate supported historical observation bundles. The migration guide documents the native library calls and differences in projection capacity. [Rust migration guide](docs/rust-migration.md#observe-graphify-json-in-memory)
 
 ## Bundle and identity
 
@@ -35,7 +43,7 @@ The profiles are based on the actually installed **Graphify 0.9.75** and its sou
 
 The examined exporter does not itself write a Graphify/schema version. The layout profile must therefore be selected explicitly; it invents no verified producer version. Optional `--producer-version 0.9.75` and `--code-revision ...` are stored as **unverified caller claims**. Known producer claims are read both at the top level and under graph with their actual JSON Pointers. Unknown/conflicting version or revision claims yield UNKNOWN. Inputs containing both edges and links are not interpreted by silently choosing one array.
 
-Strings, integers, and safely preserved finite numeric identities are supported without string coercion; `1` and `"1"` are different. Bool/null/object identities are invalid. Numbers that the JSON projection would round to a different decimal value or cannot convert yield UNKNOWN before reference resolution; original bytes are preserved and can still be exported. The JSON constants NaN/Infinity are invalid and yield FAIL.
+Strings, integers, and safely preserved finite numeric identities are supported without string coercion; `1` and `"1"` are different. Bool/null/object identities are invalid. In the Python adapter, numbers that the JSON projection would round to a different decimal value or cannot convert yield UNKNOWN before reference resolution; original bytes are preserved and can still be exported. The JSON constants NaN/Infinity are invalid and yield FAIL.
 
 The raw projection supports JSON container depth up to 256: the root object/array counts as 1, each nested object/array adds 1, and scalars and keys do not count. Greater depth or exhausted runtime capacity yields UNKNOWN/FORMAT_UNSUPPORTED with a compact byte-identity index without producer records. The original is preserved for hash-checked export; compact depth indexes provide no verified producer projection or usable model proposals. Readable historical full deep indexes are assessed as UNKNOWN in the projection check. An index that the runtime cannot load at all cannot provide a verified original hash for export.
 
@@ -58,7 +66,7 @@ The adapter can preserve everything in the received input. It cannot reconstruct
 The agent reads observations.json and the original, clarifies desired behavior, and chooses the interpretation in a separate mapping document:
 
 ```sh
-uv run gdd graphify propose examples/graphify/observations \
+cargo run --bin gdd -- graphify propose examples/graphify/observations \
   --mapping examples/graphify/mapping.json --output reviewed-proposal.json
 ```
 
@@ -72,6 +80,8 @@ Components receive no invented boundary rationale or interfaces, and actions rec
 
 The agent can then apply the proposal as an ordinary authorized model change under the project's existing mandate. Source promotion/model change must be visible; existing accepted requirements are not changed by import/propose. The source URI is relative to the proposal file's location; materialize model_candidate there or adjust the locator explicitly. A binding can only be registered as observed/checked once targets, implementation, model snapshot, and actual source/code revisions are known.
 
+The Python CLI can combine import and model validation in the same report.
+
 ```sh
 uv run gdd validate examples/concert.gdd.yaml --profile model \
   --profile import.graphify --graphify examples/graphify/observations
@@ -79,7 +89,7 @@ uv run gdd validate examples/concert.gdd.yaml --profile model \
 
 The last command combines separate model and import checks. It does not prove that the concert example is implemented by the imported fixture or that imported code claims satisfy GDD rules. Such mappings and checks require revision-bound bindings and actual checkers.
 
-## API and verification
+## Python API and verification
 
 ```python
 from gdd_validator import import_graphify, verify_graphify, export_graphify, propose_graphify
