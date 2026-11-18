@@ -35,8 +35,15 @@ specific node kind and **Community** for a community and its direct
 **Relation** limits the edges between matching nodes and keeps isolated
 matches in the list and canvas. These filters combine with search in the
 current perspective. Counts show visible nodes and edges against the complete
-model. **Reset filters** clears search and all three selectors and restores
-All graph within the saved scope, with folding off.
+model.
+
+The graph initially hides scenarios and their incident edges unless a saved
+scope seed is a scenario. **Show scenarios** gives the total number of
+scenarios in the model. Check it to include scenarios that pass the current
+filters. Selecting the `scenario` kind or entering a matching search also
+reveals scenarios while preserving the checkbox setting. **Reset filters**
+clears search and all three selectors, enables **Show scenarios**, and restores
+All graph within the saved scope with folding off.
 
 Enable **Fold communities** to represent direct members inside a visible
 community. A shared member appears in the first visible community by canonical

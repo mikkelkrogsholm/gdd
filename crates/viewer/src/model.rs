@@ -118,13 +118,27 @@ impl Perspectives {
     }
 }
 
-#[derive(Default)]
 pub struct Filters {
+    pub show_scenarios: bool,
     pub lens: Lens,
     pub search: String,
     pub kind: String,
     pub relation: String,
     pub community: String,
+}
+
+// Clearing filters includes every record in the saved scope.
+impl Default for Filters {
+    fn default() -> Self {
+        Self {
+            show_scenarios: true,
+            lens: Lens::All,
+            search: String::new(),
+            kind: String::new(),
+            relation: String::new(),
+            community: String::new(),
+        }
+    }
 }
 
 impl Filters {
@@ -138,6 +152,7 @@ impl Filters {
 
 #[derive(Default)]
 pub struct FilterChoices {
+    pub scenario_count: usize,
     pub kinds: BTreeSet<String>,
     pub relations: BTreeSet<String>,
     pub communities: BTreeMap<String, usize>,
@@ -153,6 +168,9 @@ impl FilterChoices {
         };
         for (i, node) in nodes.iter().enumerate() {
             choices.kinds.insert(node.kind.clone());
+            if node.kind == "scenario" {
+                choices.scenario_count += 1;
+            }
             if node.kind == "community" {
                 choices.communities.insert(node.id.clone(), i);
             }
@@ -462,6 +480,20 @@ impl Graph {
         })
     }
 
+    pub fn initial_filters(&self) -> Filters {
+        let show_scenarios = self.artifact.as_ref().is_some_and(|data| {
+            data["scope"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|id| data["model"]["nodes"][id.as_str().unwrap()]["kind"] == "scenario")
+        });
+        Filters {
+            show_scenarios,
+            ..Default::default()
+        }
+    }
+
     pub fn visible(&self, filters: &Filters) -> Visible {
         let view = if filters.lens == Lens::All {
             None
@@ -482,6 +514,8 @@ impl Graph {
                 }
             }
         }
+        let include_scenarios =
+            filters.show_scenarios || filters.kind == "scenario" || !query.is_empty();
         let community = self.choices.communities.get(&filters.community);
         let nodes = self.nodes[..self.shown_nodes]
             .iter()
@@ -489,6 +523,7 @@ impl Graph {
             .filter_map(|(i, node)| {
                 matched[i] = view.is_none_or(|v| v.nodes[i])
                     && (filters.kind.is_empty() || node.kind == filters.kind)
+                    && (include_scenarios || node.kind != "scenario")
                     && (filters.community.is_empty()
                         || community
                             .is_some_and(|c| i == *c || self.choices.memberships[i].contains(c)))

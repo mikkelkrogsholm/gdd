@@ -34,8 +34,14 @@ numbers. A matching edge includes its eligible endpoints. **Kind** narrows
 the node list and canvas. **Community** includes the community and its
 direct `member_of` members, including shared members. **Relation** limits
 the edges between the remaining nodes. Counts report visible nodes and edges
-against the full model. **Reset filters** restores All graph within the saved
-scope and turns folding off.
+against the full model.
+
+The graph opens with scenarios and their incident edges hidden unless a saved
+scope seed is a scenario. **Show scenarios** displays the total scenario count
+and toggles their visibility within the active filters. A matching search or
+the `scenario` kind can reveal scenarios while the checkbox is clear.
+**Reset filters** enables **Show scenarios**, restores All graph within the
+saved scope, and turns folding off.
 
 Enable **Fold communities** to draw each direct member inside its first visible
 community by canonical ID. The node list keeps every matching node. Select a

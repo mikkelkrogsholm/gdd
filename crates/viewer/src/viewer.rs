@@ -70,7 +70,7 @@ impl Viewer {
     pub fn new(graph: Graph, filename: String, context: egui::Context) -> Self {
         let graph = Arc::new(graph);
         let layout = LayoutState::start(Arc::clone(&graph), None, context);
-        let filters = Filters::default();
+        let filters = graph.initial_filters();
         Self {
             visible: graph.visible(&filters),
             filters,
@@ -161,7 +161,9 @@ impl Viewer {
     fn empty_message(&self) -> String {
         if self.filters.lens != Lens::All && self.graph.perspectives.is_err() {
             "Product perspectives unavailable for this model.".into()
-        } else if self.filters.narrowed() {
+        } else if self.filters.narrowed()
+            || (self.filters.lens == Lens::All && self.graph.shown_nodes > 0)
+        {
             "No nodes match the current filters.".into()
         } else if self.filters.lens == Lens::All {
             "This view has no nodes.".into()
@@ -233,6 +235,12 @@ impl Viewer {
                         &mut self.filters.community,
                         choices.communities.keys(),
                     );
+                    let scenarios = ui
+                        .checkbox(
+                            &mut self.filters.show_scenarios,
+                            format!("Show scenarios ({})", choices.scenario_count),
+                        )
+                        .changed();
                     let mut fold = self.folded.is_some();
                     if ui.checkbox(&mut fold, "Fold communities").changed() {
                         self.set_folded(fold);
@@ -242,7 +250,7 @@ impl Viewer {
                         self.set_folded(false);
                         self.filters = Filters::default();
                         self.refresh();
-                    } else if kind || relation || community {
+                    } else if kind || relation || community || scenarios {
                         self.refresh();
                     }
                 });
@@ -927,6 +935,7 @@ mod tests {
             relation: "owns".into(),
             community: "absent".into(),
             search: "missing".into(),
+            show_scenarios: false,
         };
         let mut viewer = Viewer {
             visible: graph.visible(&filters),
@@ -947,11 +956,13 @@ mod tests {
         assert_eq!(viewer.filters.community, "absent");
         assert_eq!(viewer.filters.kind, "component");
         assert_eq!(viewer.filters.relation, "owns");
+        assert!(!viewer.filters.show_scenarios);
         assert!(viewer.visible.nodes.is_empty() && !viewer.reveal_selected);
         viewer.navigate(step, Lens::All);
         assert_eq!(viewer.filters.lens, Lens::All);
         assert_eq!(viewer.selected, Some(Selection::Node(step)));
         assert!(!viewer.filters.narrowed());
+        assert!(viewer.filters.show_scenarios);
         assert_eq!(viewer.visible.nodes, [step]);
         assert!(viewer.reveal_selected);
         viewer.navigate(step, Lens::Journey);
@@ -1022,3 +1033,6 @@ mod tests {
         assert!(matches!(state, LayoutState::Failed(_)));
     }
 }
+
+#[cfg(test)]
+mod scenario_tests;
