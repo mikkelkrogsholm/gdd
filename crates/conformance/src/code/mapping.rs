@@ -1,6 +1,7 @@
 //! Mapping revisions, resource selection, ownership and model constraints.
 
-use super::project::{Project, write_json};
+use super::project::Project;
+use crate::fixture::write_json;
 use anyhow::{Context, Result, bail, ensure};
 use gdd::code_check::CodeCheckOptions;
 use serde_json::json;

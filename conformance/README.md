@@ -119,6 +119,31 @@ the matched case count.
 To obtain a Python receipt with pytest exit status and captured output, run
 `uv run python conformance/run_code.py --output python-code-run.json`.
 
+## Project status
+
+Run the 13 named project status cases (15 parameter instances) locally.
+
+```sh
+cargo run --offline --locked -p gdd-conformance -- status --output native-status-run.json
+```
+
+The runner reads [status.cases.json](status.cases.json) and exercises the
+native status, readiness and workflow APIs in process. It initializes starter
+projects, copies tutorial models, and prepares private workflow runs. The
+integration case checks both an unavailable source and a rejected path. The
+acceptance case replays the accepted journal in [agent-native](../examples/agent-native)
+with its archived evidence, then tests a separate copy with the final evidence
+record removed. Both runs retain the accepted state. The assessor reports
+current acceptance only for the first copy.
+
+Omit `--output` for the JSON receipt on standard output. With `--output`, the
+runner creates a new file and prints the matched case count. Each row records
+the manifest ID, assertion, result and attempted instance count. A failed
+expectation or invalid catalog exits nonzero. The native receipt identifies
+its producer in `tool` and `runner`. To run the corresponding Python tests
+and collect pytest output, use
+`uv run python conformance/run_status.py --output python-status-run.json`.
+
 ## GDD 0.3 boundaries and design principles
 
 [design.cases.json](design.cases.json) names the new boundary, contract, community,

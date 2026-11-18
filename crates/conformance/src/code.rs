@@ -5,29 +5,14 @@ mod mapping;
 mod observation;
 mod project;
 
-use anyhow::{Context, Result, ensure};
-use serde::{Deserialize, Serialize};
+use crate::named::{self, Behavior};
+use anyhow::Result;
+use serde::Serialize;
 use serde_json::Value;
 use std::{
-    collections::BTreeSet,
-    fs,
     path::{Path, PathBuf},
     process::ExitCode,
 };
-
-#[derive(Deserialize)]
-struct Case {
-    id: String,
-    assertion: String,
-    test: String,
-}
-
-struct Behavior {
-    id: &'static str,
-    reference: &'static str,
-    parameters: &'static [&'static str],
-    execute: fn(&Path, &str) -> Result<()>,
-}
 
 // Most manifest IDs and Python test references share the native function name.
 macro_rules! package_case {
@@ -44,7 +29,7 @@ macro_rules! package_case {
     };
 }
 
-const BEHAVIORS: &[Behavior] = &[
+pub(super) const BEHAVIORS: &[Behavior] = &[
     package_case!(observation::independent_package_clean_injected_repaired),
     package_case!(observation::copied_concert_clean_injected_repaired_missing),
     package_case!(
@@ -131,93 +116,21 @@ const BEHAVIORS: &[Behavior] = &[
 ];
 
 #[derive(Serialize)]
-struct Row {
-    id: String,
-    assertion: String,
-    result: &'static str,
-    test_instances: usize,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    errors: Vec<String>,
-}
-
-#[derive(Serialize)]
-struct Run {
-    format: &'static str,
-    tool: &'static str,
-    runner: &'static str,
+struct CodeProfile {
     runtime_target: Value,
-    case_count: usize,
-    test_instances: usize,
-    passed: bool,
-    cases: Vec<Row>,
-}
-
-fn execute(directory: &Path, case: Case, seen: &mut BTreeSet<String>) -> Row {
-    let mut errors = Vec::new();
-    let mut count = 0;
-    let behavior = BEHAVIORS.iter().find(|b| b.id == case.id);
-    if !seen.insert(case.id.clone()) {
-        errors.push(format!("Duplicate case ID {}", case.id));
-    } else if case.assertion.trim().is_empty() {
-        errors.push("Missing case assertion".to_owned());
-    } else if let Some(behavior) = behavior {
-        if case.test != behavior.reference {
-            errors.push(format!("Unrecognized test reference {}", case.test));
-        } else {
-            for parameter in behavior.parameters {
-                count += 1;
-                if let Err(error) = (behavior.execute)(directory, parameter) {
-                    errors.push(format!("{parameter}: {error:#}"));
-                }
-            }
-        }
-    } else {
-        errors.push(format!("Unknown code case {}", case.id));
-    }
-    Row {
-        id: case.id,
-        assertion: case.assertion,
-        result: if errors.is_empty() && count > 0 {
-            "PASS"
-        } else {
-            "FAIL"
-        },
-        test_instances: count,
-        errors,
-    }
-}
-
-fn run(directory: &Path) -> Result<Run> {
-    let bytes = fs::read(directory.join("code.cases.json")).context("read code case manifest")?;
-    let definitions: Vec<Case> =
-        serde_json::from_slice(&bytes).context("parse code case definitions")?;
-    ensure!(
-        definitions.len() == BEHAVIORS.len(),
-        "expected {} named code cases, found {}",
-        BEHAVIORS.len(),
-        definitions.len()
-    );
-    let mut seen = BTreeSet::new();
-    let cases: Vec<_> = definitions
-        .into_iter()
-        .map(|case| execute(directory, case, &mut seen))
-        .collect();
-    Ok(Run {
-        format: "gdd-code-conformance/0.1",
-        tool: concat!("gdd-conformance/", env!("CARGO_PKG_VERSION")),
-        runner: "rust",
-        runtime_target: project::runtime_descriptor(),
-        case_count: cases.len(),
-        test_instances: cases.iter().map(|r| r.test_instances).sum(),
-        passed: cases.iter().all(|r| r.result == "PASS"),
-        cases,
-    })
 }
 
 pub(super) fn command(directory: &Path, output: Option<PathBuf>) -> Result<ExitCode> {
-    let run = run(directory)?;
-    let matched = run.cases.iter().filter(|row| row.result == "PASS").count();
-    crate::receipt::publish(&run, output, "code", matched, run.case_count)
+    named::command(
+        directory,
+        output,
+        "code",
+        "gdd-code-conformance/0.1",
+        BEHAVIORS,
+        CodeProfile {
+            runtime_target: project::runtime_descriptor(),
+        },
+    )
 }
 
 #[cfg(test)]

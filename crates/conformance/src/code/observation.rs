@@ -1,6 +1,7 @@
 //! Source mutation, reachability and coverage controls.
 
-use super::project::{Project, require_diagnostic, rows, snapshot};
+use super::project::{Project, require_diagnostic, rows};
+use crate::fixture::snapshot;
 use anyhow::{Context, Result, ensure};
 use gdd::code_check::CodeCheckOptions;
 use serde_json::{Value, json};

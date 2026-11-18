@@ -1478,6 +1478,7 @@ dependencies = [
  "clap",
  "gdd",
  "json-patch",
+ "jsonschema",
  "jsonschema-value",
  "libyaml-safer",
  "serde",
