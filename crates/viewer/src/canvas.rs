@@ -4,7 +4,7 @@ use eframe::egui::{
 };
 use graphlay::{GraphBuilder, LayoutOptions, Size};
 
-use crate::model::Graph;
+use crate::model::{Graph, Visible};
 
 pub struct Layout {
     nodes: Vec<Rect>,
@@ -82,27 +82,39 @@ impl Layout {
         &self,
         ui: &mut egui::Ui,
         graph: &Graph,
+        visible: &Visible,
         selected: Option<usize>,
         zoom: f32,
         reveal: bool,
     ) -> Option<usize> {
-        if self.nodes.is_empty() {
-            ui.centered_and_justified(|ui| ui.label("This model has no nodes."));
-            return None;
-        }
+        let bounds = if visible.nodes.len() == self.nodes.len()
+            && visible.edges.len() == self.routes.len()
+        {
+            self.bounds
+        } else {
+            visible
+                .nodes
+                .iter()
+                .map(|&i| self.nodes[i])
+                .chain(visible.edges.iter().map(|&i| self.routes[i].bounds))
+                .fold(Rect::NOTHING, Rect::union)
+        };
         egui::ScrollArea::both()
             .auto_shrink([false; 2])
             .show_viewport(ui, |ui, viewport| {
-                let size = (self.bounds.size() * zoom + Vec2::splat(40.0)).max(viewport.size());
+                let size = (bounds.size() * zoom + Vec2::splat(40.0)).max(viewport.size());
                 let (area, _) = ui.allocate_exact_size(size, Sense::hover());
                 let transform = TSTransform::new(
-                    area.center().to_vec2() - self.bounds.center().to_vec2() * zoom,
+                    area.center().to_vec2() - bounds.center().to_vec2() * zoom,
                     zoom,
                 );
-                if reveal && let Some(rect) = selected.and_then(|index| self.nodes.get(index)) {
-                    ui.scroll_to_rect((transform * *rect).expand(12.0), None);
+                if reveal
+                    && let Some(index) = selected
+                    && visible.nodes.binary_search(&index).is_ok()
+                {
+                    ui.scroll_to_rect((transform * self.nodes[index]).expand(12.0), None);
                 }
-                self.draw(ui, graph, selected, transform)
+                self.draw(ui, graph, visible, selected, transform)
             })
             .inner
     }
@@ -111,6 +123,7 @@ impl Layout {
         &self,
         ui: &mut egui::Ui,
         graph: &Graph,
+        visible: &Visible,
         selected: Option<usize>,
         transform: TSTransform,
     ) -> Option<usize> {
@@ -122,7 +135,9 @@ impl Layout {
             } else {
                 Stroke::new(1.2, Color32::from_rgb(139, 153, 171))
             };
-            for (edge, route) in graph.edges.iter().zip(&self.routes) {
+            for &index in &visible.edges {
+                let edge = &graph.edges[index];
+                let route = &self.routes[index];
                 let incident = selected == Some(edge.from) || selected == Some(edge.to);
                 if incident == highlighted
                     && ui.is_rect_visible((transform * route.bounds).expand(10.0 * zoom))
@@ -136,8 +151,8 @@ impl Layout {
         }
 
         let mut clicked = None;
-        for (index, &node_rect) in self.nodes.iter().enumerate() {
-            let rect = transform * node_rect;
+        for &index in &visible.nodes {
+            let rect = transform * self.nodes[index];
             if !ui.is_rect_visible(rect) {
                 continue;
             }
@@ -203,6 +218,7 @@ mod tests {
             shown_nodes: ids.len(),
             shown_edges: pairs.len(),
             artifact: None,
+            perspectives: Err("Layout fixture".into()),
             nodes: ids
                 .iter()
                 .map(|&id| Node {
@@ -210,6 +226,7 @@ mod tests {
                     label: id.into(),
                     kind: "component".into(),
                     description: id.into(),
+                    human: None,
                 })
                 .collect(),
             edges: pairs
@@ -265,6 +282,38 @@ mod tests {
         }
         assert_ne!(drawing.routes[0].points, drawing.routes[1].points);
         assert_ne!(drawing.routes[4].points, drawing.routes[5].points);
+    }
+
+    #[test]
+    fn canvas_paints_only_the_visible_records_at_their_original_positions() {
+        let graph = graph(&["first", "hidden", "last"], &[(0, 2), (0, 2), (0, 1)]);
+        let layout = Layout::new(&graph).unwrap();
+        let visible = Visible {
+            nodes: vec![0, 2],
+            edges: vec![1],
+        };
+        let transform = TSTransform::from_translation(egui::vec2(20.0, 20.0));
+        let context = egui::Context::default();
+        let mut frame = context.run_ui(Default::default(), |ui| {
+            layout.draw(ui, &graph, &visible, Some(0), transform);
+        });
+        frame.textures_delta.clear();
+        let mut labels = Vec::new();
+        let mut routes = Vec::new();
+        for item in frame.shapes {
+            match item.shape {
+                egui::Shape::Text(text) => labels.push(text.galley.text().to_owned()),
+                egui::Shape::Path(route) if !route.closed => routes.push(route.points),
+                _ => {}
+            }
+        }
+        assert_eq!(labels, ["first", "last"]);
+        let expected: Vec<_> = layout.routes[1]
+            .points
+            .iter()
+            .map(|&p| transform * p)
+            .collect();
+        assert_eq!(routes, [expected]);
     }
 
     #[test]

@@ -210,7 +210,9 @@ fn inspect(path: &Path) -> Result<(), ProjectionError> {
 ```
 
 To admit an existing `gdd::bundle::Bundle`, use
-`gdd::perspectives::PerspectiveBundle::try_from(bundle)`. Validation uses the
+`gdd::perspectives::PerspectiveBundle::try_from(bundle)`. To borrow a capture
+that another consumer also uses, call `PerspectiveBundle::admit(&bundle)`.
+Validation uses the
 captured model and extension bytes. The wrapper exposes the shared model via
 `bundle()`. Each call to `perspective_data` returns an owned `serde_json::Value`
 that consumers can edit independently, even after the source files are removed.
@@ -222,6 +224,13 @@ cargo run --locked -p gdd -- view examples/concert.gdd.yaml --scope action.reser
 cargo run --locked -p gdd -- validate examples/concert.gdd.yaml --profile visualization --view reserve.gddview
 cargo run --locked -p gdd-viewer -- reserve.gddview
 ```
+
+Open a model or a saved view with `gdd-viewer` to switch between All graph,
+User journey, Components and Data model. On a model, the viewer derives the
+perspectives from its existing capture. On a saved view it uses the embedded
+perspectives and intersects them with the saved drawing scope. Lens and search
+changes reuse the original layout. The node list, gap links and inspector
+remain interactive while layout is pending.
 
 Use `gdd::view::render_view(model: &Path, output: &Path, scope: &[String])`
 to publish a new artifact and receive the scoped JSON report. Use

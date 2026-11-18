@@ -3,6 +3,7 @@ use std::path::Path;
 
 use gdd::bundle::{self, Bundle, Location};
 use gdd::input::Value;
+use gdd::perspectives::{PerspectiveBundle, perspective_data};
 use serde_json::Value as Json;
 
 pub struct Graph {
@@ -13,6 +14,110 @@ pub struct Graph {
     pub shown_nodes: usize,
     pub shown_edges: usize,
     pub artifact: Option<Json>,
+    pub perspectives: Result<Perspectives, String>,
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, Ord, PartialEq, PartialOrd)]
+pub enum Lens {
+    #[default]
+    All,
+    Journey,
+    Components,
+    Data,
+}
+
+impl Lens {
+    pub const PRODUCT: [Self; 3] = [Self::Journey, Self::Components, Self::Data];
+
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::All => "All graph",
+            Self::Journey => "User journey",
+            Self::Components => "Components",
+            Self::Data => "Data model",
+        }
+    }
+
+    fn key(self) -> &'static str {
+        match self {
+            Self::All => "all",
+            Self::Journey => "journey",
+            Self::Components => "components",
+            Self::Data => "data",
+        }
+    }
+}
+
+// Inspector links use full model membership. Visibility also applies the saved scope.
+pub struct Perspectives {
+    views: BTreeMap<Lens, Membership>,
+    pub gaps: Vec<(usize, String)>,
+    pub has_product_extension: bool,
+}
+
+struct Membership {
+    nodes: Vec<bool>,
+    edges: Vec<bool>,
+}
+
+impl Perspectives {
+    // The shared reader checks the envelope schema before these ID lists are used.
+    fn new(
+        data: &Json,
+        node_indices: &BTreeMap<&str, usize>,
+        edges: &[Edge],
+    ) -> Result<Self, String> {
+        let edge_indices = edges
+            .iter()
+            .enumerate()
+            .map(|(i, edge)| (edge.id.as_str(), i))
+            .collect();
+        let membership = |group: &Json, indices: &BTreeMap<&str, usize>| {
+            let mut mask = vec![false; indices.len()];
+            for id in group.as_array().unwrap() {
+                let id = id.as_str().unwrap();
+                let &index = indices
+                    .get(id)
+                    .ok_or_else(|| format!("Unknown perspective record {id}."))?;
+                mask[index] = true;
+            }
+            Ok::<_, String>(mask)
+        };
+        let mut views = BTreeMap::new();
+        for lens in Lens::PRODUCT {
+            let shown = &data["views"][lens.key()]["shown"];
+            views.insert(
+                lens,
+                Membership {
+                    nodes: membership(&shown["node_ids"], node_indices)?,
+                    edges: membership(&shown["edge_ids"], &edge_indices)?,
+                },
+            );
+        }
+        let mut gaps = Vec::new();
+        for gap in data["gaps"].as_array().unwrap() {
+            let id = gap["node_id"].as_str().unwrap();
+            let index = node_indices
+                .get(id)
+                .ok_or_else(|| format!("Unknown advisory gap node {id}."))?;
+            gaps.push((*index, gap["message"].as_str().unwrap().to_owned()));
+        }
+        Ok(Self {
+            views,
+            gaps,
+            has_product_extension: !data["product_extension"].is_null(),
+        })
+    }
+
+    pub fn includes(&self, lens: Lens, index: usize) -> bool {
+        self.views.get(&lens).is_none_or(|view| view.nodes[index])
+    }
+}
+
+#[derive(Default)]
+pub struct Visible {
+    pub nodes: Vec<usize>,
+    pub edges: Vec<usize>,
 }
 
 pub struct Node {
@@ -20,6 +125,17 @@ pub struct Node {
     pub label: String,
     pub kind: String,
     pub description: String,
+    pub human: Option<HumanConcept>,
+}
+
+pub enum HumanConcept {
+    Step {
+        action: Option<String>,
+        response: Option<String>,
+    },
+    Actor {
+        goal: Option<String>,
+    },
 }
 
 pub struct Edge {
@@ -73,15 +189,24 @@ impl Graph {
                     .map_err(|error| record_error(record.location, &error))
             })
             .collect::<Result<_, _>>()?;
-        Self::project(title, nodes, None, |indices| {
-            bundle
-                .edges()
-                .map(|record| {
-                    project_edge(record.id, record.value, indices)
-                        .map_err(|error| record_error(record.location, &error))
-                })
-                .collect()
-        })
+        let projection = PerspectiveBundle::admit(bundle)
+            .and_then(|capture| perspective_data(&capture))
+            .map_err(|e| e.to_string());
+        Self::project(
+            title,
+            nodes,
+            None,
+            projection.as_ref().map_err(Clone::clone),
+            |indices| {
+                bundle
+                    .edges()
+                    .map(|record| {
+                        project_edge(record.id, record.value, indices)
+                            .map_err(|error| record_error(record.location, &error))
+                    })
+                    .collect()
+            },
+        )
     }
 
     fn from_artifact(bytes: &[u8]) -> Result<Self, String> {
@@ -100,14 +225,22 @@ impl Graph {
             .iter()
             .map(|id| id.as_str().unwrap())
             .collect();
-        let mut graph = Self::project(title, nodes, Some(&shown), |indices| {
-            model["edges"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|edge| project_edge(edge["id"].as_str().unwrap(), &Value::from(edge), indices))
-                .collect()
-        })?;
+        let mut graph = Self::project(
+            title,
+            nodes,
+            Some(&shown),
+            Ok(&data["perspectives"]),
+            |indices| {
+                model["edges"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|edge| {
+                        project_edge(edge["id"].as_str().unwrap(), &Value::from(edge), indices)
+                    })
+                    .collect()
+            },
+        )?;
         graph.artifact = Some(data);
         Ok(graph)
     }
@@ -116,6 +249,7 @@ impl Graph {
         title: String,
         mut nodes: Vec<Node>,
         shown: Option<&BTreeSet<&str>>,
+        projection: Result<&Json, String>,
         project_edges: impl FnOnce(&BTreeMap<&str, usize>) -> Result<Vec<Edge>, String>,
     ) -> Result<Self, String> {
         let shown_nodes = if let Some(shown) = shown {
@@ -137,7 +271,9 @@ impl Graph {
         } else {
             edges.len()
         };
+        let perspectives = projection.and_then(|data| Perspectives::new(data, &indices, &edges));
         Ok(Self {
+            perspectives,
             title,
             nodes,
             edges,
@@ -145,6 +281,39 @@ impl Graph {
             shown_edges,
             artifact: None,
         })
+    }
+
+    pub fn visible(&self, lens: Lens, search: &str) -> Visible {
+        let view = if lens == Lens::All {
+            None
+        } else if let Ok(projection) = &self.perspectives {
+            projection.views.get(&lens)
+        } else {
+            return Visible::default();
+        };
+        let query = search.trim().to_lowercase();
+        let mut matched = vec![false; self.shown_nodes];
+        let nodes = self.nodes[..self.shown_nodes]
+            .iter()
+            .enumerate()
+            .filter_map(|(i, node)| {
+                matched[i] = view.is_none_or(|v| v.nodes[i])
+                    && (query.is_empty()
+                        || [&node.id, &node.label, &node.kind]
+                            .iter()
+                            .any(|s| s.to_lowercase().contains(&query)));
+                matched[i].then_some(i)
+            })
+            .collect();
+        let edges = self.edges[..self.shown_edges]
+            .iter()
+            .enumerate()
+            .filter_map(|(i, edge)| {
+                (matched[edge.from] && matched[edge.to] && view.is_none_or(|v| v.edges[i]))
+                    .then_some(i)
+            })
+            .collect();
+        Visible { nodes, edges }
     }
 }
 
@@ -163,7 +332,22 @@ fn project_node(id: &str, value: &Value) -> Result<Node, String> {
         Some(Value::String(label)) => label,
         Some(_) => return Err(format!("label for node {id:?} must be a string")),
     };
+    let detail = |key| match node.get("data") {
+        Some(Value::Object(data)) => text(data, key).ok().map(str::to_owned),
+        _ => None,
+    };
+    let human = match kind {
+        "gdd.product.journey_step" => Some(HumanConcept::Step {
+            action: detail("user_action"),
+            response: detail("system_response"),
+        }),
+        "gdd.product.actor" => Some(HumanConcept::Actor {
+            goal: detail("goal"),
+        }),
+        _ => None,
+    };
     Ok(Node {
+        human,
         id: id.to_owned(),
         label: label.to_owned(),
         kind: kind.to_owned(),
@@ -226,7 +410,8 @@ mod tests {
     use gdd::bundle;
     use serde_json::{Value, json};
 
-    use super::Graph;
+    use super::{Graph, HumanConcept, Lens};
+    use std::collections::BTreeSet;
 
     fn document(format: &str) -> Value {
         json!({
@@ -452,6 +637,189 @@ mod tests {
                 graph.artifact.unwrap()["locations"]["entity.note"][0],
                 "note.fragment.yaml"
             );
+        }
+    }
+
+    fn ids(values: &Value) -> BTreeSet<&str> {
+        values
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|id| id.as_str().unwrap())
+            .collect()
+    }
+
+    // Compare both sides of each visible partition with the portable contract.
+    fn assert_lenses(graph: &Graph, artifact: &Value) {
+        let scope = &artifact["manifest"];
+        let all_nodes: BTreeSet<_> = graph.nodes.iter().map(|n| n.id.as_str()).collect();
+        let all_edges: BTreeSet<_> = graph.edges.iter().map(|e| e.id.as_str()).collect();
+        for lens in [Lens::All, Lens::Journey, Lens::Components, Lens::Data] {
+            let visible = graph.visible(lens, "");
+            let nodes = visible
+                .nodes
+                .iter()
+                .map(|&i| graph.nodes[i].id.as_str())
+                .collect();
+            let edges = visible
+                .edges
+                .iter()
+                .map(|&i| graph.edges[i].id.as_str())
+                .collect();
+            let view = &artifact["perspectives"]["views"][lens.key()];
+            for (all, shown, scope_key, view_key) in [
+                (&all_nodes, nodes, "shown_nodes", "node_ids"),
+                (&all_edges, edges, "shown_edges", "edge_ids"),
+            ] {
+                let within = ids(&scope[scope_key]);
+                let omitted: BTreeSet<_> = all.difference(&within).copied().collect();
+                if lens == Lens::All {
+                    assert_eq!(shown, within);
+                } else {
+                    let expected = ids(&view["shown"][view_key]);
+                    let excluded = ids(&view["omitted"][view_key]);
+                    assert_eq!(shown, within.intersection(&expected).copied().collect());
+                    assert_eq!(
+                        all.difference(&shown).copied().collect::<BTreeSet<_>>(),
+                        omitted.union(&excluded).copied().collect()
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn lenses_keep_canonical_context_and_exact_edge_sets_for_both_inputs() {
+        let inputs = tempfile::tempdir().unwrap();
+        let model = inputs.path().join("greenfield.gdd.json");
+        let extension = inputs.path().join("extensions/product-0.1.json");
+        fs::create_dir(extension.parent().unwrap()).unwrap();
+        let model_bytes = fs::read(example("product/greenfield.gdd.json")).unwrap();
+        let extension_bytes = fs::read(example("product/extensions/product-0.1.json")).unwrap();
+        fs::write(&model, &model_bytes).unwrap();
+        fs::write(&extension, &extension_bytes).unwrap();
+        let destination = tempfile::tempdir().unwrap();
+        let full_view = destination.path().join("full.gddview");
+        let scoped_view = destination.path().join("scope.gddview");
+        gdd::view::render_view(&model, &full_view, &[]).unwrap();
+        gdd::view::render_view(&model, &scoped_view, &["actor.guest".into()]).unwrap();
+        let raw = Graph::load(&model).unwrap();
+        let captured = bundle::load_model_only(&model);
+        assert_eq!(fs::read(&model).unwrap(), model_bytes);
+        assert_eq!(fs::read(&extension).unwrap(), extension_bytes);
+        inputs.close().unwrap();
+
+        let full_bytes = fs::read(&full_view).unwrap();
+        let full: Value = serde_json::from_slice(&full_bytes).unwrap();
+        for graph in [
+            raw,
+            Graph::from_bundle(&captured).unwrap(),
+            Graph::load(&full_view).unwrap(),
+        ] {
+            assert_lenses(&graph, &full);
+            let steps = graph.visible(Lens::Components, " STEP.");
+            assert_eq!(
+                steps
+                    .nodes
+                    .iter()
+                    .map(|&i| graph.nodes[i].id.as_str())
+                    .collect::<Vec<_>>(),
+                ["step.choose", "step.reserve"]
+            );
+            // Both contextual nodes survive, but their journey-only edge must be omitted.
+            assert!(steps.edges.is_empty());
+            let journey = graph.visible(Lens::Journey, "step.");
+            assert_eq!(journey.edges.len(), 1);
+            assert_eq!(graph.edges[journey.edges[0]].id, "edge.choose.reserve");
+            let step = &graph.nodes[steps.nodes[0]];
+            assert!(
+                matches!(&step.human, Some(HumanConcept::Step { action, response })
+                if action.as_deref() == Some("Select a performance.") && response.as_deref() == Some("Show available seats."))
+            );
+            let actor = &graph.nodes[graph.visible(Lens::Journey, "actor.guest").nodes[0]];
+            assert!(
+                matches!(&actor.human, Some(HumanConcept::Actor { goal }) if goal.as_deref() == Some("Reserve a seat."))
+            );
+        }
+        let scoped_bytes = fs::read(&scoped_view).unwrap();
+        let scoped = Graph::load(&scoped_view).unwrap();
+        assert!(scoped.shown_nodes < scoped.nodes.len());
+        assert_lenses(&scoped, &serde_json::from_slice(&scoped_bytes).unwrap());
+        assert_eq!(fs::read(full_view).unwrap(), full_bytes);
+        assert_eq!(fs::read(scoped_view).unwrap(), scoped_bytes);
+    }
+
+    #[test]
+    fn legacy_and_unadmitted_models_have_distinct_empty_perspectives() {
+        let legacy = Graph::load(&example("concert.gdd.yaml")).unwrap();
+        assert!(!legacy.perspectives.as_ref().unwrap().has_product_extension);
+        assert!(legacy.visible(Lens::Journey, "").nodes.is_empty());
+        assert!(!legacy.visible(Lens::Components, "").nodes.is_empty());
+        assert!(!legacy.visible(Lens::Data, "").edges.is_empty());
+        let graph = load_fixture(&document("gdd/0.3").to_string()).unwrap();
+        assert!(graph.perspectives.is_err());
+        assert_eq!(graph.visible(Lens::All, "").edges.len(), 4);
+        assert!(graph.visible(Lens::Components, "").nodes.is_empty());
+    }
+
+    #[test]
+    fn a_repinned_product_definition_keeps_the_preview_and_reports_unsupported_semantics() {
+        let dir = tempfile::tempdir().unwrap();
+        let ext = dir.path().join("product.json");
+        let mut bytes = fs::read(example("product/extensions/product-0.1.json")).unwrap();
+        bytes.push(b'\n');
+        fs::write(&ext, bytes).unwrap();
+        let definition = bundle::load_model_only(&ext);
+        let mut model: Value =
+            serde_json::from_slice(&fs::read(example("product/partial.gdd.json")).unwrap())
+                .unwrap();
+        let declaration = &mut model["extensions"]["extension.product"];
+        declaration["path"] = json!("product.json");
+        declaration["sha256"] = json!(definition.root_document().unwrap().asset.sha256);
+        let path = dir.path().join("model.json");
+        fs::write(&path, model.to_string()).unwrap();
+
+        let graph = Graph::load(&path).unwrap();
+        assert!(
+            graph
+                .perspectives
+                .as_ref()
+                .err()
+                .unwrap()
+                .contains("Unsupported gdd.product semantics")
+        );
+        assert_eq!(graph.visible(Lens::All, "").nodes.len(), 2);
+        assert!(graph.visible(Lens::Journey, "").nodes.is_empty());
+    }
+
+    #[test]
+    fn edited_perspective_ids_cannot_escape_the_canonical_graph() {
+        let destination = tempfile::tempdir().unwrap();
+        let file = destination.path().join("partial.gddview");
+        gdd::view::render_view(
+            &example("product/partial.gdd.json"),
+            &file,
+            &["step.reserve".into()],
+        )
+        .unwrap();
+        let source: Value = serde_json::from_slice(&fs::read(&file).unwrap()).unwrap();
+        for pointer in [
+            "/perspectives/gaps/0/node_id",
+            "/perspectives/views/journey/shown/node_ids/0",
+        ] {
+            let mut altered = source.clone();
+            *altered.pointer_mut(pointer).unwrap() = json!("missing.node");
+            let graph = Graph::from_artifact(&serde_json::to_vec(&altered).unwrap()).unwrap();
+            assert!(
+                graph
+                    .perspectives
+                    .as_ref()
+                    .err()
+                    .unwrap()
+                    .contains("missing.node")
+            );
+            assert_eq!(graph.visible(Lens::All, "").nodes.len(), 1);
+            assert!(graph.visible(Lens::Journey, "").nodes.is_empty());
         }
     }
 

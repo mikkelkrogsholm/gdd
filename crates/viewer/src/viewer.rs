@@ -3,7 +3,10 @@ use std::thread;
 
 use eframe::egui::{self, Button, Color32, Key, Modifiers, RichText, Ui};
 
-use crate::{canvas::Layout, model::Graph};
+use crate::{
+    canvas::Layout,
+    model::{Graph, HumanConcept, Lens, Visible},
+};
 
 enum LayoutState {
     Pending(mpsc::Receiver<Result<Layout, String>>),
@@ -45,6 +48,8 @@ impl LayoutState {
 pub struct Viewer {
     graph: Arc<Graph>,
     layout: LayoutState,
+    lens: Lens,
+    visible: Visible,
     zoom_percent: u16,
     reveal_selected: bool,
     filename: String,
@@ -57,6 +62,8 @@ impl Viewer {
         let graph = Arc::new(graph);
         let layout = LayoutState::start(Arc::clone(&graph), context);
         Self {
+            lens: Lens::All,
+            visible: graph.visible(Lens::All, ""),
             graph,
             layout,
             zoom_percent: 100,
@@ -64,6 +71,35 @@ impl Viewer {
             filename,
             search: String::new(),
             selected: None,
+        }
+    }
+
+    fn refresh(&mut self) {
+        self.visible = self.graph.visible(self.lens, &self.search);
+    }
+
+    fn navigate(&mut self, index: usize, lens: Lens) {
+        self.selected = Some(index);
+        if index < self.graph.shown_nodes {
+            self.lens = lens;
+            self.search.clear();
+            self.refresh();
+            self.reveal_selected = true;
+        }
+    }
+
+    fn empty_message(&self) -> String {
+        if self.lens != Lens::All && self.graph.perspectives.is_err() {
+            "Product perspectives unavailable for this model.".into()
+        } else if !self.search.trim().is_empty() {
+            "No matching nodes.".into()
+        } else if self.lens == Lens::All {
+            "This view has no nodes.".into()
+        } else {
+            format!(
+                "No {} concepts in this scope.",
+                self.lens.label().to_lowercase()
+            )
         }
     }
 
@@ -77,7 +113,21 @@ impl Viewer {
                 ui.horizontal_wrapped(|ui| {
                     ui.heading(RichText::new(&self.graph.title).size(24.0).strong());
                     ui.label(RichText::new(&self.filename).weak());
-                    if matches!(self.layout, LayoutState::Ready(_)) && self.graph.shown_nodes > 0 {
+                    let old_lens = self.lens;
+                    egui::ComboBox::from_label("Perspective")
+                        .selected_text(self.lens.label())
+                        .show_ui(ui, |ui| {
+                            for lens in [Lens::All, Lens::Journey, Lens::Components, Lens::Data] {
+                                ui.selectable_value(&mut self.lens, lens, lens.label());
+                            }
+                        });
+                    if self.lens != old_lens {
+                        self.refresh();
+                        self.reveal_selected = true;
+                    }
+                    if matches!(self.layout, LayoutState::Ready(_))
+                        && !self.visible.nodes.is_empty()
+                    {
                         egui::ComboBox::from_label("Graph zoom")
                             .selected_text(format!("{}%", self.zoom_percent))
                             .width(70.0)
@@ -114,6 +164,10 @@ impl Viewer {
         egui::CentralPanel::default()
             .frame(egui::Frame::NONE.fill(Color32::from_rgb(244, 247, 251)))
             .show(ui, |ui| {
+                if self.visible.nodes.is_empty() {
+                    ui.centered_and_justified(|ui| ui.label(self.empty_message()));
+                    return;
+                }
                 let layout = match &self.layout {
                     LayoutState::Ready(layout) => layout,
                     LayoutState::Pending(_) => {
@@ -131,6 +185,7 @@ impl Viewer {
                 if let Some(index) = layout.show(
                     ui,
                     &self.graph,
+                    &self.visible,
                     self.selected,
                     zoom,
                     std::mem::take(&mut self.reveal_selected),
@@ -142,15 +197,7 @@ impl Viewer {
     }
 
     fn show_nodes(&mut self, ui: &mut Ui) {
-        if self.graph.shown_nodes == self.graph.nodes.len() {
-            ui.heading(format!("Nodes ({})", self.graph.shown_nodes));
-        } else {
-            ui.heading(format!(
-                "Nodes ({} of {})",
-                self.graph.shown_nodes,
-                self.graph.nodes.len()
-            ));
-        }
+        ui.heading("Nodes");
         let search_label = ui.label("Search nodes");
         let focus_search = ui.input_mut(|input| input.consume_key(Modifiers::COMMAND, Key::F));
         let search = ui
@@ -166,35 +213,51 @@ impl Viewer {
             search.request_focus();
         }
         let choose_first = search.lost_focus() && ui.input(|input| input.key_pressed(Key::Enter));
-        let query = self.search.trim().to_lowercase();
+        if search.changed() {
+            self.refresh();
+        }
+        ui.label(format!(
+            "{} of {} nodes · {} of {} edges",
+            self.visible.nodes.len(),
+            self.graph.nodes.len(),
+            self.visible.edges.len(),
+            self.graph.edges.len()
+        ));
 
         egui::ScrollArea::vertical()
             .auto_shrink([false; 2])
             .show(ui, |ui| {
-                let mut found = false;
-                for (index, node) in self.graph.nodes[..self.graph.shown_nodes]
-                    .iter()
-                    .enumerate()
-                {
-                    if !query.is_empty()
-                        && !node.label.to_lowercase().contains(&query)
-                        && !node.id.to_lowercase().contains(&query)
-                        && !node.kind.to_lowercase().contains(&query)
-                    {
-                        continue;
-                    }
+                for (row_index, &index) in self.visible.nodes.iter().enumerate() {
+                    let node = &self.graph.nodes[index];
                     let row = ui.add_sized(
                         [ui.available_width(), 30.0],
                         Button::selectable(self.selected == Some(index), &node.label).truncate(),
                     );
-                    if row.on_hover_text(&node.id).clicked() || (!found && choose_first) {
+                    if row.on_hover_text(&node.id).clicked() || (row_index == 0 && choose_first) {
                         self.selected = Some(index);
                         self.reveal_selected = true;
                     }
-                    found = true;
                 }
-                if !found && self.graph.shown_nodes > 0 {
-                    ui.label("No matching nodes.");
+                let graph = Arc::clone(&self.graph);
+                match &graph.perspectives {
+                    Ok(projection) if !projection.gaps.is_empty() => {
+                        ui.separator();
+                        ui.heading(format!("Advisory gaps ({})", projection.gaps.len()));
+                        ui.label("These gaps describe the sketch. They never establish readiness.");
+                        for (index, message) in &projection.gaps {
+                            let node = &graph.nodes[*index];
+                            if ui.link(format!("{} · {}", node.id, message)).clicked() {
+                                self.navigate(*index, Lens::All);
+                                ui.ctx().request_repaint();
+                            }
+                        }
+                    }
+                    Err(error) => {
+                        ui.collapsing("Product perspectives unavailable", |ui| {
+                            ui.label(error);
+                        });
+                    }
+                    _ => {}
                 }
             });
     }
@@ -206,7 +269,8 @@ impl Viewer {
             ui.label("Select a node to see its details.");
             return;
         };
-        let node = &self.graph.nodes[index];
+        let graph = Arc::clone(&self.graph);
+        let node = &graph.nodes[index];
         egui::ScrollArea::vertical()
             .id_salt(index)
             .auto_shrink([false; 2])
@@ -217,10 +281,49 @@ impl Viewer {
                 }
                 ui.label(RichText::new(&node.kind).monospace().weak());
                 ui.label(&node.description);
-                if let Some(data) = &self.graph.artifact {
-                    if index >= self.graph.shown_nodes {
-                        ui.label("Outside the saved view scope");
+                if index >= graph.shown_nodes {
+                    ui.label("Outside the saved view scope");
+                } else if self.visible.nodes.binary_search(&index).is_err() {
+                    ui.label("Hidden by current filters");
+                }
+                if let Ok(projection) = &graph.perspectives {
+                    if projection.has_product_extension
+                        && let Some(human) = &node.human
+                    {
+                        match human {
+                            HumanConcept::Step { action, response } => {
+                                ui.strong("User action");
+                                ui.label(
+                                    action.as_deref().unwrap_or("Not declared (advisory gap)"),
+                                );
+                                ui.strong("System response");
+                                ui.label(
+                                    response.as_deref().unwrap_or("Not declared (advisory gap)"),
+                                );
+                            }
+                            HumanConcept::Actor { goal } => {
+                                ui.strong("Goal");
+                                ui.label(goal.as_deref().unwrap_or("Not declared"));
+                            }
+                        }
                     }
+                    let related: Vec<_> = Lens::PRODUCT
+                        .into_iter()
+                        .filter(|&lens| projection.includes(lens, index))
+                        .collect();
+                    if !related.is_empty() {
+                        ui.strong("Related perspectives");
+                        ui.horizontal_wrapped(|ui| {
+                            for lens in related {
+                                if ui.link(lens.label()).clicked() {
+                                    self.navigate(index, lens);
+                                    ui.ctx().request_repaint();
+                                }
+                            }
+                        });
+                    }
+                }
+                if let Some(data) = &graph.artifact {
                     let origin = &data["locations"][&node.id];
                     ui.label(format!(
                         "{}{}",
@@ -233,8 +336,7 @@ impl Viewer {
                 }
                 ui.add_space(10.0);
 
-                let mut connections = self
-                    .graph
+                let mut connections = graph
                     .edges
                     .iter()
                     .filter(|edge| edge.from == index || edge.to == index)
@@ -255,14 +357,23 @@ impl Viewer {
                         ui.label(RichText::new(&edge.relation).monospace());
                         ui.horizontal_wrapped(|ui| {
                             ui.label(direction);
-                            let neighbor_node = &self.graph.nodes[neighbor];
+                            let neighbor_node = &graph.nodes[neighbor];
                             if ui
                                 .link(&neighbor_node.label)
                                 .on_hover_text(&neighbor_node.id)
                                 .clicked()
                             {
-                                self.selected = Some(neighbor);
-                                self.reveal_selected = true;
+                                let in_lens = self.lens == Lens::All
+                                    || graph
+                                        .perspectives
+                                        .as_ref()
+                                        .is_ok_and(|p| p.includes(self.lens, neighbor));
+                                if in_lens && self.visible.nodes.binary_search(&neighbor).is_err() {
+                                    self.navigate(neighbor, self.lens);
+                                } else {
+                                    self.selected = Some(neighbor);
+                                    self.reveal_selected = true;
+                                }
                                 ui.ctx().request_repaint();
                             }
                         });
@@ -290,6 +401,8 @@ mod tests {
         let graph = Arc::new(Graph::load(&path).unwrap());
         let (sender, receiver) = mpsc::channel();
         let mut viewer = Viewer {
+            lens: Lens::All,
+            visible: graph.visible(Lens::All, ""),
             graph: Arc::clone(&graph),
             layout: LayoutState::Pending(receiver),
             zoom_percent: 100,
@@ -329,6 +442,57 @@ mod tests {
         assert_eq!(viewer.search, "entity.note");
         assert_eq!(viewer.selected, Some(1));
         assert!(!viewer.reveal_selected);
+    }
+
+    #[test]
+    fn gap_navigation_reveals_only_in_scope_targets_and_preserves_pending_layout() {
+        let path =
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/product/partial.gdd.json");
+        let output = tempfile::tempdir().unwrap();
+        let saved = output.path().join("partial.gddview");
+        gdd::view::render_view(&path, &saved, &["step.reserve".into()]).unwrap();
+        let graph = Arc::new(Graph::load(&saved).unwrap());
+        let gaps = &graph.perspectives.as_ref().unwrap().gaps;
+        assert_eq!(gaps.len(), 5);
+        let step = gaps
+            .iter()
+            .find(|(i, _)| graph.nodes[*i].id == "step.reserve")
+            .unwrap()
+            .0;
+        let entity = gaps
+            .iter()
+            .find(|(i, _)| graph.nodes[*i].id == "entity.reservation")
+            .unwrap()
+            .0;
+
+        let (_sender, receiver) = mpsc::channel();
+        let mut viewer = Viewer {
+            visible: graph.visible(Lens::Components, "missing"),
+            graph,
+            lens: Lens::Components,
+            layout: LayoutState::Pending(receiver),
+            zoom_percent: 100,
+            reveal_selected: false,
+            filename: "partial.gddview".into(),
+            search: "missing".into(),
+            selected: None,
+        };
+        viewer.navigate(entity, Lens::All);
+        assert_eq!(viewer.selected, Some(entity));
+        assert_eq!(viewer.lens, Lens::Components);
+        assert_eq!(viewer.search, "missing");
+        assert!(viewer.visible.nodes.is_empty() && !viewer.reveal_selected);
+        viewer.navigate(step, Lens::All);
+        assert_eq!(viewer.lens, Lens::All);
+        assert_eq!(viewer.selected, Some(step));
+        assert!(viewer.search.is_empty());
+        assert_eq!(viewer.visible.nodes, [step]);
+        assert!(viewer.reveal_selected);
+        viewer.navigate(step, Lens::Journey);
+        assert_eq!(viewer.lens, Lens::Journey);
+        assert_eq!(viewer.selected, Some(step));
+        assert_eq!(viewer.visible.nodes, [step]);
+        assert!(matches!(viewer.layout, LayoutState::Pending(_)));
     }
 
     #[test]

@@ -26,6 +26,12 @@ impl<B: Borrow<Bundle>> PerspectiveBundle<B> {
         self.bundle.borrow()
     }
 
+    /// Admit an owned or borrowed capture without reopening its inputs.
+    pub fn admit(bundle: B) -> Result<Self, ProjectionError> {
+        validate_projection_bundle(bundle.borrow())?;
+        Self::from_validated(bundle)
+    }
+
     // Callers have already admitted the model and resolved its snapshot.
     pub(crate) fn from_validated(bundle: B) -> Result<Self, ProjectionError> {
         let mut product_hash = None;
@@ -55,8 +61,7 @@ impl TryFrom<Bundle> for PerspectiveBundle {
     type Error = ProjectionError;
 
     fn try_from(bundle: Bundle) -> Result<Self, Self::Error> {
-        validate_projection_bundle(&bundle)?;
-        Self::from_validated(bundle)
+        Self::admit(bundle)
     }
 }
 

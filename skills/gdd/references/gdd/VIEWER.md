@@ -25,6 +25,17 @@ outside this scope and display the original source file, JSON pointer and
 canonical node record. A scoped file contains the complete model and should
 only be shared with someone who can read the whole model.
 
+The native **Perspective** selector works with a model file or a saved view.
+Choose **User journey**, **Components**, or **Data model** to narrow the list
+and drawing to the projection's canonical node and edge IDs. **All graph**
+uses the complete saved scope before search. Search narrows the active perspective
+by node ID, label or kind. Counts report visible nodes and edges against
+the full model. In the inspector, a **Related perspectives** link reveals the
+selected node in another lens and clears search when the node is in scope.
+Select an **Advisory gaps** entry to reveal its node in All graph or inspect
+an out-of-scope node. Journey steps show the user action and system response.
+Actors show their goal.
+
 The native artifact uses format `gdd-native-view/0.1`, generator name
 `gdd-viewer`, generator version `0.1.0` and profile `gdd-viewer-native/0.1`.
 Use the recommended `.gddview` suffix. The viewer also recognizes the format

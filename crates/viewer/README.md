@@ -18,7 +18,21 @@ or follow a connection. Try searching for `entity.note` and following its
 `edge.note.owner` connection to `component.notes`. The inspector shows the
 node label, ID, kind, description and each incident edge. Selecting a node
 highlights its incoming and outgoing links. Selecting a search result or
-following a connection scrolls the graph to that node.
+following a connection scrolls the graph to that node when it belongs to the
+current perspective and saved scope.
+
+Choose **All graph**, **User journey**, **Components**, or **Data model** under
+**Perspective**. Each lens includes its primary concepts and direct context.
+The list and canvas show the same nodes. An edge appears when the perspective
+includes that edge and both endpoints remain visible. Search narrows the
+current lens. Counts show visible nodes and edges against the complete model.
+
+Select a journey step to read its user action and system response, or an actor
+to read its goal. A **Related perspectives** link clears search and reveals
+the selected node in that perspective within the saved scope. **Advisory gaps**
+in the node panel identify missing details in a sketch. Selecting a gap opens
+its node in All graph when the node is in scope. An outside target opens in
+the inspector and keeps the current drawing and filters.
 
 When sharing a saved view, send the `.gddview` file to a recipient with the
 native viewer installed. Its search and drawing respect the saved scope.
@@ -43,8 +57,10 @@ bundle loader to combine the manifest and its declared local fragments.
 A load problem, such as a missing asset or duplicate ID, stops the preview
 with a source diagnostic. The preview runs offline and leaves the bundle
 untouched. A layout error leaves the node list and inspector available.
-Validation results, operational record status, and perspectives are outside
-the preview.
+The viewer derives perspectives from that same captured bundle. If a directly
+opened model can be drawn but fails perspective admission, All graph remains
+available. Expand **Product perspectives unavailable** to read the diagnostic.
+Use the CLI for validation reports and operational record status.
 
 Use the Rust CLI to check schema and model semantics or get the bundle's
 revision and asset digests:
