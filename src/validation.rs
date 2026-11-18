@@ -94,9 +94,14 @@ pub fn validate_with_options(
             report.checks.push(check);
         }
     }
-    report
-        .checks
-        .extend(bundle.diagnostics().iter().map(Check::from));
+    let wants_model = report.profiles.contains(&Profile::Model);
+    report.checks.extend(
+        bundle
+            .diagnostics()
+            .iter()
+            .filter(|issue| wants_model || !issue.semantic_only)
+            .map(Check::from),
+    );
     if normative_valid {
         report.spec_revision = bundle.snapshot().map(|snapshot| snapshot.revision.clone());
     }
@@ -125,7 +130,7 @@ pub fn validate_with_options(
         }
     }
 
-    if report.profiles.contains(&Profile::Model) {
+    if wants_model {
         if let Some(manifest) = bundle.manifest() {
             if representation_valid {
                 report.checks.extend(crate::model::check(

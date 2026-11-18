@@ -10,6 +10,11 @@ use crate::input::Value;
 use crate::report::{Check, CheckResult, Diagnostic};
 use crate::validation::{CORE_KINDS, CORE_RELATIONS};
 
+mod extensions;
+mod records;
+
+use extensions::Definition;
+
 type Entries = BTreeMap<String, Value>;
 type Graph<K> = BTreeMap<K, Vec<K>>;
 type Outgoing<'a> = BTreeMap<&'a str, Graph<&'a str>>;
@@ -34,8 +39,8 @@ pub(crate) fn check(
         namespaces: entries(&manifest.value, "extensions")
             .map(|(_, declaration)| string(declaration, "namespace"))
             .collect(),
-        custom_kinds: BTreeSet::new(),
-        custom_relations: BTreeSet::new(),
+        custom_kinds: BTreeMap::new(),
+        custom_relations: BTreeMap::new(),
         unsupported_extensions,
         checks: Vec::new(),
     };
@@ -46,25 +51,16 @@ pub(crate) fn check(
     if manifest.kind == DocumentKind::Manifest03 {
         model.boundaries();
     }
-    if bundle.records().len() != 0 {
-        let reason = "Operational record integrity has not been assessed.";
-        let mut check = Check::new("records.integrity", "model", CheckResult::Unknown, reason);
-        check.diagnostics.push(Diagnostic::new(
-            "FORMAT_UNSUPPORTED",
-            check.result,
-            reason,
-            Some(&manifest.asset.path),
-            "/record_files",
-        ));
-        model.checks.push(check);
-    }
     if model.checks.is_empty() {
         model.checks.push(Check::new(
             "model.semantics",
             "model",
             CheckResult::Pass,
-            "Core references, endpoints, identity, refinement, machines, types and boundaries checked.",
+            "Core references, endpoints, identity, refinement, machines, types, boundaries and declared extension data checked.",
         ));
+    }
+    if bundle.records().len() != 0 {
+        model.records();
     }
     model.checks
 }
@@ -76,8 +72,8 @@ struct Model<'a> {
     outgoing: Outgoing<'a>,
     parents: Graph<&'a str>,
     namespaces: BTreeSet<&'a str>,
-    custom_kinds: BTreeSet<&'a str>,
-    custom_relations: BTreeSet<&'a str>,
+    custom_kinds: BTreeMap<&'a str, Definition<'a>>,
+    custom_relations: BTreeMap<&'a str, Definition<'a>>,
     unsupported_extensions: &'a [String],
     checks: Vec<Check>,
 }
@@ -174,71 +170,6 @@ impl<'a> Model<'a> {
         }
     }
 
-    fn extensions(&mut self) {
-        for (namespace, document) in self.bundle.extensions() {
-            self.push(
-                Diagnostic::new(
-                    "EXTENSION_UNSUPPORTED",
-                    CheckResult::Unknown,
-                    "Extension data semantics have not been assessed.",
-                    Some(&document.asset.path),
-                    "",
-                ),
-                CheckResult::Unknown,
-            );
-            for (registry, names) in [
-                ("node_kinds", &mut self.custom_kinds),
-                ("relations", &mut self.custom_relations),
-            ] {
-                for (name, _) in entries(&document.value, registry) {
-                    if !has_namespace(name, namespace) || !names.insert(name.as_str()) {
-                        let diagnostic = Diagnostic::new(
-                            "EXTENSION_OVERRIDE",
-                            CheckResult::Fail,
-                            format!("Invalid extension name {name}."),
-                            Some(&document.asset.path),
-                            format!("/{registry}/{}", escape(name)),
-                        );
-                        // Retain the location in the extension document.
-                        let mut check = Check::new(
-                            "check.extension_override",
-                            "model",
-                            CheckResult::Fail,
-                            &diagnostic.message,
-                        );
-                        check.diagnostics.push(diagnostic);
-                        self.checks.push(check);
-                    }
-                }
-            }
-        }
-    }
-
-    fn custom(&mut self, name: &str, relation: bool, id: &str) {
-        if self.namespaces.iter().any(|namespace| {
-            has_namespace(name, namespace)
-                && self
-                    .unsupported_extensions
-                    .iter()
-                    .any(|item| item == namespace)
-        }) {
-            return;
-        }
-        let known = if relation {
-            &self.custom_relations
-        } else {
-            &self.custom_kinds
-        };
-        if !known.contains(name) {
-            self.issue(
-                "EXTENSION_UNDECLARED",
-                format!("No extension declares {name}."),
-                id,
-                "",
-            );
-        }
-    }
-
     fn edges(&mut self) {
         for item in self.bundle.edges() {
             let id = item.id;
@@ -261,7 +192,7 @@ impl<'a> Model<'a> {
                 if matches!(relation, "refines" | "member_of")
                     && let Some(kind) = self.kind(from)
                     && (kind == "community"
-                        || (!CORE_KINDS.contains(&kind) && !self.custom_kinds.contains(kind)))
+                        || (!CORE_KINDS.contains(&kind) && !self.custom_kinds.contains_key(kind)))
                     && !self
                         .unsupported_extensions
                         .iter()
@@ -278,7 +209,7 @@ impl<'a> Model<'a> {
                 self.reference(from, &[], id, "/from");
                 self.reference(to, &[], id, "/to");
                 debug_assert!(!CORE_RELATIONS.contains(&relation));
-                self.custom(relation, true, id);
+                self.custom(relation, true, id, item.value);
             }
 
             for (index, reference) in items(item.value, "source_refs").iter().enumerate() {
@@ -302,7 +233,7 @@ impl<'a> Model<'a> {
             let node = item.value;
             let kind = string(node, "kind");
             if !CORE_KINDS.contains(&kind) {
-                self.custom(kind, false, id);
+                self.custom(kind, false, id, node);
             }
             for (relation, code, message) in [
                 (

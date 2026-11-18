@@ -95,6 +95,7 @@ pub struct Diagnostic {
     pub message: Box<str>,
     pub location: Location,
     pub related_ids: Box<[String]>,
+    pub(crate) semantic_only: bool,
 }
 
 impl fmt::Display for Diagnostic {
@@ -546,8 +547,13 @@ fn insert_location(
             });
             true
         }
-        Entry::Occupied(_) => {
-            diagnostics.push(collision(id, file, &pointer));
+        Entry::Occupied(entry) => {
+            let mut issue = collision(id, file, &pointer);
+            // Including a fragment must not override a node. Other duplicate
+            // model identifiers are graph identity errors.
+            issue.semantic_only =
+                !(pointer.starts_with("/nodes/") && entry.get().pointer.starts_with("/nodes/"));
+            diagnostics.push(issue);
             false
         }
     }
@@ -806,6 +812,7 @@ fn invalid(
             pointer: pointer.into(),
         },
         related_ids: Box::new([]),
+        semantic_only: false,
     }
 }
 

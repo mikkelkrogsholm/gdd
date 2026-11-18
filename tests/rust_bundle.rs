@@ -186,7 +186,8 @@ fn rejects_fragment_version_and_duplicate_model_ids() {
     assert_eq!(bundle.snapshot().unwrap().assets.len(), 2);
     let result = snapshot(&path, None);
     assert_eq!(result.status.code(), Some(1));
-    assert!(result.stdout.is_empty());
+    let report: Value = serde_json::from_slice(&result.stdout).unwrap();
+    assert_eq!(report["format"], "gdd-report/0.2");
     assert_eq!(bundle.nodes().len(), 1);
     assert_eq!(bundle.edges().len(), 1);
     assert_eq!(bundle.nodes().next().unwrap().location.file, "gdd.json");
@@ -295,27 +296,39 @@ fn snapshot_cli_writes_exactly_once_and_distinguishes_load_failure() {
     assert_eq!(snapshot(&path, Some(&destination)).status.code(), Some(1));
     assert_eq!(fs::read(&destination).unwrap(), stdout.stdout);
 
-    write_json(&path, &json!({"format": "gdd-report/0.2"}));
+    fs::write(
+        &path,
+        include_bytes!("../examples/illustrative.report.json"),
+    )
+    .unwrap();
     assert_eq!(
         load(&path).root_document().unwrap().kind,
         DocumentKind::Report
     );
     assert_eq!(snapshot(&path, None).status.code(), Some(2));
+    let destination = root.path().join("unknown.json");
+    let unresolved = snapshot(&path, Some(&destination));
+    assert_eq!(unresolved.status.code(), Some(2));
+    assert!(unresolved.stdout.is_empty());
+    let report: Value = serde_json::from_slice(&fs::read(destination).unwrap()).unwrap();
+    assert_eq!(report["format"], "gdd-report/0.2");
 
     fs::write(&path, b"{\"format\":\"gdd/0.3\",\"format\":\"gdd/0.2\"}").unwrap();
     let bad = snapshot(&path, None);
     assert_eq!(bad.status.code(), Some(1));
-    assert!(
-        String::from_utf8(bad.stderr)
-            .unwrap()
-            .contains("YAML_DUPLICATE_KEY")
+    let report: Value = serde_json::from_slice(&bad.stdout).unwrap();
+    assert_eq!(report["format"], "gdd-report/0.2");
+    assert_eq!(
+        report["checks"][0]["diagnostics"][0]["code"],
+        "YAML_DUPLICATE_KEY"
     );
     let unavailable = snapshot(&root.path().join("missing.json"), None);
     assert_eq!(unavailable.status.code(), Some(2));
-    assert!(
-        String::from_utf8(unavailable.stderr)
-            .unwrap()
-            .contains("SOURCE_UNAVAILABLE")
+    let report: Value = serde_json::from_slice(&unavailable.stdout).unwrap();
+    assert_eq!(report["format"], "gdd-report/0.2");
+    assert_eq!(
+        report["checks"][0]["diagnostics"][0]["code"],
+        "SOURCE_UNAVAILABLE"
     );
 }
 

@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::io::{self, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand};
@@ -52,6 +52,14 @@ fn write_json(writer: &mut impl Write, value: &impl Serialize) -> io::Result<()>
     writeln!(writer)
 }
 
+fn write_output(output: Option<&Path>, value: &impl Serialize) -> io::Result<()> {
+    if let Some(path) = output {
+        write_json(&mut File::create_new(path)?, value)
+    } else {
+        write_json(&mut io::stdout().lock(), value)
+    }
+}
+
 fn run() -> io::Result<ExitCode> {
     match Cli::parse().command {
         Command::Init {
@@ -64,25 +72,16 @@ fn run() -> io::Result<ExitCode> {
         }
         Command::Snapshot { path, output } => {
             let bundle = bundle::load(&path);
-            let code = bundle.exit_code();
-            if code != 0 {
-                for diagnostic in bundle.diagnostics() {
-                    eprintln!("gdd: {diagnostic}");
-                }
+            let report = validation::validate(&bundle, Profile::Model);
+            let code = report.exit_code();
+            if code == 0
+                && let Some(snapshot) = bundle.snapshot()
+            {
+                write_output(output.as_deref(), snapshot)?;
                 return Ok(ExitCode::from(code));
             }
-            let Some(snapshot) = bundle.snapshot() else {
-                eprintln!(
-                    "gdd: {}: A snapshot requires a GDD model manifest.",
-                    path.display()
-                );
-                return Ok(ExitCode::from(2));
-            };
-            if let Some(output) = output {
-                write_json(&mut File::create_new(output)?, snapshot)?;
-            } else {
-                write_json(&mut io::stdout().lock(), snapshot)?;
-            }
+            write_output(output.as_deref(), &report)?;
+            return Ok(ExitCode::from(if code == 0 { 2 } else { code }));
         }
         Command::Validate {
             path,
@@ -100,11 +99,7 @@ fn run() -> io::Result<ExitCode> {
                     unsupported_extensions: &unsupported_extensions,
                 },
             )?;
-            if let Some(output) = output {
-                write_json(&mut File::create_new(output)?, &report)?;
-            } else {
-                write_json(&mut io::stdout().lock(), &report)?;
-            }
+            write_output(output.as_deref(), &report)?;
             return Ok(ExitCode::from(report.exit_code()));
         }
     }
