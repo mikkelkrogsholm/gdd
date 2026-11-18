@@ -26,6 +26,29 @@ The 19 named cases correspond to the [Python acceptance suite](../tests/).
 The [archived execution evidence](../evidence/) records the original Python
 runs. The Rust suite starts its own compiled binary for CLI checks.
 
+From the repository root, run the ten-event Rust workflow into a new directory.
+The checker runs Cargo offline and needs the quote package's locked dependencies
+in the local cache. `cargo fetch --locked --manifest-path examples/agent-native/rust/Cargo.toml`
+populates that cache.
+
+```sh
+cargo run --locked -p gdd-conformance -- workflow-demo --output /tmp/quote-rust-run
+cargo run --locked -p gdd -- workflow status /tmp/quote-rust-run/model.gdd.json \
+  --run /tmp/quote-rust-run/run --host-context /tmp/quote-rust-run/host.acceptance.json
+```
+
+The replay applies the three bundled Rust changes in a private copy and starts
+the compiled CLI through the acceptance tests. It binds four `cargo_test` rule
+declarations to a new spec revision and preserves the normative requirements
+bytes. The journal and its relative submission and evidence paths travel with
+the output directory. Each receipt under `evidence/` includes the actual Cargo
+argument list, exit code, stdout, stderr, toolchain, named outcomes and source
+snapshot. Cargo exits 101 for the seven baseline failures. The summary reports
+their test verdict as `baseline_exit: 1` and the process status as
+`baseline_cargo_exit: 101`.
+
+### Checking the three repairs by hand
+
 To reconstruct the defective state, copy this package to a temporary directory,
 then copy the contents of `baseline/` over the root of that copy. The overlay
 reproduces the three archived source changes. Both leaf modules round half up

@@ -1,0 +1,269 @@
+//! Run the fixed Cargo acceptance target and check the complete named result set.
+
+use super::{project, write_json};
+use anyhow::{Context, Result, ensure};
+use gdd::host::CodeSnapshot;
+use serde_json::json;
+use std::{collections::BTreeMap, env, path::Path, process::Command};
+use time::{OffsetDateTime, format_description::well_known::Rfc3339};
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(super) enum Stage {
+    Baseline,
+    Discount,
+    Tax,
+    Quote,
+    Final,
+}
+
+impl Stage {
+    pub(super) fn name(self) -> &'static str {
+        match self {
+            Self::Baseline => "baseline",
+            Self::Discount => "discount",
+            Self::Tax => "tax",
+            Self::Quote => "quote",
+            Self::Final => "final",
+        }
+    }
+
+    fn filter(self) -> Option<&'static str> {
+        match self {
+            Self::Discount => Some("discount::"),
+            Self::Tax => Some("tax::"),
+            Self::Quote => Some("quote::"),
+            Self::Baseline | Self::Final => None,
+        }
+    }
+
+    fn expected(self) -> BTreeMap<String, &'static str> {
+        let mut tests = BTreeMap::new();
+        for group in ["discount", "tax"] {
+            for name in [
+                "normal",
+                "floor_half",
+                "floor_fraction",
+                "boundaries",
+                "invalid",
+            ] {
+                tests.insert(format!("{group}::test_{name}"), "ok");
+            }
+        }
+        for name in [
+            "normal",
+            "floor_after_discount",
+            "tax_floor_without_discount",
+            "zero_and_full_discount",
+            "invalid",
+            "cli_normal",
+            "cli_floor",
+            "cli_invalid",
+        ] {
+            tests.insert(format!("quote::test_{name}"), "ok");
+        }
+        if self == Self::Baseline {
+            for name in [
+                "discount::test_floor_fraction",
+                "discount::test_floor_half",
+                "tax::test_floor_fraction",
+                "tax::test_floor_half",
+                "quote::test_cli_floor",
+                "quote::test_floor_after_discount",
+                "quote::test_tax_floor_without_discount",
+            ] {
+                tests.insert(name.into(), "FAILED");
+            }
+        } else if matches!(self, Self::Quote | Self::Final) {
+            tests.insert(
+                "quote::test_cli_large_integer_floor_composition".into(),
+                "ok",
+            );
+        }
+        if let Some(filter) = self.filter() {
+            tests.retain(|name, _| name.starts_with(filter));
+        }
+        tests
+    }
+}
+
+fn tool(program: &str, root: &Path) -> Command {
+    let mut command = Command::new(program);
+    command.current_dir(root).env_clear();
+    for key in [
+        "PATH",
+        "HOME",
+        "USERPROFILE",
+        "CARGO_HOME",
+        "RUSTUP_HOME",
+        "RUSTUP_TOOLCHAIN",
+        "SystemRoot",
+        "TEMP",
+        "TMPDIR",
+        "TMP",
+    ] {
+        if let Some(value) = env::var_os(key) {
+            command.env(key, value);
+        }
+    }
+    command
+        .env("CARGO_TERM_COLOR", "never")
+        .env("RUSTC", "rustc");
+    command
+}
+
+pub(super) fn versions(root: &Path) -> Result<BTreeMap<String, String>> {
+    let mut versions = BTreeMap::new();
+    for program in ["cargo", "rustc"] {
+        let result = tool(program, root)
+            .args(["--version", "--verbose"])
+            .output()
+            .with_context(|| format!("start {program} for toolchain identity"))?;
+        ensure!(
+            result.status.success(),
+            "{program} version failed: {}",
+            String::from_utf8_lossy(&result.stderr)
+        );
+        let version = String::from_utf8(result.stdout)?;
+        ensure!(
+            version.starts_with(&format!("{program} ")),
+            "missing {program} version"
+        );
+        versions.insert(program.to_owned(), version.trim_end().to_owned());
+    }
+    Ok(versions)
+}
+
+fn verify(stage: Stage, exit: Option<i32>, stdout: &str) -> Result<BTreeMap<String, &str>> {
+    let mut observed = BTreeMap::new();
+    for (name, outcome) in stdout
+        .lines()
+        .filter_map(|line| line.strip_prefix("test ")?.split_once(" ... "))
+    {
+        ensure!(
+            observed.insert(name.to_owned(), outcome).is_none(),
+            "duplicate test {name}"
+        );
+    }
+    let expected = stage.expected();
+    ensure!(
+        expected == observed,
+        "unexpected named Cargo results: expected {expected:?}, observed {observed:?}"
+    );
+    let failed = expected
+        .values()
+        .filter(|&&value| value == "FAILED")
+        .count();
+    let passed = expected.len() - failed;
+    let verdict = if failed == 0 { "ok" } else { "FAILED" };
+    let filtered = match stage {
+        Stage::Discount | Stage::Tax => 13,
+        Stage::Quote => 10,
+        _ => 0,
+    };
+    let summary = format!(
+        "test result: {verdict}. {passed} passed; {failed} failed; 0 ignored; 0 measured; {filtered} filtered out;"
+    );
+    ensure!(
+        stdout
+            .lines()
+            .filter(|line| line.starts_with("test result:"))
+            .count()
+            == 1
+            && stdout.lines().any(|line| line.starts_with(&summary)),
+        "missing completed Cargo test summary: {summary}"
+    );
+    ensure!(
+        exit == Some(if failed == 0 { 0 } else { 101 }),
+        "unexpected Cargo process exit {exit:?}"
+    );
+    Ok(observed)
+}
+
+pub(super) struct TestRun {
+    pub snapshot: CodeSnapshot,
+    pub test_exit: u8,
+    pub cargo_exit: i32,
+}
+
+pub(super) fn run(
+    root: &Path,
+    target: &Path,
+    stage: Stage,
+    versions: &BTreeMap<String, String>,
+) -> Result<TestRun> {
+    let before = project::snapshot(root)?;
+    let mut args = vec!["test", "--locked", "--offline", "--test", "acceptance"];
+    args.extend(stage.filter());
+    args.extend(["--", "--format=pretty", "--test-threads=1"]);
+    let started_at = OffsetDateTime::now_utc().format(&Rfc3339)?;
+    let result = tool("cargo", root)
+        .env("CARGO_TARGET_DIR", target)
+        .args(&args)
+        .output()
+        .context("start the bundled Cargo acceptance target")?;
+    let finished_at = OffsetDateTime::now_utc().format(&Rfc3339)?;
+    let after = project::snapshot(root)?;
+    ensure!(
+        before == after,
+        "Cargo execution changed the selected sources"
+    );
+    let stdout = String::from_utf8(result.stdout)?;
+    let stderr = String::from_utf8(result.stderr)?;
+    let tests = verify(stage, result.status.code(), &stdout)
+        .with_context(|| format!("{} Cargo check failed\n{stdout}\n{stderr}", stage.name()))?;
+    let cargo_exit = result
+        .status
+        .code()
+        .context("Cargo terminated without an exit code")?;
+    let test_exit = u8::from(cargo_exit != 0);
+    let command: Vec<_> = std::iter::once("cargo").chain(args).collect();
+    let receipt = json!({
+        "format": "quote-demo-cargo-run/0.1", "executed": true,
+        "argv": command, "cwd": ".", "started_at": started_at, "finished_at": finished_at,
+        "result": if test_exit == 0 { "PASS" } else { "FAIL" },
+        "exit_code": cargo_exit, "test_exit": test_exit, "tests": tests,
+        "stdout": stdout, "stderr": stderr, "runner": versions,
+        "snapshot": before, "code_revision": before.revision, "code_revision_after": after.revision,
+    });
+    write_json(
+        &root.join(format!("evidence/{}.run.json", stage.name())),
+        &receipt,
+    )?;
+    Ok(TestRun {
+        snapshot: after,
+        test_exit,
+        cargo_exit,
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Stage, verify};
+
+    #[test]
+    fn cargo_failure_requires_the_exact_completed_negative_control() {
+        let mut output = String::new();
+        for (name, outcome) in Stage::Baseline.expected() {
+            output.push_str(&format!("test {name} ... {outcome}\n"));
+        }
+        output.push_str("test result: FAILED. 11 passed; 7 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n");
+        assert!(verify(Stage::Baseline, Some(101), &output).is_ok());
+        assert!(verify(Stage::Baseline, Some(101), "error: compilation failed").is_err());
+        assert!(verify(Stage::Baseline, Some(0), &output).is_err());
+        assert!(
+            verify(
+                Stage::Baseline,
+                Some(101),
+                &output.replace("11 passed", "10 passed")
+            )
+            .is_err()
+        );
+        let unrelated = output
+            .replace(
+                "quote::test_cli_floor ... FAILED",
+                "quote::test_cli_floor ... ok",
+            )
+            .replace("quote::test_normal ... ok", "quote::test_normal ... FAILED");
+        assert!(verify(Stage::Baseline, Some(101), &unrelated).is_err());
+    }
+}
