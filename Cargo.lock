@@ -1330,6 +1330,7 @@ version = "0.1.0"
 dependencies = [
  "eframe",
  "gdd",
+ "graphlay",
  "serde_json",
  "tempfile",
 ]
@@ -1482,6 +1483,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2c4ee00b289aba7a9e5306d57c2d05499b2e5dc427f84ac708bd2c090212cf3e"
 dependencies = [
  "gl_generator",
+]
+
+[[package]]
+name = "graphlay"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "46b97373f53dfbb42a82b9d2a42d32dfc2c4ae3d13f589a61b88e6338381fc77"
+dependencies = [
+ "libm",
+ "serde",
 ]
 
 [[package]]

@@ -14,13 +14,23 @@ Use the graph or the node list to select a node. Search by label, ID, or kind
 with Ctrl+F (Command+F on macOS). Use Tab and Enter to select a search result
 or follow a connection. Try searching for `entity.note` and following its
 `edge.note.owner` connection to `component.notes`. The inspector shows the
-exact node fields and each incident edge, including parallel edges and self-loops.
+node label, ID, kind, description and each incident edge. Selecting a node
+highlights its incoming and outgoing links. Selecting a search result or
+following a connection scrolls the graph to that node.
+
+The viewer computes a left-to-right layered layout once when it opens a model,
+using the pure Rust graphlay library. Arrows follow the routed paths into
+their declared target nodes, including links that run back across a cycle.
+Parallel links have separate routes, and repeated self-loops nest outside the
+node box. Dense graphs can still have crossings. Scroll in both directions
+to explore them, or use **Graph zoom** to change the canvas scale from 50% to
+200%. The list and inspector retain their text size.
 
 Open a GDD 0.2 or 0.3 JSON or YAML manifest. The preview uses the Rust CLI's
 bundle loader to combine the manifest and its declared local fragments.
 A load problem, such as a missing asset or duplicate ID, stops the preview
-with a source diagnostic. The preview leaves the bundle untouched, works
-offline, and displays the graph. Its basic layout can overlap edges.
+with a source diagnostic. The preview runs offline and leaves the bundle
+untouched. A layout error leaves the node list and inspector available.
 Validation results, operational record status, and perspectives are outside
 the preview.
 

@@ -4,7 +4,9 @@ use crate::{canvas::Layout, model::Graph};
 
 pub struct Viewer {
     graph: Graph,
-    layout: Layout,
+    layout: Result<Layout, String>,
+    zoom_percent: u16,
+    reveal_selected: bool,
     filename: String,
     search: String,
     selected: Option<usize>,
@@ -16,6 +18,8 @@ impl Viewer {
         Self {
             graph,
             layout,
+            zoom_percent: 100,
+            reveal_selected: false,
             filename,
             search: String::new(),
             selected: None,
@@ -31,6 +35,25 @@ impl Viewer {
                 ui.horizontal_wrapped(|ui| {
                     ui.heading(RichText::new(&self.graph.title).size(24.0).strong());
                     ui.label(RichText::new(&self.filename).weak());
+                    if self.layout.is_ok() && !self.graph.nodes.is_empty() {
+                        egui::ComboBox::from_label("Graph zoom")
+                            .selected_text(format!("{}%", self.zoom_percent))
+                            .width(70.0)
+                            .show_ui(ui, |ui| {
+                                for percent in [50, 75, 100, 125, 150, 200] {
+                                    if ui
+                                        .selectable_value(
+                                            &mut self.zoom_percent,
+                                            percent,
+                                            format!("{percent}%"),
+                                        )
+                                        .changed()
+                                    {
+                                        self.reveal_selected = true;
+                                    }
+                                }
+                            });
+                    }
                 });
             });
 
@@ -49,7 +72,23 @@ impl Viewer {
         egui::CentralPanel::default()
             .frame(egui::Frame::NONE.fill(Color32::from_rgb(244, 247, 251)))
             .show(ui, |ui| {
-                if let Some(index) = self.layout.show(ui, &self.graph, self.selected) {
+                let layout = match &self.layout {
+                    Ok(layout) => layout,
+                    Err(error) => {
+                        ui.centered_and_justified(|ui| {
+                            ui.label(format!("Cannot lay out this graph: {error}"))
+                        });
+                        return;
+                    }
+                };
+                let zoom = f32::from(self.zoom_percent) / 100.0;
+                if let Some(index) = layout.show(
+                    ui,
+                    &self.graph,
+                    self.selected,
+                    zoom,
+                    std::mem::take(&mut self.reveal_selected),
+                ) {
                     self.selected = Some(index);
                     ui.ctx().request_repaint();
                 }
@@ -93,6 +132,7 @@ impl Viewer {
                     );
                     if row.on_hover_text(&node.id).clicked() || (!found && choose_first) {
                         self.selected = Some(index);
+                        self.reveal_selected = true;
                     }
                     found = true;
                 }
@@ -151,6 +191,7 @@ impl Viewer {
                                 .clicked()
                             {
                                 self.selected = Some(neighbor);
+                                self.reveal_selected = true;
                                 ui.ctx().request_repaint();
                             }
                         });

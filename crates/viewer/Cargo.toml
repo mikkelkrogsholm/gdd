@@ -10,6 +10,7 @@ publish = false
 [dependencies]
 eframe = { version = "0.37", default-features = false, features = ["accesskit", "default_fonts", "glow", "wayland", "x11"] }
 gdd = { path = "../.." }
+graphlay = { version = "0.3.1", default-features = false }
 
 [dev-dependencies]
 serde_json = "1.0"
