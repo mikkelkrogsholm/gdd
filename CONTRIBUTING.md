@@ -71,6 +71,9 @@ The suite and its precision expectation are documented in
 
 Run the 16 [native visualization artifact cases](conformance/README.md#visualization)
 with `cargo run --offline --locked -p gdd-conformance -- visualization --output native-view-run.json`.
+
+Run the 28 [native code observation cases](conformance/README.md#code-observation)
+with `cargo run --offline --locked -p gdd-conformance -- code --output native-code-run.json`.
 Use a new file path for each receipt.
 
 Verification runs locally; GitHub Actions CI is intentionally absent. For an

@@ -1,3 +1,4 @@
+mod code;
 mod graphify;
 mod receipt;
 mod standard;
@@ -17,6 +18,11 @@ enum Command {
         #[arg(long, value_name = "PATH")]
         output: Option<PathBuf>,
     },
+    /// Execute the named static code observation cases.
+    Code {
+        #[arg(long, value_name = "NEW_FILE")]
+        output: Option<PathBuf>,
+    },
     /// Run the Graphify adapter cases and optionally save the JSON receipt.
     Graphify {
         #[arg(long, value_name = "PATH")]
@@ -32,6 +38,7 @@ enum Command {
 fn main() -> Result<ExitCode> {
     let directory = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../conformance");
     match Command::parse() {
+        Command::Code { output } => code::command(&directory, output),
         Command::Standard { output } => standard::command(&directory, output),
         Command::Graphify { output } => graphify::command(&directory, output),
         Command::Visualization { output } => visualization::command(&directory, output),

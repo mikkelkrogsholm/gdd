@@ -92,6 +92,33 @@ Replay the historical `gdd-viewer-html/0.1` cases with
 exercises offline browser interactions. See [VIEWER.md](../VIEWER.md) for the
 artifact and interaction verification scopes.
 
+## Code observation
+
+Run the 28 named code observation cases (50 parameter instances) locally.
+
+```sh
+cargo run --offline --locked -p gdd-conformance -- code --output native-code-run.json
+```
+
+The Rust runner reads [code.cases.json](code.cases.json) and exercises each
+behavior in process. It creates a private source tree, model and mapping records
+for each filesystem control. The concert case copies the example's Python files
+and checks the original tree after repairing and removing files in the copy.
+The drift case changes a file between the observer's two inventory scans.
+The schema case validates each verdict against the code observation schema.
+
+The JSON receipt identifies the native producer in `tool` and `runner`. Its
+`runtime_target` is a synthetic CPython 3.11 environment for these cases,
+with the four frozen names used by the finder controls. Each case retains its
+manifest ID and assertion and records its verdict and number of attempted
+instances. Failed rows include parameter-specific errors. A failed expectation
+or invalid manifest produces a nonzero exit. Omit `--output` for JSON on
+standard output. With `--output`, the command creates a new file and prints
+the matched case count.
+
+To obtain a Python receipt with pytest exit status and captured output, run
+`uv run python conformance/run_code.py --output python-code-run.json`.
+
 ## GDD 0.3 boundaries and design principles
 
 [design.cases.json](design.cases.json) names the new boundary, contract, community,

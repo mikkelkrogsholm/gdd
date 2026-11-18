@@ -93,6 +93,25 @@ fn shortest_path<'a>(
 /// Capture a model and selected source tree, then assess every requested rule.
 /// A second inventory detects changes during this observation.
 pub fn check_code(path: &Path, options: CodeCheckOptions<'_>) -> io::Result<Value> {
+    observe(path, options, || Ok(()))
+}
+
+/// Exercise concurrent source changes deterministically in the conformance suite.
+#[cfg(feature = "conformance")]
+#[doc(hidden)]
+pub fn check_code_with_capture_hook(
+    path: &Path,
+    options: CodeCheckOptions<'_>,
+    after_imports: impl FnOnce() -> io::Result<()>,
+) -> io::Result<Value> {
+    observe(path, options, after_imports)
+}
+
+fn observe(
+    path: &Path,
+    options: CodeCheckOptions<'_>,
+    after_imports: impl FnOnce() -> io::Result<()>,
+) -> io::Result<Value> {
     let CodeCheckOptions {
         root,
         implementation,
@@ -211,11 +230,11 @@ pub fn check_code(path: &Path, options: CodeCheckOptions<'_>) -> io::Result<Valu
     assess_sources(
         report,
         &model,
-        implementation,
+        &options,
         &root,
         &exclusions,
-        runtime,
         &constraints,
+        after_imports,
     )
 }
 
@@ -248,12 +267,14 @@ fn admit_records(captured: &mut bundle::Bundle, path: &Path) -> Result<(), Strin
 fn assess_sources(
     mut report: Value,
     model: &Model<'_>,
-    implementation: &str,
+    options: &CodeCheckOptions<'_>,
     root: &Path,
     exclusions: &[String],
-    runtime: &PythonRuntime,
     constraints: &[Value],
+    after_imports: impl FnOnce() -> io::Result<()>,
 ) -> io::Result<Value> {
+    let implementation = options.implementation;
+    let runtime = options.runtime;
     let inventory = inventory::scan(root, exclusions);
     let hashes: BTreeMap<_, _> = inventory
         .sources
@@ -312,6 +333,7 @@ fn assess_sources(
         runtime,
         &mut diagnostics,
     );
+    after_imports()?;
     let drift = inventory != inventory::scan(root, exclusions);
     if drift {
         diagnostics.push(diagnostic(
