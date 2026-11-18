@@ -527,24 +527,27 @@ pub fn load_with_records(model: &Path, secondary: &Path) -> Bundle {
 
 pub(crate) fn capture(model: &Path, secondary: Option<&Path>, scope: Option<&[String]>) -> Bundle {
     let mut bundle = load_primary(model, scope, secondary.is_some());
-    if let Some(path) = secondary {
-        match resolve_local(path) {
-            Ok(resolved) if !bundle.declared_record_paths.contains(&resolved) => {
-                let other = load_resolved(resolved, None, true, Some(&bundle));
-                merge_records(&mut bundle, other);
-            }
-            Ok(_) => {}
-            Err(mut issue) => {
-                issue.message = format!(
-                    "Secondary record input cannot be resolved: {}",
-                    issue.message
-                )
-                .into();
-                bundle.diagnostics.push(issue);
-            }
-        }
+    if let Some(path) = secondary
+        && let Err(mut issue) = add_record_input(&mut bundle, path)
+    {
+        issue.message = format!(
+            "Secondary record input cannot be resolved: {}",
+            issue.message
+        )
+        .into();
+        bundle.diagnostics.push(issue);
     }
     bundle
+}
+
+/// Append an explicitly selected ledger, reusing any already captured declaration.
+pub(crate) fn add_record_input(bundle: &mut Bundle, path: &Path) -> Result<(), Diagnostic> {
+    let resolved = resolve_local(path)?;
+    if !bundle.declared_record_paths.contains(&resolved) {
+        let other = load_resolved(resolved, None, true, Some(bundle));
+        merge_records(bundle, other);
+    }
+    Ok(())
 }
 
 fn merge_records(primary: &mut Bundle, mut secondary: Bundle) {

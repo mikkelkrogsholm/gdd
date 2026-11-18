@@ -7,7 +7,8 @@ mod model;
 pub use model::canonical::digest as canonical_digest;
 pub use model::workflow::run as workflow_run;
 pub use model::{
-    boundaries, context, design_review, host, impact, model_diff, perspectives, workflow,
+    boundaries, code_check, context, design_review, host, impact, model_diff, perspectives,
+    workflow,
 };
 pub mod projection;
 pub mod python_imports;

@@ -39,6 +39,48 @@ Static imports in functions, conditional branches and exception handlers count
 as source dependencies even when that branch might not execute. This profile
 checks source architecture, not runtime reachability.
 
+## Native Rust command
+
+The Rust command takes the same model, records, scope, exclusion and output
+options. Supply a target descriptor with `--python-runtime` to select the
+CPython grammar and the builtin/frozen module names that precede project source
+lookup. The supported target grammars are 3.11, 3.12, 3.13 and 3.14.
+
+```sh
+cargo run --locked -p gdd -- check-code path/to/gdd.yaml --root path/to/source \
+  --implementation implementation.main --profile python-imports/0.1 \
+  --python-runtime target-runtime.json
+```
+
+The descriptor is a UTF-8 JSON object. Its required fields are `version`
+(the full CPython major.minor.patch string), `impl` (`cpython`), `platform`
+(the target platform string), and the string arrays `builtin_names` and
+`frozen_names`. A target owner can capture this once on the target and transfer
+it to the machine running the Rust command. For example, use the target's Python
+executable in a directory for new artifacts.
+
+```sh
+python3 -I -S - <<'PY'
+import _imp, json, platform, sys
+descriptor = {
+    "version": platform.python_version(),
+    "impl": sys.implementation.name,
+    "platform": sys.platform,
+    "builtin_names": sorted(sys.builtin_module_names),
+    "frozen_names": sorted(n for n in _imp._frozen_module_names() if _imp.is_frozen(n)),
+}
+with open("target-runtime.json", "x", encoding="utf-8") as output:
+    json.dump(descriptor, output, indent=2)
+    output.write("\n")
+PY
+```
+
+The native checker reads the descriptor as data. The report's `tool` names
+the Rust producer, `runtime` names the supplied target, and the
+`CODE_RUNTIME_TARGET` advisory identifies its platform, canonical descriptor
+digest and Ruff parser version. `--output` creates a new file exclusively.
+The exit status is 0 for PASS, 1 for FAIL, and 2 for UNKNOWN.
+
 ## Bindings and source roots
 
 The checker reads `kind: binding`, `role: code` records for the requested

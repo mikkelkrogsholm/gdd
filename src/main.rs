@@ -131,6 +131,28 @@ enum GraphifyCommand {
 
 #[derive(Subcommand)]
 enum Command {
+    /// Check explicit architecture constraints against static Python imports.
+    #[command(args_override_self = true)]
+    CheckCode {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        root: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        implementation: String,
+        #[arg(long, allow_negative_numbers = true)]
+        profile: String,
+        #[arg(long, allow_negative_numbers = true)]
+        python_runtime: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        records: Option<PathBuf>,
+        #[arg(long, allow_negative_numbers = true)]
+        scope: Vec<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        exclude: Vec<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
+    },
     /// Import, verify, recover or propose from Graphify observations.
     Graphify {
         #[command(subcommand)]
@@ -478,6 +500,40 @@ fn run() -> io::Result<ExitCode> {
             write_json(&mut io::stdout().lock(), &receipt)?;
         }
         Command::Workflow { command } => return workflow_command(command),
+        Command::CheckCode {
+            path,
+            root,
+            implementation,
+            profile,
+            python_runtime,
+            records,
+            scope,
+            exclude,
+            output,
+        } => {
+            use gdd::code_check::{CodeCheckOptions, PythonRuntime, check_code};
+            let runtime = PythonRuntime::from_json(&std::fs::read(cli_path(python_runtime))?)?;
+            let records = records.map(cli_path);
+            let report = check_code(
+                &cli_path(path),
+                CodeCheckOptions {
+                    root: &cli_path(root),
+                    implementation: &implementation,
+                    profile: &profile,
+                    records: records.as_deref(),
+                    scope: &scope,
+                    exclude: &exclude,
+                    runtime: &runtime,
+                },
+            )?;
+            write_output(output.map(cli_path).as_deref(), &report)?;
+            let code = match report["result"].as_str() {
+                Some("PASS") => 0,
+                Some("FAIL") => 1,
+                _ => 2,
+            };
+            return Ok(ExitCode::from(code));
+        }
         Command::Graphify { command } => return graphify_command(command),
         Command::Status {
             path,

@@ -634,7 +634,7 @@ YAML nesting to 256 containers.
 | `project_status` | Native project assessments with an optional workflow journal, JSON and text output, and captured-bundle entry points. |
 | `analyze_impact`, `impact_text` | Native declared consumers, supporting context, applicable records, JSON and text output, with path-based and captured-bundle entry points. |
 | `diff_models`, `diff_text` | Native comparison of paths or captured models with scoped diagnostics, field changes, relocations and structural advisories. |
-| `check_code` | The [Rust `gdd::python_imports` API](../src/python_imports/mod.rs) observes imports and binding edges from in-memory Python sources. The full `check-code` command, filesystem inventory and architecture verdicts are pending in Rust. |
+| `check_code` | Native [`gdd::code_check::check_code`](../src/model/code_check/mod.rs) and [`gdd check-code`](python-imports.md#native-rust-command) assess explicit rules against captured Python sources using a caller-supplied CPython target. The [in-memory observer](../src/python_imports/mod.rs) is also available. |
 | `snapshot_code`, `verification_records`, `append_records` | Native library operations in `gdd::host`. Select explicit code files, attest a saved current PASS/FAIL receipt and append new immutable IDs to a records document. See the [host guide](../HOST.md#append-verified-records-and-supply-trust) for the Rust API example. |
 | `execute_check` | Python trusted-host process execution and receipt creation. The Rust authoring API consumes the same `gdd-host-check/0.1` format. |
 
