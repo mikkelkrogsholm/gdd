@@ -52,6 +52,20 @@ Select an **Advisory gaps** entry to reveal its node in All graph or inspect
 an out-of-scope node. Journey steps show the user action and system response.
 Actors show their goal.
 
+Select a GDD 0.3 component to read its responsibility. Expand **Boundary
+rationale and exclusions** to see its design rationale and excluded work.
+Follow a public action and expand **Action contract** to read its declared
+contract, including postconditions. GDD 0.2 components link their declared
+interfaces. Missing declarations and explicitly empty lists are shown separately.
+
+Select a GDD 0.3 community to inspect its **Derived public boundary** and follow
+public action links by provider. Expand **Membership basis, calls and omissions**
+to see which members account for each participating component, unresolved
+members, inbound, outbound, internal and unresolved calls, and calls or
+components omitted by the saved scope. Each community classifies calls
+independently. Membership grants no permissions. The native viewer uses the
+boundary saved in a scoped file even when filters or folding change.
+
 The native artifact uses format `gdd-native-view/0.1`, generator name
 `gdd-viewer`, generator version `0.1.0` and profile `gdd-viewer-native/0.1`.
 Use the recommended `.gddview` suffix. The viewer also recognizes the format

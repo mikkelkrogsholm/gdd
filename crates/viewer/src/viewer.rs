@@ -3,9 +3,14 @@ use std::thread;
 
 use eframe::egui::{self, Button, Color32, Key, Modifiers, RichText, Ui};
 
+use serde_json::Value as Json;
+
 use crate::{
     canvas::{Layout, Scene},
-    model::{EdgeBundle, Filters, FoldProjection, Graph, HumanConcept, Lens, Selection, Visible},
+    model::{
+        EdgeBundle, Filters, FoldProjection, Graph, HumanConcept, Lens, Node, NodeInspection,
+        Selection, Visible,
+    },
 };
 
 enum LayoutState {
@@ -421,6 +426,7 @@ impl Viewer {
                 } else if self.visible.nodes.binary_search(&index).is_err() {
                     ui.label("Hidden by current filters");
                 }
+                self.show_boundary_details(ui, &graph, node);
                 self.show_folded_node(ui, index);
                 if let Ok(projection) = &graph.perspectives {
                     if projection.has_product_extension
@@ -509,6 +515,137 @@ impl Viewer {
                     });
                 }
             });
+    }
+
+    fn show_boundary_details(&mut self, ui: &mut Ui, graph: &Graph, node: &Node) {
+        let boundaries = graph.boundaries();
+        match &node.inspection {
+            NodeInspection::Component {
+                boundary,
+                interfaces,
+            } => {
+                if boundary.is_some() || boundaries.is_some() {
+                    let boundary = boundary.as_ref().unwrap_or(&Json::Null);
+                    ui.strong("Component responsibility");
+                    ui.label(
+                        boundary["responsibility"]
+                            .as_str()
+                            .unwrap_or("Not declared"),
+                    );
+                    ui.collapsing("Boundary rationale and exclusions", |ui| {
+                        ui.strong("Rationale");
+                        ui.label(boundary["rationale"].as_str().unwrap_or("Not declared"));
+                        ui.strong("Exclusions");
+                        match boundary["excludes"].as_array() {
+                            None => {
+                                ui.label("Not declared");
+                            }
+                            Some(items) if items.is_empty() => {
+                                ui.label("None");
+                            }
+                            Some(items) => {
+                                for item in items.iter().filter_map(Json::as_str) {
+                                    ui.label(item);
+                                }
+                            }
+                        }
+                    });
+                }
+                ui.strong(if boundaries.is_some() {
+                    "Authoritative public action contracts"
+                } else {
+                    "Declared interfaces"
+                });
+                match interfaces.as_deref() {
+                    None => {
+                        ui.label("Not declared");
+                    }
+                    Some([]) => {
+                        ui.label("None");
+                    }
+                    Some(actions) => {
+                        for id in actions {
+                            self.action_link(ui, id);
+                        }
+                    }
+                }
+            }
+            NodeInspection::Action { contract } => {
+                ui.collapsing("Action contract", |ui| {
+                    if let Some(text) = contract {
+                        ui.monospace(text);
+                    } else {
+                        ui.label("Not declared");
+                    }
+                });
+            }
+            NodeInspection::Other if node.kind == "community" => {
+                if let Some(boundaries) = boundaries
+                    && let Some(boundary) = boundaries["communities"].get(&node.id)
+                {
+                    self.show_community_boundary(ui, boundary, &boundaries["components"]);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    fn action_link(&mut self, ui: &mut Ui, action: &str) {
+        if let Some(&index) = self.graph.actions.get(action) {
+            self.node_link(ui, index);
+        } else {
+            ui.label(format!("{action} (action unavailable)"));
+        }
+    }
+
+    fn show_community_boundary(&mut self, ui: &mut Ui, boundary: &Json, components: &Json) {
+        ui.strong("Derived public boundary");
+        ui.label("Component ownership determines participation. Membership grants no permissions.");
+        let basis = boundary["membership_basis"].as_object().unwrap();
+        let contracts = boundary["public_contracts"].as_array().unwrap();
+        ui.label(format!(
+            "Participating components: {} · Public contracts: {}",
+            basis.len(),
+            contracts.len()
+        ));
+        for contract in contracts {
+            ui.horizontal_wrapped(|ui| {
+                ui.label(contract["provider"].as_str().unwrap());
+                self.action_link(ui, contract["action"].as_str().unwrap());
+            });
+        }
+        ui.collapsing("Membership basis, calls and omissions", |ui| {
+            ui.strong("Membership basis");
+            if basis.is_empty() {
+                ui.label("No participating components in this scope.");
+            }
+            for (component, members) in basis {
+                ui.label(component);
+                ui.indent(component, |ui| {
+                    for member in members.as_array().unwrap() {
+                        ui.label(member.as_str().unwrap());
+                    }
+                    if components[component]["interfaces_known"] == false {
+                        ui.weak("Interfaces not declared");
+                    }
+                });
+            }
+            for (label, ids) in [
+                ("Inbound calls", &boundary["calls"]["inbound"]),
+                ("Outbound calls", &boundary["calls"]["outbound"]),
+                ("Internal calls", &boundary["calls"]["internal"]),
+                ("Unresolved calls", &boundary["calls"]["unresolved"]),
+                ("Unresolved members", &boundary["unresolved_members"]),
+                ("Omitted calls", &boundary["omitted_calls"]),
+                ("Omitted components", &boundary["omitted_components"]),
+            ] {
+                let ids = ids.as_array().unwrap();
+                ui.strong(format!("{label} ({})", ids.len()));
+                for id in ids {
+                    ui.label(id.as_str().unwrap());
+                }
+            }
+        });
     }
 
     fn follow_node(&mut self, node: usize) {

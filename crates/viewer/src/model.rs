@@ -1,7 +1,8 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
-use gdd::bundle::{self, Bundle, Location};
+use gdd::boundaries::boundary_view;
+use gdd::bundle::{self, Bundle, DocumentKind, Location};
 use gdd::input::Value;
 use gdd::perspectives::{PerspectiveBundle, perspective_data};
 use serde_json::Value as Json;
@@ -15,6 +16,8 @@ pub struct Graph {
     pub shown_edges: usize,
     pub choices: FilterChoices,
     pub artifact: Option<Json>,
+    pub source_boundaries: Option<Json>,
+    pub actions: BTreeMap<String, usize>,
     pub perspectives: Result<Perspectives, String>,
 }
 
@@ -264,7 +267,19 @@ pub struct Node {
     pub kind: String,
     pub description: String,
     pub human: Option<HumanConcept>,
+    pub inspection: NodeInspection,
     pub search_text: String,
+}
+
+pub enum NodeInspection {
+    Component {
+        boundary: Option<Json>,
+        interfaces: Option<Vec<String>>,
+    },
+    Action {
+        contract: Option<String>,
+    },
+    Other,
 }
 
 pub enum HumanConcept {
@@ -329,10 +344,12 @@ impl Graph {
                     .map_err(|error| record_error(record.location, &error))
             })
             .collect::<Result<_, _>>()?;
-        let projection = PerspectiveBundle::admit(bundle)
-            .and_then(|capture| perspective_data(&capture))
-            .map_err(|e| e.to_string());
-        Self::project(
+        let capture = PerspectiveBundle::admit(bundle).map_err(|e| e.to_string());
+        let projection = capture
+            .as_ref()
+            .map_err(Clone::clone)
+            .and_then(|capture| perspective_data(capture).map_err(|e| e.to_string()));
+        let mut graph = Self::project(
             title,
             nodes,
             None,
@@ -346,7 +363,21 @@ impl Graph {
                     })
                     .collect()
             },
-        )
+        )?;
+        if let Ok(capture) = capture
+            && manifest.kind == DocumentKind::Manifest03
+        {
+            graph.source_boundaries =
+                Some(boundary_view(capture.bundle(), None).map_err(|e| e.to_string())?);
+        }
+        Ok(graph)
+    }
+
+    pub fn boundaries(&self) -> Option<&Json> {
+        self.artifact
+            .as_ref()
+            .and_then(|data| data.get("boundaries"))
+            .or(self.source_boundaries.as_ref())
     }
 
     fn from_artifact(bytes: &[u8]) -> Result<Self, String> {
@@ -413,6 +444,12 @@ impl Graph {
         };
         let perspectives = projection.and_then(|data| Perspectives::new(data, &indices, &edges));
         Ok(Self {
+            actions: nodes
+                .iter()
+                .enumerate()
+                .filter(|(_, node)| node.kind == "action")
+                .map(|(i, node)| (node.id.clone(), i))
+                .collect(),
             choices: FilterChoices::new(&nodes, &edges),
             perspectives,
             title,
@@ -421,6 +458,7 @@ impl Graph {
             shown_nodes,
             shown_edges,
             artifact: None,
+            source_boundaries: None,
         })
     }
 
@@ -509,7 +547,38 @@ fn project_node(id: &str, value: &Value) -> Result<Node, String> {
         }),
         _ => None,
     };
+    let inspection = match kind {
+        "component" => NodeInspection::Component {
+            boundary: node
+                .get("boundary")
+                .map(gdd::validation::to_json)
+                .transpose()
+                .map_err(|e| e.to_string())?,
+            interfaces: match node.get("interfaces") {
+                Some(Value::Array(ids)) => ids
+                    .iter()
+                    .map(|id| match id {
+                        Value::String(id) => Some(id.clone()),
+                        _ => None,
+                    })
+                    .collect(),
+                _ => None,
+            },
+        },
+        "action" => NodeInspection::Action {
+            contract: node
+                .get("contract")
+                .map(|value| {
+                    gdd::validation::to_json(value)
+                        .and_then(|contract| serde_json::to_string_pretty(&contract))
+                })
+                .transpose()
+                .map_err(|e| e.to_string())?,
+        },
+        _ => NodeInspection::Other,
+    };
     Ok(Node {
+        inspection,
         search_text: format!("{}\n{}", id.to_lowercase(), search_text(value)?),
         human,
         id: id.to_owned(),
@@ -575,7 +644,7 @@ mod tests {
     use gdd::bundle;
     use serde_json::{Value, json};
 
-    use super::{Filters, Graph, HumanConcept, Lens};
+    use super::{Filters, Graph, HumanConcept, Lens, NodeInspection};
     use std::collections::BTreeSet;
 
     fn search(lens: Lens, query: &str) -> Filters {
@@ -1000,6 +1069,110 @@ mod tests {
     }
 
     #[test]
+    fn boundary_inspection_survives_relocation_and_uses_the_saved_scope() {
+        let inputs = tempfile::tempdir().unwrap();
+        let model = inputs.path().join("concert.gdd.yaml");
+        fs::copy(example("concert-0.3.gdd.yaml"), &model).unwrap();
+        let records = "concert-0.3.records.yaml";
+        fs::copy(example(records), inputs.path().join(records)).unwrap();
+        let output = tempfile::tempdir().unwrap();
+        let full = output.path().join("full.gddview");
+        let scoped = output.path().join("scoped.gddview");
+        let community = "community.reservation_feature";
+        let provider = "component.reservations";
+        let action = "action.reserve";
+        let call = "edge.screen.reserve.calls";
+        gdd::view::render_view(&model, &full, &[]).unwrap();
+        gdd::view::render_view(&model, &scoped, &[community.into()]).unwrap();
+        let capture = bundle::load_model_only(&model);
+        inputs.close().unwrap();
+
+        for graph in [
+            Graph::from_bundle(&capture).unwrap(),
+            Graph::load(&full).unwrap(),
+        ] {
+            let component = graph.nodes.iter().find(|n| n.id == provider).unwrap();
+            let NodeInspection::Component {
+                boundary: Some(boundary),
+                interfaces: Some(actions),
+            } = &component.inspection
+            else {
+                panic!("missing component boundary");
+            };
+            assert!(
+                boundary["responsibility"]
+                    .as_str()
+                    .unwrap()
+                    .contains("reservation rules")
+            );
+            assert!(
+                boundary["rationale"]
+                    .as_str()
+                    .unwrap()
+                    .contains("atomicity")
+            );
+            assert!(boundary["excludes"].as_array().unwrap().len() == 2);
+            assert!(actions.iter().any(|id| id == action));
+            let target = &graph.nodes[graph.actions[action]];
+            assert_eq!(target.id, action);
+            assert!(
+                matches!(&target.inspection, NodeInspection::Action {contract: Some(text)} if text.contains("postconditions"))
+            );
+
+            let communities = &graph.boundaries().unwrap()["communities"];
+            let feature = &communities[community];
+            assert_eq!(feature["membership_basis"][provider], json!([action]));
+            assert!(
+                feature["public_contracts"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|c| c["provider"] == provider && c["action"] == action)
+            );
+            assert!(ids(&feature["calls"]["internal"]).contains(call));
+            assert!(ids(&communities["community.backend"]["calls"]["inbound"]).contains(call));
+        }
+
+        let graph = Graph::load(&scoped).unwrap();
+        let feature = &graph.boundaries().unwrap()["communities"][community];
+        assert_eq!(feature["membership_basis"], json!({}));
+        assert_eq!(feature["public_contracts"], json!([]));
+        assert!(ids(&feature["omitted_calls"]).contains(call));
+        assert!(ids(&feature["omitted_components"]).contains(provider));
+        assert!(graph.actions[action] >= graph.shown_nodes);
+    }
+
+    #[test]
+    fn boundary_inspector_distinguishes_unknown_and_empty_declarations() {
+        let graph = load_fixture(&json!({
+            "format": "gdd/0.3",
+            "project": {"id": "sketch", "title": "Sketch", "goal": "Explore boundaries."},
+            "nodes": {
+                "a": {"kind": "component", "description": "Partial", "boundary": {"responsibility": "A"}},
+                "b": {"kind": "component", "description": "Declared", "interfaces": [], "boundary": {"excludes": []}},
+                "group": {"kind": "community", "description": "Shared"},
+                "orphan": {"kind": "action", "description": "Owner unknown"}
+            },
+            "edges": [
+                {"id": "a.group", "from": "a", "relation": "member_of", "to": "group"},
+                {"id": "orphan.group", "from": "orphan", "relation": "member_of", "to": "group"},
+                {"id": "unresolved.call", "from": "a", "relation": "calls", "to": "orphan"}
+            ]
+        }).to_string()).unwrap();
+        let boundaries = graph.boundaries().unwrap();
+        let group = &boundaries["communities"]["group"];
+        assert_eq!(group["unresolved_members"], json!(["orphan"]));
+        assert_eq!(group["calls"]["unresolved"], json!(["unresolved.call"]));
+        assert_eq!(boundaries["components"]["a"]["interfaces_known"], false);
+        assert!(
+            matches!(&graph.nodes[0].inspection, NodeInspection::Component {boundary: Some(b), interfaces: None} if b.get("excludes").is_none())
+        );
+        assert!(
+            matches!(&graph.nodes[1].inspection, NodeInspection::Component {boundary: Some(b), interfaces: Some(ids)} if b["excludes"] == json!([]) && ids.is_empty())
+        );
+    }
+
+    #[test]
     fn full_record_search_and_combined_filters_agree_for_models_and_saved_views() {
         let model = json!({
             "format": "gdd/0.2",
@@ -1087,6 +1260,15 @@ mod tests {
     #[test]
     fn legacy_and_unadmitted_models_have_distinct_empty_perspectives() {
         let legacy = Graph::load(&example("concert.gdd.yaml")).unwrap();
+        assert!(legacy.boundaries().is_none());
+        let api = legacy
+            .nodes
+            .iter()
+            .find(|n| n.id == "component.api")
+            .unwrap();
+        assert!(
+            matches!(&api.inspection, NodeInspection::Component {boundary: None, interfaces: Some(ids)} if ids.iter().any(|id| id == "action.reserve"))
+        );
         assert!(!legacy.perspectives.as_ref().unwrap().has_product_extension);
         assert!(legacy.visible(&search(Lens::Journey, "")).nodes.is_empty());
         assert!(
@@ -1098,6 +1280,7 @@ mod tests {
         assert!(!legacy.visible(&search(Lens::Data, "")).edges.is_empty());
         let graph = load_fixture(&document("gdd/0.3").to_string()).unwrap();
         assert!(graph.perspectives.is_err());
+        assert!(graph.boundaries().is_none());
         assert_eq!(graph.visible(&search(Lens::All, "")).edges.len(), 4);
         assert!(
             graph

@@ -379,6 +379,8 @@ mod tests {
             shown_nodes: ids.len(),
             shown_edges: pairs.len(),
             artifact: None,
+            source_boundaries: None,
+            actions: Default::default(),
             choices: Default::default(),
             perspectives: Err("Layout fixture".into()),
             nodes: ids
@@ -389,6 +391,7 @@ mod tests {
                     kind: "component".into(),
                     description: id.into(),
                     human: None,
+                    inspection: crate::model::NodeInspection::Other,
                     search_text: id.into(),
                 })
                 .collect(),
