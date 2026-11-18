@@ -1,12 +1,13 @@
 # Versions and releases
 
-GDD has three independent version lines:
+GDD tracks these version lines independently.
 
 | Surface | Current version | Meaning |
 | --- | --- | --- |
 | Python package and CLI | 0.8.0 | Distributed tool behavior and public Python APIs |
 | GDD standard | Draft 0.3; explicit 0.2 support | Document schemas and interpretation contracts |
-| Viewer renderer | 0.4.0 | Generated HTML renderer; profile remains `gdd-viewer-html/0.1` |
+| HTML viewer renderer | 0.4.0 | Generated HTML renderer; profile remains `gdd-viewer-html/0.1` |
+| Native viewer generator | 0.1.0 | Portable desktop artifact with profile `gdd-viewer-native/0.1` |
 
 Git tags identify **package releases** and use `vMAJOR.MINOR.PATCH`, starting
 with `v0.7.0`. A tag does not change the standard's version or certify it.
@@ -81,6 +82,7 @@ number in separate rows does not couple their release schedules.
 | Graphify observations and proposals | `gdd-observations/0.2`, `gdd-graphify-proposal/0.2` | The affected adapter output contract changes |
 | Graphify input profiles | `graphify-0.9.75-ast`, `graphify-0.9.75-node-link` | A new source dialect or interpretation needs an explicit profile |
 | Viewer | Renderer 0.4.0; `gdd-viewer-html/0.1`; `gdd-view/0.3`, `gdd-view-state/0.3` | Renderer implementation, verification profile or serialized projection changes independently |
+| Native viewer | Generator `gdd-viewer` 0.1.0, profile `gdd-viewer-native/0.1`, format `gdd-native-view/0.1` | Changes to the generator, interpretation profile and portable file contract are versioned independently. See the [artifact contract](VIEWER.md#share-a-native-view). |
 
 ## Python compatibility — adopted October 20, 2026
 

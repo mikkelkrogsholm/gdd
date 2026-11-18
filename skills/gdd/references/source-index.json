@@ -45,8 +45,8 @@
     {
       "path": "references/gdd/VIEWER.md",
       "source": "VIEWER.md",
-      "sha256": "145ed9e5ad7d72c93216c1c3919c79050ed5212cafda890be7dc493102726f4e",
-      "bytes": 13496
+      "sha256": "7013f4f85814c37a0e7e664237893056b3d07fa8af91abb761567983a74b7ed8",
+      "bytes": 16148
     },
     {
       "path": "references/gdd/WORKFLOW.md",
@@ -384,6 +384,12 @@
       "from": "VALIDATOR.md",
       "href": "examples/agent-native/README.md",
       "source_target": "examples/agent-native/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "crates/viewer/README.md",
+      "source_target": "crates/viewer/README.md",
       "role": "optional-repository-reference"
     },
     {

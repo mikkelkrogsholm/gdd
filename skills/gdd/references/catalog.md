@@ -76,6 +76,7 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `conformance/design.cases.json`
 - `conformance/diagnostics.csv`
 - `conformance/graphify-cases.yaml`
+- `crates/viewer/README.md`
 - `docs/consumer-input-limits.md`
 - `docs/python-imports.md`
 - `docs/rust-migration.md`

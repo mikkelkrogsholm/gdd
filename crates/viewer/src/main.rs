@@ -11,7 +11,7 @@ use eframe::egui;
 use model::Graph;
 use viewer::Viewer;
 
-const USAGE: &str = "Usage: gdd-viewer <MODEL.gdd.json | MODEL.gdd.yaml>";
+const USAGE: &str = "Usage: gdd-viewer <MODEL.gdd.json | MODEL.gdd.yaml | FILE.gddview>";
 
 fn run(path: &Path) -> Result<(), String> {
     let graph = Graph::load(path)?;

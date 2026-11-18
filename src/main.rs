@@ -199,6 +199,16 @@ enum Command {
         #[arg(long, allow_negative_numbers = true)]
         output: Option<PathBuf>,
     },
+    /// Save a self-contained, read-only native graph view.
+    #[command(args_override_self = true)]
+    View {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        output: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        scope: Vec<String>,
+    },
     /// Inspect advisory journey, component and data perspectives.
     #[command(args_override_self = true)]
     Perspectives {
@@ -535,6 +545,14 @@ fn run() -> io::Result<ExitCode> {
                 }
             }
             return Ok(ExitCode::from(report.exit_code));
+        }
+        Command::View {
+            path,
+            output,
+            scope,
+        } => {
+            let report = gdd::view::render_view(&cli_path(path), &cli_path(output), &scope)?;
+            write_output(None, &report)?;
         }
         Command::Perspectives { path, output } => {
             let views = gdd::perspectives::perspectives(&cli_path(path))?;

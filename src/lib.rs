@@ -10,6 +10,7 @@ pub mod projection;
 pub mod report;
 pub mod status;
 pub mod validation;
+pub mod view;
 
 use serde::Serialize;
 use serde_json::Value;

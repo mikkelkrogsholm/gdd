@@ -23,15 +23,14 @@ impl Layout {
         // Both graphlay result vectors retain insertion order, including
         // routes whose edges were reversed internally for layer assignment.
         let mut builder = GraphBuilder::new();
-        let ids: Vec<_> = graph
-            .nodes
+        let ids: Vec<_> = graph.nodes[..graph.shown_nodes]
             .iter()
             .map(|node| {
                 let width = (24.0 + 7.0 * node.label.chars().count() as f64).clamp(132.0, 236.0);
                 builder.add_box(Size::new(width, 44.0))
             })
             .collect();
-        for edge in &graph.edges {
+        for edge in &graph.edges[..graph.shown_edges] {
             let (Some(&from), Some(&to)) = (ids.get(edge.from), ids.get(edge.to)) else {
                 return Err(format!("Edge {} refers to an unknown node.", edge.id));
             };
@@ -100,8 +99,8 @@ impl Layout {
                     area.center().to_vec2() - self.bounds.center().to_vec2() * zoom,
                     zoom,
                 );
-                if reveal && let Some(index) = selected {
-                    ui.scroll_to_rect((transform * self.nodes[index]).expand(12.0), None);
+                if reveal && let Some(rect) = selected.and_then(|index| self.nodes.get(index)) {
+                    ui.scroll_to_rect((transform * *rect).expand(12.0), None);
                 }
                 self.draw(ui, graph, selected, transform)
             })
@@ -201,6 +200,9 @@ mod tests {
     fn graph(ids: &[&str], pairs: &[(usize, usize)]) -> Graph {
         Graph {
             title: "Layout fixture".into(),
+            shown_nodes: ids.len(),
+            shown_edges: pairs.len(),
+            artifact: None,
             nodes: ids
                 .iter()
                 .map(|&id| Node {

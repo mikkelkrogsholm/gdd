@@ -1,6 +1,52 @@
 # Interactive GDD graph
 
-`gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. The released 0.8.0 development prerelease uses renderer 0.4.0 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
+## Share a native view
+
+Build the CLI and desktop viewer from the repository root. Save a graph with
+the Rust CLI, then open its file in the native viewer.
+
+```sh
+cargo build --locked -p gdd -p gdd-viewer
+target/debug/gdd view examples/fragmented.gdd.yaml --scope component.notes --output notes.gddview
+target/debug/gdd-viewer notes.gddview
+```
+
+Send the single `.gddview` file to a recipient with `gdd-viewer` for their
+platform. Opening it works offline with the original model, fragments, declared
+sources and extension files removed. The viewer reads passive UTF-8 JSON. Its
+native graph, search and inspector work without Python, JavaScript or a browser.
+[Native viewer controls and system requirements](crates/viewer/README.md)
+
+Omit `--scope` for the whole graph, or repeat it to combine nodes' context
+closures. The saved list and canvas include nodes in that closure and edges
+whose endpoints both belong to it. The inspector can follow a connection
+outside this scope and display the original source file, JSON pointer and
+canonical node record. A scoped file contains the complete model and should
+only be shared with someone who can read the whole model.
+
+The native artifact uses format `gdd-native-view/0.1`, generator name
+`gdd-viewer`, generator version `0.1.0` and profile `gdd-viewer-native/0.1`.
+Use the recommended `.gddview` suffix. The viewer also recognizes the format
+identifier in a renamed file. The native schema and interpretation are
+independent of the released HTML viewer.
+
+| Field | Contents |
+| --- | --- |
+| `model`, `locations` | Complete GDD 0.2 or 0.3 manifest with merged fragment nodes and edges. Each record ID maps to its original file and JSON pointer. JSON numbers retain native precision. |
+| `spec_revision`, `snapshot` | Revision and `gdd-snapshot/0.2` asset paths and SHA-256 hashes. External file contents stay with the source bundle. |
+| `scope`, `manifest` | Sorted, deduplicated seed IDs, plus complete, disjoint `shown_nodes` / `omitted_nodes` and `shown_edges` / `omitted_edges` partitions. |
+| `perspectives`, `boundaries` | Advisory `gdd-perspectives/0.1` payload for the complete graph, and `gdd-boundaries/0.3` for the shown nodes of a GDD 0.3 model. |
+| `observation_inputs` | Empty array. |
+
+Generation requires a valid model and resolved snapshot. The CLI publishes
+only to an unused output path and prints a scoped `gdd-report/0.2` with
+`integration.visualization` PASS after publication. Invalid models, unknown
+scope IDs and occupied outputs return 1. Unavailable model inputs, unsupported
+semantics and nesting capacity failures return 2.
+
+## Released browser viewer
+
+The released Python `gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. The released 0.8.0 development prerelease uses renderer 0.4.0 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
 
 ```sh
 uv run gdd view examples/concert.gdd.yaml --output concert.html

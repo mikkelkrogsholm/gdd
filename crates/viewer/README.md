@@ -1,12 +1,14 @@
 # GDD native viewer preview
 
-From the repository root, open the fragmented example:
+From the repository root, open a model directly or save a view to share.
 
 ```sh
 cargo run --locked -p gdd-viewer -- examples/fragmented.gdd.yaml
+cargo run --locked -p gdd -- view examples/fragmented.gdd.yaml --scope component.notes --output notes.gddview
+cargo run --locked -p gdd-viewer -- notes.gddview
 ```
 
-The viewer requires Rust 1.95 or newer and a desktop with OpenGL. On Linux it
+Building the viewer requires Rust 1.95 or newer. Running it requires a desktop with OpenGL. On Linux it
 uses X11 or Wayland. The native window was tested on Linux with Xvfb and Mesa
 software rendering. The root CLI remains the default Cargo package.
 
@@ -17,6 +19,12 @@ or follow a connection. Try searching for `entity.note` and following its
 node label, ID, kind, description and each incident edge. Selecting a node
 highlights its incoming and outgoing links. Selecting a search result or
 following a connection scrolls the graph to that node.
+
+When sharing a saved view, send the `.gddview` file to a recipient with the
+native viewer installed. Its search and drawing respect the saved scope.
+Following a connection to an omitted node opens its inspector and leaves the
+drawing in scope. A saved node's inspector also shows its source location and
+full record. See the [artifact contract](../../VIEWER.md#share-a-native-view).
 
 The viewer computes a left-to-right layered layout once when it opens a model,
 using the pure Rust graphlay library. While the layout runs in the background,

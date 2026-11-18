@@ -77,8 +77,7 @@ impl Viewer {
                 ui.horizontal_wrapped(|ui| {
                     ui.heading(RichText::new(&self.graph.title).size(24.0).strong());
                     ui.label(RichText::new(&self.filename).weak());
-                    if matches!(self.layout, LayoutState::Ready(_)) && !self.graph.nodes.is_empty()
-                    {
+                    if matches!(self.layout, LayoutState::Ready(_)) && self.graph.shown_nodes > 0 {
                         egui::ComboBox::from_label("Graph zoom")
                             .selected_text(format!("{}%", self.zoom_percent))
                             .width(70.0)
@@ -143,7 +142,15 @@ impl Viewer {
     }
 
     fn show_nodes(&mut self, ui: &mut Ui) {
-        ui.heading(format!("Nodes ({})", self.graph.nodes.len()));
+        if self.graph.shown_nodes == self.graph.nodes.len() {
+            ui.heading(format!("Nodes ({})", self.graph.shown_nodes));
+        } else {
+            ui.heading(format!(
+                "Nodes ({} of {})",
+                self.graph.shown_nodes,
+                self.graph.nodes.len()
+            ));
+        }
         let search_label = ui.label("Search nodes");
         let focus_search = ui.input_mut(|input| input.consume_key(Modifiers::COMMAND, Key::F));
         let search = ui
@@ -165,7 +172,10 @@ impl Viewer {
             .auto_shrink([false; 2])
             .show(ui, |ui| {
                 let mut found = false;
-                for (index, node) in self.graph.nodes.iter().enumerate() {
+                for (index, node) in self.graph.nodes[..self.graph.shown_nodes]
+                    .iter()
+                    .enumerate()
+                {
                     if !query.is_empty()
                         && !node.label.to_lowercase().contains(&query)
                         && !node.id.to_lowercase().contains(&query)
@@ -183,7 +193,7 @@ impl Viewer {
                     }
                     found = true;
                 }
-                if !found && !self.graph.nodes.is_empty() {
+                if !found && self.graph.shown_nodes > 0 {
                     ui.label("No matching nodes.");
                 }
             });
@@ -207,6 +217,20 @@ impl Viewer {
                 }
                 ui.label(RichText::new(&node.kind).monospace().weak());
                 ui.label(&node.description);
+                if let Some(data) = &self.graph.artifact {
+                    if index >= self.graph.shown_nodes {
+                        ui.label("Outside the saved view scope");
+                    }
+                    let origin = &data["locations"][&node.id];
+                    ui.label(format!(
+                        "{}{}",
+                        origin[0].as_str().unwrap(),
+                        origin[1].as_str().unwrap()
+                    ));
+                    ui.collapsing("Canonical node record", |ui| {
+                        ui.monospace(format!("{:#}", data["model"]["nodes"][&node.id]));
+                    });
+                }
                 ui.add_space(10.0);
 
                 let mut connections = self

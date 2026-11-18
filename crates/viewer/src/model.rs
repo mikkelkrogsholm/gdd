@@ -1,13 +1,18 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
 use gdd::bundle::{self, Bundle, Location};
 use gdd::input::Value;
+use serde_json::Value as Json;
 
 pub struct Graph {
     pub title: String,
     pub nodes: Vec<Node>,
     pub edges: Vec<Edge>,
+    // Shown records occupy the leading slice. The inspector can address every index.
+    pub shown_nodes: usize,
+    pub shown_edges: usize,
+    pub artifact: Option<Json>,
 }
 
 pub struct Node {
@@ -26,8 +31,24 @@ pub struct Edge {
 
 impl Graph {
     pub fn load(path: &Path) -> Result<Self, String> {
-        Self::from_bundle(&bundle::load_model_only(path))
-            .map_err(|error| format!("Cannot open {}: {error}", path.display()))
+        let result = if path
+            .extension()
+            .is_some_and(|s| s.eq_ignore_ascii_case("gddview"))
+        {
+            std::fs::read(path)
+                .map_err(|e| e.to_string())
+                .and_then(|bytes| Self::from_artifact(&bytes))
+        } else {
+            let bundle = bundle::load_model_only(path);
+            if let Some(doc) = bundle.root_document()
+                && matches!(&doc.value, Value::Object(fields) if matches!(fields.get("format"), Some(Value::String(s)) if s == gdd::view::FORMAT))
+            {
+                Self::from_artifact(&doc.asset.bytes)
+            } else {
+                Self::from_bundle(&bundle)
+            }
+        };
+        result.map_err(|error| format!("Cannot open {}: {error}", path.display()))
     }
 
     fn from_bundle(bundle: &Bundle) -> Result<Self, String> {
@@ -51,24 +72,78 @@ impl Graph {
                 project_node(record.id, record.value)
                     .map_err(|error| record_error(record.location, &error))
             })
-            .collect::<Result<Vec<_>, _>>()?;
-        let indices: BTreeMap<_, _> = nodes
+            .collect::<Result<_, _>>()?;
+        Self::project(title, nodes, None, |indices| {
+            bundle
+                .edges()
+                .map(|record| {
+                    project_edge(record.id, record.value, indices)
+                        .map_err(|error| record_error(record.location, &error))
+                })
+                .collect()
+        })
+    }
+
+    fn from_artifact(bytes: &[u8]) -> Result<Self, String> {
+        let data = gdd::view::read_view(bytes).map_err(|e| e.to_string())?;
+        let model = &data["model"];
+        let title = model["project"]["title"].as_str().unwrap().to_owned();
+        let nodes = model["nodes"]
+            .as_object()
+            .unwrap()
+            .iter()
+            .map(|(id, node)| project_node(id, &Value::from(node)))
+            .collect::<Result<_, _>>()?;
+        let shown = data["manifest"]["shown_nodes"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|id| id.as_str().unwrap())
+            .collect();
+        let mut graph = Self::project(title, nodes, Some(&shown), |indices| {
+            model["edges"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|edge| project_edge(edge["id"].as_str().unwrap(), &Value::from(edge), indices))
+                .collect()
+        })?;
+        graph.artifact = Some(data);
+        Ok(graph)
+    }
+
+    fn project(
+        title: String,
+        mut nodes: Vec<Node>,
+        shown: Option<&BTreeSet<&str>>,
+        project_edges: impl FnOnce(&BTreeMap<&str, usize>) -> Result<Vec<Edge>, String>,
+    ) -> Result<Self, String> {
+        let shown_nodes = if let Some(shown) = shown {
+            nodes.sort_by_key(|node| !shown.contains(node.id.as_str()));
+            shown.len()
+        } else {
+            nodes.len()
+        };
+        let indices = nodes
             .iter()
             .enumerate()
             .map(|(index, node)| (node.id.as_str(), index))
             .collect();
-
-        let edges = bundle
-            .edges()
-            .map(|record| {
-                project_edge(record.id, record.value, &indices)
-                    .map_err(|error| record_error(record.location, &error))
-            })
-            .collect::<Result<Vec<_>, _>>()?;
+        let mut edges = project_edges(&indices)?;
+        let omitted = |edge: &Edge| edge.from >= shown_nodes || edge.to >= shown_nodes;
+        let shown_edges = if shown_nodes < nodes.len() {
+            edges.sort_by_key(omitted);
+            edges.partition_point(|edge| !omitted(edge))
+        } else {
+            edges.len()
+        };
         Ok(Self {
             title,
             nodes,
             edges,
+            shown_nodes,
+            shown_edges,
+            artifact: None,
         })
     }
 }
@@ -349,6 +424,35 @@ mod tests {
         assert_eq!(edge.relation, "owned_by");
         assert_eq!(graph.nodes[edge.from].id, "entity.note");
         assert_eq!(graph.nodes[edge.to].id, "component.notes");
+    }
+
+    #[test]
+    fn opens_relocated_scoped_view_and_keeps_omitted_connection_in_inspector() {
+        let inputs = tempfile::tempdir().unwrap();
+        let destination = tempfile::tempdir().unwrap();
+        let manifest = inputs.path().join("fragmented.gdd.yaml");
+        fs::copy(example("fragmented.gdd.yaml"), &manifest).unwrap();
+        fs::copy(
+            example("note.fragment.yaml"),
+            inputs.path().join("note.fragment.yaml"),
+        )
+        .unwrap();
+        let path = destination.path().join("note.gddview");
+        gdd::view::render_view(&manifest, &path, &["component.notes".into()]).unwrap();
+        inputs.close().unwrap();
+        for suffix in ["gddview", "json"] {
+            let moved = destination.path().join(format!("received.{suffix}"));
+            fs::copy(&path, &moved).unwrap();
+            let graph = Graph::load(&moved).unwrap();
+            assert_eq!((graph.shown_nodes, graph.shown_edges), (1, 0));
+            assert_fragmented_graph(&graph);
+            let layout = crate::canvas::Layout::new(&graph);
+            assert!(layout.is_ok());
+            assert_eq!(
+                graph.artifact.unwrap()["locations"]["entity.note"][0],
+                "note.fragment.yaml"
+            );
+        }
     }
 
     #[test]

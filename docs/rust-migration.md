@@ -215,6 +215,25 @@ captured model and extension bytes. The wrapper exposes the shared model via
 `bundle()`. Each call to `perspective_data` returns an owned `serde_json::Value`
 that consumers can edit independently, even after the source files are removed.
 
+## Save and open a portable native view
+
+```sh
+cargo run --locked -p gdd -- view examples/concert.gdd.yaml --scope action.reserve --output reserve.gddview
+cargo run --locked -p gdd-viewer -- reserve.gddview
+```
+
+Use `gdd::view::render_view(model: &Path, output: &Path, scope: &[String])`
+to publish a new artifact and receive the scoped JSON report. Use
+`gdd::view::view_data(&capture, &scope)` to derive the JSON artifact from an
+existing `PerspectiveBundle` without reopening its inputs. An empty scope
+includes all nodes. Pass saved bytes to `gdd::view::read_view(&bytes)` to
+check the embedded schemas, snapshot identity and graph partition and obtain
+the JSON payload. All three functions return `io::Result<serde_json::Value>`.
+The reader uses embedded data only. Comparing an artifact with a current
+source bundle is a separate operation. The released Python renderer and
+verifier continue to serve the historical HTML format.
+[Native artifact contract](../VIEWER.md#share-a-native-view)
+
 ## Workplans and packet verification
 
 From the repository root, prepare a plan and verify the saved artifact against
@@ -579,7 +598,7 @@ YAML nesting to 256 containers.
 | `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Use `Profile::ImportGraphify` for standalone observations and model-bound Graphify checks. Visualization validation still requires Python. |
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Native file import, verification, byte recovery, in-memory observations and explicit proposals for both model formats via `gdd::graphify`. |
 | `perspectives`, `perspective_data`, `load_perspective_bundle` | Native path-based and captured model projections via `gdd::perspectives`. |
-| `render_view`, `verify_view` | Python-only HTML APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
+| `render_view`, `view_data`, `verify_view` | Native file generation, captured projections and detached reading via `gdd::view`. HTML generation and verification use the released Python APIs. |
 | `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |
 | `run_status` | Native journal replay and current acceptance with path-based or captured inputs. |
 | `create_run`, `advance_run` | Native exclusive run creation, gated event publication and idempotent replay. |

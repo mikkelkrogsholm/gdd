@@ -432,7 +432,7 @@ impl EmbeddedSchema {
     }
 }
 
-fn embedded_schema(kind: DocumentKind) -> Option<&'static Validator> {
+pub(crate) fn embedded_schema(kind: DocumentKind) -> Option<&'static Validator> {
     static MANIFEST_02: EmbeddedSchema =
         EmbeddedSchema::new(include_str!("../schemas/gdd-0.2.schema.json"));
     static MANIFEST_03: EmbeddedSchema =
