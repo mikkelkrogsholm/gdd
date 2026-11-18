@@ -13,14 +13,23 @@ mod visualization;
 mod workflow;
 mod workflow_demo;
 
-use anyhow::Result;
-use clap::Parser;
+use anyhow::{Context, Result, bail, ensure};
+use clap::{Parser, Subcommand};
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 /// Execute named GDD conformance cases from the checkout.
 #[derive(Parser)]
 #[command(name = "gdd-conformance")]
+struct Cli {
+    /// GDD checkout or fixture root for a named suite (defaults to the current checkout).
+    #[arg(long, value_name = "PATH")]
+    checkout: Option<PathBuf>,
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(Subcommand)]
 enum Command {
     /// Build, verify or restore an indexed concert experiment archive.
     ConcertArchive {
@@ -79,23 +88,52 @@ enum Command {
     },
 }
 
+fn suite_directory(checkout: Option<&Path>) -> Result<PathBuf> {
+    if let Some(root) = checkout {
+        let directory = root.join("conformance");
+        ensure!(
+            directory.is_dir(),
+            "expected a conformance directory at {}",
+            directory.display()
+        );
+        return Ok(directory);
+    }
+    let current = std::env::current_dir().context("locate current directory")?;
+    for root in current.ancestors() {
+        let directory = root.join("conformance");
+        if directory.join("cases.yaml").is_file() {
+            return Ok(directory);
+        }
+        if root.join(".git").exists() {
+            break;
+        }
+    }
+    bail!(
+        "could not find a GDD checkout from {}: use --checkout PATH",
+        current.display()
+    )
+}
+
+type SuiteRunner = fn(&Path, Option<PathBuf>) -> Result<ExitCode>;
+
 fn main() -> Result<ExitCode> {
-    let directory = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../conformance");
-    match Command::parse() {
-        Command::ConcertArchive { action } => concert_archive::command(action),
-        Command::Code { output } => code::command(&directory, output),
-        Command::Design { output } => design::command(&directory, output),
-        Command::Diff { output } => diff::command(&directory, output),
-        Command::Impact { output } => impact::command(&directory, output),
-        Command::Status { output } => status::command(&directory, output),
-        Command::Standard { output } => standard::command(&directory, output),
-        Command::Workflow { output } => workflow::command(&directory, output),
+    let cli = Cli::parse();
+    let (run, output): (SuiteRunner, _) = match cli.command {
+        Command::ConcertArchive { action } => return concert_archive::command(action),
         Command::WorkflowDemo { output } => {
             let summary = workflow_demo::replay(&output)?;
             println!("{}", serde_json::to_string_pretty(&summary)?);
-            Ok(ExitCode::SUCCESS)
+            return Ok(ExitCode::SUCCESS);
         }
-        Command::Graphify { output } => graphify::command(&directory, output),
-        Command::Visualization { output } => visualization::command(&directory, output),
-    }
+        Command::Code { output } => (code::command, output),
+        Command::Design { output } => (design::command, output),
+        Command::Diff { output } => (diff::command, output),
+        Command::Impact { output } => (impact::command, output),
+        Command::Status { output } => (status::command, output),
+        Command::Standard { output } => (standard::command, output),
+        Command::Workflow { output } => (workflow::command, output),
+        Command::Graphify { output } => (graphify::command, output),
+        Command::Visualization { output } => (visualization::command, output),
+    };
+    run(&suite_directory(cli.checkout.as_deref())?, output)
 }

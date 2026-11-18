@@ -7,10 +7,13 @@ use std::{collections::BTreeMap, fs, path::Path, process::Command};
 #[test]
 fn named_visualization_cases_run_offline_from_an_empty_directory() -> Result<()> {
     let temp = tempfile::tempdir()?;
+    let checkout = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let mut command = Command::new(env!("CARGO_BIN_EXE_gdd-conformance"));
     command
         .current_dir(temp.path())
         .env("PATH", "")
+        .arg("--checkout")
+        .arg(&checkout)
         .arg("visualization");
     let stdout = command.output()?;
     assert!(
@@ -50,7 +53,6 @@ fn named_visualization_cases_run_offline_from_an_empty_directory() -> Result<()>
     ];
     let rows = receipt["results"].as_array().unwrap();
     assert_eq!(rows.len(), expected.len());
-    let checkout = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let fixture = temp.path().join("model.json");
     fs::copy(
         checkout.join("conformance/fixtures/viewer-multigraph.json"),

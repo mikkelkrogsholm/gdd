@@ -7,10 +7,13 @@ use std::{collections::BTreeSet, fs, path::Path, process::Command};
 #[test]
 fn standard_runs_all_declared_cases_offline_and_protects_its_receipt() -> Result<()> {
     let temp = tempfile::tempdir()?;
+    let checkout = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let mut command = Command::new(env!("CARGO_BIN_EXE_gdd-conformance"));
     command
         .current_dir(temp.path())
         .env("PATH", "")
+        .arg("--checkout")
+        .arg(&checkout)
         .arg("standard");
     let run = command.output()?;
     assert!(
@@ -27,7 +30,6 @@ fn standard_runs_all_declared_cases_offline_and_protects_its_receipt() -> Result
     assert!(receipt["executed_at"].as_str().unwrap().ends_with('Z'));
     assert_eq!(receipt["synthetic_inputs"], true);
 
-    let checkout = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let manifest = fs::read(checkout.join("conformance/cases.yaml"))?;
     let manifest = gdd::validation::to_json(&gdd::input::parse(&manifest)?)?;
     let definitions = manifest["cases"].as_array().unwrap();
@@ -96,5 +98,67 @@ fn standard_runs_all_declared_cases_offline_and_protects_its_receipt() -> Result
     assert!(!collision.status.success());
     assert!(String::from_utf8_lossy(&collision.stderr).contains("create receipt new.json"));
     assert_eq!(fs::read(path)?, original);
+    Ok(())
+}
+
+#[test]
+fn discovers_a_relocated_fixture_tree_and_honors_explicit_selection() -> Result<()> {
+    let temp = tempfile::tempdir()?;
+    let original = temp.path().join("original");
+    fs::create_dir_all(original.join("conformance"))?;
+    fs::create_dir(original.join("examples"))?;
+    fs::write(
+        original.join("conformance/cases.yaml"),
+        r#"format: gdd-conformance-cases/0.2
+cases:
+  - id: incomplete.case
+  - id: selected.sketch
+    base: ../examples/sketch.gdd.yaml
+    profile: representation
+    scope: []
+    expected: {dimension: model, result: PASS}
+"#,
+    )?;
+    fs::write(
+        original.join("examples/sketch.gdd.yaml"),
+        include_bytes!("../../../examples/sketch.gdd.yaml"),
+    )?;
+    let moved = temp.path().join("moved fixtures");
+    fs::rename(&original, &moved)?;
+    let run = |cwd: &Path, args: &[&str]| {
+        Command::new(env!("CARGO_BIN_EXE_gdd-conformance"))
+            .current_dir(cwd)
+            .args(args)
+            .output()
+    };
+    for (cwd, args) in [
+        (
+            temp.path(),
+            vec!["--checkout", "moved fixtures", "standard"],
+        ),
+        (moved.join("examples").as_path(), vec!["standard"]),
+    ] {
+        let output = run(cwd, &args)?;
+        assert_eq!(output.status.code(), Some(1));
+        let receipt: Value = serde_json::from_slice(&output.stdout)?;
+        assert_eq!(receipt["total"], 2);
+        assert_eq!(receipt["matched"], 1);
+        assert_eq!(receipt["cases"][0]["id"], "incomplete.case");
+        assert_eq!(receipt["cases"][0]["matched"], false);
+        assert_eq!(receipt["cases"][1]["id"], "selected.sketch");
+        assert_eq!(receipt["cases"][1]["matched"], true);
+    }
+
+    let incorrect = run(
+        &moved,
+        &["--checkout", "examples", "standard", "--output", "bad.json"],
+    )?;
+    assert_eq!(incorrect.status.code(), Some(1));
+    assert!(String::from_utf8_lossy(&incorrect.stderr).contains("examples"));
+    assert!(!moved.join("bad.json").exists());
+
+    let outside = run(temp.path(), &["standard"])?;
+    assert_eq!(outside.status.code(), Some(1));
+    assert!(String::from_utf8_lossy(&outside.stderr).contains("--checkout PATH"));
     Ok(())
 }

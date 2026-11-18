@@ -5,10 +5,13 @@ use std::{fs, path::Path, process::Command};
 #[test]
 fn impact_reports_each_catalog_instance_without_an_external_runtime() -> Result<()> {
     let temp = tempfile::tempdir()?;
+    let checkout = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let mut command = Command::new(env!("CARGO_BIN_EXE_gdd-conformance"));
     command
         .current_dir(temp.path())
         .env("PATH", "")
+        .arg("--checkout")
+        .arg(&checkout)
         .arg("impact");
     let run = command.output()?;
     assert!(
@@ -26,7 +29,7 @@ fn impact_reports_each_catalog_instance_without_an_external_runtime() -> Result<
     assert_eq!(receipt["case_count"], 17);
     assert_eq!(receipt["test_instances"], 28);
     assert_eq!(receipt["passed"], true);
-    let catalog = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../conformance/impact.cases.json");
+    let catalog = checkout.join("conformance/impact.cases.json");
     let catalog: Vec<Value> = serde_json::from_slice(&fs::read(catalog)?)?;
     let rows = receipt["cases"].as_array().unwrap();
     assert_eq!(rows.len(), catalog.len());

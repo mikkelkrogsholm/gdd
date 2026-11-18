@@ -4,7 +4,7 @@ use gdd::view::{read_view, read_view_bytes, render_view, verify_view};
 use std::ffi::OsStr;
 use std::process::Command;
 
-/// Resolve a binary from this checkout's Cargo build, or exercise a specified installation.
+/// Locate the companion CLI for the public command checks.
 fn cli(directory: &Path) -> Result<PathBuf> {
     if let Some(path) = std::env::var_os("GDD_NATIVE_CLI") {
         let path = PathBuf::from(path);
@@ -13,6 +13,11 @@ fn cli(directory: &Path) -> Result<PathBuf> {
             "GDD_NATIVE_CLI must be an absolute path"
         );
         return Ok(path);
+    }
+    let companion =
+        std::env::current_exe()?.with_file_name(format!("gdd{}", std::env::consts::EXE_SUFFIX));
+    if companion.is_file() {
+        return Ok(companion);
     }
     let cargo = std::env::var_os("CARGO").unwrap_or_else(|| "cargo".into());
     let build = Command::new(cargo)

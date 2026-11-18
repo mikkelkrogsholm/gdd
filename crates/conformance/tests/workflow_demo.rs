@@ -14,6 +14,7 @@ fn published_run_survives_relocation_and_refuses_replacement() {
     let destination = temp.path().join("demo");
     let invoke = || {
         Command::new(env!("CARGO_BIN_EXE_gdd-conformance"))
+            .current_dir(temp.path())
             .args(["workflow-demo", "--output"])
             .arg(&destination)
             .output()

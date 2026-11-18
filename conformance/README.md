@@ -2,6 +2,20 @@
 
 `cases.yaml` describes 58 positive and negative expectations for the standard's profiles. `diagnostics.csv` contains stable diagnostic codes. Case IDs identify tests in the suite, not nodes in the example model.
 
+The installed `gdd-conformance` runs named suites against a matching checkout.
+From another directory, put `--checkout PATH` before the suite name:
+
+```sh
+gdd-conformance --checkout /path/to/gdd standard --output standard-run.json
+```
+
+Without the option, the runner looks for `conformance/cases.yaml` in the
+current directory and its ancestors, up to the Git checkout root. A copied
+fixture tree can also be used. Keep its suite catalogs in `conformance/` and
+preserve the relative paths of their inputs, including example bundles,
+schemas, tutorial models and archives used by the chosen suite. Relative
+output paths resolve from the directory where you run the command.
+
 ## Standard validator
 
 Run the 58 named cases from this checkout with the locked Cargo dependencies
@@ -211,11 +225,11 @@ public contracts and calls. The Python case checks labels in rendered HTML.
 Interactive viewer checks run separately.
 
 The same case executes the native `gdd boundaries` and `gdd design-review`
-commands and checks their JSON output and exit codes. By default it locates
-the checkout's executable with one locked, offline Cargo build. Set
-`GDD_NATIVE_CLI` to the absolute path of a matching built or installed `gdd`
-to execute both commands without Cargo. Run the suite with the checkout's
-catalogs, schemas and example models available.
+commands and checks their JSON output and exit codes. Install a matching `gdd`
+beside `gdd-conformance`, or set `GDD_NATIVE_CLI` to its absolute path. The
+environment variable takes precedence. When neither is available, the runner
+locates the executable with a locked, offline Cargo build in the selected
+checkout.
 
 Omit `--output` to print the JSON receipt. With `--output`, the runner creates
 a new file and prints the matched case count. Each row identifies the assertion,
