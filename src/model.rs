@@ -16,6 +16,7 @@ pub mod context;
 pub mod design_review;
 pub(crate) mod explain;
 mod extensions;
+pub mod impact;
 mod implementation;
 mod planning;
 mod readiness;

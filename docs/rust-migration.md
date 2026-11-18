@@ -295,6 +295,29 @@ run, use `project_status_with_run(&path, &directory, options)` or
 path-based operation captures contracts for the project and journal scopes
 together.
 
+## Declared change impact
+
+Run `gdd impact docs/tutorial/refined.gdd.json --scope action.add --format text`
+to see the declared consumers of a changed node and their supporting read
+context. Repeat `--scope` to inspect several seeds. Each item includes its
+directional witness. JSON output includes the model revision, scoped GDD 0.3
+boundaries and current check plans or bindings to inspect. A model may leave
+runtime callers and unlisted dependencies unassessed even when this declared
+coverage is complete.
+
+Use `--implementation ID` to filter applicable records. The report names
+omitted historical, invalid, retired or implementation-specific records.
+Explicitly incomplete dependency declarations produce partial coverage and
+exit code 2. Invalid scope or model data produces exit code 1. A mixed scope
+retains the known roots. Parsing and model diagnostics use native wording and
+locations, including the array index of a conflicting interface. Both output
+formats support `--output NEW_FILE`.
+
+In Rust, call `gdd::impact::analyze_impact(&path, &scope, implementation)`
+or `analyze_impact_from_bundle(&bundle, &scope, implementation)` to reuse
+one capture. Each returns an `ImpactReport` with an `exit_code`. Use
+`gdd::impact::impact_text(&report)` to render the same witnesses in text.
+
 ## Snapshots, context and project creation
 
 For a model-only assessment, use `bundle::load_model_only(&path)` and
@@ -339,5 +362,6 @@ YAML nesting to 256 containers.
 | `create_run`, `advance_run` | Native exclusive run creation, gated event publication and idempotent replay. |
 | `boundary_view`, `design_checklist`, `review_design` | Native GDD 0.3 boundary views, scoped review questions and advisory review applicability. |
 | `project_status` | Native project assessments with an optional workflow journal, JSON and text output, and captured-bundle entry points. |
-| `check_code`, `analyze_impact`, `diff_models` | Python-only code observation and project inspection APIs. |
+| `analyze_impact`, `impact_text` | Native declared consumers, supporting context, applicable records, JSON and text output, with path-based and captured-bundle entry points. |
+| `check_code`, `diff_models` | Python-only code observation and model comparison APIs. |
 | `gdd_validator.host` helpers `snapshot_code`, `execute_check`, `verification_records`, `append_records` | Python-only trusted host operations. A code snapshot identifies selected implementation files, while a model snapshot identifies normative GDD assets. See the [host guide](../HOST.md). |

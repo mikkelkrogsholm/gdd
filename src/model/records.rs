@@ -78,7 +78,7 @@ impl<'a> Model<'a> {
             if kind == "evidence"
                 && let Some(plan) = records.get(string(record, "check"))
                 && ((string(plan, "kind") == "check"
-                    && string(record, "check_revision") != check_digest(plan))
+                    && string(record, "check_revision") != record_digest(plan))
                     || (spec_revision.is_some()
                         && spec_revision != get(plan, "spec_revision").and_then(text))
                     || !covers(record, plan, "scope"))
@@ -253,7 +253,8 @@ impl<'a> Model<'a> {
     fn evidence(&mut self, item: &LocatedRecord<'_>, plan: &Value) {
         let record = item.value;
         let id = item.id;
-        if string(plan, "kind") == "check" && string(record, "check_revision") != check_digest(plan)
+        if string(plan, "kind") == "check"
+            && string(record, "check_revision") != record_digest(plan)
         {
             self.record_issue(
                 item,
@@ -311,10 +312,10 @@ pub(super) fn covers(replacement: &Value, previous: &Value, field: &str) -> bool
     strings(previous, field).all(|id| strings(replacement, field).any(|s| s == id))
 }
 
-pub(super) fn check_digest(plan: &Value) -> String {
-    // The strict parser stores object members in sorted order. Check plans have
-    // only string and array values, so compact UTF-8 JSON is canonical here.
-    let json = to_json(plan).expect("schema-validated check plan");
+pub(super) fn record_digest(record: &Value) -> String {
+    // Check and binding declarations contain only objects, arrays and strings.
+    // The strict parser sorts object keys, yielding canonical compact UTF-8 JSON.
+    let json = to_json(record).expect("schema-validated record");
     let bytes = serde_json::to_vec(&json).expect("JSON serializes to bytes");
     format!("sha256:{}", sha256(&bytes))
 }

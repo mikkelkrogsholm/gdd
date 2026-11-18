@@ -16,7 +16,7 @@ struct Cli {
 }
 
 #[derive(Clone, Copy, ValueEnum)]
-enum StatusFormat {
+enum DisplayFormat {
     Json,
     Text,
 }
@@ -114,7 +114,21 @@ enum Command {
         #[arg(long, value_enum, default_value = "implementation")]
         activity: Activity,
         #[arg(long, value_enum, default_value = "json")]
-        format: StatusFormat,
+        format: DisplayFormat,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
+    },
+    /// Explain declared change consumers and supporting model context.
+    #[command(args_override_self = true)]
+    Impact {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, required = true, allow_negative_numbers = true)]
+        scope: Vec<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        implementation: Option<String>,
+        #[arg(long, value_enum, default_value = "json")]
+        format: DisplayFormat,
         #[arg(long, allow_negative_numbers = true)]
         output: Option<PathBuf>,
     },
@@ -216,6 +230,14 @@ fn write_output(output: Option<&Path>, value: &impl Serialize) -> io::Result<()>
         write_json(&mut File::create_new(path)?, value)
     } else {
         write_json(&mut io::stdout().lock(), value)
+    }
+}
+
+fn write_text(output: Option<&Path>, text: &str) -> io::Result<()> {
+    if let Some(path) = output {
+        File::create_new(path)?.write_all(text.as_bytes())
+    } else {
+        io::stdout().lock().write_all(text.as_bytes())
     }
 }
 
@@ -330,17 +352,31 @@ fn run() -> io::Result<ExitCode> {
                 None => gdd::status::project_status(&path, options)?,
             };
             match format {
-                StatusFormat::Json => write_output(output.as_deref(), &status)?,
-                StatusFormat::Text => {
+                DisplayFormat::Json => write_output(output.as_deref(), &status)?,
+                DisplayFormat::Text => {
                     let text = gdd::status::status_text(&status);
-                    if let Some(output) = output {
-                        File::create_new(output)?.write_all(text.as_bytes())?;
-                    } else {
-                        io::stdout().lock().write_all(text.as_bytes())?;
-                    }
+                    write_text(output.as_deref(), &text)?;
                 }
             }
             return Ok(ExitCode::from(status.exit_code));
+        }
+        Command::Impact {
+            path,
+            scope,
+            implementation,
+            format,
+            output,
+        } => {
+            let report =
+                gdd::impact::analyze_impact(&cli_path(path), &scope, implementation.as_deref())?;
+            let output = output.map(cli_path);
+            match format {
+                DisplayFormat::Json => write_output(output.as_deref(), &report)?,
+                DisplayFormat::Text => {
+                    write_text(output.as_deref(), &gdd::impact::impact_text(&report))?
+                }
+            }
+            return Ok(ExitCode::from(report.exit_code));
         }
         Command::Boundaries { path, output } => {
             let model = gdd::projection::load_projection_bundle(&cli_path(path))?;

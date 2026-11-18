@@ -143,6 +143,9 @@ pub struct Bundle {
     advisory_paths: BTreeMap<String, Result<String, String>>,
     advisory_assets: BTreeMap<String, Asset>,
     extensions: BTreeMap<String, usize>,
+    // Keep the identity of each unreadable declaration alongside the load
+    // diagnostic. Impact reports distinguish missing semantics from pin errors.
+    pub(crate) unread_extensions: BTreeSet<String>,
     locations: BTreeMap<String, Location>,
     nodes: BTreeMap<String, usize>,
     edges: Vec<(String, usize, usize)>,
@@ -334,6 +337,12 @@ pub fn load(path: &Path) -> Bundle {
 /// Use `load_for_readiness` when advisory contract diagnostics are needed.
 pub fn load_model_only(path: &Path) -> Bundle {
     capture(path, None, None)
+}
+
+// Impact admits the manifest before following its declarations and admits
+// ledgers before indexing their records, just like paired-input validation.
+pub(crate) fn load_for_inspection(path: &Path) -> Bundle {
+    load_primary(path, None, true)
 }
 
 /// Capture the model and advisory contracts in the selected read context. An
@@ -587,6 +596,9 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
         }) {
             Ok(document) => document,
             Err(issue) => {
+                if issue.code != "EXTENSION_DATA_INVALID" {
+                    bundle.unread_extensions.insert(id.clone());
+                }
                 bundle.diagnostics.push(issue);
                 continue;
             }

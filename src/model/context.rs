@@ -11,13 +11,28 @@ use crate::input::Value;
 use crate::validation::CORE_RELATIONS;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
-pub struct ContextLink<'a> {
-    pub from: Option<&'a str>,
-    pub to: &'a str,
-    pub edge: Option<&'a str>,
-    pub relation: Option<&'a str>,
+pub struct WitnessStep<S> {
+    pub from: Option<S>,
+    pub to: S,
+    pub edge: Option<S>,
+    pub relation: Option<S>,
     pub orientation: &'static str,
     pub derivation: &'static str,
+}
+
+pub type ContextLink<'a> = WitnessStep<&'a str>;
+
+impl From<ContextLink<'_>> for WitnessStep<String> {
+    fn from(link: ContextLink<'_>) -> Self {
+        Self {
+            from: link.from.map(str::to_owned),
+            to: link.to.into(),
+            edge: link.edge.map(str::to_owned),
+            relation: link.relation.map(str::to_owned),
+            orientation: link.orientation,
+            derivation: link.derivation,
+        }
+    }
 }
 
 impl<'a> ContextLink<'a> {

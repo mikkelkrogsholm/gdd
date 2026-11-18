@@ -1,12 +1,16 @@
 use super::context::ContextGraph;
-use super::records::{check_digest, covers};
+use super::records::{covers, record_digest};
 use super::{Model, Value, flag, get, string, strings, text};
 use crate::report::{Check, CheckDetails, CheckResult, Diagnostic};
 use std::collections::{BTreeMap, BTreeSet};
 
 type Records<'a> = BTreeMap<&'a str, &'a Value>;
 
-fn retired<'a>(records: &Records<'a>, invalid: &BTreeSet<&str>, host: &Value) -> BTreeSet<&'a str> {
+pub(super) fn retired<'a>(
+    records: &Records<'a>,
+    invalid: &BTreeSet<&str>,
+    host: &Value,
+) -> BTreeSet<&'a str> {
     records
         .iter()
         .filter_map(|(id, r)| {
@@ -232,7 +236,7 @@ impl Assessment<'_, '_> {
                 "Evidence scope contains unknown current model IDs.".into(),
             );
         }
-        if string(evidence, "check_revision") != check_digest(plan) {
+        if string(evidence, "check_revision") != record_digest(plan) {
             unknown(
                 "CHECK_REVISION_MISMATCH",
                 "Evidence does not match immutable check digest.".into(),
