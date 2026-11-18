@@ -43,8 +43,36 @@ are documented in [examples/graphify](../examples/graphify/README.md).
 
 ## Visualization
 
-[visualization-cases.yaml](visualization-cases.yaml) adds 16 artifact cases for `gdd-viewer-html/0.1`. Run `uv run python conformance/run_visualization.py`. [run_browser.cjs](run_browser.cjs) also tests actual offline browser actions, graph identity, hostile text, numeric precision, folding, downloads and responsiveness. See [VIEWER.md](../VIEWER.md) for runtime and verification scope.
+Run the 16 named artifact cases against the passive `gdd-viewer-native/0.1`
+profile from a checkout with the locked Cargo dependencies available locally.
 
+```sh
+cargo run --offline --locked -p gdd-conformance -- visualization --output native-view-run.json
+```
+
+The command prints the JSON receipt to stdout when `--output` is omitted.
+With `--output`, it creates a new receipt file and prints a summary. Each row
+records its model base, operation, scope, expected verdict, actual verdict
+and full verifier report. A case setup error records the affected ID and error.
+Any mismatch or setup error yields a nonzero exit after the remaining cases run.
+
+[visualization-cases.yaml](visualization-cases.yaml) defines the inputs and
+expectations for both the native and HTML suites. Each native case renders a
+fresh `.gddview` from its example model or the [multigraph fixture](fixtures/viewer-multigraph.json).
+The fixture preserves the bytes emitted by [viewer_fixture.py](viewer_fixture.py),
+including its parallel edges, hostile labels and integer `9007199254740993`.
+The scoped case renders the concert model around `action.reserve`.
+
+For cases that change or withhold an artifact, the runner first verifies the
+original saved bytes. The historical `changed_script` case appends unauthorized
+trailing content to the passive native file, `blank_html` empties the file,
+and `deep_payload` adds JSON nested beyond the native reader's depth limit.
+The receipt identifies the renderer profile and UTC execution time.
+
+Replay the historical `gdd-viewer-html/0.1` cases with
+`uv run python conformance/run_visualization.py`. [run_browser.cjs](run_browser.cjs)
+exercises offline browser interactions. See [VIEWER.md](../VIEWER.md) for the
+artifact and interaction verification scopes.
 
 ## GDD 0.3 boundaries and design principles
 

@@ -60,6 +60,10 @@ Graphify adapter cases and keep their full Rust import reports, use
 The suite and its precision expectation are documented in
 [Conformance cases](conformance/README.md#graphify-adapter).
 
+Run the 16 [native visualization artifact cases](conformance/README.md#visualization)
+with `cargo run --offline --locked -p gdd-conformance -- visualization --output native-view-run.json`.
+Use a new file path for each receipt.
+
 Verification runs locally; GitHub Actions CI is intentionally absent. For an
 ordinary change, run the checks relevant to the affected behavior. The local
 entry point records actual interpreter versions, durations, commands and logs

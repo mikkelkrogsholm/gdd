@@ -1,0 +1,117 @@
+{
+  "format": "gdd/0.2",
+  "project": {
+    "id": "viewer-fixture",
+    "title": "Viewer fixture",
+    "goal": "Inspect without losing identity or executing data"
+  },
+  "nodes": {
+    "constructor": {
+      "kind": "action",
+      "description": "</script><script>window.__gddPwned=1</script><img src=x onerror=\"window.__gddPwned=1\"> &    javascript:alert(1)",
+      "label": "</script><script>window.__gddPwned=1</script><img src=x onerror=\"window.__gddPwned=1\"> &    javascript:alert(1)",
+      "behavior": "</script><script>window.__gddPwned=1</script><img src=x onerror=\"window.__gddPwned=1\"> &    javascript:alert(1)",
+      "source_refs": [
+        {
+          "source": "source.test",
+          "purpose": "provenance"
+        }
+      ]
+    },
+    "action.second": {
+      "kind": "action",
+      "description": "Second action"
+    },
+    "component.orphan": {
+      "kind": "component",
+      "description": "Isolated node"
+    },
+    "entity.precision": {
+      "kind": "entity",
+      "description": "Exact integers",
+      "fields": {
+        "huge": {
+          "type": "integer",
+          "minimum": 9007199254740993
+        }
+      }
+    },
+    "community.backend": {
+      "kind": "community",
+      "description": "Backend"
+    },
+    "community.frontend": {
+      "kind": "community",
+      "description": "Frontend"
+    },
+    "scenario.hidden": {
+      "kind": "scenario",
+      "description": "Toggle this scenario"
+    }
+  },
+  "edges": [
+    {
+      "id": "edge.call_one",
+      "from": "constructor",
+      "relation": "calls",
+      "to": "action.second"
+    },
+    {
+      "id": "edge.call_two",
+      "from": "constructor",
+      "relation": "calls",
+      "to": "action.second"
+    },
+    {
+      "id": "edge.depends",
+      "from": "constructor",
+      "relation": "depends_on",
+      "to": "action.second"
+    },
+    {
+      "id": "edge.reverse",
+      "from": "action.second",
+      "relation": "calls",
+      "to": "constructor"
+    },
+    {
+      "id": "edge.loop",
+      "from": "constructor",
+      "relation": "calls",
+      "to": "constructor"
+    },
+    {
+      "id": "edge.member_backend",
+      "from": "constructor",
+      "relation": "member_of",
+      "to": "community.backend"
+    },
+    {
+      "id": "edge.member_frontend",
+      "from": "constructor",
+      "relation": "member_of",
+      "to": "community.frontend"
+    },
+    {
+      "id": "edge.second_frontend",
+      "from": "action.second",
+      "relation": "member_of",
+      "to": "community.frontend"
+    },
+    {
+      "id": "edge.scenario",
+      "from": "scenario.hidden",
+      "relation": "exercises",
+      "to": "constructor"
+    }
+  ],
+  "sources": {
+    "source.test": {
+      "role": "observation",
+      "title": "</script><script>window.__gddPwned=1</script><img src=x onerror=\"window.__gddPwned=1\"> &    javascript:alert(1)",
+      "uri": "javascript:alert(1)",
+      "format": "text/plain",
+      "normative": false
+    }
+  }
+}

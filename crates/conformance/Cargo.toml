@@ -3,7 +3,7 @@ name = "gdd-conformance"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
-description = "Local Graphify adapter conformance runner"
+description = "Local GDD conformance runner"
 publish = false
 
 [dependencies]

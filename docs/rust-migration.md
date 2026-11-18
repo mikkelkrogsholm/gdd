@@ -255,7 +255,11 @@ Combine `Profile::Visualization` with other profiles via
 its validation scope. Its passing visualization check carries the saved view
 scope. A model error blocks the visualization check with `REVISION_UNRESOLVED`.
 The released Python renderer and verifier continue to serve the historical
-HTML format.
+HTML format. Run the [16 named artifact cases](../conformance/README.md#visualization)
+against the native profile with
+`cargo run --offline --locked -p gdd-conformance -- visualization`.
+The command prints a timestamped JSON receipt with each full verification
+report. Pass `--output PATH` to save it to a new file.
 [Native artifact contract](../VIEWER.md#share-a-native-view)
 
 ## Workplans and packet verification
