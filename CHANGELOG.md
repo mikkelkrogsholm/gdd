@@ -7,6 +7,9 @@ imply a registry publication or a certified standard.
 
 ## Unreleased
 
+- Add a standalone Rust tool to synchronize skill references from a checkout and
+  verify their hashes in a copied skill directory.
+
 ## 0.8.0 — November 2, 2026
 
 Package: `gdd-validator` 0.8.0, a GitHub development prerelease. Standard:

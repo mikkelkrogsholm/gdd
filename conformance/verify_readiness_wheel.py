@@ -33,13 +33,18 @@ def source_assets() -> dict[str, Path]:
     ):
         if not source.is_dir():
             raise AssertionError(f"Required source asset directory is missing: {source}")
-        for file in sorted(source.rglob("*")):
-            relative = file.relative_to(source)
-            if file.is_file() and "__pycache__" not in relative.parts and file.suffix not in {".pyc", ".pyo"}:
-                member = f"{destination}/{relative.as_posix()}"
-                if member in assets:
-                    raise AssertionError(f"Asset mapping is ambiguous: {member}")
-                assets[member] = file
+        for directory, subdirs, files in os.walk(source):
+            folder = Path(directory)
+            subdirs[:] = [name for name in subdirs if name != "__pycache__"]
+            if folder == ROOT / "skills/gdd/scripts" and "target" in subdirs:
+                subdirs.remove("target")
+            for name in files:
+                file = folder / name
+                if file.is_file() and file.suffix not in {".pyc", ".pyo"}:
+                    member = f"{destination}/{file.relative_to(source).as_posix()}"
+                    if member in assets:
+                        raise AssertionError(f"Asset mapping is ambiguous: {member}")
+                    assets[member] = file
     return assets
 
 

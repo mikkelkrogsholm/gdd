@@ -14,7 +14,9 @@ only the relevant chapters below. The [reference catalog](references/catalog.md)
 identifies generated copies and optional repository-only examples/history. All
 routed guidance and schemas are bundled; historical citations in exact copies
 may require the source repository. Edit the project's model and sources, not the
-skill's standard. Copied assets retain their original text and revisions.
+skill's standard. Copied assets retain their original text and revisions. With
+Cargo installed, run `cargo run --locked --manifest-path scripts/Cargo.toml -- verify .`
+from this skill directory to check the bundled files against their local index.
 
 ## Choose the current task
 

@@ -163,9 +163,19 @@ do not present them as new executions. [evidence/README.md](evidence/README.md)
 describes the provenance policy.
 
 The standalone skill contains synchronized reference copies. After changing
-authoritative guidance, run `uv run --no-sync python scripts/sync_skill.py`,
-review the resulting skill changes, then rerun `--check`. Keep the skill's
-relative links self-contained so a copied folder works outside the checkout.
+authoritative guidance, regenerate the skill, review the changes and run its
+standalone tests.
+
+```sh
+cargo run --locked --manifest-path skills/gdd/scripts/Cargo.toml -- sync
+cargo run --locked --manifest-path skills/gdd/scripts/Cargo.toml -- sync --check
+cargo test --locked --manifest-path skills/gdd/scripts/Cargo.toml
+```
+
+Use `--root PATH` for a different checkout. The index retains its source URL
+and Git base unless supplied with `--repository URL` or `--git-base-revision REV`.
+The hashes describe the actual working-tree bytes. The existing Python freshness
+check remains part of local release verification during the migration.
 
 ## Versions and releases
 

@@ -25,10 +25,12 @@ dev = ["pytest>=8.3,<10"]
 [tool.hatch.build.targets.wheel]
 packages = ["gdd_validator"]
 
+[tool.hatch.build.targets.wheel.hooks.custom]
+path = "scripts/skill_wheel.py"
+
 [tool.hatch.build.targets.wheel.force-include]
 "schemas" = "gdd_validator/schemas"
 "templates/project" = "gdd_validator/templates/project"
-"skills/gdd" = "gdd_validator/skill"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

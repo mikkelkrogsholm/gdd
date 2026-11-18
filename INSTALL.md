@@ -101,7 +101,7 @@ canonical assessment and trust contracts.
 ## Install the standalone agent skill
 
 [skills/gdd](skills/gdd/SKILL.md) is a self-contained skill folder. Keep
-`SKILL.md` and its `references/` directory together. It can be used independently
+`SKILL.md`, `references/`, and `scripts/` together. It can be used independently
 of this checkout after installing the CLI.
 
 Choose the skill destination supported by your agent runtime, then copy the
@@ -126,6 +126,13 @@ import sys
 source = Path(str(files("gdd_validator").joinpath("skill")))
 shutil.copytree(source, Path(sys.argv[1]))
 PY
+```
+
+Cargo can build the verifier directly from the copy. These paths work from
+any directory when `GDD_SKILL_COPY` contains the absolute installation path.
+
+```sh
+cargo run --locked --manifest-path "$GDD_SKILL_COPY/scripts/Cargo.toml" -- verify "$GDD_SKILL_COPY"
 ```
 
 Move the reviewed copy to the location documented by your runtime or point the
