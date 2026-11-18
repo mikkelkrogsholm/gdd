@@ -1,4 +1,5 @@
 mod code;
+mod concert_archive;
 mod fixture;
 mod graphify;
 mod impact;
@@ -17,6 +18,11 @@ use std::process::ExitCode;
 #[derive(Parser)]
 #[command(name = "gdd-conformance")]
 enum Command {
+    /// Verify or restore an indexed concert experiment archive.
+    ConcertArchive {
+        #[command(subcommand)]
+        action: concert_archive::Action,
+    },
     /// Execute the standard cases and print or save their full JSON receipt.
     Standard {
         #[arg(long, value_name = "PATH")]
@@ -52,6 +58,7 @@ enum Command {
 fn main() -> Result<ExitCode> {
     let directory = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../conformance");
     match Command::parse() {
+        Command::ConcertArchive { action } => concert_archive::command(action),
         Command::Code { output } => code::command(&directory, output),
         Command::Impact { output } => impact::command(&directory, output),
         Command::Status { output } => status::command(&directory, output),

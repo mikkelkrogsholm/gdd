@@ -223,6 +223,12 @@ fn receipt_path(path: &Path) -> io::Result<String> {
     Ok(path.into())
 }
 
+/// Publish staged conformance output without replacing an existing destination.
+#[cfg(feature = "conformance")]
+pub fn publish_exclusive(source: &Path, destination: &Path) -> io::Result<()> {
+    rename_exclusive(source, destination)
+}
+
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 fn rename_exclusive(source: &Path, destination: &Path) -> io::Result<()> {
     use rustix::fs::{CWD, RenameFlags, renameat_with};

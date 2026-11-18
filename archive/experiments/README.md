@@ -20,10 +20,10 @@ no historical receipt, model or asset was translated or rewritten.
 From the repository root:
 
 ```sh
-python scripts/concert_archive.py check \
+cargo run --locked -p gdd-conformance -- concert-archive check \
   --archive archive/experiments/concert-7e27757.tar.gz \
   --index archive/experiments/concert-7e27757.index.json
-python scripts/concert_archive.py restore \
+cargo run --locked -p gdd-conformance -- concert-archive restore \
   --archive archive/experiments/concert-7e27757.tar.gz \
   --index archive/experiments/concert-7e27757.index.json \
   --output "$PWD/../concert-original-recovered"
@@ -34,6 +34,8 @@ not be symlinks; use a canonical parent path on systems where `/tmp` or `/var` i
 a symlink. The helper verifies every indexed regular file before writing, rejects
 links/traversal/duplicate members, and refuses all existing output paths. The
 index is the integrity trust input; keep its Git provenance when downloading.
+Both commands print a JSON receipt. Restore preserves Git file permissions on Unix.
+The Python helper still provides the deterministic build from Git.
 
 Recovered files appear under `examples/concert-app/`. Original validator,
 schema and standard dependencies remain retrievable from the same pinned Git
