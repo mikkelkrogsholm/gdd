@@ -14,7 +14,7 @@ impl<'a> Model<'a> {
                 count(id.as_str());
             }
         }
-        for edge in self.bundle.edges() {
+        for edge in self.bundle.model_edges() {
             count(edge.id);
         }
         for node in self.bundle.nodes() {
@@ -40,32 +40,48 @@ impl<'a> Model<'a> {
             .collect()
     }
 
-    // Positive use of check plans and decision receipts requires current,
-    // unambiguous references and excludes members of supersession cycles.
-    pub(super) fn invalid_plans(
+    // Validate current targets and immutable references before trusting a
+    // record or allowing it to retire an earlier record.
+    pub(super) fn invalid_records(
         &self,
         records: &BTreeMap<&'a str, &'a Value>,
-        kind: &str,
-        revision: &str,
+        revision: Option<&str>,
     ) -> BTreeSet<&'a str> {
         let model_ids = self.model_id_counts();
         let mut invalid = BTreeSet::new();
         let mut visited = BTreeSet::new();
         for (&id, record) in records {
-            if string(record, "kind") != kind {
-                continue;
-            }
+            let kind = string(record, "kind");
+            let targets = if kind == "binding" {
+                "targets"
+            } else {
+                "scope"
+            };
+            let spec_revision = get(record, "spec_revision").and_then(text);
             if model_ids.contains_key(id)
-                || get(record, "spec_revision").and_then(text) == Some(revision)
-                    && strings(record, "scope").any(|s| model_ids.get(s) != Some(&1))
-                || strings(record, "checks").any(|s| {
-                    model_ids.contains_key(s)
-                        || records.get(s).is_none_or(|r| string(r, "kind") != "check")
-                })
+                || revision.is_some()
+                    && spec_revision == revision
+                    && strings(record, targets).any(|s| model_ids.get(s) != Some(&1))
+                || strings(record, "checks")
+                    .chain(get(record, "check").and_then(text))
+                    .any(|s| {
+                        model_ids.contains_key(s)
+                            || records.get(s).is_none_or(|r| string(r, "kind") != "check")
+                    })
                 || get(record, "supersedes").and_then(text).is_some_and(|s| {
                     model_ids.contains_key(s)
                         || records.get(s).is_none_or(|r| string(r, "kind") != kind)
                 })
+            {
+                invalid.insert(id);
+            }
+            if kind == "evidence"
+                && let Some(plan) = records.get(string(record, "check"))
+                && ((string(plan, "kind") == "check"
+                    && string(record, "check_revision") != check_digest(plan))
+                    || (spec_revision.is_some()
+                        && spec_revision != get(plan, "spec_revision").and_then(text))
+                    || !covers(record, plan, "scope"))
             {
                 invalid.insert(id);
             }
@@ -291,10 +307,32 @@ impl<'a> Model<'a> {
     }
 }
 
-fn check_digest(plan: &Value) -> String {
+pub(super) fn covers(replacement: &Value, previous: &Value, field: &str) -> bool {
+    strings(previous, field).all(|id| strings(replacement, field).any(|s| s == id))
+}
+
+pub(super) fn check_digest(plan: &Value) -> String {
     // The strict parser stores object members in sorted order. Check plans have
     // only string and array values, so compact UTF-8 JSON is canonical here.
     let json = to_json(plan).expect("schema-validated check plan");
     let bytes = serde_json::to_vec(&json).expect("JSON serializes to bytes");
     format!("sha256:{}", sha256(&bytes))
+}
+
+pub(super) fn compatible_decision(replacement: &Value, previous: &Value) -> bool {
+    [
+        "kind",
+        "topic",
+        "spec_revision",
+        "policy_revision",
+        "activity",
+        "implementation",
+        "code_revision",
+    ]
+    .into_iter()
+    .all(|key| get(replacement, key) == get(previous, key))
+        && (items(replacement, "scope").is_empty()
+            || !items(previous, "scope").is_empty()
+                && strings(previous, "scope")
+                    .all(|s| strings(replacement, "scope").any(|member| member == s)))
 }

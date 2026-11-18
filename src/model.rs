@@ -10,9 +10,11 @@ use crate::input::Value;
 use crate::report::{Check, CheckResult, Diagnostic};
 use crate::validation::{CORE_KINDS, CORE_RELATIONS, Profile, ValidationOptions, present};
 
+mod authorization;
 pub mod context;
 pub(crate) mod explain;
 mod extensions;
+mod implementation;
 mod planning;
 mod readiness;
 mod records;
@@ -54,7 +56,12 @@ pub(crate) fn check<'a>(
         custom_kinds: BTreeMap::new(),
         custom_relations: BTreeMap::new(),
         unsupported_extensions: options.unsupported_extensions,
-        checks: Vec::new(),
+        checks: bundle
+            .diagnostics()
+            .iter()
+            .filter(|d| d.semantic_only)
+            .map(Check::from)
+            .collect(),
     };
     model.extensions();
     model.edges();
@@ -71,18 +78,20 @@ pub(crate) fn check<'a>(
             "Core references, endpoints, identity, refinement, machines, types, boundaries and declared extension data checked.",
         ));
     }
-    if bundle.records().len() != 0 {
+    let wants_records = options.activity.is_some() || options.profiles.contains(&Profile::Records);
+    if wants_records || bundle.records().len() != 0 {
         model.records();
     }
     let mut context = None;
-    if options.profiles.contains(&Profile::Readiness) {
-        let graph = context::ContextGraph::new(bundle);
+    let wants_readiness = options.profiles.contains(&Profile::Readiness);
+    let graph = (wants_readiness || (wants_records && options.activity.is_none()))
+        .then(|| context::ContextGraph::new(bundle));
+    if wants_readiness {
+        let graph = graph.as_ref().expect("readiness graph");
         if let Some(plan) = present(options.parallel_plan) {
-            model
-                .checks
-                .extend(planning::parallel(&model, &graph, plan));
+            model.checks.extend(planning::parallel(&model, graph, plan));
         } else {
-            let (checks, assessed) = readiness::check(&model, &graph, scope, options.host_context);
+            let (checks, assessed) = readiness::check(&model, graph, scope, options.host_context);
             let package = present(options.package);
             let empty_package = (package.is_some() && scope.is_empty()).then(|| graph.scope([]));
             if let Some(package) = package {
@@ -96,6 +105,22 @@ pub(crate) fn check<'a>(
                 structural: assessed,
                 empty_package,
             });
+        }
+    }
+    if wants_records {
+        let host = present(options.host_context).unwrap_or(&Value::Null);
+        if let Some(activity) = options.activity {
+            model
+                .checks
+                .push(authorization::check(&model, activity, scope, host));
+        } else {
+            let checks = implementation::check(
+                &model,
+                graph.as_ref().expect("implementation graph"),
+                scope,
+                host,
+            );
+            model.checks.extend(checks);
         }
     }
     (model.checks, context)
@@ -207,7 +232,7 @@ impl<'a> Model<'a> {
     }
 
     fn edges(&mut self) {
-        for item in self.bundle.edges() {
+        for item in self.bundle.model_edges() {
             let id = item.id;
             let from = string(item.value, "from");
             let to = string(item.value, "to");
@@ -723,7 +748,7 @@ impl<'a> Model<'a> {
         }
         for item in self
             .bundle
-            .edges()
+            .model_edges()
             .filter(|item| string(item.value, "relation") == "calls")
         {
             let from = string(item.value, "from");

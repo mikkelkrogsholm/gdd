@@ -116,6 +116,30 @@ either assessment through `validate_with_options`. Parallel-plan evaluation
 resolves workspace paths relative to the model directory and checks the current
 model and record declarations.
 
+### Implementation evidence and authorization
+
+Use `--profile records` to assess the recorded checks required by the scoped
+blocking rules. Supply host assertions with `--host-context`. For example, the
+archived quote demo includes a prepared context for its recorded implementation.
+
+```sh
+cargo run --manifest-path "$GDD_CHECKOUT/Cargo.toml" --bin gdd -- \
+  validate "$GDD_CHECKOUT/examples/agent-native/model.gdd.json" --profile records \
+  --scope action.quote --host-context "$GDD_CHECKOUT/examples/agent-native/host.acceptance.json"
+```
+
+The validator reads the captured ledger and compares check digests, spec and
+code revisions, bindings, execution provenance and required environment. The
+report records the evidence supporting each applicable PASS or FAIL. An empty
+required check set produces UNKNOWN.
+
+Use `--activity model_changes`, `--activity implementation` or
+`--activity acceptance` to evaluate the host's authorization for that scope.
+The activity adds the records profile and returns GRANTED, DENIED or UNRESOLVED
+in the authorization dimension. In Rust, set `ValidationOptions::activity` to
+the corresponding `gdd::validation::Activity`. Both assessments read the model
+and its declared ledgers from the same bundle capture.
+
 ## Snapshots, context and project creation
 
 For a model-only assessment, use `bundle::load_model_only(&path)` and
@@ -135,7 +159,7 @@ question, so its model passes and its structural readiness fails.
 
 | Python entry points | Current Rust support |
 | --- | --- |
-| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model and readiness. Readiness includes context packages and parallel plans. The records, visualization and Graphify profiles and activity authorization still require Python. |
+| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. A separate records input supplied via `--model`, visualization and Graphify validation still require Python. |
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Python-only Graphify operations. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow`, `create_run`, `run_status`, `advance_run` | Python-only work planning and run journals. |

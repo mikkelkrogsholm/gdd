@@ -48,12 +48,33 @@ pub enum Profile {
     Representation,
     Model,
     Readiness,
+    Records,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, ValueEnum)]
+#[serde(rename_all = "snake_case")]
+#[value(rename_all = "snake_case")]
+pub enum Activity {
+    ModelChanges,
+    Implementation,
+    Acceptance,
+}
+
+impl Activity {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::ModelChanges => "model_changes",
+            Self::Implementation => "implementation",
+            Self::Acceptance => "acceptance",
+        }
+    }
 }
 
 #[derive(Debug, Default)]
 pub struct ValidationOptions<'a> {
     pub profiles: &'a [Profile],
     pub scope: &'a [String],
+    pub activity: Option<Activity>,
     pub host_context: Option<&'a Value>,
     pub package: Option<&'a Value>,
     pub parallel_plan: Option<&'a Value>,
@@ -182,11 +203,14 @@ fn assess<'a>(
             "--explain requires --profile readiness.",
         ));
     }
-    let profiles = if options.profiles.is_empty() {
+    let mut profiles = if options.profiles.is_empty() {
         vec![Profile::Model]
     } else {
         distinct(options.profiles)
     };
+    if options.activity.is_some() && !profiles.contains(&Profile::Records) {
+        profiles.push(Profile::Records);
+    }
     let mut report = Report::new(profiles, scope.iter().copied().map(str::to_owned).collect());
     let mut normative_valid = true;
     let mut manifest_valid = bundle.manifest().is_some();
@@ -203,12 +227,13 @@ fn assess<'a>(
         }
     }
     let wants_readiness = report.profiles.contains(&Profile::Readiness);
-    let wants_model = wants_readiness || report.profiles.contains(&Profile::Model);
+    let wants_records = report.profiles.contains(&Profile::Records);
+    let wants_model = wants_records || wants_readiness || report.profiles.contains(&Profile::Model);
     report.checks.extend(
         bundle
             .diagnostics()
             .iter()
-            .filter(|issue| wants_model || !issue.semantic_only)
+            .filter(|issue| !issue.semantic_only)
             .map(Check::from),
     );
     if normative_valid {
@@ -262,22 +287,51 @@ fn assess<'a>(
             report.checks.push(check);
         }
     }
-    if wants_readiness && (!representation_valid || bundle.manifest().is_none()) {
-        let mut check = Check::new(
-            "readiness.unavailable",
-            "readiness",
-            CheckResult::Unknown,
-            "A valid supported GDD model is required; no semantic PASS inferred.",
-        );
-        check.scope.clone_from(&report.scope);
-        check.diagnostics.push(Diagnostic::new(
-            "REVISION_UNRESOLVED",
-            check.result,
-            "Model unavailable or representation invalid.",
-            None,
-            "",
-        ));
-        report.checks.push(check);
+    if !representation_valid || bundle.manifest().is_none() {
+        for (requested, id, dimension) in [
+            (wants_readiness, "readiness.unavailable", "readiness"),
+            (wants_records, "records.unavailable", "implementation"),
+        ] {
+            if requested {
+                let mut check = Check::new(
+                    id,
+                    dimension,
+                    CheckResult::Unknown,
+                    "A valid supported GDD model is required; no semantic PASS inferred.",
+                );
+                check.scope.clone_from(&report.scope);
+                check.diagnostics.push(Diagnostic::new(
+                    "REVISION_UNRESOLVED",
+                    check.result,
+                    "Model unavailable or representation invalid.",
+                    None,
+                    "",
+                ));
+                report.checks.push(check);
+            }
+        }
+        if let Some(activity) = options.activity {
+            let mut check = Check::new(
+                "authorization.unavailable",
+                "authorization",
+                CheckResult::Unresolved,
+                "Valid model and revision unavailable.",
+            );
+            check.scope.clone_from(&report.scope);
+            check.details = Some(crate::report::CheckDetails::Authorization {
+                activity,
+                policy_revision: None,
+                authority_basis: None,
+            });
+            check.diagnostics.push(Diagnostic::new(
+                "AUTHORIZATION_UNRESOLVED",
+                check.result,
+                "Authorization input incomplete.",
+                None,
+                "",
+            ));
+            report.checks.push(check);
+        }
     }
     if let Some(output) = explanation {
         crate::model::explain::readiness(bundle, &report, context.as_ref(), output)?;

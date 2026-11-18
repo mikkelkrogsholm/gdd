@@ -133,6 +133,7 @@ fn compares_numeric_intervals_and_integer_inhabitance_exactly() {
             CheckResult::Pass => continue,
             CheckResult::Fail => "TYPE_CONSTRAINT_INVALID",
             CheckResult::Unknown => "FORMAT_UNSUPPORTED",
+            _ => panic!("unexpected authorization result"),
         };
         assert_eq!(
             diagnostic(&report, code).location.pointer,

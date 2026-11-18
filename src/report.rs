@@ -1,4 +1,4 @@
-//! Checks and reports for the representation and model validation profiles.
+//! Schema-shaped validation checks and dimension-specific verdicts.
 
 use std::collections::BTreeSet;
 
@@ -6,15 +6,18 @@ use serde::Serialize;
 
 use crate::bundle::{self, Location, Outcome};
 use crate::valid_id;
-use crate::validation::Profile;
+use crate::validation::{Activity, Profile};
 
 /// Verdicts in increasing order of precedence for aggregation.
 #[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum CheckResult {
     Pass,
+    Granted,
     Unknown,
+    Unresolved,
     Fail,
+    Denied,
 }
 
 impl From<Outcome> for CheckResult {
@@ -52,9 +55,9 @@ impl Diagnostic {
         Self {
             code,
             severity: match result {
-                CheckResult::Fail => "error",
-                CheckResult::Unknown => "warning",
-                CheckResult::Pass => "info",
+                CheckResult::Fail | CheckResult::Denied => "error",
+                CheckResult::Unknown | CheckResult::Unresolved => "warning",
+                CheckResult::Pass | CheckResult::Granted => "info",
             },
             message: message.into(),
             location: DiagnosticLocation {
@@ -84,6 +87,25 @@ pub struct Check {
     pub scope: Vec<String>,
     pub reason: String,
     pub diagnostics: Vec<Diagnostic>,
+    #[serde(flatten)]
+    pub details: Option<CheckDetails>,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(untagged)]
+pub enum CheckDetails {
+    Authorization {
+        activity: Activity,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        policy_revision: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        authority_basis: Option<String>,
+    },
+    Implementation {
+        implementation: String,
+        code_revision: String,
+        evidence_refs: Vec<String>,
+    },
 }
 
 impl Check {
@@ -100,6 +122,7 @@ impl Check {
             scope: Vec::new(),
             reason: reason.into(),
             diagnostics: Vec::new(),
+            details: None,
         }
     }
 }
@@ -165,14 +188,18 @@ impl Report {
             .filter(|check| check.dimension == dimension)
             .map(|check| check.result)
             .max()
-            .unwrap_or(CheckResult::Unknown)
+            .unwrap_or(if dimension == "authorization" {
+                CheckResult::Unresolved
+            } else {
+                CheckResult::Unknown
+            })
     }
 
     pub fn exit_code(&self) -> u8 {
         match self.checks.iter().map(|check| check.result).max() {
-            Some(CheckResult::Pass) => 0,
-            Some(CheckResult::Fail) => 1,
-            Some(CheckResult::Unknown) | None => 2,
+            Some(CheckResult::Pass | CheckResult::Granted) => 0,
+            Some(CheckResult::Fail | CheckResult::Denied) => 1,
+            Some(CheckResult::Unknown | CheckResult::Unresolved) | None => 2,
         }
     }
 }

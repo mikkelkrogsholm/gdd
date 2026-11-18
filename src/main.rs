@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand};
-use gdd::validation::{self, Profile, ValidationOptions};
+use gdd::validation::{self, Activity, Profile, ValidationOptions};
 use gdd::{DEFAULT_PROJECT_ID, DEFAULT_TITLE, bundle, init_project};
 use serde::Serialize;
 
@@ -54,6 +54,8 @@ enum Command {
         unsupported_extensions: Vec<String>,
         #[arg(long)]
         host_context: Option<PathBuf>,
+        #[arg(long, value_enum)]
+        activity: Option<Activity>,
         #[arg(long)]
         package: Option<PathBuf>,
         #[arg(long)]
@@ -135,6 +137,7 @@ fn run() -> io::Result<ExitCode> {
             scope,
             unsupported_extensions,
             host_context,
+            activity,
             package,
             parallel_plan,
             explain,
@@ -145,6 +148,7 @@ fn run() -> io::Result<ExitCode> {
             let parallel = tool_input(parallel_plan)?;
             let options = ValidationOptions {
                 profiles: &profile,
+                activity,
                 scope: &scope,
                 host_context: host.as_ref(),
                 package: package.as_ref(),

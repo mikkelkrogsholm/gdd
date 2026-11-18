@@ -130,7 +130,7 @@ pub(super) fn package<'a>(
         (
             "edges",
             projected.edges,
-            model.bundle.edges().map(|e| e.id).collect(),
+            model.bundle.model_edges().map(|e| e.id).collect(),
         ),
         ("sources", projected.sources, registry("sources")),
         (
@@ -426,7 +426,7 @@ fn active_checks<'a>(model: &Model<'a>) -> BTreeMap<&'a str, &'a Value> {
         return BTreeMap::new();
     };
     let records: BTreeMap<_, _> = model.bundle.records().map(|r| (r.id, r.value)).collect();
-    let invalid = model.invalid_plans(&records, "check", &snapshot.revision);
+    let invalid = model.invalid_records(&records, Some(&snapshot.revision));
     let mut current: BTreeMap<_, _> = records
         .into_iter()
         .filter(|(id, r)| {

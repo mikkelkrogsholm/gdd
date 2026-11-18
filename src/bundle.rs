@@ -139,6 +139,7 @@ pub struct Bundle {
     locations: BTreeMap<String, Location>,
     nodes: BTreeMap<String, usize>,
     edges: Vec<(String, usize, usize)>,
+    colliding_edges: Vec<(String, usize, usize, Location)>,
     records: BTreeMap<String, (usize, Location)>,
     diagnostics: Vec<Diagnostic>,
     snapshot: Option<Snapshot>,
@@ -217,6 +218,21 @@ impl Bundle {
                     .expect("indexed edges")[*index],
                 location: &self.locations[id],
             })
+    }
+
+    // Invalid global identities still have graph semantics. Retain their
+    // occurrences for checks on other records and for ambiguity detection.
+    pub(crate) fn model_edges(&self) -> impl Iterator<Item = LocatedRecord<'_>> {
+        self.edges().chain(
+            self.colliding_edges
+                .iter()
+                .map(|(id, doc, index, location)| LocatedRecord {
+                    id,
+                    value: &array(get(&self.documents[*doc].value, "edges"))
+                        .expect("indexed edges")[*index],
+                    location,
+                }),
+        )
     }
 
     pub fn records(&self) -> impl ExactSizeIterator<Item = LocatedRecord<'_>> {
@@ -562,7 +578,7 @@ fn capture_advisory_contracts(reader: &Reader, bundle: &mut Bundle, scope: &[Str
     let nodes = bundle
         .nodes()
         .filter(|item| context.as_ref().is_none_or(|c| c.contains(item.id)));
-    let edges = bundle.edges().filter(|item| {
+    let edges = bundle.model_edges().filter(|item| {
         context.as_ref().is_none_or(|c| {
             ["from", "to"]
                 .iter()
@@ -712,15 +728,24 @@ fn index_model_document(bundle: &mut Bundle, index: usize) {
                     .push(shape(file, &pointer, "a node object"));
                 continue;
             }
-            if insert_location(
+            let inserted = insert_location(
                 &mut bundle.locations,
                 &mut bundle.diagnostics,
                 id,
                 file,
-                pointer,
-            ) && field == "nodes"
-            {
+                pointer.clone(),
+            );
+            if field == "nodes" && !bundle.nodes.contains_key(id) {
                 bundle.nodes.insert(id.clone(), index);
+                if !inserted {
+                    bundle.locations.insert(
+                        id.clone(),
+                        Location {
+                            file: file.into(),
+                            pointer,
+                        },
+                    );
+                }
             }
         }
     }
@@ -741,9 +766,19 @@ fn index_model_document(bundle: &mut Bundle, index: usize) {
             &mut bundle.diagnostics,
             id,
             file,
-            pointer,
+            pointer.clone(),
         ) {
             bundle.edges.push((id.into(), index, edge_index));
+        } else {
+            bundle.colliding_edges.push((
+                id.into(),
+                index,
+                edge_index,
+                Location {
+                    file: file.into(),
+                    pointer,
+                },
+            ));
         }
     }
 }

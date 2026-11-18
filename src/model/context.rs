@@ -81,7 +81,7 @@ impl<'a> ContextGraph<'a> {
         let version03 = bundle
             .manifest()
             .is_some_and(|doc| doc.kind == DocumentKind::Manifest03);
-        for edge in bundle.edges() {
+        for edge in bundle.model_edges() {
             let (Some(from), Some(to), Some(relation)) = (
                 field(edge.value, "from"),
                 field(edge.value, "to"),
@@ -338,7 +338,7 @@ pub(super) fn project<'a>(
         }
     }
     let mut edges = BTreeSet::new();
-    for edge in bundle.edges() {
+    for edge in bundle.model_edges() {
         if ["from", "to"]
             .iter()
             .all(|key| field(edge.value, key).is_some_and(|id| context.contains(id)))

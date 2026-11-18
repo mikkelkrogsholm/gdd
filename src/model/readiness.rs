@@ -36,7 +36,7 @@ pub(super) fn check<'a>(
         scenarios: BTreeMap::new(),
         decisions: decisions::accepted(model, host),
     };
-    for edge in model.bundle.edges() {
+    for edge in model.bundle.model_edges() {
         let relation = string(edge.value, "relation");
         if matches!(relation, "exercises" | "verifies") {
             readiness
@@ -64,7 +64,7 @@ pub(super) fn check<'a>(
             readiness.node(id, node, context.implementation_targets.contains(id));
         }
     }
-    for edge in model.bundle.edges() {
+    for edge in model.bundle.model_edges() {
         let from = string(edge.value, "from");
         let to = string(edge.value, "to");
         if context.contains(from) && context.contains(to) {
