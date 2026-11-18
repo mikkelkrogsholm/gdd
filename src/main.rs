@@ -53,6 +53,30 @@ enum Command {
         #[arg(long, allow_negative_numbers = true)]
         output: Option<PathBuf>,
     },
+    /// Derive component interfaces, ownership and community call boundaries.
+    #[command(args_override_self = true)]
+    Boundaries {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
+    },
+    /// Assess the applicability of an advisory design review.
+    #[command(args_override_self = true)]
+    DesignReview {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        review: Option<PathBuf>,
+        #[arg(long, allow_negative_numbers = true)]
+        implementation: String,
+        #[arg(long, allow_negative_numbers = true)]
+        code_revision: String,
+        #[arg(long, allow_negative_numbers = true)]
+        scope: Vec<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
+    },
     /// Compute the portable revision of a GDD 0.2 or 0.3 bundle.
     Snapshot {
         path: PathBuf,
@@ -99,7 +123,7 @@ enum Command {
 
 // Match the CLI's pathlib argument spelling without resolving symlinks or
 // cancelling parent-directory components, which can change which file is read.
-fn status_path(path: PathBuf) -> PathBuf {
+fn cli_path(path: PathBuf) -> PathBuf {
     let mut normalized: PathBuf = path
         .components()
         .filter(|part| *part != std::path::Component::CurDir)
@@ -160,9 +184,9 @@ fn run() -> io::Result<ExitCode> {
             format,
             output,
         } => {
-            let path = status_path(path);
-            let output = output.map(status_path);
-            let host = tool_input(host_context.map(status_path))?;
+            let path = cli_path(path);
+            let output = output.map(cli_path);
+            let host = tool_input(host_context.map(cli_path))?;
             let status = gdd::status::project_status(
                 &path,
                 gdd::status::StatusOptions {
@@ -185,6 +209,31 @@ fn run() -> io::Result<ExitCode> {
                 }
             }
             return Ok(ExitCode::from(status.exit_code));
+        }
+        Command::Boundaries { path, output } => {
+            let model = gdd::projection::load_projection_bundle(&cli_path(path))?;
+            let view = gdd::boundaries::boundary_view(&model, None)?;
+            write_output(output.map(cli_path).as_deref(), &view)?;
+        }
+        Command::DesignReview {
+            path,
+            review,
+            implementation,
+            code_revision,
+            scope,
+            output,
+        } => {
+            let model = gdd::projection::load_projection_bundle(&cli_path(path))?;
+            let review = tool_input(review.map(cli_path))?;
+            let status = gdd::design_review::review_design(
+                &model,
+                review.as_ref(),
+                Some(&implementation),
+                Some(&code_revision),
+                (!scope.is_empty()).then_some(scope.as_slice()),
+            )?;
+            write_output(output.map(cli_path).as_deref(), &status)?;
+            return Ok(ExitCode::from(status.exit_code()));
         }
         Command::Snapshot { path, output } => {
             let bundle = bundle::load_model_only(&path);
@@ -260,6 +309,12 @@ fn main() -> ExitCode {
         Ok(code) => code,
         Err(error) => {
             eprintln!("gdd: {error}");
+            if let Some(projection) = error
+                .get_ref()
+                .and_then(|e| e.downcast_ref::<gdd::projection::ProjectionError>())
+            {
+                return ExitCode::from(projection.exit_code);
+            }
             if error
                 .get_ref()
                 .and_then(|e| e.downcast_ref::<gdd::input::InputError>())

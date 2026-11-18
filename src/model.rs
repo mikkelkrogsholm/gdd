@@ -11,7 +11,9 @@ use crate::report::{Check, CheckResult, Diagnostic};
 use crate::validation::{CORE_KINDS, CORE_RELATIONS, Profile, ValidationOptions, present};
 
 mod authorization;
+pub mod boundaries;
 pub mod context;
+pub mod design_review;
 pub(crate) mod explain;
 mod extensions;
 mod implementation;
@@ -44,40 +46,7 @@ pub(crate) fn check<'a>(
     options: &ValidationOptions<'a>,
     scope: &[&'a str],
 ) -> (Vec<Check>, Option<ReadinessContexts<'a>>) {
-    let mut model = Model {
-        bundle,
-        manifest,
-        nodes: bundle.nodes().map(|node| (node.id, node.value)).collect(),
-        outgoing: BTreeMap::new(),
-        parents: BTreeMap::new(),
-        namespaces: entries(&manifest.value, "extensions")
-            .map(|(_, declaration)| string(declaration, "namespace"))
-            .collect(),
-        custom_kinds: BTreeMap::new(),
-        custom_relations: BTreeMap::new(),
-        unsupported_extensions: options.unsupported_extensions,
-        checks: bundle
-            .diagnostics()
-            .iter()
-            .filter(|d| d.semantic_only)
-            .map(Check::from)
-            .collect(),
-    };
-    model.extensions();
-    model.edges();
-    model.nodes();
-    model.manifest_references();
-    if manifest.kind == DocumentKind::Manifest03 {
-        model.boundaries();
-    }
-    if model.checks.is_empty() {
-        model.checks.push(Check::new(
-            "model.semantics",
-            "model",
-            CheckResult::Pass,
-            "Core references, endpoints, identity, refinement, machines, types, boundaries and declared extension data checked.",
-        ));
-    }
+    let mut model = semantics(bundle, manifest, options.unsupported_extensions);
     let wants_records = options.activity.is_some() || options.profiles.contains(&Profile::Records);
     if wants_records || bundle.records().len() != 0 {
         model.records();
@@ -124,6 +93,52 @@ pub(crate) fn check<'a>(
         }
     }
     (model.checks, context)
+}
+
+pub(crate) fn projection_checks(bundle: &Bundle, manifest: &Document) -> Vec<Check> {
+    semantics(bundle, manifest, &[]).checks
+}
+
+fn semantics<'a>(
+    bundle: &'a Bundle,
+    manifest: &'a Document,
+    unsupported_extensions: &'a [String],
+) -> Model<'a> {
+    let mut model = Model {
+        bundle,
+        manifest,
+        nodes: bundle.nodes().map(|node| (node.id, node.value)).collect(),
+        outgoing: BTreeMap::new(),
+        parents: BTreeMap::new(),
+        namespaces: entries(&manifest.value, "extensions")
+            .map(|(_, declaration)| string(declaration, "namespace"))
+            .collect(),
+        custom_kinds: BTreeMap::new(),
+        custom_relations: BTreeMap::new(),
+        unsupported_extensions,
+        checks: bundle
+            .diagnostics()
+            .iter()
+            .filter(|d| d.semantic_only)
+            .map(Check::from)
+            .collect(),
+    };
+    model.extensions();
+    model.edges();
+    model.nodes();
+    model.manifest_references();
+    if manifest.kind == DocumentKind::Manifest03 {
+        model.boundaries();
+    }
+    if model.checks.is_empty() {
+        model.checks.push(Check::new(
+            "model.semantics",
+            "model",
+            CheckResult::Pass,
+            "Core references, endpoints, identity, refinement, machines, types, boundaries and declared extension data checked.",
+        ));
+    }
+    model
 }
 
 struct Model<'a> {
@@ -225,10 +240,7 @@ impl<'a> Model<'a> {
     }
 
     fn owner(&self, id: &str) -> Option<&'a str> {
-        match self.targets(id, "owned_by") {
-            [owner] => Some(owner),
-            _ => None,
-        }
+        boundaries::unique_owner(self.targets(id, "owned_by"))
     }
 
     fn edges(&mut self) {
@@ -751,19 +763,13 @@ impl<'a> Model<'a> {
             .model_edges()
             .filter(|item| string(item.value, "relation") == "calls")
         {
-            let from = string(item.value, "from");
-            let action = string(item.value, "to");
-            let consumer = if self.kind(from) == Some("component") {
-                Some(from)
-            } else {
-                self.owner(from)
-            };
-            if let (Some(consumer), Some(provider)) = (consumer, self.owner(action))
-                && consumer != provider
-                && let Some(component) = self.nodes.get(provider)
-                && get(component, "interfaces").is_some()
-                && !strings(component, "interfaces").any(|member| member == action)
+            let call =
+                boundaries::resolve_call(item.id, item.value, &self.nodes, |id| self.owner(id));
+            if let (Some(consumer), Some(provider), boundaries::CallStatus::Private) =
+                (call.consumer, call.provider, call.status)
             {
+                let from = call.source;
+                let action = call.action;
                 self.diagnostic(
                     "PRIVATE_ACTION_CALL",
                     CheckResult::Fail,

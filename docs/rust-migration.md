@@ -152,6 +152,30 @@ Rust callers can capture both inputs with
 `validate_with_options`. For a single scoped assessment, use
 `validation::validate_paths(&ledger, Some(&model), options, None)`.
 
+## Boundaries and advisory design review
+
+Run `gdd boundaries examples/concert-0.3.gdd.yaml` for the components,
+public contracts and community calls in a GDD 0.3 snapshot. A missing owner
+or interface appears as unresolved. Scoped library views list omitted calls
+and components so a consumer can distinguish a partial view from the whole model.
+
+Use `gdd design-review MODEL --review REVIEW --implementation ID
+--code-revision REV --scope NODE` to assess a supplied review. Repeat
+`--scope` for additional nodes. The result records findings, review identity
+and reasons for COMPLETE, INVALID or UNKNOWN, with exit codes 0, 1 and 2.
+A complete advisory review can contain findings. Execution evidence and
+acceptance remain separate assessments. Both commands accept `--output`
+with an unused destination.
+
+In Rust, `gdd::projection::load_projection_bundle(&path)` checks the input
+representation, model semantics and revision. The projection can use a model
+with historical ledger records. Call `gdd::boundaries::boundary_view(&bundle,
+scope)` with `None` for the whole model or `Some(&[])` for an empty view.
+`gdd::boundaries::design_checklist(&bundle, &scope)` returns the four advisory
+questions and matching rules. Use `gdd::design_review::review_design(&bundle,
+review, implementation, code_revision, expected_scope)` to assess the same
+capture. An explicitly empty expected review scope is invalid.
+
 ## Project status
 
 Run `gdd status project/gdd.json --scope action.main --format text` for a
@@ -212,6 +236,7 @@ YAML nesting to 256 containers.
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Python-only Graphify operations. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow`, `create_run`, `run_status`, `advance_run` | Python-only work planning and run journals. |
+| `boundary_view`, `design_checklist`, `review_design` | Native GDD 0.3 boundary views, scoped review questions and advisory review applicability. |
 | `project_status` | `gdd::status::{project_status, project_status_from_bundle, status_text}` for assessments without a supplied workflow run. |
 | `check_code`, `analyze_impact`, `diff_models` | Python-only code observation and project inspection APIs. |
 | `gdd_validator.host` helpers `snapshot_code`, `execute_check`, `verification_records`, `append_records` | Python-only trusted host operations. A code snapshot identifies selected implementation files, while a model snapshot identifies normative GDD assets. See the [host guide](../HOST.md). |

@@ -3,7 +3,8 @@
 pub mod bundle;
 pub mod input;
 mod model;
-pub use model::context;
+pub use model::{boundaries, context, design_review};
+pub mod projection;
 pub mod report;
 pub mod status;
 pub mod validation;

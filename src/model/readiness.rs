@@ -71,21 +71,11 @@ pub(super) fn check<'a>(
             if model.manifest.kind == DocumentKind::Manifest03
                 && string(edge.value, "relation") == "calls"
             {
-                let consumer = if model.kind(from) == Some("component") {
-                    Some(from)
-                } else {
-                    model.owner(from)
-                };
-                let resolved = consumer
-                    .zip(model.owner(to))
-                    .is_some_and(|(consumer, provider)| {
-                        consumer == provider
-                            || model
-                                .nodes
-                                .get(provider)
-                                .is_some_and(|node| get(node, "interfaces").is_some())
+                let call =
+                    super::boundaries::resolve_call(edge.id, edge.value, &model.nodes, |id| {
+                        model.owner(id)
                     });
-                if !resolved {
+                if call.status == super::boundaries::CallStatus::Unresolved {
                     readiness.fail(to, "PUBLIC_CONTRACT_UNRESOLVED",
                         "Call needs unique consumer/provider owners and a specified public interface.", &[]);
                 }
