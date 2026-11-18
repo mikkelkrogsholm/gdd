@@ -22,6 +22,10 @@ Published tags are immutable. Never force-update or reuse a tag. A correction
 to published release contents requires a new package version and tag. Contributors
 use CHANGELOG's Unreleased section; the maintainer chooses the next version.
 
+After the port is complete, the [Rust API](docs/rust-migration.md) replaces
+the public Python API, while existing 0.x Python releases and their verification
+evidence remain tied to their original tags and revisions.
+
 ## GDD 0.2 compatibility — adopted October 20, 2026
 
 Keep full explicit GDD 0.2 validation and legacy replay throughout the package

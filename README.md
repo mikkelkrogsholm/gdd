@@ -20,6 +20,9 @@ The viewer includes Cytoscape.js and fCoSE; [third-party notices](gdd_validator/
 The latest development prerelease is [v0.8.0](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.8.0).
 Install from tagged source or its verified wheel; the package is not on PyPI.
 
+For library integrations moving from Python to Rust, see the
+[Rust API migration guide](docs/rust-migration.md).
+
 ## How the method works
 
 ```mermaid
