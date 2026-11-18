@@ -116,6 +116,35 @@ records the adopted 0.2 lifecycle, independent contract version and Python
 verification decisions. Measurable 1.0 criteria remain pending for issue #15.
 Those proposed criteria do not change active policy or authorize a release.
 
+## Verify the native distribution locally
+
+From the checkout, choose a new evidence directory and run the following command.
+
+```sh
+cargo run --locked -p gdd-conformance -- local-check --release --output ../gdd-native-release
+```
+
+The driver runs all 20 full-check steps, including the nine named conformance
+suites and the standalone Rust skill tests and asset checks. It then runs three
+locked path installs from the selected checkout into `install/bin/` and
+exercises the optimized binaries from a temporary recipient directory outside
+the checkout. Use `--checkout PATH` before `local-check` to select the source
+and fixtures. An explicit `CARGO_TARGET_DIR` supplies the build cache.
+
+Keep the following artifacts in the output directory.
+
+- `summary.json` records commands, working directories, timings, process
+  outcomes, host, toolchain and the paths and SHA-256 identities of installed
+  binaries. Each step has separate stdout and stderr logs.
+- `verify-install.json` records the installed CLI's 33 controls and the
+  identities of the installed and source-built executables. The source-built
+  executable comes from the workspace build's Cargo artifact report.
+- `installed-viewer-help.stdout.txt` captures the installed desktop executable's
+  headless loader and help check. Interactive desktop testing is a separate check.
+- `workflow-demo/` contains the repaired quote project, ten-event journal and
+  five Cargo test receipts. The replay checks the seven expected baseline
+  failures and all 19 passing final tests before recording current acceptance.
+
 ## Prepare the release locally
 
 1. Choose the package version. Update `pyproject.toml`,

@@ -38,6 +38,9 @@ enum Command {
         /// Run focused readiness, CLI, viewer and skill checks.
         #[arg(long)]
         quick: bool,
+        /// Run full checks, install the release binaries and exercise the installation.
+        #[arg(long, conflicts_with = "quick")]
+        release: bool,
         #[arg(long, value_name = "NEW_DIR")]
         output: Option<PathBuf>,
     },
@@ -138,13 +141,20 @@ type SuiteRunner = fn(&Path, Option<PathBuf>) -> Result<ExitCode>;
 fn main() -> Result<ExitCode> {
     let cli = Cli::parse();
     let (run, output): (SuiteRunner, _) = match cli.command {
-        Command::LocalCheck { quick, output } => {
+        Command::LocalCheck {
+            quick,
+            release,
+            output,
+        } => {
             let directory = suite_directory(cli.checkout.as_deref())?.canonicalize()?;
-            return local_check::run(
-                directory.parent().context("locate checkout")?,
-                quick,
-                output,
-            );
+            let mode = if quick {
+                local_check::Mode::Quick
+            } else if release {
+                local_check::Mode::Release
+            } else {
+                local_check::Mode::Full
+            };
+            return local_check::run(directory.parent().context("locate checkout")?, mode, output);
         }
         Command::VerifyInstall {
             installed,

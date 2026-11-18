@@ -255,3 +255,32 @@ fn a_target_alias_into_the_portable_skill_is_rejected_before_building() -> Resul
     assert!(!skill.join("scripts").exists());
     Ok(())
 }
+
+#[test]
+fn release_conflicts_with_quick_and_records_failure_in_selected_checkout() -> Result<()> {
+    let dir = tempfile::tempdir()?;
+    let cwd = dir.path().canonicalize()?;
+    let checkout = cwd.join("alternate checkout");
+    write(&checkout, "conformance/cases.yaml", "")?;
+    let conflict = driver(&cwd, &checkout, "unused")
+        .arg("--release")
+        .output()?;
+    assert_eq!(conflict.status.code(), Some(2));
+    assert!(!cwd.join("unused").exists());
+
+    let failure = Command::new(RUNNER)
+        .current_dir(&cwd)
+        .env("PATH", "")
+        .arg("--checkout")
+        .arg(&checkout)
+        .args(["local-check", "--release", "--output", "release output"])
+        .output()?;
+    assert!(!failure.status.success());
+    let report = summary(&cwd.join("release output"))?;
+    assert_eq!(report["mode"], "release");
+    assert_eq!(report["checkout"].as_str(), checkout.to_str());
+    assert_eq!(report["passed"], false);
+    assert_eq!(report["steps"].as_array().unwrap().len(), 1);
+    assert!(report["installed"].as_object().unwrap().is_empty());
+    Ok(())
+}

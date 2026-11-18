@@ -14,6 +14,14 @@ use std::{
 use time::{OffsetDateTime, format_description::well_known::Rfc3339};
 
 mod plan;
+mod release;
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(super) enum Mode {
+    Quick,
+    Full,
+    Release,
+}
 
 // JSON strings cannot represent every native path or command argument.
 fn os_value(value: &OsStr) -> Value {
@@ -69,24 +77,27 @@ struct Run<'a> {
     output: &'a Path,
     target: PathBuf,
     cli: Option<PathBuf>,
+    installed: Map<String, Value>,
     steps: Vec<Value>,
     toolchain: Map<String, Value>,
 }
 
 impl Run<'_> {
-    fn step(&mut self, name: &str, mut command: Command) -> Result<PathBuf> {
+    fn step(&mut self, name: &str, mut command: Command, cwd: &Path) -> Result<PathBuf> {
         let stdout_name = format!("{name}.stdout.txt");
         let stderr_name = format!("{name}.stderr.txt");
         let stdout = self.output.join(&stdout_name);
         let mut stderr = File::create_new(self.output.join(&stderr_name))?;
         command
-            .current_dir(self.root)
+            .current_dir(cwd)
             .env("CARGO_TARGET_DIR", &self.target)
             .env_remove("GDD_NATIVE_CLI")
             .stdin(Stdio::null())
             .stdout(File::create_new(&stdout)?)
             .stderr(stderr.try_clone()?);
-        if let Some(cli) = &self.cli {
+        if cwd == self.root
+            && let Some(cli) = &self.cli
+        {
             command.env("GDD_NATIVE_CLI", cli);
         }
         let argv: Vec<_> = std::iter::once(command.get_program())
@@ -94,7 +105,7 @@ impl Run<'_> {
             .map(os_value)
             .collect();
         let mut record = json!({
-            "name": name, "command": argv, "cwd": os_value(self.root.as_os_str()),
+            "name": name, "command": argv, "cwd": os_value(cwd.as_os_str()),
             "started_at": timestamp()?, "stdout": stdout_name, "stderr": stderr_name,
         });
         let start = Instant::now();
@@ -123,7 +134,7 @@ impl Run<'_> {
         Ok(stdout)
     }
 
-    fn checks(&mut self, quick: bool) -> Result<()> {
+    fn checks(&mut self, mode: Mode) -> Result<()> {
         self.target = resolve_target(&std::path::absolute(&self.target)?)?;
         ensure!(
             !self
@@ -140,15 +151,18 @@ impl Run<'_> {
         ] {
             let mut command = Command::new(program);
             command.args(["--version", "--verbose"]);
-            let path = self.step(name, command)?;
+            let path = self.step(name, command, self.root)?;
             self.toolchain
                 .insert(name.into(), json!(fs::read_to_string(path)?.trim_end()));
         }
-        for (name, command) in plan::commands(quick, self.root, self.output) {
-            let log = self.step(name, command)?;
+        for (name, command) in plan::commands(mode == Mode::Quick, self.root, self.output) {
+            let log = self.step(name, command, self.root)?;
             if name == "workspace-build" {
                 self.cli = Some(cli_artifact(&log)?);
             }
+        }
+        if mode == Mode::Release {
+            release::check(self)?;
         }
         Ok(())
     }
@@ -170,7 +184,7 @@ fn cli_artifact(log: &Path) -> Result<PathBuf> {
     )
 }
 
-pub(super) fn run(root: &Path, quick: bool, output: Option<PathBuf>) -> Result<ExitCode> {
+pub(super) fn run(root: &Path, mode: Mode, output: Option<PathBuf>) -> Result<ExitCode> {
     let target = env::var_os("CARGO_TARGET_DIR")
         .map(PathBuf::from)
         .unwrap_or_else(|| root.join("target"));
@@ -183,12 +197,13 @@ pub(super) fn run(root: &Path, quick: bool, output: Option<PathBuf>) -> Result<E
         output: &output,
         target,
         cli: None,
+        installed: Map::new(),
         steps: Vec::new(),
         toolchain: Map::new(),
     };
-    let result = run.checks(quick);
+    let result = run.checks(mode);
     let mut summary = json!({
-        "mode": if quick { "quick" } else { "full" },
+        "mode": match mode { Mode::Quick => "quick", Mode::Full => "full", Mode::Release => "release" },
         "checkout": os_value(root.as_os_str()), "output": os_value(output.as_os_str()),
         "cargo_target_dir": os_value(run.target.as_os_str()),
         "gdd_native_cli": run.cli.as_ref().map(|path| os_value(path.as_os_str())),
@@ -196,6 +211,9 @@ pub(super) fn run(root: &Path, quick: bool, output: Option<PathBuf>) -> Result<E
         "started_at": started_at, "finished_at": timestamp()?, "seconds": start.elapsed().as_secs_f64(),
         "steps": run.steps, "passed": result.is_ok(),
     });
+    if mode == Mode::Release {
+        summary["installed"] = Value::Object(run.installed);
+    }
     if let Err(error) = &result {
         summary["error"] = json!(format!("{error:#}"));
     }

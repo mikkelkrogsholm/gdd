@@ -60,6 +60,7 @@ workspace and standalone skill together.
 ```sh
 cargo run --locked -p gdd-conformance -- local-check --quick
 cargo run --locked -p gdd-conformance -- local-check --output ../gdd-check
+cargo run --locked -p gdd-conformance -- local-check --release --output ../gdd-native-release
 ```
 
 Quick mode runs the scoped readiness and view CLI integration targets, the
@@ -70,6 +71,14 @@ runs Clippy on all targets and features with warnings as errors, checks the
 skill assets, and executes the nine named conformance suites. Each suite writes
 its own JSON receipt.
 
+Release mode runs every full check, then uses `cargo install --locked --path`
+to install optimized builds of `gdd`, `gdd-viewer` and `gdd-conformance`
+under the output directory's `install/` prefix. From outside the checkout it
+runs the 33 installed CLI controls with the workspace-built `gdd` as their
+reference, checks that the installed viewer loads and prints `--help` headlessly,
+and runs the installed quote workflow demo through its failing baseline and
+accepted repair. Choose either `--quick` or `--release` for a non-default mode.
+
 The command prints its new output directory and stops at the first failed
 step. It saves separate stdout and stderr logs, plus a `summary.json` with
 commands, working directory, host and toolchain, timings and exit status.
@@ -77,7 +86,8 @@ Omit `--output` to keep the results in a fresh system temporary directory.
 Use `--checkout PATH` **before** `local-check` to build and test another
 checkout. Relative output and `CARGO_TARGET_DIR` paths are resolved from the
 directory where you start the runner. Builds default to the selected checkout's
-`target/`. Distribution release checks are documented in [RELEASING.md](RELEASING.md).
+`target/`. See [native distribution evidence](RELEASING.md#verify-the-native-distribution-locally)
+for the installed binaries, verifier receipt and workflow journal.
 
 ### Individual Rust checks
 
