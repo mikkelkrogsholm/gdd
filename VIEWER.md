@@ -28,10 +28,17 @@ only be shared with someone who can read the whole model.
 The native **Perspective** selector works with a model file or a saved view.
 Choose **User journey**, **Components**, or **Data model** to narrow the list
 and drawing to the projection's canonical node and edge IDs. **All graph**
-uses the complete saved scope before search. Search narrows the active perspective
-by node ID, label or kind. Counts report visible nodes and edges against
-the full model. In the inspector, a **Related perspectives** link reveals the
-selected node in another lens and clears search when the node is in scope.
+uses the complete saved scope. **Search graph** matches node IDs and the full
+text of node and edge records, including descriptions, contracts and exact
+numbers. A matching edge includes its eligible endpoints. **Kind** narrows
+the node list and canvas. **Community** includes the community and its
+direct `member_of` members, including shared members. **Relation** limits
+the edges between the remaining nodes. Counts report visible nodes and edges
+against the full model. **Reset filters** restores All graph within the saved
+scope.
+
+In the inspector, a **Related perspectives** link reveals the selected node
+in another lens and clears the filters when the node is in scope.
 Select an **Advisory gaps** entry to reveal its node in All graph or inspect
 an out-of-scope node. Journey steps show the user action and system response.
 Actors show their goal.

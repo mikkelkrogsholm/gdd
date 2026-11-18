@@ -5,7 +5,7 @@ use eframe::egui::{self, Button, Color32, Key, Modifiers, RichText, Ui};
 
 use crate::{
     canvas::Layout,
-    model::{Graph, HumanConcept, Lens, Visible},
+    model::{Filters, Graph, HumanConcept, Lens, Visible},
 };
 
 enum LayoutState {
@@ -48,12 +48,11 @@ impl LayoutState {
 pub struct Viewer {
     graph: Arc<Graph>,
     layout: LayoutState,
-    lens: Lens,
+    filters: Filters,
     visible: Visible,
     zoom_percent: u16,
     reveal_selected: bool,
     filename: String,
-    search: String,
     selected: Option<usize>,
 }
 
@@ -61,44 +60,46 @@ impl Viewer {
     pub fn new(graph: Graph, filename: String, context: egui::Context) -> Self {
         let graph = Arc::new(graph);
         let layout = LayoutState::start(Arc::clone(&graph), context);
+        let filters = Filters::default();
         Self {
-            lens: Lens::All,
-            visible: graph.visible(Lens::All, ""),
+            visible: graph.visible(&filters),
+            filters,
             graph,
             layout,
             zoom_percent: 100,
             reveal_selected: false,
             filename,
-            search: String::new(),
             selected: None,
         }
     }
 
     fn refresh(&mut self) {
-        self.visible = self.graph.visible(self.lens, &self.search);
+        self.visible = self.graph.visible(&self.filters);
     }
 
     fn navigate(&mut self, index: usize, lens: Lens) {
         self.selected = Some(index);
         if index < self.graph.shown_nodes {
-            self.lens = lens;
-            self.search.clear();
+            self.filters = Filters {
+                lens,
+                ..Default::default()
+            };
             self.refresh();
             self.reveal_selected = true;
         }
     }
 
     fn empty_message(&self) -> String {
-        if self.lens != Lens::All && self.graph.perspectives.is_err() {
+        if self.filters.lens != Lens::All && self.graph.perspectives.is_err() {
             "Product perspectives unavailable for this model.".into()
-        } else if !self.search.trim().is_empty() {
-            "No matching nodes.".into()
-        } else if self.lens == Lens::All {
+        } else if self.filters.narrowed() {
+            "No nodes match the current filters.".into()
+        } else if self.filters.lens == Lens::All {
             "This view has no nodes.".into()
         } else {
             format!(
                 "No {} concepts in this scope.",
-                self.lens.label().to_lowercase()
+                self.filters.lens.label().to_lowercase()
             )
         }
     }
@@ -113,15 +114,15 @@ impl Viewer {
                 ui.horizontal_wrapped(|ui| {
                     ui.heading(RichText::new(&self.graph.title).size(24.0).strong());
                     ui.label(RichText::new(&self.filename).weak());
-                    let old_lens = self.lens;
+                    let old_lens = self.filters.lens;
                     egui::ComboBox::from_label("Perspective")
-                        .selected_text(self.lens.label())
+                        .selected_text(self.filters.lens.label())
                         .show_ui(ui, |ui| {
                             for lens in [Lens::All, Lens::Journey, Lens::Components, Lens::Data] {
-                                ui.selectable_value(&mut self.lens, lens, lens.label());
+                                ui.selectable_value(&mut self.filters.lens, lens, lens.label());
                             }
                         });
-                    if self.lens != old_lens {
+                    if self.filters.lens != old_lens {
                         self.refresh();
                         self.reveal_selected = true;
                     }
@@ -145,6 +146,29 @@ impl Viewer {
                                     }
                                 }
                             });
+                    }
+                });
+                ui.horizontal_wrapped(|ui| {
+                    let choices = &self.graph.choices;
+                    let kind =
+                        filter_choice(ui, "Kind", &mut self.filters.kind, choices.kinds.iter());
+                    let relation = filter_choice(
+                        ui,
+                        "Relation",
+                        &mut self.filters.relation,
+                        choices.relations.iter(),
+                    );
+                    let community = filter_choice(
+                        ui,
+                        "Community",
+                        &mut self.filters.community,
+                        choices.communities.keys(),
+                    );
+                    if ui.button("Reset filters").clicked() {
+                        self.filters = Filters::default();
+                        self.refresh();
+                    } else if kind || relation || community {
+                        self.refresh();
                     }
                 });
             });
@@ -198,13 +222,13 @@ impl Viewer {
 
     fn show_nodes(&mut self, ui: &mut Ui) {
         ui.heading("Nodes");
-        let search_label = ui.label("Search nodes");
+        let search_label = ui.label("Search graph");
         let focus_search = ui.input_mut(|input| input.consume_key(Modifiers::COMMAND, Key::F));
         let search = ui
             .add_sized(
                 [ui.available_width(), 28.0],
-                egui::TextEdit::singleline(&mut self.search)
-                    .hint_text("Label, ID, or kind")
+                egui::TextEdit::singleline(&mut self.filters.search)
+                    .hint_text("Node or edge text")
                     .background_color(Color32::from_rgb(240, 245, 251))
                     .margin(egui::Margin::symmetric(8, 6)),
             )
@@ -227,13 +251,26 @@ impl Viewer {
         egui::ScrollArea::vertical()
             .auto_shrink([false; 2])
             .show(ui, |ui| {
-                for (row_index, &index) in self.visible.nodes.iter().enumerate() {
+                if choose_first {
+                    let query = self.filters.search.trim();
+                    if let Some(&index) = self
+                        .visible
+                        .nodes
+                        .iter()
+                        .find(|&&i| self.graph.nodes[i].id.eq_ignore_ascii_case(query))
+                        .or_else(|| self.visible.nodes.first())
+                    {
+                        self.selected = Some(index);
+                        self.reveal_selected = true;
+                    }
+                }
+                for &index in &self.visible.nodes {
                     let node = &self.graph.nodes[index];
                     let row = ui.add_sized(
                         [ui.available_width(), 30.0],
                         Button::selectable(self.selected == Some(index), &node.label).truncate(),
                     );
-                    if row.on_hover_text(&node.id).clicked() || (row_index == 0 && choose_first) {
+                    if row.on_hover_text(&node.id).clicked() {
                         self.selected = Some(index);
                         self.reveal_selected = true;
                     }
@@ -363,13 +400,13 @@ impl Viewer {
                                 .on_hover_text(&neighbor_node.id)
                                 .clicked()
                             {
-                                let in_lens = self.lens == Lens::All
+                                let in_lens = self.filters.lens == Lens::All
                                     || graph
                                         .perspectives
                                         .as_ref()
-                                        .is_ok_and(|p| p.includes(self.lens, neighbor));
+                                        .is_ok_and(|p| p.includes(self.filters.lens, neighbor));
                                 if in_lens && self.visible.nodes.binary_search(&neighbor).is_err() {
-                                    self.navigate(neighbor, self.lens);
+                                    self.navigate(neighbor, self.filters.lens);
                                 } else {
                                     self.selected = Some(neighbor);
                                     self.reveal_selected = true;
@@ -381,6 +418,35 @@ impl Viewer {
                 }
             });
     }
+}
+
+fn filter_choice<'a>(
+    ui: &mut Ui,
+    label: &str,
+    selected: &mut String,
+    choices: impl Iterator<Item = &'a String>,
+) -> bool {
+    let mut changed = false;
+    egui::ComboBox::from_label(label)
+        .width(140.0)
+        .truncate()
+        .selected_text(if selected.is_empty() {
+            "All".to_owned()
+        } else {
+            selected.clone()
+        })
+        .show_ui(ui, |ui| {
+            changed |= ui
+                .selectable_value(selected, String::new(), "All")
+                .changed();
+            for value in choices {
+                if ui.selectable_label(selected == value, value).clicked() {
+                    selected.clone_from(value);
+                    changed = true;
+                }
+            }
+        });
+    changed
 }
 
 impl eframe::App for Viewer {
@@ -401,14 +467,13 @@ mod tests {
         let graph = Arc::new(Graph::load(&path).unwrap());
         let (sender, receiver) = mpsc::channel();
         let mut viewer = Viewer {
-            lens: Lens::All,
-            visible: graph.visible(Lens::All, ""),
+            filters: Filters::default(),
+            visible: graph.visible(&Filters::default()),
             graph: Arc::clone(&graph),
             layout: LayoutState::Pending(receiver),
             zoom_percent: 100,
             reveal_selected: false,
             filename: "fragmented.gdd.yaml".into(),
-            search: String::new(),
             selected: Some(0),
         };
         let context = egui::Context::default();
@@ -439,7 +504,7 @@ mod tests {
         sender.send(Layout::new(&graph)).unwrap();
         frame(&mut viewer, Vec::new());
         assert!(matches!(viewer.layout, LayoutState::Ready(_)));
-        assert_eq!(viewer.search, "entity.note");
+        assert_eq!(viewer.filters.search, "entity.note");
         assert_eq!(viewer.selected, Some(1));
         assert!(!viewer.reveal_selected);
     }
@@ -466,30 +531,39 @@ mod tests {
             .0;
 
         let (_sender, receiver) = mpsc::channel();
-        let mut viewer = Viewer {
-            visible: graph.visible(Lens::Components, "missing"),
-            graph,
+        let filters = Filters {
             lens: Lens::Components,
+            kind: "component".into(),
+            relation: "owns".into(),
+            community: "absent".into(),
+            search: "missing".into(),
+        };
+        let mut viewer = Viewer {
+            visible: graph.visible(&filters),
+            graph,
+            filters,
             layout: LayoutState::Pending(receiver),
             zoom_percent: 100,
             reveal_selected: false,
             filename: "partial.gddview".into(),
-            search: "missing".into(),
             selected: None,
         };
         viewer.navigate(entity, Lens::All);
         assert_eq!(viewer.selected, Some(entity));
-        assert_eq!(viewer.lens, Lens::Components);
-        assert_eq!(viewer.search, "missing");
+        assert_eq!(viewer.filters.lens, Lens::Components);
+        assert_eq!(viewer.filters.search, "missing");
+        assert_eq!(viewer.filters.community, "absent");
+        assert_eq!(viewer.filters.kind, "component");
+        assert_eq!(viewer.filters.relation, "owns");
         assert!(viewer.visible.nodes.is_empty() && !viewer.reveal_selected);
         viewer.navigate(step, Lens::All);
-        assert_eq!(viewer.lens, Lens::All);
+        assert_eq!(viewer.filters.lens, Lens::All);
         assert_eq!(viewer.selected, Some(step));
-        assert!(viewer.search.is_empty());
+        assert!(!viewer.filters.narrowed());
         assert_eq!(viewer.visible.nodes, [step]);
         assert!(viewer.reveal_selected);
         viewer.navigate(step, Lens::Journey);
-        assert_eq!(viewer.lens, Lens::Journey);
+        assert_eq!(viewer.filters.lens, Lens::Journey);
         assert_eq!(viewer.selected, Some(step));
         assert_eq!(viewer.visible.nodes, [step]);
         assert!(matches!(viewer.layout, LayoutState::Pending(_)));

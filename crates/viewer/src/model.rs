@@ -13,6 +13,7 @@ pub struct Graph {
     // Shown records occupy the leading slice. The inspector can address every index.
     pub shown_nodes: usize,
     pub shown_edges: usize,
+    pub choices: FilterChoices,
     pub artifact: Option<Json>,
     pub perspectives: Result<Perspectives, String>,
 }
@@ -115,6 +116,55 @@ impl Perspectives {
 }
 
 #[derive(Default)]
+pub struct Filters {
+    pub lens: Lens,
+    pub search: String,
+    pub kind: String,
+    pub relation: String,
+    pub community: String,
+}
+
+impl Filters {
+    pub fn narrowed(&self) -> bool {
+        !self.search.trim().is_empty()
+            || !self.kind.is_empty()
+            || !self.relation.is_empty()
+            || !self.community.is_empty()
+    }
+}
+
+#[derive(Default)]
+pub struct FilterChoices {
+    pub kinds: BTreeSet<String>,
+    pub relations: BTreeSet<String>,
+    // A community includes itself and every distinct direct member in the full model.
+    pub communities: BTreeMap<String, BTreeSet<usize>>,
+}
+
+impl FilterChoices {
+    fn new(nodes: &[Node], edges: &[Edge]) -> Self {
+        let mut choices = Self::default();
+        for (i, node) in nodes.iter().enumerate() {
+            choices.kinds.insert(node.kind.clone());
+            if node.kind == "community" {
+                choices
+                    .communities
+                    .insert(node.id.clone(), BTreeSet::from([i]));
+            }
+        }
+        for edge in edges {
+            choices.relations.insert(edge.relation.clone());
+            if edge.relation == "member_of"
+                && let Some(members) = choices.communities.get_mut(&nodes[edge.to].id)
+            {
+                members.insert(edge.from);
+            }
+        }
+        choices
+    }
+}
+
+#[derive(Default)]
 pub struct Visible {
     pub nodes: Vec<usize>,
     pub edges: Vec<usize>,
@@ -126,6 +176,7 @@ pub struct Node {
     pub kind: String,
     pub description: String,
     pub human: Option<HumanConcept>,
+    pub search_text: String,
 }
 
 pub enum HumanConcept {
@@ -143,6 +194,7 @@ pub struct Edge {
     pub from: usize,
     pub relation: String,
     pub to: usize,
+    pub search_text: String,
 }
 
 impl Graph {
@@ -273,6 +325,7 @@ impl Graph {
         };
         let perspectives = projection.and_then(|data| Perspectives::new(data, &indices, &edges));
         Ok(Self {
+            choices: FilterChoices::new(&nodes, &edges),
             perspectives,
             title,
             nodes,
@@ -283,25 +336,36 @@ impl Graph {
         })
     }
 
-    pub fn visible(&self, lens: Lens, search: &str) -> Visible {
-        let view = if lens == Lens::All {
+    pub fn visible(&self, filters: &Filters) -> Visible {
+        let view = if filters.lens == Lens::All {
             None
         } else if let Ok(projection) = &self.perspectives {
-            projection.views.get(&lens)
+            projection.views.get(&filters.lens)
         } else {
             return Visible::default();
         };
-        let query = search.trim().to_lowercase();
-        let mut matched = vec![false; self.shown_nodes];
+        let query = filters.search.trim().to_lowercase();
+        // Edge text can match a record outside the saved scope or active lens.
+        // Only eligible endpoints and edges reach the list and canvas below.
+        let mut matched = vec![query.is_empty(); self.nodes.len()];
+        if !query.is_empty() {
+            for edge in &self.edges {
+                if edge.search_text.contains(&query) {
+                    matched[edge.from] = true;
+                    matched[edge.to] = true;
+                }
+            }
+        }
+        let members = self.choices.communities.get(&filters.community);
         let nodes = self.nodes[..self.shown_nodes]
             .iter()
             .enumerate()
             .filter_map(|(i, node)| {
                 matched[i] = view.is_none_or(|v| v.nodes[i])
-                    && (query.is_empty()
-                        || [&node.id, &node.label, &node.kind]
-                            .iter()
-                            .any(|s| s.to_lowercase().contains(&query)));
+                    && (filters.kind.is_empty() || node.kind == filters.kind)
+                    && (filters.community.is_empty()
+                        || members.is_some_and(|set| set.contains(&i)))
+                    && (matched[i] || node.search_text.contains(&query));
                 matched[i].then_some(i)
             })
             .collect();
@@ -309,12 +373,22 @@ impl Graph {
             .iter()
             .enumerate()
             .filter_map(|(i, edge)| {
-                (matched[edge.from] && matched[edge.to] && view.is_none_or(|v| v.edges[i]))
+                (matched[edge.from]
+                    && matched[edge.to]
+                    && view.is_none_or(|v| v.edges[i])
+                    && (filters.relation.is_empty() || edge.relation == filters.relation))
                     .then_some(i)
             })
             .collect();
         Visible { nodes, edges }
     }
+}
+
+fn search_text(value: &Value) -> Result<String, String> {
+    gdd::validation::to_json(value)
+        .and_then(|record| serde_json::to_string_pretty(&record))
+        .map(|text| text.to_lowercase())
+        .map_err(|error| error.to_string())
 }
 
 fn project_node(id: &str, value: &Value) -> Result<Node, String> {
@@ -347,6 +421,7 @@ fn project_node(id: &str, value: &Value) -> Result<Node, String> {
         _ => None,
     };
     Ok(Node {
+        search_text: format!("{}\n{}", id.to_lowercase(), search_text(value)?),
         human,
         id: id.to_owned(),
         label: label.to_owned(),
@@ -369,6 +444,7 @@ fn project_edge(id: &str, value: &Value, indices: &BTreeMap<&str, usize>) -> Res
             .ok_or_else(|| format!("edge {id:?} refers to unknown node {end:?}"))
     };
     Ok(Edge {
+        search_text: search_text(value)?,
         from: resolve("from")?,
         to: resolve("to")?,
         id: id.to_owned(),
@@ -410,8 +486,16 @@ mod tests {
     use gdd::bundle;
     use serde_json::{Value, json};
 
-    use super::{Graph, HumanConcept, Lens};
+    use super::{Filters, Graph, HumanConcept, Lens};
     use std::collections::BTreeSet;
+
+    fn search(lens: Lens, query: &str) -> Filters {
+        Filters {
+            lens,
+            search: query.into(),
+            ..Default::default()
+        }
+    }
 
     fn document(format: &str) -> Value {
         json!({
@@ -655,7 +739,7 @@ mod tests {
         let all_nodes: BTreeSet<_> = graph.nodes.iter().map(|n| n.id.as_str()).collect();
         let all_edges: BTreeSet<_> = graph.edges.iter().map(|e| e.id.as_str()).collect();
         for lens in [Lens::All, Lens::Journey, Lens::Components, Lens::Data] {
-            let visible = graph.visible(lens, "");
+            let visible = graph.visible(&search(lens, ""));
             let nodes = visible
                 .nodes
                 .iter()
@@ -717,7 +801,10 @@ mod tests {
             Graph::load(&full_view).unwrap(),
         ] {
             assert_lenses(&graph, &full);
-            let steps = graph.visible(Lens::Components, " STEP.");
+            let steps = graph.visible(&Filters {
+                kind: "gdd.product.journey_step".into(),
+                ..search(Lens::Components, " STEP.")
+            });
             assert_eq!(
                 steps
                     .nodes
@@ -728,7 +815,10 @@ mod tests {
             );
             // Both contextual nodes survive, but their journey-only edge must be omitted.
             assert!(steps.edges.is_empty());
-            let journey = graph.visible(Lens::Journey, "step.");
+            let journey = graph.visible(&Filters {
+                kind: "gdd.product.journey_step".into(),
+                ..search(Lens::Journey, "step.")
+            });
             assert_eq!(journey.edges.len(), 1);
             assert_eq!(graph.edges[journey.edges[0]].id, "edge.choose.reserve");
             let step = &graph.nodes[steps.nodes[0]];
@@ -736,7 +826,9 @@ mod tests {
                 matches!(&step.human, Some(HumanConcept::Step { action, response })
                 if action.as_deref() == Some("Select a performance.") && response.as_deref() == Some("Show available seats."))
             );
-            let actor = &graph.nodes[graph.visible(Lens::Journey, "actor.guest").nodes[0]];
+            let actor = &graph.nodes[graph
+                .visible(&search(Lens::Journey, "A human guest."))
+                .nodes[0]];
             assert!(
                 matches!(&actor.human, Some(HumanConcept::Actor { goal }) if goal.as_deref() == Some("Reserve a seat."))
             );
@@ -750,16 +842,111 @@ mod tests {
     }
 
     #[test]
+    fn full_record_search_and_combined_filters_agree_for_models_and_saved_views() {
+        let model = json!({
+            "format": "gdd/0.2",
+            "project": {"id": "example", "title": "Filters", "goal": "Inspect a graph."},
+            "nodes": {
+                "a": {"kind": "action", "description": "First"},
+                "b": {"kind": "action", "description": "Second"},
+                "c": {"kind": "community", "description": "Shared"},
+                "d": {"kind": "community", "description": "Other"},
+                "e": {"kind": "entity", "description": "Exact minimum",
+                      "fields": {"count": {"type": "integer", "minimum": 9007199254740993_u64}}}
+            },
+            "edges": [
+                {"id": "call", "from": "a", "to": "b", "relation": "calls", "description": "A unique witness"},
+                {"id": "depends", "from": "a", "to": "b", "relation": "depends_on"},
+                {"id": "ac", "from": "a", "to": "c", "relation": "member_of"},
+                {"id": "bc", "from": "b", "to": "c", "relation": "member_of"},
+                {"id": "ad", "from": "a", "to": "d", "relation": "member_of"}
+            ]
+        });
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("source.gdd.json");
+        let full = directory.path().join("full.gddview");
+        let scoped = directory.path().join("scoped.gddview");
+        fs::write(&path, model.to_string()).unwrap();
+        gdd::view::render_view(&path, &full, &[]).unwrap();
+        gdd::view::render_view(&path, &scoped, &["b".into()]).unwrap();
+
+        for graph in [Graph::load(&path).unwrap(), Graph::load(&full).unwrap()] {
+            let mut filters = search(Lens::All, r#""minimum": 9007199254740993"#);
+            let exact = graph.visible(&filters);
+            assert_eq!(exact.nodes.len(), 1);
+            assert_eq!(graph.nodes[exact.nodes[0]].id, "e");
+            filters.search = "9007199254740992".into();
+            assert!(graph.visible(&filters).nodes.is_empty());
+
+            filters.search = "  UNIQUE witness ".into();
+            filters.kind = "action".into();
+            filters.community = "c".into();
+            let both = graph.visible(&filters);
+            assert_eq!(
+                both.nodes
+                    .iter()
+                    .map(|&i| graph.nodes[i].id.as_str())
+                    .collect::<Vec<_>>(),
+                ["a", "b"]
+            );
+            assert_eq!(
+                both.edges
+                    .iter()
+                    .map(|&i| graph.edges[i].id.as_str())
+                    .collect::<Vec<_>>(),
+                ["call", "depends"]
+            );
+            filters.relation = "depends_on".into();
+            let parallel = graph.visible(&filters);
+            assert_eq!(parallel.nodes, both.nodes);
+            assert_eq!(parallel.edges.len(), 1);
+            assert_eq!(graph.edges[parallel.edges[0]].id, "depends");
+            filters.community = "d".into();
+            let overlap = graph.visible(&filters);
+            assert_eq!(overlap.nodes, [both.nodes[0]]);
+            assert!(overlap.edges.is_empty());
+
+            let community = graph.visible(&Filters {
+                community: "d".into(),
+                ..Default::default()
+            });
+            assert_eq!(
+                community
+                    .nodes
+                    .iter()
+                    .map(|&i| graph.nodes[i].id.as_str())
+                    .collect::<Vec<_>>(),
+                ["a", "d"]
+            );
+        }
+        let graph = Graph::load(&scoped).unwrap();
+        let witness = graph.visible(&search(Lens::All, "unique witness"));
+        assert_eq!(witness.nodes.len(), 1);
+        assert_eq!(graph.nodes[witness.nodes[0]].id, "b");
+        assert!(witness.edges.is_empty());
+    }
+
+    #[test]
     fn legacy_and_unadmitted_models_have_distinct_empty_perspectives() {
         let legacy = Graph::load(&example("concert.gdd.yaml")).unwrap();
         assert!(!legacy.perspectives.as_ref().unwrap().has_product_extension);
-        assert!(legacy.visible(Lens::Journey, "").nodes.is_empty());
-        assert!(!legacy.visible(Lens::Components, "").nodes.is_empty());
-        assert!(!legacy.visible(Lens::Data, "").edges.is_empty());
+        assert!(legacy.visible(&search(Lens::Journey, "")).nodes.is_empty());
+        assert!(
+            !legacy
+                .visible(&search(Lens::Components, ""))
+                .nodes
+                .is_empty()
+        );
+        assert!(!legacy.visible(&search(Lens::Data, "")).edges.is_empty());
         let graph = load_fixture(&document("gdd/0.3").to_string()).unwrap();
         assert!(graph.perspectives.is_err());
-        assert_eq!(graph.visible(Lens::All, "").edges.len(), 4);
-        assert!(graph.visible(Lens::Components, "").nodes.is_empty());
+        assert_eq!(graph.visible(&search(Lens::All, "")).edges.len(), 4);
+        assert!(
+            graph
+                .visible(&search(Lens::Components, ""))
+                .nodes
+                .is_empty()
+        );
     }
 
     #[test]
@@ -788,8 +975,8 @@ mod tests {
                 .unwrap()
                 .contains("Unsupported gdd.product semantics")
         );
-        assert_eq!(graph.visible(Lens::All, "").nodes.len(), 2);
-        assert!(graph.visible(Lens::Journey, "").nodes.is_empty());
+        assert_eq!(graph.visible(&search(Lens::All, "")).nodes.len(), 2);
+        assert!(graph.visible(&search(Lens::Journey, "")).nodes.is_empty());
     }
 
     #[test]
@@ -818,8 +1005,8 @@ mod tests {
                     .unwrap()
                     .contains("missing.node")
             );
-            assert_eq!(graph.visible(Lens::All, "").nodes.len(), 1);
-            assert!(graph.visible(Lens::Journey, "").nodes.is_empty());
+            assert_eq!(graph.visible(&search(Lens::All, "")).nodes.len(), 1);
+            assert!(graph.visible(&search(Lens::Journey, "")).nodes.is_empty());
         }
     }
 

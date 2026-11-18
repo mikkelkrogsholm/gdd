@@ -218,6 +218,7 @@ mod tests {
             shown_nodes: ids.len(),
             shown_edges: pairs.len(),
             artifact: None,
+            choices: Default::default(),
             perspectives: Err("Layout fixture".into()),
             nodes: ids
                 .iter()
@@ -227,6 +228,7 @@ mod tests {
                     kind: "component".into(),
                     description: id.into(),
                     human: None,
+                    search_text: id.into(),
                 })
                 .collect(),
             edges: pairs
@@ -235,6 +237,7 @@ mod tests {
                 .map(|(i, &(from, to))| Edge {
                     id: format!("edge.{i}"),
                     relation: "links".into(),
+                    search_text: String::new(),
                     from,
                     to,
                 })
