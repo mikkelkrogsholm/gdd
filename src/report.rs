@@ -20,6 +20,19 @@ pub enum CheckResult {
     Denied,
 }
 
+impl std::fmt::Display for CheckResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            Self::Pass => "PASS",
+            Self::Fail => "FAIL",
+            Self::Unknown => "UNKNOWN",
+            Self::Granted => "GRANTED",
+            Self::Denied => "DENIED",
+            Self::Unresolved => "UNRESOLVED",
+        })
+    }
+}
+
 impl From<Outcome> for CheckResult {
     fn from(outcome: Outcome) -> Self {
         match outcome {

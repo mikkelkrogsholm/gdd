@@ -46,7 +46,10 @@ impl Readiness<'_, '_> {
                 self.unknown(
                     id,
                     "SOURCE_UNAVAILABLE",
-                    format!("Contract source unavailable: {error}."),
+                    format!(
+                        "Contract source unavailable: {}.",
+                        error.trim_end_matches('.')
+                    ),
                 );
                 return;
             }

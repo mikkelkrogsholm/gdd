@@ -5,6 +5,7 @@ pub mod input;
 mod model;
 pub use model::context;
 pub mod report;
+pub mod status;
 pub mod validation;
 
 use serde::Serialize;

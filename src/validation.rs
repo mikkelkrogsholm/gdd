@@ -201,7 +201,8 @@ pub fn validate_paths(
     assess(&bundle, options, &scope, explanation)
 }
 
-fn assess<'a>(
+/// Assess a capture after the caller validated the input envelopes and resolved the scope.
+pub(crate) fn assess<'a>(
     bundle: &'a Bundle,
     options: ValidationOptions<'a>,
     scope: &[&'a str],

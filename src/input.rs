@@ -9,7 +9,7 @@ use libyaml_safer::{EventData, Parser, ScalarStyle};
 
 pub const MAX_CONTAINER_DEPTH: usize = 256;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Value {
     Null,
     Boolean(bool),

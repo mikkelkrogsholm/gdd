@@ -3,7 +3,7 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 use gdd::validation::{self, Activity, Profile, ValidationOptions};
 use gdd::{DEFAULT_PROJECT_ID, DEFAULT_TITLE, bundle, init_project};
 use serde::Serialize;
@@ -13,6 +13,12 @@ use serde::Serialize;
 struct Cli {
     #[command(subcommand)]
     command: Command,
+}
+
+#[derive(Clone, Copy, ValueEnum)]
+enum StatusFormat {
+    Json,
+    Text,
 }
 
 #[derive(Subcommand)]
@@ -26,6 +32,26 @@ enum Command {
         project_id: String,
         #[arg(long, default_value = DEFAULT_TITLE, allow_negative_numbers = true)]
         title: String,
+    },
+    /// Summarize scoped assessments and open questions from one model capture.
+    #[command(args_override_self = true)]
+    Status {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        scope: Vec<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        host_context: Option<PathBuf>,
+        #[arg(long, allow_negative_numbers = true)]
+        implementation: Option<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        code_revision: Option<String>,
+        #[arg(long, value_enum, default_value = "implementation")]
+        activity: Activity,
+        #[arg(long, value_enum, default_value = "json")]
+        format: StatusFormat,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
     },
     /// Compute the portable revision of a GDD 0.2 or 0.3 bundle.
     Snapshot {
@@ -71,6 +97,26 @@ enum Command {
     },
 }
 
+// Match the CLI's pathlib argument spelling without resolving symlinks or
+// cancelling parent-directory components, which can change which file is read.
+fn status_path(path: PathBuf) -> PathBuf {
+    let mut normalized: PathBuf = path
+        .components()
+        .filter(|part| *part != std::path::Component::CurDir)
+        .collect();
+    if normalized.as_os_str().is_empty() {
+        normalized.push(".");
+    }
+    #[cfg(unix)]
+    if path.as_os_str().as_encoded_bytes().starts_with(b"//")
+        && !path.as_os_str().as_encoded_bytes().starts_with(b"///")
+        && let Ok(relative) = normalized.strip_prefix("/")
+    {
+        return Path::new("//").join(relative);
+    }
+    normalized
+}
+
 fn write_json(writer: &mut impl Write, value: &impl Serialize) -> io::Result<()> {
     serde_json::to_writer_pretty(&mut *writer, value)?;
     writeln!(writer)
@@ -103,6 +149,42 @@ fn run() -> io::Result<ExitCode> {
         } => {
             let receipt = init_project(&path, &project_id, &title)?;
             write_json(&mut io::stdout().lock(), &receipt)?;
+        }
+        Command::Status {
+            path,
+            scope,
+            host_context,
+            implementation,
+            code_revision,
+            activity,
+            format,
+            output,
+        } => {
+            let path = status_path(path);
+            let output = output.map(status_path);
+            let host = tool_input(host_context.map(status_path))?;
+            let status = gdd::status::project_status(
+                &path,
+                gdd::status::StatusOptions {
+                    scope: &scope,
+                    host_context: host.as_ref(),
+                    implementation: implementation.as_deref(),
+                    code_revision: code_revision.as_deref(),
+                    activity,
+                },
+            )?;
+            match format {
+                StatusFormat::Json => write_output(output.as_deref(), &status)?,
+                StatusFormat::Text => {
+                    let text = gdd::status::status_text(&status);
+                    if let Some(output) = output {
+                        File::create_new(output)?.write_all(text.as_bytes())?;
+                    } else {
+                        io::stdout().lock().write_all(text.as_bytes())?;
+                    }
+                }
+            }
+            return Ok(ExitCode::from(status.exit_code));
         }
         Command::Snapshot { path, output } => {
             let bundle = bundle::load_model_only(&path);

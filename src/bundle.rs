@@ -410,12 +410,7 @@ fn merge_records(primary: &mut Bundle, mut secondary: Bundle) {
 }
 
 fn load_primary(path: &Path, scope: Option<&[String]>, paired: bool) -> Bundle {
-    let resolved = if paired {
-        resolve_local(path)
-    } else {
-        fs::canonicalize(path).map_err(|error| path_io(path, error))
-    };
-    match resolved {
+    match resolve_local(path) {
         Ok(path) => load_resolved(path, scope, paired, None),
         Err(issue) => Bundle {
             path: path.to_owned(),
@@ -1210,7 +1205,11 @@ impl Reader<'_> {
                 "SOURCE_UNAVAILABLE",
                 &normalized,
                 "",
-                format!("Cannot read asset: {error}."),
+                format!(
+                    "Cannot read asset {}: {}.",
+                    self.root.join(&normalized).display(),
+                    error.to_string().trim_end_matches('.')
+                ),
             )
         })?;
         Ok(Asset {

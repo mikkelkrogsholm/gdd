@@ -152,6 +152,26 @@ Rust callers can capture both inputs with
 `validate_with_options`. For a single scoped assessment, use
 `validation::validate_paths(&ledger, Some(&model), options, None)`.
 
+## Project status
+
+Run `gdd status project/gdd.json --scope action.main --format text` for a
+scoped overview of the model, readiness and open questions. JSON is the
+default format. It includes the underlying reports and JSON Pointers from
+each assessment and suggested action to its source. The first 12 actions are
+shown. The exit code includes failures and unresolved integration checks.
+
+Authorization and implementation appear as UNASSESSED until the caller
+supplies `--host-context`, `--implementation` or `--code-revision`.
+An explicit empty host context requests both assessments. Select the
+authorization activity with `--activity`. Status with a workflow journal
+(`--run`) is available in the Python CLI.
+
+Rust callers use `gdd::status::project_status(&path, options)`, or
+`project_status_from_bundle(&bundle, options)` to reuse captured model,
+ledger and contract bytes. Read `status.assessments` for the individual
+verdicts and `status.exit_code` for the combined outcome. The
+`status_text(&status)` function renders the existing result.
+
 ## Snapshots, context and project creation
 
 For a model-only assessment, use `bundle::load_model_only(&path)` and
@@ -192,5 +212,6 @@ YAML nesting to 256 containers.
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Python-only Graphify operations. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow`, `create_run`, `run_status`, `advance_run` | Python-only work planning and run journals. |
-| `check_code`, `project_status`, `analyze_impact`, `diff_models` | Python-only code observation and project inspection APIs. |
+| `project_status` | `gdd::status::{project_status, project_status_from_bundle, status_text}` for assessments without a supplied workflow run. |
+| `check_code`, `analyze_impact`, `diff_models` | Python-only code observation and project inspection APIs. |
 | `gdd_validator.host` helpers `snapshot_code`, `execute_check`, `verification_records`, `append_records` | Python-only trusted host operations. A code snapshot identifies selected implementation files, while a model snapshot identifies normative GDD assets. See the [host guide](../HOST.md). |
