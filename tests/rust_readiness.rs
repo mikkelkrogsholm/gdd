@@ -5,9 +5,20 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::fs;
 use std::path::Path;
+use std::process::{Command, Output};
 
 fn write(path: &Path, value: &Value) {
     fs::write(path, serde_json::to_vec(value).unwrap()).unwrap();
+}
+
+fn cli(path: &Path, scope: &str, args: &[&str]) -> Output {
+    Command::new(env!("CARGO_BIN_EXE_gdd"))
+        .arg("validate")
+        .arg(path)
+        .args(["--profile", "readiness", "--scope", scope])
+        .args(args)
+        .output()
+        .unwrap()
 }
 
 #[test]
@@ -51,9 +62,24 @@ fn scoped_component_reads_its_public_action_from_the_owning_fragment() {
     assert_eq!(diagnostic.code, "READINESS_CONTRACT_MISSING");
     assert_eq!(diagnostic.location.file.as_deref(), Some("part.json"));
     assert_eq!(diagnostic.location.pointer, "/nodes/action.add");
+    let plain = cli(&manifest, "component.arithmetic", &[]);
+    let explained = cli(&manifest, "component.arithmetic", &["--explain"]);
+    assert!(plain.stderr.is_empty());
+    assert_eq!(plain.stdout, explained.stdout);
+    assert_eq!(explained.status.code(), Some(1));
+    let explanation = String::from_utf8(explained.stderr).unwrap();
+    assert!(explanation.contains("READINESS_CONTRACT_MISSING part.json#/nodes/action.add"));
+    assert!(explanation.contains("component.arithmetic -> action.add (public-interface)"));
     part["nodes"]["action.add"]["behavior"] = behavior;
     write(&fragment, &part);
     let repaired = validate_scope(&bundle::load(&manifest));
+    let explained = cli(&manifest, "component.arithmetic", &["--explain"]);
+    assert_eq!(explained.status.code(), Some(0));
+    assert!(explained.stderr.is_empty());
+    assert_eq!(
+        explained.stdout,
+        cli(&manifest, "component.arithmetic", &[]).stdout
+    );
     assert_eq!(repaired.exit_code(), 0);
     assert_ne!(report.spec_revision, repaired.spec_revision);
     assert_eq!(validate_scope(&original).exit_code(), 1);
@@ -235,12 +261,35 @@ fn scoped_and_model_only_loaders_skip_unrelated_advisory_contracts() {
 }
 
 #[test]
-fn host_input_capacity_and_invalid_envelopes_have_distinct_cli_exits() {
+fn optional_host_input_preserves_absence_and_distinguishes_capacity_from_invalid_data() {
     let directory = tempfile::tempdir().unwrap();
     let host = directory.path().join("host.json");
+    let model = Path::new("docs/tutorial/refined.gdd.json");
+    let no_host = cli(model, "action.add", &[]);
+    assert!(no_host.status.success());
+    for absent in [
+        "null",
+        "",
+        "  \n  ",
+        "# empty host\n",
+        "---\n# empty document\n...\n",
+    ] {
+        fs::write(&host, absent).unwrap();
+        let output = cli(
+            model,
+            "action.add",
+            &["--host-context", host.to_str().unwrap()],
+        );
+        assert!(output.status.success());
+        assert_eq!(output.stdout, no_host.stdout);
+        assert!(output.stderr.is_empty());
+    }
     for (input, code) in [
         (format!("{}0{}", "[".repeat(1800), "]".repeat(1800)), 2),
         ("{\"trusted_decisions\":false}".to_owned(), 1),
+        ("false".to_owned(), 1),
+        ("[]".to_owned(), 1),
+        ("[unterminated".to_owned(), 1),
     ] {
         fs::write(&host, input).unwrap();
         let output = std::process::Command::new(env!("CARGO_BIN_EXE_gdd"))
@@ -258,4 +307,51 @@ fn host_input_capacity_and_invalid_envelopes_have_distinct_cli_exits() {
         assert!(output.stdout.is_empty());
         assert!(!output.stderr.is_empty());
     }
+}
+
+#[test]
+fn explains_reached_question_targets_and_edge_endpoints_without_treating_them_as_nodes() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("gdd.json");
+    let mut model: Value =
+        serde_json::from_str(include_str!("../docs/tutorial/refined.gdd.json")).unwrap();
+    model["nodes"]["component.parent"] = json!({"kind":"component","description":"Arithmetic domain",
+        "interfaces":[],"boundary":{"responsibility":"Provide arithmetic.","rationale":"One domain.","excludes":[]}});
+    model["edges"].as_array_mut().unwrap().push(json!({
+        "id":"edge.arithmetic.parent","from":"component.arithmetic","to":"component.parent","relation":"refines"
+    }));
+    model["questions"] = json!({"question.x":{"statement":"Ready to expose the action?",
+        "status":"open","targets":["action.add"],"blocks":["implementation"]}});
+    model["sources"] = json!({"source.x":{"role":"input","title":"Design","uri":"missing.md","format":"text","normative":false}});
+    model["edges"][0]["source_refs"] = json!([{"purpose":"contract","source":"source.x"}]);
+    write(&path, &model);
+    let explained = cli(&path, "component.parent", &["--explain"]);
+    assert_eq!(explained.status.code(), Some(1));
+    let explanation = String::from_utf8(explained.stderr).unwrap();
+    assert!(explanation.contains("QUESTION_BLOCKS_SCOPE gdd.json#/questions/question.x"));
+    assert!(explanation.contains("Question question.x targets action.add."));
+    assert!(explanation.contains("SOURCE_UNAVAILABLE gdd.json#/edges/0"));
+    assert!(
+        explanation.contains(
+            "Edge edge.add.owner connects action.add -> component.arithmetic (owned_by)."
+        )
+    );
+    let path_to_action = "Scope path from component.parent\n    component.parent -> component.arithmetic (initial-refinement) [reverse refines, edge.arithmetic.parent] gdd.json#/nodes/component.arithmetic\n    component.arithmetic -> action.add (public-interface) gdd.json#/nodes/action.add";
+    assert!(explanation.contains(path_to_action));
+    assert!(!explanation.contains("-> question.x"));
+    assert!(!explanation.contains("-> edge.add.owner"));
+
+    let unknown = cli(&path, "edge.add.owner", &["--explain"]);
+    let explanation = String::from_utf8(unknown.stderr).unwrap();
+    assert!(explanation.contains("Unknown readiness target."));
+    assert!(!explanation.contains("Scope path"));
+    assert!(!explanation.contains("connects"));
+
+    model["nodes"]["action.add"]["description"] = json!(23);
+    write(&path, &model);
+    let unavailable = cli(&path, "component.arithmetic", &["--explain"]);
+    let explanation = String::from_utf8(unavailable.stderr).unwrap();
+    assert!(explanation.contains("SCHEMA_INVALID"));
+    assert!(explanation.contains("REVISION_UNRESOLVED"));
+    assert!(!explanation.contains("Scope path"));
 }

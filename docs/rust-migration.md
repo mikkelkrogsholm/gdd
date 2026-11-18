@@ -88,6 +88,18 @@ for the combined outcome across checks. Exit 0 means PASS, 1 means a known
 failure, and 2 means unresolved with no known failure. Readiness alone
 establishes neither authorization nor implementation evidence.
 
+To see why a readiness diagnostic falls within the requested scope, run the
+native CLI with `--explain`. This example exits 1 because the starter is a
+draft. The JSON report goes to stdout. Stderr identifies the owning file and
+JSON Pointer and follows the declared ownership edge from `action.main` to
+`component.main`.
+
+```sh
+cargo run --manifest-path "$GDD_CHECKOUT/Cargo.toml" --bin gdd -- \
+  validate "$GDD_CHECKOUT/templates/project/gdd.json" --profile readiness \
+  --scope action.main --explain > readiness.json
+```
+
 ## Snapshots, context and project creation
 
 For a model-only assessment, use `bundle::load_model_only(&path)` and

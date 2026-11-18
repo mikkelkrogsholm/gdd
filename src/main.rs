@@ -54,6 +54,9 @@ enum Command {
         unsupported_extensions: Vec<String>,
         #[arg(long)]
         host_context: Option<PathBuf>,
+        /// Explain readiness diagnostics and their scope paths on stderr.
+        #[arg(long)]
+        explain: bool,
         #[arg(long)]
         output: Option<PathBuf>,
     },
@@ -118,10 +121,12 @@ fn run() -> io::Result<ExitCode> {
             scope,
             unsupported_extensions,
             host_context,
+            explain,
             output,
         } => {
             let host = if let Some(path) = host_context {
                 match gdd::input::parse(&std::fs::read(path)?) {
+                    Ok(gdd::input::Value::Null) => None,
                     Ok(value) => Some(value),
                     Err(error @ gdd::input::InputError::UnsupportedDepth) => {
                         eprintln!("gdd: {error}");
@@ -137,15 +142,17 @@ fn run() -> io::Result<ExitCode> {
             } else {
                 bundle::load_model_only(&path)
             };
-            let report = validation::validate_with_options(
-                &bundle,
-                ValidationOptions {
-                    profiles: &profile,
-                    scope: &scope,
-                    host_context: host.as_ref(),
-                    unsupported_extensions: &unsupported_extensions,
-                },
-            )?;
+            let options = ValidationOptions {
+                profiles: &profile,
+                scope: &scope,
+                host_context: host.as_ref(),
+                unsupported_extensions: &unsupported_extensions,
+            };
+            let report = if explain {
+                validation::validate_explained(&bundle, options, &mut io::stderr().lock())?
+            } else {
+                validation::validate_with_options(&bundle, options)?
+            };
             write_output(output.as_deref(), &report)?;
             return Ok(ExitCode::from(report.exit_code()));
         }

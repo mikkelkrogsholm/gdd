@@ -11,6 +11,7 @@ use crate::report::{Check, CheckResult, Diagnostic};
 use crate::validation::{CORE_KINDS, CORE_RELATIONS};
 
 pub mod context;
+pub(crate) mod explain;
 mod extensions;
 mod readiness;
 mod records;
@@ -27,12 +28,12 @@ const ACTION: &[&str] = &["action"];
 const COMPONENT: &[&str] = &["component"];
 const ENTITY: &[&str] = &["entity"];
 
-pub(crate) fn check(
-    bundle: &Bundle,
-    manifest: &Document,
-    unsupported_extensions: &[String],
-    readiness: Option<(&[String], Option<&Value>)>,
-) -> Vec<Check> {
+pub(crate) fn check<'a>(
+    bundle: &'a Bundle,
+    manifest: &'a Document,
+    unsupported_extensions: &'a [String],
+    readiness: Option<(&'a [String], Option<&Value>)>,
+) -> (Vec<Check>, Option<context::ContextScope<'a>>) {
     let mut model = Model {
         bundle,
         manifest,
@@ -65,11 +66,12 @@ pub(crate) fn check(
     if bundle.records().len() != 0 {
         model.records();
     }
-    if let Some((scope, host)) = readiness {
-        let checks = readiness::check(&model, scope, host);
+    let context = readiness.map(|(scope, host)| {
+        let (checks, context) = readiness::check(&model, scope, host);
         model.checks.extend(checks);
-    }
-    model.checks
+        context
+    });
+    (model.checks, context)
 }
 
 struct Model<'a> {

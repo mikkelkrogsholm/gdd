@@ -14,7 +14,11 @@ mod sources;
 const MISSING: &str = "READINESS_CONTRACT_MISSING";
 const SCENARIO: &str = "SCENARIO_CATEGORY_MISSING";
 
-pub(super) fn check(model: &Model<'_>, scope: &[String], host: Option<&Value>) -> Vec<Check> {
+pub(super) fn check<'a>(
+    model: &Model<'a>,
+    scope: &'a [String],
+    host: Option<&Value>,
+) -> (Vec<Check>, ContextScope<'a>) {
     let seeds: Vec<_> = if scope.is_empty() {
         model
             .nodes
@@ -42,8 +46,9 @@ pub(super) fn check(model: &Model<'_>, scope: &[String], host: Option<&Value>) -
                 .insert(string(edge.value, "from"));
         }
     }
+    let mut missing_targets = BTreeSet::new();
     for id in seeds {
-        if model.kind(id).is_none() {
+        if model.kind(id).is_none() && missing_targets.insert(id) {
             readiness.fail(id, "REFERENCE_UNRESOLVED", "Unknown readiness target.", &[]);
         }
     }
@@ -128,12 +133,13 @@ pub(super) fn check(model: &Model<'_>, scope: &[String], host: Option<&Value>) -
         );
         pass.scope = context
             .implementation_targets
-            .into_iter()
+            .iter()
+            .copied()
             .map(str::to_owned)
             .collect();
         readiness.checks.push(pass);
     }
-    readiness.checks
+    (readiness.checks, context)
 }
 
 struct Readiness<'m, 'a> {

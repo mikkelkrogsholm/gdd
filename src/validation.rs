@@ -10,6 +10,7 @@ use serde::Serialize;
 use serde_json::Value as JsonValue;
 
 use crate::bundle::{Bundle, Document, DocumentKind};
+use crate::context::ContextScope;
 use crate::input::Value;
 use crate::report::{Check, CheckResult, Diagnostic, Report};
 use crate::valid_id;
@@ -74,6 +75,31 @@ pub fn validate_with_options(
     bundle: &Bundle,
     options: ValidationOptions<'_>,
 ) -> io::Result<Report> {
+    assess(bundle, options).map(|(report, _)| report)
+}
+
+/// Validate once and write the scope paths for readiness diagnostics to the
+/// supplied writer. The returned report has the ordinary validation schema.
+pub fn validate_explained(
+    bundle: &Bundle,
+    options: ValidationOptions<'_>,
+    output: &mut impl io::Write,
+) -> io::Result<Report> {
+    if !options.profiles.contains(&Profile::Readiness) {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "--explain requires --profile readiness.",
+        ));
+    }
+    let (report, context) = assess(bundle, options)?;
+    crate::model::explain::readiness(bundle, &report, context.as_ref(), output)?;
+    Ok(report)
+}
+
+fn assess<'a>(
+    bundle: &'a Bundle,
+    options: ValidationOptions<'a>,
+) -> io::Result<(Report, Option<ContextScope<'a>>)> {
     let profiles = if options.profiles.is_empty() {
         vec![Profile::Model]
     } else {
@@ -140,15 +166,18 @@ pub fn validate_with_options(
     }
 
     let representation_valid = report.result("model") == CheckResult::Pass;
+    let mut context = None;
     if wants_model {
         if let Some(manifest) = bundle.manifest().filter(|_| manifest_valid) {
             if representation_valid {
-                report.checks.extend(crate::model::check(
+                let (checks, assessed_scope) = crate::model::check(
                     bundle,
                     manifest,
                     options.unsupported_extensions,
-                    wants_readiness.then_some((&report.scope, options.host_context)),
-                ));
+                    wants_readiness.then_some((options.scope, options.host_context)),
+                );
+                report.checks.extend(checks);
+                context = assessed_scope;
             }
         } else {
             let reason = "Semantic model validation requires a supported GDD 0.2 or 0.3 model manifest; schema validation alone is representation-only.";
@@ -181,7 +210,7 @@ pub fn validate_with_options(
         ));
         report.checks.push(check);
     }
-    Ok(report)
+    Ok((report, context))
 }
 
 fn validate_host(host: &Value) -> io::Result<()> {
