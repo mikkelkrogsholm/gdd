@@ -176,6 +176,43 @@ questions and matching rules. Use `gdd::design_review::review_design(&bundle,
 review, implementation, code_revision, expected_scope)` to assess the same
 capture. An explicitly empty expected review scope is invalid.
 
+## Inspect journey, component and data perspectives
+
+```sh
+cargo run --bin gdd -- perspectives examples/product/greenfield.gdd.json
+cargo run --bin gdd -- perspectives examples/product/partial.gdd.json --output partial-perspectives.json
+```
+
+The native command emits the [advisory perspectives envelope](PERSPECTIVES.md)
+for GDD 0.2 and 0.3. Each view contains canonical records and their direct
+neighbors. Derived component–data links identify the edges that witness them.
+The product vocabulary requires the exact shipped extension bytes. A valid
+sketch can have gaps. The CLI returns 1 for invalid input and 2 for unresolved
+input, with diagnostics on stderr. Supplying `--output` publishes the complete
+JSON document to a new file.
+
+Rust callers can project a path with `gdd::perspectives::perspectives(path)`,
+or admit one capture and reuse its snapshot:
+
+```rust
+use std::path::Path;
+use gdd::perspectives::{load_perspective_bundle, perspective_data};
+use gdd::projection::ProjectionError;
+
+fn inspect(path: &Path) -> Result<(), ProjectionError> {
+    let captured = load_perspective_bundle(path)?;
+    let data = perspective_data(&captured)?;
+    println!("{}", data["views"]["journey"]["primary_node_ids"]);
+    Ok(())
+}
+```
+
+To admit an existing `gdd::bundle::Bundle`, use
+`gdd::perspectives::PerspectiveBundle::try_from(bundle)`. Validation uses the
+captured model and extension bytes. The wrapper exposes the shared model via
+`bundle()`. Each call to `perspective_data` returns an owned `serde_json::Value`
+that consumers can edit independently, even after the source files are removed.
+
 ## Workplans and packet verification
 
 From the repository root, prepare a plan and verify the saved artifact against
@@ -539,7 +576,8 @@ YAML nesting to 256 containers.
 | --- | --- |
 | `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Use `Profile::ImportGraphify` for standalone observations and model-bound Graphify checks. Visualization validation still requires Python. |
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Native file import, verification, byte recovery, in-memory observations and explicit proposals for both model formats via `gdd::graphify`. |
-| `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
+| `perspectives`, `perspective_data`, `load_perspective_bundle` | Native path-based and captured model projections via `gdd::perspectives`. |
+| `render_view`, `verify_view` | Python-only HTML APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |
 | `run_status` | Native journal replay and current acceptance with path-based or captured inputs. |
 | `create_run`, `advance_run` | Native exclusive run creation, gated event publication and idempotent replay. |

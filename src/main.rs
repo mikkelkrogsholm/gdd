@@ -199,6 +199,14 @@ enum Command {
         #[arg(long, allow_negative_numbers = true)]
         output: Option<PathBuf>,
     },
+    /// Inspect advisory journey, component and data perspectives.
+    #[command(args_override_self = true)]
+    Perspectives {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
+    },
     /// Derive component interfaces, ownership and community call boundaries.
     #[command(args_override_self = true)]
     Boundaries {
@@ -527,6 +535,29 @@ fn run() -> io::Result<ExitCode> {
                 }
             }
             return Ok(ExitCode::from(report.exit_code));
+        }
+        Command::Perspectives { path, output } => {
+            let views = gdd::perspectives::perspectives(&cli_path(path))?;
+            if let Some(output) = output.map(cli_path) {
+                let parent = output
+                    .parent()
+                    .filter(|p| !p.as_os_str().is_empty())
+                    .unwrap_or(Path::new("."));
+                let mut staging = tempfile::Builder::new();
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
+                    staging.permissions(std::fs::Permissions::from_mode(0o666));
+                }
+                let mut staged = staging.prefix(".gdd-perspectives-").tempfile_in(parent)?;
+                let mut writer = io::BufWriter::new(staged.as_file_mut());
+                write_json(&mut writer, &views)?;
+                writer.flush()?;
+                drop(writer);
+                staged.persist_noclobber(output)?;
+            } else {
+                write_output(None, &views)?;
+            }
         }
         Command::Boundaries { path, output } => {
             let model = gdd::projection::load_projection_bundle(&cli_path(path))?;

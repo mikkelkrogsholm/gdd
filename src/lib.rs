@@ -5,7 +5,7 @@ pub mod graphify;
 pub mod input;
 mod model;
 pub use model::workflow::run as workflow_run;
-pub use model::{boundaries, context, design_review, impact, model_diff, workflow};
+pub use model::{boundaries, context, design_review, impact, model_diff, perspectives, workflow};
 pub mod projection;
 pub mod report;
 pub mod status;

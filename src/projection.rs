@@ -2,13 +2,20 @@
 
 use crate::bundle::{self, Bundle};
 use crate::report::{Check, CheckResult};
-use crate::validation::{self, Profile};
 use std::{fmt, io, path::Path};
 
 #[derive(Debug)]
 pub struct ProjectionError {
     message: String,
     pub exit_code: u8,
+}
+impl ProjectionError {
+    pub(crate) fn unsupported(message: impl Into<String>) -> Self {
+        Self {
+            message: message.into(),
+            exit_code: 2,
+        }
+    }
 }
 impl fmt::Display for ProjectionError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -58,19 +65,29 @@ fn require_pass(checks: &[Check], path: &Path) -> Result<(), ProjectionError> {
 /// Accept representation, loading and core model checks independently of the
 /// historical applicability of operational records.
 pub fn load_projection_bundle(path: &Path) -> Result<Bundle, ProjectionError> {
-    let bundle = bundle::load_model_only(path);
-    let representation = validation::validate(&bundle, Profile::Representation);
-    require_pass(&representation.checks, path)?;
-    let manifest = bundle.manifest().ok_or_else(|| ProjectionError {
-        exit_code: 2,
-        message: "Projection requires a supported GDD 0.2 or 0.3 manifest.".into(),
-    })?;
-    require_pass(&crate::model::projection_checks(&bundle, manifest), path)?;
-    if representation.spec_revision.is_none() {
+    let bundle = bundle::load_for_inspection(path);
+    validate_projection_bundle(&bundle)?;
+    Ok(bundle)
+}
+
+pub(crate) fn validate_projection_bundle(bundle: &Bundle) -> Result<(), ProjectionError> {
+    let path = bundle.path();
+    if path.as_os_str().as_encoded_bytes().contains(&0) {
         return Err(ProjectionError {
-            exit_code: 2,
-            message: "Projection requires a resolved model snapshot.".into(),
+            message: "Embedded NUL in model path.".into(),
+            exit_code: 1,
         });
     }
-    Ok(bundle)
+    let inspected = crate::model::inspection::inspect(bundle);
+    require_pass(&inspected.checks, path)?;
+    let manifest = bundle.manifest().ok_or_else(|| {
+        ProjectionError::unsupported("Projection requires a supported GDD 0.2 or 0.3 manifest.")
+    })?;
+    require_pass(&crate::model::projection_checks(bundle, manifest), path)?;
+    if inspected.revision.is_none() {
+        return Err(ProjectionError::unsupported(
+            "Projection requires a resolved model snapshot.",
+        ));
+    }
+    Ok(())
 }

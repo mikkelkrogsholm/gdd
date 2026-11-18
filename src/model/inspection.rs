@@ -6,14 +6,14 @@ use crate::bundle::{Bundle, Document, FormatIssue};
 use crate::report::{Check, CheckResult, Diagnostic};
 use crate::validation::{self, Profile};
 
-pub(super) struct Inspection<'a> {
+pub(crate) struct Inspection<'a> {
     pub root: Option<&'a Document>,
     pub revision: Option<String>,
     pub checks: Vec<Check>,
     pub rejected: BTreeSet<String>,
 }
 
-pub(super) fn inspect(bundle: &Bundle) -> Inspection<'_> {
+pub(crate) fn inspect(bundle: &Bundle) -> Inspection<'_> {
     let report = validation::validate(bundle, Profile::Representation);
     let mut checks = report.checks;
     let root = bundle.root_document().filter(|_| {
