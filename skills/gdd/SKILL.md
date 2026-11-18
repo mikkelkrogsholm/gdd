@@ -14,9 +14,14 @@ only the relevant chapters below. The [reference catalog](references/catalog.md)
 identifies generated copies and optional repository-only examples/history. All
 routed guidance and schemas are bundled; historical citations in exact copies
 may require the source repository. Edit the project's model and sources, not the
-skill's standard. Copied assets retain their original text and revisions. With
-Cargo installed, run `cargo run --locked --manifest-path scripts/Cargo.toml -- verify .`
-from this skill directory to check the bundled files against their local index.
+skill's standard. Copied assets retain their original text and revisions. From
+this skill directory, check the bundled files against their local index. This
+POSIX shell command keeps Cargo's build files in your user cache.
+
+```sh
+cargo run --locked --target-dir "$HOME/.cache/gdd/skill-assets" \
+  --manifest-path scripts/Cargo.toml -- verify .
+```
 
 ## Choose the current task
 

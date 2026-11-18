@@ -1,5 +1,44 @@
 # Install and start
 
+## Install the Rust CLI and viewer
+
+From the root of the current Rust checkout, use Rust 1.95+ and Cargo. These
+POSIX shell commands install both executables in a dedicated directory and
+select them for the current shell. Cargo needs network access for the first
+build unless its registry and locked dependencies are already cached. For a
+cached build, set `CARGO_NET_OFFLINE=true` in the environment.
+
+```sh
+GDD_INSTALL_ROOT="$HOME/.local/gdd-native"
+cargo install --locked --path . --root "$GDD_INSTALL_ROOT"
+cargo install --locked --path crates/viewer --root "$GDD_INSTALL_ROOT"
+export PATH="$GDD_INSTALL_ROOT/bin:$PATH"
+```
+
+Initialize a new draft and check the model. The model check should exit 0.
+The scoped readiness check should exit 1 because the draft still has an open
+question about the work in `action.main`.
+
+```sh
+GDD_PROJECT="$(mktemp -d)/my-project"
+gdd init "$GDD_PROJECT" --project-id project.my-project --title "My project"
+gdd validate "$GDD_PROJECT/gdd.json"
+gdd validate "$GDD_PROJECT/gdd.json" --profile readiness --scope action.main
+```
+
+Save a view, verify it against the model, and open it on a desktop with OpenGL
+(X11 or Wayland on Linux). A recipient with the native viewer can open the
+single saved file offline. See the [native viewer guide](crates/viewer/README.md)
+for navigation and system requirements.
+
+```sh
+gdd view "$GDD_PROJECT/gdd.json" --output "$GDD_PROJECT/graph.gddview"
+gdd validate "$GDD_PROJECT/gdd.json" --profile visualization --view "$GDD_PROJECT/graph.gddview"
+gdd-viewer "$GDD_PROJECT/graph.gddview"
+```
+
+## Install the tagged Python CLI
+
 The Python distribution is named **gdd-validator** and installs the **gdd**
 command. Install tagged source or the verified wheel from the
 [v0.8.0 GitHub development prerelease](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.8.0).
@@ -12,7 +51,7 @@ The 0.8.0 development prerelease includes Cytoscape.js/fCoSE, overlapping
 community areas and product perspectives in renderer 0.4.0. The required
 JavaScript and license notices are bundled in each exported HTML file; CLI users need no Node.js installation.
 
-## Install from source
+### Install from source
 
 For the [graph-to-code tutorial](docs/tutorial.md), use the v0.8.0 tagged
 checkout, which includes the tutorial assets and `status`, `impact`, `diff` and
@@ -38,7 +77,7 @@ virtual environment and `python -m pip install -e .`; this installs the CLI and
 runtime dependencies, while `uv sync --locked --dev` is the reproducible route
 for the repository's development checks.
 
-## Install a local wheel
+### Install a local wheel
 
 Build a wheel into a fresh location from the repository root:
 
@@ -74,9 +113,9 @@ are under `venv\Scripts` instead of `venv/bin`. Runtime schemas, viewer files,
 starter templates and the standalone GDD skill are included in the wheel.
 Running the CLI does not require an LLM account or agent service.
 
-## Create a draft project
+### Create a draft project
 
-With an installed `gdd` command, choose a project directory that does not exist:
+With the Python `gdd` command, choose a project directory that does not exist:
 
 ```sh
 gdd init ./my-project --project-id project.my-project --title "My project"
@@ -104,13 +143,13 @@ canonical assessment and trust contracts.
 `SKILL.md`, `references/`, and `scripts/` together. It can be used independently
 of this checkout after installing the CLI.
 
-Choose the skill destination supported by your agent runtime, then copy the
-whole folder there. From the repository root, this creates a reviewable local copy;
-it does not modify personal agent configuration:
+From the repository root, use `rsync` to copy the skill into a fresh directory.
+The anchored exclusion skips Cargo output from an earlier verifier build in
+`skills/gdd/scripts/target` and preserves all other skill files.
 
 ```sh
 GDD_SKILL_COPY="$(mktemp -d)/gdd"
-cp -R skills/gdd "$GDD_SKILL_COPY"
+rsync -a --exclude='/scripts/target' skills/gdd/ "$GDD_SKILL_COPY/"
 ```
 
 From an installed wheel you can instead copy the included skill asset. This
@@ -128,11 +167,18 @@ shutil.copytree(source, Path(sys.argv[1]))
 PY
 ```
 
-Cargo can build the verifier directly from the copy. These paths work from
-any directory when `GDD_SKILL_COPY` contains the absolute installation path.
+For a copy from the current Rust checkout, Cargo can build the verifier into
+a cache outside the skill and check the installed references from any directory.
 
 ```sh
-cargo run --locked --manifest-path "$GDD_SKILL_COPY/scripts/Cargo.toml" -- verify "$GDD_SKILL_COPY"
+cargo run --locked --target-dir "$HOME/.cache/gdd/skill-assets" \
+  --manifest-path "$GDD_SKILL_COPY/scripts/Cargo.toml" -- verify "$GDD_SKILL_COPY"
+```
+
+For a copy from the tagged v0.8.0 wheel, use its bundled Python verifier.
+
+```sh
+"$GDD_ENV_DIR/venv/bin/python" -I "$GDD_SKILL_COPY/scripts/verify_assets.py"
 ```
 
 Move the reviewed copy to the location documented by your runtime or point the

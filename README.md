@@ -13,12 +13,16 @@ work. Agents refine that description, use it to scope development, and show the
 result through interactive views. The implementation language and agent runtime
 remain project choices.
 
-**Current development status:** GDD 0.3 draft · CLI/package 0.8.0 development prerelease · viewer 0.4.0 · Python 3.11+ ·
-[MIT licensed](LICENSE). The repo includes the method, deterministic CLI, offline
-viewer, Graphify adapter, safe project starter and a portable agent skill.
-The viewer includes Cytoscape.js and fCoSE; [third-party notices](gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt) accompany the MIT-licensed GDD code.
-The latest development prerelease is [v0.8.0](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.8.0).
-Install from tagged source or its verified wheel; the package is not on PyPI.
+**Current Rust source checkout.** Install the `gdd` CLI and `gdd-viewer` desktop
+application with Rust 1.95+ and Cargo. Create a draft, validate it, and open a
+portable `.gddview` file by following the [native quickstart](INSTALL.md#install-the-rust-cli-and-viewer).
+
+**Tagged Python prerelease.** [v0.8.0](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.8.0)
+includes the Python 3.11+ CLI, draft GDD 0.3, Graphify adapter, project starter,
+portable agent skill and offline HTML viewer 0.4.0. Install the tagged source or
+its verified wheel using the [Python installation instructions](INSTALL.md#install-the-tagged-python-cli).
+The [MIT license](LICENSE) covers GDD. The HTML viewer includes Cytoscape.js and
+fCoSE with [third-party notices](gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt).
 
 For library integrations moving from Python to Rust, see the
 [Rust API migration guide](docs/rust-migration.md).
@@ -67,7 +71,7 @@ The tutorial is included in v0.8.0 and needs no LLM account.
 For the method without commands, read [GDD.md](GDD.md). For installation choices,
 see [INSTALL.md](INSTALL.md).
 
-### Try the released CLI
+### Try the tagged Python CLI
 
 This source-checkout quickstart requires Python 3.11+ and
 [uv](https://docs.astral.sh/uv/). It needs no LLM credentials, Graphify installation
@@ -108,7 +112,7 @@ See [CLI reference](VALIDATOR.md) for commands, revision identities and work-pac
 
 ## Use GDD with an agent
 
-Copy the whole [GDD skill](skills/gdd/SKILL.md) into your agent runtime's supported
+Install the [GDD skill](skills/gdd/SKILL.md) in your agent runtime's supported
 skill location, or point an agent at its `SKILL.md`. The folder contains its own
 guidance and schemas and also ships in the wheel. Follow the
 [installation instructions](INSTALL.md#install-the-standalone-agent-skill);

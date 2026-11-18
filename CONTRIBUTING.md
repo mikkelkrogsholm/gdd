@@ -164,12 +164,13 @@ describes the provenance policy.
 
 The standalone skill contains synchronized reference copies. After changing
 authoritative guidance, regenerate the skill, review the changes and run its
-standalone tests.
+standalone tests. Run these commands from the repository root so Cargo builds
+in the checkout's `target/` directory.
 
 ```sh
-cargo run --locked --manifest-path skills/gdd/scripts/Cargo.toml -- sync
-cargo run --locked --manifest-path skills/gdd/scripts/Cargo.toml -- sync --check
-cargo test --locked --manifest-path skills/gdd/scripts/Cargo.toml
+cargo run --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo.toml -- sync
+cargo run --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo.toml -- sync --check
+cargo test --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo.toml
 ```
 
 Use `--root PATH` for a different checkout. The index retains its source URL

@@ -104,18 +104,20 @@ The complete source/target list is in [source-index.json](source-index.json).
 
 ## Integrity and maintenance
 
-Run the local integrity check from the standalone skill directory.
+From the standalone skill directory, check integrity with Cargo in a POSIX
+shell. The build files go in your user cache.
 
 ```sh
-cargo run --locked --manifest-path scripts/Cargo.toml -- verify .
+cargo run --locked --target-dir "$HOME/.cache/gdd/skill-assets" \
+  --manifest-path scripts/Cargo.toml -- verify .
 ```
 
-In the source checkout, regenerate the copies, index and catalog after editing
+From the source checkout root, regenerate the copies, index and catalog after editing
 authoritative files. The second command compares them without writing.
 
 ```sh
-cargo run --locked --manifest-path skills/gdd/scripts/Cargo.toml -- sync
-cargo run --locked --manifest-path skills/gdd/scripts/Cargo.toml -- sync --check
+cargo run --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo.toml -- sync
+cargo run --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo.toml -- sync --check
 ```
 
 The Python migration checks remain available as `scripts/verify_assets.py`

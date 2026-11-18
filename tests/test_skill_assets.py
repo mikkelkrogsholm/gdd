@@ -25,6 +25,25 @@ def index(skill: Path = SKILL) -> dict:
     return json.loads((skill / "references/source-index.json").read_text(encoding="utf-8"))
 
 
+def copy_skill(source: Path, destination: Path) -> None:
+    def ignore_cargo_output(directory, names):
+        return {"target"} if Path(directory) == source / "scripts" else set()
+
+    shutil.copytree(source, destination, ignore=ignore_cargo_output)
+
+
+def test_copy_skips_only_the_standalone_cargo_build_directory(tmp_path):
+    source, destination = tmp_path / "source", tmp_path / "installed skill"
+    for path in ("scripts/target/build", "scripts/src/target/data", "target/notes", ".hidden"):
+        file = source / path
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_text(path)
+    copy_skill(source, destination)
+    assert not (destination / "scripts/target").exists()
+    for path in ("scripts/src/target/data", "target/notes", ".hidden"):
+        assert (destination / path).read_text() == path
+
+
 @pytest.fixture
 def source_copy(tmp_path: Path) -> Path:
     """Copy source inputs and citation targets, without a checkout or agent runtime."""
@@ -36,7 +55,7 @@ def source_copy(tmp_path: Path) -> Path:
         destination = root / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / relative, destination)
-    shutil.copytree(SKILL, root / "skills/gdd")
+    copy_skill(SKILL, root / "skills/gdd")
     return root
 
 
@@ -55,7 +74,7 @@ def test_generated_references_match_authoritative_bytes_and_index():
 
 def test_installed_folder_has_all_required_navigation(tmp_path):
     installed = tmp_path / "installed/gdd"
-    shutil.copytree(SKILL, installed)
+    copy_skill(SKILL, installed)
     manifest = index(installed)
     optional = {(entry["from"], entry["href"]) for entry in manifest["repository_only_links"]}
     cited = set()
@@ -78,7 +97,7 @@ def test_installed_folder_has_all_required_navigation(tmp_path):
 
 def test_standalone_integrity_script_needs_no_checkout_or_package(tmp_path):
     installed = tmp_path / "skills/gdd"
-    shutil.copytree(SKILL, installed)
+    copy_skill(SKILL, installed)
     result = subprocess.run([sys.executable, "-I", str(installed / "scripts/verify_assets.py")],
                             cwd=tmp_path, capture_output=True, text=True, check=False)
     assert result.returncode == 0, result.stderr
@@ -87,7 +106,7 @@ def test_standalone_integrity_script_needs_no_checkout_or_package(tmp_path):
 
 def test_standalone_detects_changed_missing_and_unindexed_assets(tmp_path):
     installed = tmp_path / "gdd"
-    shutil.copytree(SKILL, installed)
+    copy_skill(SKILL, installed)
     entries = index(installed)["files"]
     modified = installed / entries[0]["path"]
     modified.write_bytes(modified.read_bytes() + b"\nChanged copy.\n")
@@ -153,7 +172,7 @@ def test_all_bundled_schema_refs_are_locally_resolvable():
 
 def test_standalone_rejects_index_paths_outside_generated_references(tmp_path):
     installed = tmp_path / "gdd"
-    shutil.copytree(SKILL, installed)
+    copy_skill(SKILL, installed)
     manifest = index(installed)
     manifest["files"][0]["path"] = "../../outside.md"
     (installed / "references/source-index.json").write_text(json.dumps(manifest))
