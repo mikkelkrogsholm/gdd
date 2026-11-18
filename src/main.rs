@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand};
+use gdd::validation::{self, Profile, ValidationOptions};
 use gdd::{DEFAULT_PROJECT_ID, DEFAULT_TITLE, bundle, init_project};
 use serde::Serialize;
 
@@ -29,6 +30,18 @@ enum Command {
     /// Compute the portable revision of a GDD 0.2 or 0.3 bundle.
     Snapshot {
         path: PathBuf,
+        #[arg(long)]
+        output: Option<PathBuf>,
+    },
+    /// Validate a GDD document or model bundle.
+    Validate {
+        path: PathBuf,
+        #[arg(long, value_enum, default_value = "model")]
+        profile: Vec<Profile>,
+        #[arg(long)]
+        scope: Vec<String>,
+        #[arg(long = "unsupported-extension")]
+        unsupported_extensions: Vec<String>,
         #[arg(long)]
         output: Option<PathBuf>,
     },
@@ -70,6 +83,29 @@ fn run() -> io::Result<ExitCode> {
             } else {
                 write_json(&mut io::stdout().lock(), snapshot)?;
             }
+        }
+        Command::Validate {
+            path,
+            profile,
+            scope,
+            unsupported_extensions,
+            output,
+        } => {
+            let bundle = bundle::load(&path);
+            let report = validation::validate_with_options(
+                &bundle,
+                ValidationOptions {
+                    profiles: &profile,
+                    scope: &scope,
+                    unsupported_extensions: &unsupported_extensions,
+                },
+            )?;
+            if let Some(output) = output {
+                write_json(&mut File::create_new(output)?, &report)?;
+            } else {
+                write_json(&mut io::stdout().lock(), &report)?;
+            }
+            return Ok(ExitCode::from(report.exit_code()));
         }
     }
     Ok(ExitCode::SUCCESS)

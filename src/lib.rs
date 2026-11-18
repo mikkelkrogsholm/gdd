@@ -2,6 +2,8 @@
 
 pub mod bundle;
 pub mod input;
+pub mod report;
+pub mod validation;
 
 use serde::Serialize;
 use serde_json::Value;
