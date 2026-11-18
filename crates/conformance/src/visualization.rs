@@ -6,7 +6,6 @@ use gdd::{input, validation::to_json};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::fs;
-use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use time::{OffsetDateTime, format_description::well_known::Rfc3339};
@@ -202,36 +201,7 @@ fn run(directory: &Path) -> Result<Run> {
 
 pub(super) fn command(directory: &Path, output: Option<PathBuf>) -> Result<ExitCode> {
     let run = run(directory)?;
-    let mut bytes = serde_json::to_vec_pretty(&run)?;
-    bytes.push(b'\n');
-    if let Some(path) = output {
-        let parent = path
-            .parent()
-            .filter(|p| !p.as_os_str().is_empty())
-            .unwrap_or(Path::new("."));
-        let mut builder = tempfile::Builder::new();
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            builder.permissions(fs::Permissions::from_mode(0o666));
-        }
-        let mut staging = builder.tempfile_in(parent)?;
-        staging.write_all(&bytes)?;
-        staging
-            .persist_noclobber(&path)
-            .with_context(|| format!("create receipt {}", path.display()))?;
-        println!(
-            "{}/{} native visualization expectations matched",
-            run.matched, run.total
-        );
-    } else {
-        io::stdout().lock().write_all(&bytes)?;
-    }
-    Ok(if run.matched == run.total {
-        ExitCode::SUCCESS
-    } else {
-        ExitCode::FAILURE
-    })
+    crate::receipt::publish(&run, output, "visualization", run.matched, run.total)
 }
 
 #[cfg(test)]

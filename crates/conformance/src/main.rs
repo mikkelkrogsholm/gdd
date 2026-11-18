@@ -1,4 +1,6 @@
 mod graphify;
+mod receipt;
+mod standard;
 mod visualization;
 
 use anyhow::Result;
@@ -10,6 +12,11 @@ use std::process::ExitCode;
 #[derive(Parser)]
 #[command(name = "gdd-conformance")]
 enum Command {
+    /// Execute the standard cases and print or save their full JSON receipt.
+    Standard {
+        #[arg(long, value_name = "PATH")]
+        output: Option<PathBuf>,
+    },
     /// Run the Graphify adapter cases and optionally save the JSON receipt.
     Graphify {
         #[arg(long, value_name = "PATH")]
@@ -25,6 +32,7 @@ enum Command {
 fn main() -> Result<ExitCode> {
     let directory = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../conformance");
     match Command::parse() {
+        Command::Standard { output } => standard::command(&directory, output),
         Command::Graphify { output } => graphify::command(&directory, output),
         Command::Visualization { output } => visualization::command(&directory, output),
     }

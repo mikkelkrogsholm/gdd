@@ -1345,6 +1345,7 @@ dependencies = [
  "gdd",
  "json-patch",
  "jsonschema-value",
+ "libyaml-safer",
  "serde",
  "serde_json",
  "tempfile",

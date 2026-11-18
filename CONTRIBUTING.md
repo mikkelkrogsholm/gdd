@@ -54,7 +54,12 @@ welcome; contributors remain responsible for understanding and verifying them.
 
 ## Check a change
 
-Run native tests with `cargo test --locked --workspace`. To run the 18 named
+Run native tests with `cargo test --locked --workspace`. To execute the
+[58 standard cases](conformance/README.md#standard-validator) and save their
+full Rust validation reports in a new file, run
+`cargo run --offline --locked -p gdd-conformance -- standard --output standard-run.json`.
+
+To run the 18 named
 Graphify adapter cases and keep their full Rust import reports, use
 `cargo run --locked -p gdd-conformance -- graphify --output graphify-run.json`.
 The suite and its precision expectation are documented in

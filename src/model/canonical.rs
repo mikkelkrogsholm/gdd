@@ -92,6 +92,7 @@ pub(super) fn bytes(value: &Json) -> Vec<u8> {
     bytes
 }
 
-pub(super) fn digest(value: &Json) -> String {
+/// Revision of a value encoded as canonical sorted UTF-8 JSON.
+pub fn digest(value: &Json) -> String {
     format!("sha256:{}", crate::sha256(&bytes(value)))
 }

@@ -2,14 +2,32 @@
 
 `cases.yaml` describes 58 positive and negative expectations for the standard's profiles. `diagnostics.csv` contains stable diagnostic codes. Case IDs identify tests in the suite, not nodes in the example model.
 
-A case selects a base artifact and profile, specifies any scope and changes, and states the expected dimension/result. `patches` uses [RFC 6902 JSON Patch](https://www.rfc-editor.org/rfc/rfc6902). [run.py](run.py) creates concrete local fixtures for condition cases and executes the validator in temporary bundles. The original examples are not changed.
+## Standard validator
 
-`verification` preserves the classification from the standard phase. The historical authoring check is documented in the [standard review](../evidence/standard-review.md). Current validator execution is recorded separately in [validator-conformance.json](../evidence/validator-conformance.json). `expected` is used only for the assertion after actual execution, never as a result inside the validator.
+Run the 58 named cases from this checkout with the locked Cargo dependencies
+available locally.
 
 ```sh
-uv run python conformance/run.py --output evidence/validator-conformance.json
-uv run pytest -q
+cargo run --offline --locked -p gdd-conformance -- standard --output standard-run.json
 ```
+
+Omit `--output` to print the full JSON receipt. With `--output`, the command
+creates a new file and prints the matched and total counts. Each completed
+case includes its ID, expected and actual verdicts, diagnostic codes in the
+selected dimension, and the full native validator report. Case setup errors and
+mismatches produce a nonzero exit after the remaining cases run.
+
+[cases.yaml](cases.yaml) supplies the bases, scopes, profiles, [RFC 6902
+patches](https://www.rfc-editor.org/rfc/rfc6902) and expectations. The runner
+applies each patch and named condition to a private copy of the example inputs,
+preserving authoring order when serializing modified fixtures for snapshot
+revisions. Trusted mandates, evidence, parallel plans and import audits are
+synthetic inputs generated for their named cases.
+
+Replay the Python suite with `uv run python conformance/run.py --output python-standard-run.json`.
+The `verification` field preserves the classification from the [standard
+review](../evidence/standard-review.md). The [historical validator
+receipt](../evidence/validator-conformance.json) identifies its own execution.
 
 The harness checks the expected dimension/result and required diagnostic. It preserves all report checks, including when FAIL and UNKNOWN occur together. Parallel cases assess the separate plan operation; it does not claim action readiness. Import cases check demonstrable data loss and explicit UNKNOWN for unsupported profiles/versions. Therefore, 58 matching expectations are not certification of every possible standard requirement.
 

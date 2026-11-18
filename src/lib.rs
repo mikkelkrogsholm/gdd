@@ -4,6 +4,7 @@ pub mod bundle;
 pub mod graphify;
 pub mod input;
 mod model;
+pub use model::canonical::digest as canonical_digest;
 pub use model::workflow::run as workflow_run;
 pub use model::{boundaries, context, design_review, impact, model_diff, perspectives, workflow};
 pub mod projection;
@@ -184,7 +185,8 @@ pub fn snapshot_revision(assets: &[(&str, &str)]) -> io::Result<String> {
     Ok(format!("sha256:{}", sha256(&compact)))
 }
 
-fn sha256(bytes: &[u8]) -> String {
+/// Lowercase SHA-256 hash of the supplied asset bytes.
+pub fn sha256(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
 }
 
