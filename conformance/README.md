@@ -195,11 +195,33 @@ produce a nonzero exit. To collect the Python receipt with pytest output, run
 
 ## GDD 0.3 boundaries and design principles
 
-[design.cases.json](design.cases.json) names the new boundary, contract, community,
-workflow and advisory review assertions. [run_design.py](run_design.py) executes
-their actual pytest nodes in an isolated process and retains counts and output.
-Parameterized instances include positive, negative, unknown, legacy-compatibility
-and revision-drift controls. The original 58 cases remain unchanged and run under
-GDD 0.2. Run `uv run python conformance/run_design.py --output REPORT.json`.
-The checker tests envelope completeness/applicability; synthetic reviews provide
-no application-quality or acceptance evidence.
+Run the 32 cases and 52 behavioral instances in [design.cases.json](design.cases.json)
+with the Rust runner.
+
+```sh
+cargo run --offline --locked -p gdd-conformance -- design --output native-design-run.json
+```
+
+The suite checks model and readiness diagnostics, component interfaces,
+community calls, context closure, snapshot revisions, workflow packet integrity,
+advisory review applicability and versioned schema definitions. Mutations use
+private copies of the concert model. The artifact case renders and verifies a
+standalone native `.gddview` file and reads its responsibility, rationale,
+public contracts and calls. The Python case checks labels in rendered HTML.
+Interactive viewer checks run separately.
+
+The same case executes the native `gdd boundaries` and `gdd design-review`
+commands and checks their JSON output and exit codes. By default it locates
+the checkout's executable with one locked, offline Cargo build. Set
+`GDD_NATIVE_CLI` to the absolute path of a matching built or installed `gdd`
+to execute both commands without Cargo. Run the suite with the checkout's
+catalogs, schemas and example models available.
+
+Omit `--output` to print the JSON receipt. With `--output`, the runner creates
+a new file and prints the matched case count. Each row identifies the assertion,
+verdict and number of attempted instances. Failed expectations include their
+parameter and error and cause a nonzero exit. To capture the Python receipt
+with its pytest output, run
+`uv run python conformance/run_design.py --output python-design-run.json`.
+Synthetic reviews exercise envelope completeness and applicability. The
+original 58 standard cases run under GDD 0.2.

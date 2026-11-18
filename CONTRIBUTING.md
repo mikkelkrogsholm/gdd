@@ -83,6 +83,9 @@ with `cargo run --offline --locked -p gdd-conformance -- impact --output native-
 
 Run the 16 [native model diff cases](conformance/README.md#stable-identity-model-diff)
 with `cargo run --offline --locked -p gdd-conformance -- diff --output native-diff-run.json`.
+
+Run the 32 [native design boundary and review cases](conformance/README.md#gdd-03-boundaries-and-design-principles)
+with `cargo run --offline --locked -p gdd-conformance -- design --output native-design-run.json`.
 Use a new file path for each receipt.
 
 Verification runs locally; GitHub Actions CI is intentionally absent. For an
