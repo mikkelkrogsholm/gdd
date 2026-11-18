@@ -444,12 +444,18 @@ fn append_validates_original_and_merged_ledgers_and_cleans_up() {
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 #[test]
 fn resources_and_ledgers_reject_links_but_regular_receipts_allow_aliases() {
-    use rustix::fs::{CWD, Mode, mkfifoat};
     use std::os::unix::fs::symlink;
     let project = Project::new();
     let root = project.dir.path();
     let fifo = root.join("pipe");
-    mkfifoat(CWD, &fifo, Mode::RUSR | Mode::WUSR).unwrap();
+    assert!(
+        Command::new("mkfifo")
+            .args(["-m", "600"])
+            .arg(&fifo)
+            .status()
+            .expect("create the FIFO fixture")
+            .success()
+    );
     symlink("domain.rs", root.join("alias")).unwrap();
     symlink("checks", root.join("alias-dir")).unwrap();
     for name in ["pipe", "alias", "alias-dir/value.rs"] {

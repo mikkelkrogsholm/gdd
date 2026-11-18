@@ -33,7 +33,6 @@ git clone https://github.com/YOUR-USERNAME/gdd.git
 cd gdd
 git remote add upstream https://github.com/mikkelkrogsholm/gdd.git
 git switch -c contribution/my-change
-uv sync --locked --dev --python 3.12
 ```
 
 Make one focused change, run the relevant local checks, and commit it with a
@@ -53,6 +52,34 @@ special commit-signing requirement is imposed. AI-assisted contributions are
 welcome; contributors remain responsible for understanding and verifying them.
 
 ## Check a change
+
+Run the local Rust checks from a source checkout with Cargo, rustfmt and Clippy
+installed. Use quick mode while iterating and the full command to verify the
+workspace and standalone skill together.
+
+```sh
+cargo run --locked -p gdd-conformance -- local-check --quick
+cargo run --locked -p gdd-conformance -- local-check --output ../gdd-check
+```
+
+Quick mode runs the scoped readiness and view CLI integration targets, the
+headless native viewer frame tests, and both standalone skill asset checks
+(`sync --check` and `verify`). Full mode checks formatting in both workspaces,
+builds the workspace binaries, runs the workspace and standalone skill tests,
+runs Clippy on all targets and features with warnings as errors, checks the
+skill assets, and executes the nine named conformance suites. Each suite writes
+its own JSON receipt.
+
+The command prints its new output directory and stops at the first failed
+step. It saves separate stdout and stderr logs, plus a `summary.json` with
+commands, working directory, host and toolchain, timings and exit status.
+Omit `--output` to keep the results in a fresh system temporary directory.
+Use `--checkout PATH` **before** `local-check` to build and test another
+checkout. Relative output and `CARGO_TARGET_DIR` paths are resolved from the
+directory where you start the runner. Builds default to the selected checkout's
+`target/`. Distribution release checks are documented in [RELEASING.md](RELEASING.md).
+
+### Individual Rust checks
 
 Run the Rust in-memory Python import observer tests with
 `cargo test --locked -p gdd --lib python_imports`. Its [Rust module](src/python_imports/mod.rs)
@@ -88,12 +115,14 @@ Run the 32 [native design boundary and review cases](conformance/README.md#gdd-0
 with `cargo run --offline --locked -p gdd-conformance -- design --output native-design-run.json`.
 Use a new file path for each receipt.
 
-Verification runs locally; GitHub Actions CI is intentionally absent. For an
-ordinary change, run the checks relevant to the affected behavior. The local
-entry point records actual interpreter versions, durations, commands and logs
-in a new temporary directory and fails on the first unsuccessful step:
+### Python migration and release checks
+
+The Python reference and distribution checks use the existing local runner.
+It records interpreter versions, durations, commands and logs in a new
+temporary directory and stops on the first unsuccessful step.
 
 ```sh
+uv sync --locked --dev --python 3.12
 uv run --no-sync python scripts/check.py --quick   # focused parser, diagnostics, tutorial, Graphify, viewer and skill checks
 uv run --no-sync python scripts/check.py           # full pytest suite and skill synchronization check
 uv run --no-sync python scripts/check.py --matrix  # full pytest on installed Python 3.11, 3.12, 3.13 and 3.14

@@ -214,10 +214,10 @@ fn receipt_path(path: &Path) -> io::Result<String> {
         if let Some(unc) = path.strip_prefix(r"\\?\UNC\") {
             return Ok(format!(r"\\{unc}"));
         }
-        if let Some(drive) = path.strip_prefix(r"\\?\") {
-            if drive.as_bytes().get(1) == Some(&b':') {
-                return Ok(drive.into());
-            }
+        if let Some(drive) = path.strip_prefix(r"\\?\")
+            && drive.as_bytes().get(1) == Some(&b':')
+        {
+            return Ok(drive.into());
         }
     }
     Ok(path.into())

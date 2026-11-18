@@ -5,6 +5,7 @@ mod diff;
 mod fixture;
 mod graphify;
 mod impact;
+mod local_check;
 mod named;
 mod receipt;
 mod standard;
@@ -18,11 +19,11 @@ use clap::{Parser, Subcommand};
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
-/// Execute named GDD conformance cases from the checkout.
+/// Execute GDD conformance cases and local checkout checks.
 #[derive(Parser)]
 #[command(name = "gdd-conformance")]
 struct Cli {
-    /// GDD checkout or fixture root for a named suite (defaults to the current checkout).
+    /// GDD checkout (or fixture root for a named suite). Defaults to the current checkout.
     #[arg(long, value_name = "PATH")]
     checkout: Option<PathBuf>,
     #[command(subcommand)]
@@ -31,6 +32,14 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
+    /// Run local Rust contributor checks and save their logs in a fresh directory.
+    LocalCheck {
+        /// Run focused readiness, CLI, viewer and skill checks.
+        #[arg(long)]
+        quick: bool,
+        #[arg(long, value_name = "NEW_DIR")]
+        output: Option<PathBuf>,
+    },
     /// Build, verify or restore an indexed concert experiment archive.
     ConcertArchive {
         #[command(subcommand)]
@@ -119,6 +128,14 @@ type SuiteRunner = fn(&Path, Option<PathBuf>) -> Result<ExitCode>;
 fn main() -> Result<ExitCode> {
     let cli = Cli::parse();
     let (run, output): (SuiteRunner, _) = match cli.command {
+        Command::LocalCheck { quick, output } => {
+            let directory = suite_directory(cli.checkout.as_deref())?.canonicalize()?;
+            return local_check::run(
+                directory.parent().context("locate checkout")?,
+                quick,
+                output,
+            );
+        }
         Command::ConcertArchive { action } => return concert_archive::command(action),
         Command::WorkflowDemo { output } => {
             let summary = workflow_demo::replay(&output)?;

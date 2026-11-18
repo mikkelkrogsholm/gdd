@@ -263,7 +263,7 @@ fn output_path(path: &Path, missing: &mut HashSet<PathBuf>) -> Result<PathBuf> {
 fn stage(path: &Path, bytes: &[u8]) -> Result<tempfile::NamedTempFile> {
     let parent = path.parent().context("Missing output parent")?;
     fs::create_dir_all(parent)?;
-    let mut builder = tempfile::Builder::new();
+    let builder = &mut tempfile::Builder::new();
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;

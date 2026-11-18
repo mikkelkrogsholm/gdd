@@ -218,7 +218,7 @@ pub(crate) fn replay(output: &Path) -> Result<Value> {
         .parent()
         .filter(|path| !path.as_os_str().is_empty())
         .unwrap_or(Path::new("."));
-    let mut builder = tempfile::Builder::new();
+    let builder = &mut tempfile::Builder::new();
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;

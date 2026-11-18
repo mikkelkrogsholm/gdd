@@ -433,12 +433,18 @@ fn invalid_models_gate_verification_before_reading_the_view() {
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 #[test]
 fn file_reader_rejects_a_fifo_without_waiting_for_a_writer() {
-    use rustix::fs::{CWD, Mode, mkfifoat};
     use std::{sync::mpsc, thread, time::Duration};
     let dir = tempfile::tempdir().unwrap();
     assert!(view::read_view_bytes(dir.path()).is_err());
     let path = dir.path().join("pipe.gddview");
-    mkfifoat(CWD, &path, Mode::RUSR | Mode::WUSR).unwrap();
+    assert!(
+        Command::new("mkfifo")
+            .args(["-m", "600"])
+            .arg(&path)
+            .status()
+            .expect("create the FIFO fixture")
+            .success()
+    );
     let (send, recv) = mpsc::channel();
     thread::spawn(move || send.send(view::read_view_bytes(&path)).unwrap());
     let result = recv
