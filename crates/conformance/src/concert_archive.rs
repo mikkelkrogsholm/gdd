@@ -1,11 +1,14 @@
-//! Verified read operations for the historical concert-archive/1 format.
+//! Deterministic construction and verified recovery of concert-archive/1 bundles.
+
+mod build;
+mod members;
 
 use anyhow::{Context, Result, bail, ensure};
 use clap::{Args, Subcommand};
 use flate2::read::MultiGzDecoder;
 use serde::{Deserialize, Serialize};
 use sha1::{Digest, Sha1};
-use std::collections::{BTreeMap, HashSet};
+use std::collections::BTreeMap;
 use std::fs::{self, File};
 use std::io::{self, Read, Write};
 #[cfg(unix)]
@@ -25,6 +28,19 @@ pub struct Inputs {
 
 #[derive(Subcommand)]
 pub enum Action {
+    /// Build a deterministic archive and index from a committed Git tree.
+    Build {
+        #[arg(long, value_name = "DIR")]
+        repository: PathBuf,
+        #[arg(long, value_name = "REV")]
+        revision: String,
+        #[arg(long, default_value = "examples/concert-app", value_name = "PATH")]
+        source_path: String,
+        #[arg(long, value_name = "NEW_PATH")]
+        archive: PathBuf,
+        #[arg(long, value_name = "NEW_PATH")]
+        index: PathBuf,
+    },
     /// Verify the compressed bytes and the complete indexed Git file set.
     Check(Inputs),
     /// Restore verified regular files into a new directory.
@@ -38,6 +54,13 @@ pub enum Action {
 
 pub fn command(action: Action) -> Result<ExitCode> {
     let receipt = match action {
+        Action::Build {
+            repository,
+            revision,
+            source_path,
+            archive,
+            index,
+        } => build::build(&repository, &revision, &source_path, &archive, &index)?,
         Action::Check(inputs) => verified_files(&inputs.archive, &inputs.index)?.receipt,
         Action::Restore { inputs, output } => restore(&inputs.archive, &inputs.index, &output)?,
     };
@@ -45,7 +68,7 @@ pub fn command(action: Action) -> Result<ExitCode> {
     Ok(ExitCode::SUCCESS)
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 struct Index {
     format: String,
     source: Source,
@@ -53,36 +76,68 @@ struct Index {
     files: Vec<IndexedFile>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 struct Source {
     git_commit: String,
+    #[serde(skip_deserializing)]
+    git_tree: String,
+    #[serde(skip_deserializing)]
+    git_path: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 struct Compressed {
+    #[serde(skip_deserializing)]
+    path: String,
     sha256: String,
     size: u64,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 struct IndexedFile {
     original_path: String,
     retrieval_path: String,
     sha256: String,
     size: u64,
+    git_mode: GitMode,
     git_blob: String,
-    #[serde(rename = "git_mode", deserialize_with = "git_permissions")]
-    permissions: u32,
 }
 
-fn git_permissions<'de, D: serde::Deserializer<'de>>(value: D) -> Result<u32, D::Error> {
-    match String::deserialize(value)?.as_str() {
-        "100644" => Ok(0o644),
-        "100755" => Ok(0o755),
-        _ => Err(serde::de::Error::custom(
-            "Expected regular Git mode 100644 or 100755",
-        )),
+#[derive(Deserialize, Serialize, Copy, Clone, Eq, PartialEq)]
+#[serde(try_from = "String")]
+enum GitMode {
+    #[serde(rename = "100644")]
+    Regular,
+    #[serde(rename = "100755")]
+    Executable,
+}
+
+impl TryFrom<String> for GitMode {
+    type Error = anyhow::Error;
+
+    fn try_from(mode: String) -> Result<Self> {
+        match mode.as_str() {
+            "100644" => Ok(Self::Regular),
+            "100755" => Ok(Self::Executable),
+            _ => bail!("Expected regular Git mode 100644 or 100755, got {mode:?}"),
+        }
     }
+}
+
+impl GitMode {
+    fn permissions(self) -> u32 {
+        match self {
+            Self::Regular => 0o644,
+            Self::Executable => 0o755,
+        }
+    }
+}
+
+fn git_blob(data: &[u8]) -> String {
+    let mut blob = Sha1::new();
+    blob.update(format!("blob {}\0", data.len()));
+    blob.update(data);
+    format!("{:x}", blob.finalize())
 }
 
 #[derive(Serialize)]
@@ -174,57 +229,33 @@ fn verified_files(archive: &Path, index: &Path) -> Result<VerifiedArchive> {
         }
     }
 
-    let mut bundle = tar::Archive::new(MultiGzDecoder::new(raw.as_slice()));
+    let mut decoder = MultiGzDecoder::new(raw.as_slice());
     let mut recovered_bytes = 0;
     let mut files = Vec::new();
-    for member in bundle.entries()? {
-        let mut member = member?;
-        ensure!(
-            member.header().entry_type().is_file()
-                && member.header().link_name_bytes().is_none()
-                && member.link_name_bytes().is_none(),
-            "Expected a regular unlinked archive member"
-        );
-        if let Some(extensions) = member.pax_extensions()? {
-            let mut keys = HashSet::new();
-            for extension in extensions {
-                let extension = extension?;
-                let key = extension.key()?;
-                ensure!(keys.insert(key), "Duplicate PAX key: {key}");
-                ensure!(
-                    !key.starts_with("GNU.sparse.") && key != "SCHILY.filetype",
-                    "Unsupported PAX file type"
-                );
-            }
-        }
-        let path = member.path_bytes();
-        let path = std::str::from_utf8(&path).context("Archive path is not UTF-8")?;
-        check_path(path)?;
+    members::regular_files(&mut decoder, false, |path, mode, size, member| {
+        check_path(&path)?;
         let entry = expected
-            .remove(path)
+            .remove(&path)
             .with_context(|| format!("Unexpected or duplicate archive member: {path:?}"))?;
         ensure!(
-            entry.size == member.size() && entry.permissions == member.header().mode()?,
+            entry.size == size && entry.git_mode.permissions() == mode,
             "Archive member metadata mismatch: {path:?}"
         );
         let mut data = Vec::new();
         member.read_to_end(&mut data)?;
-        let mut blob = Sha1::new();
-        blob.update(format!("blob {}\0", data.len()));
-        blob.update(&data);
         ensure!(
             data.len() as u64 == entry.size
                 && gdd::sha256(&data) == entry.sha256
-                && format!("{:x}", blob.finalize()) == entry.git_blob,
+                && git_blob(&data) == entry.git_blob,
             "Recovered file digest or size mismatch: {:?}",
             entry.original_path
         );
         recovered_bytes += data.len() as u64;
         files.push((entry, data));
-    }
+        Ok(())
+    })?;
     // The tar iterator stops at its first end marker. Read through the gzip
     // trailer to verify its checksum and reject hidden trailing members.
-    let mut decoder = bundle.into_inner();
     let mut padding = [0u8; 8192];
     loop {
         let count = decoder.read(&mut padding)?;
@@ -293,7 +324,7 @@ impl VerifiedArchive {
             file.write_all(&data)?;
             #[cfg(unix)]
             {
-                file.set_permissions(fs::Permissions::from_mode(entry.permissions))?;
+                file.set_permissions(fs::Permissions::from_mode(entry.git_mode.permissions()))?;
             }
             drop(file);
             ensure!(

@@ -21,3 +21,4 @@ sha1 = "0.10"
 tar = { version = "0.4.46", default-features = false }
 tempfile = "3.27"
 time = { version = "0.3", features = ["formatting"] }
+zlib-bitexact-rs = "=0.131.1"

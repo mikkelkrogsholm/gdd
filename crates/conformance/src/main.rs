@@ -22,7 +22,7 @@ use std::process::ExitCode;
 #[derive(Parser)]
 #[command(name = "gdd-conformance")]
 enum Command {
-    /// Verify or restore an indexed concert experiment archive.
+    /// Build, verify or restore an indexed concert experiment archive.
     ConcertArchive {
         #[command(subcommand)]
         action: concert_archive::Action,

@@ -1498,6 +1498,7 @@ dependencies = [
  "tar",
  "tempfile",
  "time",
+ "zlib-bitexact-rs",
 ]
 
 [[package]]
@@ -4887,6 +4888,12 @@ dependencies = [
  "quote",
  "syn 2.0.119",
 ]
+
+[[package]]
+name = "zlib-bitexact-rs"
+version = "0.131.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2823c223ca3e7ae8232406ca377105b307cc5ad9f63179e05e134e46817ca6c2"
 
 [[package]]
 name = "zlib-rs"

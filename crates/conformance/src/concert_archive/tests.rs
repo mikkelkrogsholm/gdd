@@ -115,7 +115,7 @@ fn historical_receipt_and_all_restored_files_match_the_index() {
         #[cfg(unix)]
         assert_eq!(
             file.metadata().unwrap().permissions().mode() & 0o7777,
-            entry.permissions
+            entry.git_mode.permissions()
         );
     }
 }
@@ -144,6 +144,72 @@ fn pax_name_mode_and_receipt_survive_input_replacement() {
     assert_eq!(
         file.metadata().unwrap().permissions().mode() & 0o7777,
         0o755
+    );
+}
+
+#[test]
+fn applies_pax_size_override_and_preserves_gnu_long_name() {
+    let name = "long-name".repeat(13);
+    let fixture = Fixture::new(&[&name], |tar| {
+        tar.append_pax_extensions([("size", DATA.len().to_string().as_bytes())])
+            .unwrap();
+        let mut header = Header::new_gnu();
+        header.set_entry_type(EntryType::GNULongName);
+        header.set_size((name.len() + 1) as u64);
+        header.set_cksum();
+        tar.append(&header, format!("{name}\0").as_bytes()).unwrap();
+        header.set_entry_type(EntryType::Regular);
+        header.set_size(0);
+        header.set_mode(0o755);
+        header.set_cksum();
+        tar.append(&header, DATA).unwrap();
+    });
+    let verified = verified_files(&fixture.archive, &fixture.index).unwrap();
+    assert_eq!(verified.files[0].0.original_path, name);
+    assert_eq!(verified.files[0].1, DATA);
+}
+
+#[test]
+fn rejects_malformed_linked_duplicate_and_sparse_pax_metadata() {
+    for records in [
+        b"13 path=file\n13 path=file\n".as_slice(),
+        b"19 linkpath=target\n",
+        b"26 SCHILY.filetype=sparse\n",
+        b"21 GNU.sparse.size=0\n",
+        b"999 path=file\n",
+        b"13 path=file!",
+    ] {
+        let fixture = Fixture::new(&["file"], |tar| {
+            let mut header = Header::new_ustar();
+            header.set_entry_type(EntryType::XHeader);
+            header.set_size(records.len() as u64);
+            header.set_cksum();
+            tar.append(&header, records).unwrap();
+            member(tar, "file", EntryType::Regular, 0o755, false);
+        });
+        fixture.assert_refused();
+    }
+}
+
+#[test]
+fn check_and_restore_accept_opaque_descriptive_index_fields() {
+    let mut fixture = Fixture::simple();
+    fixture.document["source"]["git_tree"] = Value::Null;
+    fixture.document["source"]["git_path"] = json!({"note": "legacy metadata"});
+    fixture.document["archive"]["path"] = Value::Null;
+    fixture.save_index();
+    assert_eq!(
+        verified_files(&fixture.archive, &fixture.index)
+            .unwrap()
+            .receipt
+            .files,
+        1
+    );
+    assert_eq!(
+        restore(&fixture.archive, &fixture.index, &fixture.output())
+            .unwrap()
+            .files,
+        1
     );
 }
 

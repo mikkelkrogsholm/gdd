@@ -35,7 +35,21 @@ a symlink. The helper verifies every indexed regular file before writing, reject
 links/traversal/duplicate members, and refuses all existing output paths. The
 index is the integrity trust input; keep its Git provenance when downloading.
 Both commands print a JSON receipt. Restore preserves Git file permissions on Unix.
-The Python helper still provides the deterministic build from Git.
+
+To reproduce the bundle and its index from a checkout with the original Git
+history, run the native builder with two new output paths. The index records the
+archive basename, so use the original archive filename for a byte-identical index.
+
+```sh
+cargo run --locked -p gdd-conformance -- concert-archive build \
+  --repository . --revision 7e27757c34b6fa57ecc69660e263c99e1420649b \
+  --archive ../concert-rebuilt/concert-7e27757.tar.gz \
+  --index ../concert-rebuilt/concert-7e27757.index.json
+```
+
+Build selects `examples/concert-app` by default. Use `--source-path PATH` for a
+different subtree. It checks the Git archive against the committed paths, modes
+and blob identities, then verifies the rebuilt pair before publishing it.
 
 Recovered files appear under `examples/concert-app/`. Original validator,
 schema and standard dependencies remain retrievable from the same pinned Git
