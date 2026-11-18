@@ -1,5 +1,6 @@
 //! GDD document input, project initialization, and portable snapshot revisions.
 
+pub mod bundle;
 pub mod input;
 
 use serde::Serialize;
