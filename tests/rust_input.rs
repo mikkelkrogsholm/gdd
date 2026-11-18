@@ -76,6 +76,8 @@ object: !!map {"true": ok}
             ),
         ])))
     );
+    assert_eq!(parse(b"!!float -0"), Ok(Value::Number("-0.0".into())));
+    assert_eq!(parse(b"!!float 12"), Ok(Value::Number("12.0".into())));
     assert_eq!(
         parse(b"%YAML 1.2\n%TAG !num! tag:yaml.org,2002:\n---\n!num!float 1.00E+09"),
         Ok(Value::Number("1.00E+09".into()))

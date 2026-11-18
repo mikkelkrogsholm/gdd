@@ -20,6 +20,7 @@ mod implementation;
 mod planning;
 mod readiness;
 mod records;
+pub mod workflow;
 
 use extensions::Definition;
 
@@ -57,24 +58,9 @@ pub(crate) fn check<'a>(
         .then(|| context::ContextGraph::new(bundle));
     if wants_readiness {
         let graph = graph.as_ref().expect("readiness graph");
-        if let Some(plan) = present(options.parallel_plan) {
-            model.checks.extend(planning::parallel(&model, graph, plan));
-        } else {
-            let (checks, assessed) = readiness::check(&model, graph, scope, options.host_context);
-            let package = present(options.package);
-            let empty_package = (package.is_some() && scope.is_empty()).then(|| graph.scope([]));
-            if let Some(package) = package {
-                let selected = empty_package.as_ref().unwrap_or(&assessed);
-                model
-                    .checks
-                    .push(planning::package(&model, package, scope, selected));
-            }
-            model.checks.extend(checks);
-            context = Some(ReadinessContexts {
-                structural: assessed,
-                empty_package,
-            });
-        }
+        let (checks, assessed) = assess_readiness(&model, graph, options, scope);
+        model.checks.extend(checks);
+        context = assessed;
     }
     if wants_records {
         let host = present(options.host_context).unwrap_or(&Value::Null);
@@ -93,6 +79,31 @@ pub(crate) fn check<'a>(
         }
     }
     (model.checks, context)
+}
+
+fn assess_readiness<'a>(
+    model: &Model<'a>,
+    graph: &context::ContextGraph<'a>,
+    options: &ValidationOptions<'a>,
+    scope: &[&'a str],
+) -> (Vec<Check>, Option<ReadinessContexts<'a>>) {
+    if let Some(plan) = present(options.parallel_plan) {
+        return (planning::parallel(model, graph, plan), None);
+    }
+    let (mut checks, structural) = readiness::check(model, graph, scope, options.host_context);
+    let package = present(options.package);
+    let empty_package = (package.is_some() && scope.is_empty()).then(|| graph.scope([]));
+    if let Some(package) = package {
+        let selected = empty_package.as_ref().unwrap_or(&structural);
+        checks.insert(0, planning::package(model, package, scope, selected));
+    }
+    (
+        checks,
+        Some(ReadinessContexts {
+            structural,
+            empty_package,
+        }),
+    )
 }
 
 pub(crate) fn projection_checks(bundle: &Bundle, manifest: &Document) -> Vec<Check> {

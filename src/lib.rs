@@ -3,7 +3,7 @@
 pub mod bundle;
 pub mod input;
 mod model;
-pub use model::{boundaries, context, design_review};
+pub use model::{boundaries, context, design_review, workflow};
 pub mod projection;
 pub mod report;
 pub mod status;

@@ -176,6 +176,32 @@ questions and matching rules. Use `gdd::design_review::review_design(&bundle,
 review, implementation, code_revision, expected_scope)` to assess the same
 capture. An explicitly empty expected review scope is invalid.
 
+## Workplans and packet verification
+
+From the repository root, prepare a plan and verify the saved artifact against
+the current model and selected checks. Both commands accept an optional
+`--host-context` file.
+
+```sh
+cargo run --locked --bin gdd -- workflow plan examples/agent-native/model.gdd.json \
+  --request examples/agent-native/workflow.request.json --output plan.json
+cargo run --locked --bin gdd -- workflow verify examples/agent-native/model.gdd.json --plan plan.json
+```
+
+The first command prints the artifact and its assessment. Its optional output
+file contains the workplan alone. Verification re-derives the complete plan,
+including package context, source locations, selected check declarations and
+GDD 0.3 design boundaries. It reports `workflow.packet_integrity` alongside
+structural readiness and declared ownership. Both commands require a new
+destination when `--output` is supplied. Verification writes its report there.
+
+Rust callers use `gdd::workflow::{prepare_workflow, verify_workflow}` with a
+model path, a parsed request or plan, and optional host context. The companion
+`prepare_workflow_from_bundle` and `verify_workflow_from_bundle` reuse captured
+model, ledger and contract bytes. Use `gdd::input::Value::from(&result.artifact)`
+to pass a prepared artifact directly to verification. A workplan describes
+proposed work. Run journals and execution gates are available through Python.
+
 ## Project status
 
 Run `gdd status project/gdd.json --scope action.main --format text` for a
@@ -235,7 +261,8 @@ YAML nesting to 256 containers.
 | `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Visualization and Graphify validation still require Python. |
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Python-only Graphify operations. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
-| `prepare_workflow`, `verify_workflow`, `create_run`, `run_status`, `advance_run` | Python-only work planning and run journals. |
+| `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |
+| `create_run`, `run_status`, `advance_run` | Python-only run journals. |
 | `boundary_view`, `design_checklist`, `review_design` | Native GDD 0.3 boundary views, scoped review questions and advisory review applicability. |
 | `project_status` | `gdd::status::{project_status, project_status_from_bundle, status_text}` for assessments without a supplied workflow run. |
 | `check_code`, `analyze_impact`, `diff_models` | Python-only code observation and project inspection APIs. |

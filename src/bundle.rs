@@ -139,6 +139,7 @@ pub struct Bundle {
     // a project identity or record declarations. Reuse these checks in reports.
     representation_checks: BTreeMap<usize, Check>,
     normative_sources: BTreeMap<String, Asset>,
+    fragment_declarations: BTreeMap<String, String>,
     advisory_paths: BTreeMap<String, Result<String, String>>,
     advisory_assets: BTreeMap<String, Asset>,
     extensions: BTreeMap<String, usize>,
@@ -230,6 +231,14 @@ impl Bundle {
         self.extensions
             .iter()
             .map(|(namespace, index)| (namespace.as_str(), &self.documents[*index]))
+    }
+
+    // Workplan locations identify the declared include, while snapshot assets
+    // identify its resolved path. Preserve both through symlink replacement.
+    pub(crate) fn declared_fragment_path<'a>(&'a self, path: &'a str) -> &'a str {
+        self.fragment_declarations
+            .get(path)
+            .map_or(path, String::as_str)
     }
 
     pub fn location(&self, id: &str) -> Option<&Location> {
@@ -527,6 +536,11 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
                         "A fragment can contain only format, nodes and edges.",
                     ));
                 }
+                if relative != document.asset.path {
+                    bundle
+                        .fragment_declarations
+                        .insert(document.asset.path.clone(), relative.to_owned());
+                }
                 bundle.documents.push(document);
             }
             Err(issue) => bundle.diagnostics.push(issue),
@@ -550,13 +564,14 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
             continue;
         };
         if !namespaces.insert(namespace) {
-            bundle.diagnostics.push(invalid(
+            let mut issue = invalid(
                 "EXTENSION_OVERRIDE",
                 file,
                 &pointer,
                 "Multiple declarations for one extension namespace.",
-            ));
-            continue;
+            );
+            issue.semantic_only = true;
+            bundle.diagnostics.push(issue);
         }
         let document = match reader.asset(path).and_then(|asset| {
             if asset.sha256 != hash {
@@ -578,12 +593,13 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
         };
         let identity_matches = get_string(&document.value, "namespace") == Some(namespace)
             && get_string(&document.value, "version") == Some(version);
-        if identity_matches {
-            // The manifest will be inserted at index zero.
-            bundle
-                .extensions
-                .insert(namespace.into(), bundle.documents.len() + 1);
-        } else {
+        // Workplans retain pinned extension bytes even when the declaration
+        // has an identity error. The loader check still fails the model report.
+        // The manifest will be inserted at index zero.
+        bundle
+            .extensions
+            .insert(namespace.into(), bundle.documents.len() + 1);
+        if !identity_matches {
             bundle.diagnostics.push(invalid(
                 "EXTENSION_IDENTITY_MISMATCH",
                 &document.asset.path,
@@ -660,11 +676,9 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
         index_model_document(bundle, index);
     }
     // These diagnostics leave all normative reads complete and pinned.
-    if bundle
-        .diagnostics
-        .iter()
-        .all(|item| matches!(item.code, "ID_COLLISION" | "EXTENSION_IDENTITY_MISMATCH"))
-    {
+    if bundle.diagnostics.iter().all(|item| {
+        item.semantic_only || matches!(item.code, "ID_COLLISION" | "EXTENSION_IDENTITY_MISMATCH")
+    }) {
         build_snapshot(bundle);
     }
 

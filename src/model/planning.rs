@@ -422,10 +422,26 @@ fn integration_findings(
 }
 
 fn active_checks<'a>(model: &Model<'a>) -> BTreeMap<&'a str, &'a Value> {
+    select_active_checks(
+        model,
+        model.bundle.records().map(|r| (r.id, r.value)).collect(),
+    )
+}
+
+pub(super) fn valid_ownership(model: &Model<'_>, package: &Value) -> bool {
+    strings(package, "write_resources")
+        .chain(strings(package, "read_resources"))
+        .all(|path| WriteResource::parse(path).is_some())
+        && workspace(model, get(package, "workspace").and_then(text)).is_some()
+}
+
+pub(super) fn select_active_checks<'a>(
+    model: &Model<'a>,
+    records: BTreeMap<&'a str, &'a Value>,
+) -> BTreeMap<&'a str, &'a Value> {
     let Some(snapshot) = model.bundle.snapshot() else {
         return BTreeMap::new();
     };
-    let records: BTreeMap<_, _> = model.bundle.records().map(|r| (r.id, r.value)).collect();
     let invalid = model.invalid_records(&records, Some(&snapshot.revision));
     let mut current: BTreeMap<_, _> = records
         .into_iter()

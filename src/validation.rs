@@ -306,21 +306,9 @@ pub(crate) fn assess<'a>(
             (wants_records, "records.unavailable", "implementation"),
         ] {
             if requested {
-                let mut check = Check::new(
-                    id,
-                    dimension,
-                    CheckResult::Unknown,
-                    "A valid supported GDD model is required; no semantic PASS inferred.",
-                );
-                check.scope.clone_from(&report.scope);
-                check.diagnostics.push(Diagnostic::new(
-                    "REVISION_UNRESOLVED",
-                    check.result,
-                    "Model unavailable or representation invalid.",
-                    None,
-                    "",
-                ));
-                report.checks.push(check);
+                report
+                    .checks
+                    .push(unavailable_check(id, dimension, &report.scope));
             }
         }
         if let Some(activity) = options.activity {
@@ -352,7 +340,25 @@ pub(crate) fn assess<'a>(
     Ok(report)
 }
 
-fn validate_input(kind: &str, input: &Value) -> io::Result<()> {
+pub(crate) fn unavailable_check(id: &str, dimension: &'static str, scope: &[String]) -> Check {
+    let mut check = Check::new(
+        id,
+        dimension,
+        CheckResult::Unknown,
+        "A valid supported GDD model is required; no semantic PASS inferred.",
+    );
+    check.scope = scope.to_vec();
+    check.diagnostics.push(Diagnostic::new(
+        "REVISION_UNRESOLVED",
+        check.result,
+        "Model unavailable or representation invalid.",
+        None,
+        "",
+    ));
+    check
+}
+
+pub(crate) fn validate_input(kind: &str, input: &Value) -> io::Result<()> {
     static HOST: OnceLock<Validator> = OnceLock::new();
     static PACKAGE: OnceLock<Validator> = OnceLock::new();
     static PARALLEL: OnceLock<Validator> = OnceLock::new();

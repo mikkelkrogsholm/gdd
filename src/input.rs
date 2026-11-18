@@ -13,11 +13,31 @@ pub const MAX_CONTAINER_DEPTH: usize = 256;
 pub enum Value {
     Null,
     Boolean(bool),
-    /// The exact JSON number lexeme, without conversion to a machine number.
+    /// An exact JSON number lexeme. A YAML float tag on an integer spelling
+    /// adds a decimal point to preserve the explicit type in JSON identities.
     Number(String),
     String(String),
     Array(Vec<Value>),
     Object(BTreeMap<String, Value>),
+}
+
+impl From<&serde_json::Value> for Value {
+    fn from(json: &serde_json::Value) -> Self {
+        use serde_json::Value as Json;
+        match json {
+            Json::Null => Self::Null,
+            Json::Bool(value) => Self::Boolean(*value),
+            Json::Number(value) => Self::Number(value.to_string()),
+            Json::String(value) => Self::String(value.clone()),
+            Json::Array(values) => Self::Array(values.iter().map(Self::from).collect()),
+            Json::Object(fields) => Self::Object(
+                fields
+                    .iter()
+                    .map(|(key, value)| (key.clone(), Self::from(value)))
+                    .collect(),
+            ),
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -174,7 +194,13 @@ fn yaml_scalar(value: String, style: ScalarStyle, tag: Option<&str>) -> Result<V
         Some("tag:yaml.org,2002:int") if !value.contains(['.', 'e', 'E']) && is_number(&value) => {
             Ok(Value::Number(value))
         }
-        Some("tag:yaml.org,2002:float") if is_number(&value) => Ok(Value::Number(value)),
+        Some("tag:yaml.org,2002:float") if is_number(&value) => {
+            let mut value = value;
+            if !value.contains(['.', 'e', 'E']) {
+                value.push_str(".0");
+            }
+            Ok(Value::Number(value))
+        }
         Some(_) => Err(tag_error()),
         None if style != ScalarStyle::Plain => Ok(Value::String(value)),
         None => match value.as_str() {

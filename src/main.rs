@@ -22,7 +22,40 @@ enum StatusFormat {
 }
 
 #[derive(Subcommand)]
+enum WorkflowCommand {
+    /// Derive complete development packets and assess package readiness.
+    #[command(args_override_self = true)]
+    Plan {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        request: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        host_context: Option<PathBuf>,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
+    },
+    /// Re-derive a supplied workplan and compare its entire payload.
+    #[command(args_override_self = true)]
+    Verify {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        plan: PathBuf,
+        #[arg(long, allow_negative_numbers = true)]
+        host_context: Option<PathBuf>,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
+    },
+}
+
+#[derive(Subcommand)]
 enum Command {
+    /// Prepare and verify revision-bound development packets.
+    Workflow {
+        #[command(subcommand)]
+        command: WorkflowCommand,
+    },
     /// Create a valid, unready GDD 0.3 project draft.
     #[command(args_override_self = true)]
     Init {
@@ -158,10 +191,56 @@ fn tool_input(path: Option<PathBuf>) -> io::Result<Option<gdd::input::Value>> {
     let Some(path) = path else {
         return Ok(None);
     };
-    match gdd::input::parse(&std::fs::read(path)?).map_err(io::Error::other)? {
+    match read_input(path)? {
         gdd::input::Value::Null => Ok(None),
         value => Ok(Some(value)),
     }
+}
+
+fn read_input(path: PathBuf) -> io::Result<gdd::input::Value> {
+    gdd::input::parse(&std::fs::read(path)?).map_err(io::Error::other)
+}
+
+fn workflow_command(command: WorkflowCommand) -> io::Result<ExitCode> {
+    let (preparing, path, input, host, output) = match command {
+        WorkflowCommand::Plan {
+            path,
+            request,
+            host_context,
+            output,
+        } => (true, path, request, host_context, output),
+        WorkflowCommand::Verify {
+            path,
+            plan,
+            host_context,
+            output,
+        } => (false, path, plan, host_context, output),
+    };
+    let output = output.map(cli_path);
+    if let Some(output) = &output
+        && output.exists()
+    {
+        return Err(io::Error::new(
+            io::ErrorKind::AlreadyExists,
+            format!("Output already exists: {}", output.display()),
+        ));
+    }
+    let host = tool_input(host.map(cli_path))?;
+    let input = read_input(cli_path(input))?;
+    let path = cli_path(path);
+    let result = if preparing {
+        let result = gdd::workflow::prepare_workflow(&path, &input, host.as_ref())?;
+        if let Some(output) = &output {
+            write_output(Some(output), &result.artifact)?;
+        }
+        write_output(None, &result)?;
+        result.report.exit_code()
+    } else {
+        let report = gdd::workflow::verify_workflow(&path, &input, host.as_ref())?;
+        write_output(output.as_deref(), &report)?;
+        report.exit_code()
+    };
+    Ok(ExitCode::from(result))
 }
 
 fn run() -> io::Result<ExitCode> {
@@ -174,6 +253,7 @@ fn run() -> io::Result<ExitCode> {
             let receipt = init_project(&path, &project_id, &title)?;
             write_json(&mut io::stdout().lock(), &receipt)?;
         }
+        Command::Workflow { command } => return workflow_command(command),
         Command::Status {
             path,
             scope,
