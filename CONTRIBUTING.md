@@ -54,6 +54,10 @@ welcome; contributors remain responsible for understanding and verifying them.
 
 ## Check a change
 
+Run the Rust in-memory Python import observer tests with
+`cargo test --locked -p gdd --lib python_imports`. Its [Rust module](src/python_imports/mod.rs)
+documents the target grammars, runtime module input and supported source encodings.
+
 Run native tests with `cargo test --locked --workspace`. To execute the
 [58 standard cases](conformance/README.md#standard-validator) and save their
 full Rust validation reports in a new file, run
