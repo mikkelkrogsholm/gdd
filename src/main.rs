@@ -33,6 +33,16 @@ enum Command {
         #[arg(long)]
         output: Option<PathBuf>,
     },
+    /// Extract revision-bound read context for the selected model nodes.
+    #[command(args_override_self = true)]
+    Context {
+        #[arg(allow_negative_numbers = true)]
+        path: PathBuf,
+        #[arg(long, required = true, allow_negative_numbers = true)]
+        scope: Vec<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        output: Option<PathBuf>,
+    },
     /// Validate a GDD document or model bundle.
     Validate {
         path: PathBuf,
@@ -82,6 +92,23 @@ fn run() -> io::Result<ExitCode> {
             }
             write_output(output.as_deref(), &report)?;
             return Ok(ExitCode::from(if code == 0 { 2 } else { code }));
+        }
+        Command::Context {
+            path,
+            scope,
+            output,
+        } => {
+            let bundle = bundle::load(&path);
+            let report = validation::validate(&bundle, Profile::Model);
+            let code = report.exit_code();
+            if code != 0 {
+                write_output(output.as_deref(), &report)?;
+                return Ok(ExitCode::from(code));
+            }
+            write_output(
+                output.as_deref(),
+                &gdd::context::context_manifest(&bundle, &scope)?,
+            )?;
         }
         Command::Validate {
             path,

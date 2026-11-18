@@ -10,6 +10,7 @@ use crate::input::Value;
 use crate::report::{Check, CheckResult, Diagnostic};
 use crate::validation::{CORE_KINDS, CORE_RELATIONS};
 
+pub mod context;
 mod extensions;
 mod records;
 

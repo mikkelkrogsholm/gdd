@@ -3,6 +3,7 @@
 pub mod bundle;
 pub mod input;
 mod model;
+pub use model::context;
 pub mod report;
 pub mod validation;
 
