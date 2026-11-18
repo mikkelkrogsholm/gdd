@@ -204,6 +204,17 @@ impl Report {
         }
     }
 
+    pub(crate) fn standalone_graphify(checks: Vec<Check>) -> Self {
+        Self {
+            tool: Tool {
+                name: crate::graphify::IMPORTER,
+                version: crate::graphify::VERSION,
+            },
+            checks,
+            ..Self::new(vec![Profile::ImportGraphify], Vec::new())
+        }
+    }
+
     pub fn result(&self, dimension: &str) -> CheckResult {
         self.checks
             .iter()

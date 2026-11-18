@@ -2,6 +2,7 @@
 
 mod decode;
 mod files;
+pub(crate) use files::same_projection;
 pub use files::{
     LoadedObservations, export_graphify, import_graphify, load_observations,
     propose_graphify_to_file, verify_graphify,
@@ -21,8 +22,8 @@ use std::{io, sync::OnceLock};
 pub const AST_PROFILE: &str = "graphify-0.9.75-ast";
 pub const NODE_LINK_PROFILE: &str = "graphify-0.9.75-node-link";
 const RAW: &str = "graphify.raw.json";
-const IMPORTER: &str = "gdd-graphify";
-const VERSION: &str = "0.1.2";
+pub(crate) const IMPORTER: &str = "gdd-graphify";
+pub(crate) const VERSION: &str = "0.1.2";
 
 /// Caller-supplied layout, locator and provenance claims for one byte snapshot.
 #[derive(Clone, Copy, Debug)]

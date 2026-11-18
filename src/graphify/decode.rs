@@ -17,7 +17,13 @@ pub(super) fn decode(raw: &[u8], limit: usize) -> Result<(Value, bool), String> 
     let mut root = Value::Null;
     let mut too_deep = false;
     loop {
-        let value = match parser.parse_next().map_err(|e| e.to_string())? {
+        let value = match parser.parse_next().map_err(|error| {
+            if crate::input::invalid_unicode_scalar(raw, &error) {
+                "Invalid Unicode scalar.".to_owned()
+            } else {
+                error.to_string()
+            }
+        })? {
             JsonEvent::StartObject => {
                 frames.push(Frame::Object(Map::new(), String::new()));
                 too_deep |= frames.len() > limit;

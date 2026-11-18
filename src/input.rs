@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use std::fmt;
 use std::mem;
 
-use json_event_parser::{JsonEvent, SliceJsonParser};
+use json_event_parser::{JsonEvent, JsonSyntaxError, SliceJsonParser};
 use libyaml_safer::{EventData, Parser, ScalarStyle};
 
 pub const MAX_CONTAINER_DEPTH: usize = 256;
@@ -113,12 +113,35 @@ impl From<InputError> for JsonError {
     }
 }
 
+/// The lexer consumes six bytes after a surrogate escape before it checks the
+/// pair, even if those bytes would include the closing quote. On a short final
+/// string it reports EOF at the start of that token. Retry just that token
+/// with enough lookahead to recover the original Unicode diagnostic.
+pub(crate) fn invalid_unicode_scalar(raw: &[u8], error: &JsonSyntaxError) -> bool {
+    if error.message().contains("surrogate") {
+        return true;
+    }
+    if error.message() != "Unexpected end of file" {
+        return false;
+    }
+    let token = &raw[error.location().start.offset as usize..];
+    if token.first() != Some(&b'"') {
+        return false;
+    }
+    let mut padded = token.to_vec();
+    padded.extend_from_slice(b"      ");
+    padded.push(b'"');
+    SliceJsonParser::new(&padded)
+        .parse_next()
+        .is_err_and(|error| error.message().contains("surrogate"))
+}
+
 fn read_json(source: &str) -> Result<Value, JsonError> {
     let mut parser = SliceJsonParser::new(source.as_bytes());
     let mut document = Builder::default();
     loop {
         match parser.parse_next().map_err(|error| {
-            if error.message().contains("surrogate") {
+            if invalid_unicode_scalar(source.as_bytes(), &error) {
                 JsonError::Input(InputError::Invalid("Invalid Unicode scalar.".into()))
             } else {
                 JsonError::Syntax

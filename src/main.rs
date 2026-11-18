@@ -240,7 +240,9 @@ enum Command {
         output: Option<PathBuf>,
     },
     /// Validate a GDD document or model bundle.
+    #[command(args_override_self = true)]
     Validate {
+        #[arg(allow_negative_numbers = true)]
         path: PathBuf,
         /// Primary GDD model when the positional input is a secondary records file.
         #[arg(long)]
@@ -259,6 +261,16 @@ enum Command {
         package: Option<PathBuf>,
         #[arg(long)]
         parallel_plan: Option<PathBuf>,
+        /// Raw Graphify artifact or observations bundle for model-bound integration.
+        #[arg(long, allow_negative_numbers = true)]
+        graphify: Option<PathBuf>,
+        #[arg(long, allow_negative_numbers = true)]
+        graphify_profile: Option<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        graphify_producer_version: Option<String>,
+        /// Compare the original and reconstructed values in an import audit.
+        #[arg(long, allow_negative_numbers = true)]
+        import_audit: Option<PathBuf>,
         /// Explain readiness diagnostics and their scope paths on stderr.
         #[arg(long)]
         explain: bool,
@@ -581,12 +593,18 @@ fn run() -> io::Result<ExitCode> {
             activity,
             package,
             parallel_plan,
+            graphify,
+            graphify_profile,
+            graphify_producer_version,
+            import_audit,
             explain,
             output,
         } => {
             let host = tool_input(host_context)?;
             let package = tool_input(package)?;
             let parallel = tool_input(parallel_plan)?;
+            let audit = tool_input(import_audit.map(cli_path))?;
+            let graphify = graphify.map(cli_path);
             let options = ValidationOptions {
                 profiles: &profile,
                 activity,
@@ -597,10 +615,16 @@ fn run() -> io::Result<ExitCode> {
                 unsupported_extensions: &unsupported_extensions,
             };
             let mut stderr = io::stderr().lock();
-            let report = validation::validate_paths(
-                &path,
-                model.as_deref(),
+            let report = validation::validate_paths_with_graphify(
+                &cli_path(path),
+                model.map(cli_path).as_deref(),
                 options,
+                validation::GraphifyValidationOptions {
+                    path: graphify.as_deref(),
+                    profile: graphify_profile.as_deref(),
+                    producer_version: graphify_producer_version.as_deref(),
+                    import_audit: audit.as_ref(),
+                },
                 explain.then_some(&mut stderr),
             )?;
             write_output(output.as_deref(), &report)?;

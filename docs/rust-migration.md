@@ -434,6 +434,57 @@ raw projection limit. The native index reader supports up to 1,024 containers
 including the index root. An index exceeding its reading limit cannot establish
 the original's identity for export.
 
+### Combine observations with model validation
+
+```sh
+gdd validate examples/graphify/observations --profile import.graphify
+gdd validate examples/concert.gdd.yaml --profile model --profile import.graphify \
+  --graphify examples/graphify/raw.ast.json --graphify-profile graphify-0.9.75-ast \
+  --graphify-producer-version 0.9.75
+```
+
+With the import profile alone, the positional observations produce the adapter's
+report. A separate `--graphify` path, an explicit `--model`, an additional
+profile or an activity selects model-bound validation. The validator assesses
+the positional model or secondary records as usual and appends integration
+checks to its report. Supply `--graphify` to identify the observations in this
+mode. An omitted observations input produces an UNKNOWN integration check.
+
+An optional `--import-audit` file contains `format: gdd-import-audit/0.2`
+and the JSON-compatible values `original` and `reconstructed`. The validator
+checks the envelope for every profile. The import profile reports
+`integration.loss` when reconstruction changes a value, an array's order,
+a numeric type or the sign of decimal zero. Object keys may be reordered.
+Finite decimals compare exactly across equivalent spellings.
+
+Rust callers can assess files with `validation::validate_paths_with_graphify`
+and `validation::GraphifyValidationOptions`. Pass a parsed audit through
+`import_audit`. To reuse captured inputs, pass the model bundle and a report
+from `verify_graphify`, `load_observations` or `observe_graphify` to
+`validate_captured`. The following function uses the same evidence for each
+call and returns the combined report without reopening either input.
+
+```rust
+use gdd::{bundle::Bundle, graphify::ImportReport, report::Report};
+use gdd::validation::{Profile, ValidationOptions, validate_captured};
+
+fn assess(bundle: &Bundle, observations: &ImportReport) -> std::io::Result<Report> {
+    validate_captured(
+        Some(bundle),
+        Some(observations),
+        ValidationOptions {
+            profiles: &[Profile::Model, Profile::ImportGraphify],
+            ..Default::default()
+        },
+        None,
+        None,
+    )
+}
+```
+
+For standalone validation of captured observations, pass `None` for the
+bundle and select only `Profile::ImportGraphify`.
+
 ## Propose a model from Graphify observations
 
 ```sh
@@ -481,7 +532,7 @@ YAML nesting to 256 containers.
 
 | Python entry points | Current Rust support |
 | --- | --- |
-| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Visualization and the root `validate --profile import.graphify` integration still require Python. |
+| `validate`, `exit_code` | `gdd::validation::{validate, validate_with_options}` and `Report::exit_code()`. Rust supports representation, model, readiness and records, including context packages, parallel plans and activity authorization. Separate records inputs are supported via `--model` and `validate_paths`. Use `Profile::ImportGraphify` for standalone observations and model-bound Graphify checks. Visualization validation still requires Python. |
 | `import_graphify`, `verify_graphify`, `export_graphify`, `propose_graphify` | Native file import, verification, byte recovery, in-memory observations and explicit proposals for both model formats via `gdd::graphify`. |
 | `render_view`, `verify_view`, `perspectives`, `perspective_data`, `load_perspective_bundle` | Python-only HTML and perspective APIs. The [native viewer](../crates/viewer/README.md) is a separate desktop preview. |
 | `prepare_workflow`, `verify_workflow` | Native path-based and bundle-based workplan preparation and verification. |

@@ -80,14 +80,20 @@ Components receive no invented boundary rationale or interfaces, and actions rec
 
 The agent can then apply the proposal as an ordinary authorized model change under the project's existing mandate. Source promotion/model change must be visible; existing accepted requirements are not changed by import/propose. The source URI is relative to the proposal file's location; materialize model_candidate there or adjust the locator explicitly. A binding can only be registered as observed/checked once targets, implementation, model snapshot, and actual source/code revisions are known.
 
-The Python CLI can combine import and model validation in the same report.
+The root validator accepts an observations bundle directly. To include a model
+in the report, supply the observations with `--graphify`.
 
 ```sh
-uv run gdd validate examples/concert.gdd.yaml --profile model \
+cargo run --bin gdd -- validate examples/graphify/observations --profile import.graphify
+cargo run --bin gdd -- validate examples/concert.gdd.yaml --profile model \
   --profile import.graphify --graphify examples/graphify/observations
 ```
 
-The last command combines separate model and import checks. It does not prove that the concert example is implemented by the imported fixture or that imported code claims satisfy GDD rules. Such mappings and checks require revision-bound bindings and actual checkers.
+For raw JSON, select the layout with `--graphify-profile` and supply an optional
+version claim with `--graphify-producer-version`. A combined report uses the
+model's scope and snapshot revision. Observation checks retain their own
+diagnostics. Establishing a link to an implementation requires revision-bound
+bindings and actual checkers.
 
 ## Python API and verification
 

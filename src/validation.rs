@@ -1,5 +1,8 @@
 //! Offline validation of the original documents in a loaded GDD bundle.
 
+mod graphify;
+pub use graphify::{GraphifyValidationOptions, validate_captured, validate_paths_with_graphify};
+
 use std::collections::BTreeSet;
 use std::io;
 use std::sync::OnceLock;
@@ -49,6 +52,9 @@ pub enum Profile {
     Model,
     Readiness,
     Records,
+    #[serde(rename = "import.graphify")]
+    #[value(name = "import.graphify")]
+    ImportGraphify,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, ValueEnum)]
@@ -84,6 +90,10 @@ pub struct ValidationOptions<'a> {
 impl<'a> ValidationOptions<'a> {
     /// Validate the input envelopes and resolve their scope in declared order.
     pub fn effective_scope(&self) -> io::Result<Vec<&'a str>> {
+        self.scope_with_audit(None)
+    }
+
+    fn scope_with_audit(&self, audit: Option<&JsonValue>) -> io::Result<Vec<&'a str>> {
         for (kind, input) in [
             ("host", self.host_context),
             ("package", self.package),
@@ -92,6 +102,9 @@ impl<'a> ValidationOptions<'a> {
             if let Some(value) = present(input) {
                 validate_input(kind, value)?;
             }
+        }
+        if let Some(audit) = audit {
+            validate_json_input("import", audit)?;
         }
         let package = present(self.package);
         let parallel = present(self.parallel_plan);
@@ -155,8 +168,7 @@ pub fn validate_with_options(
     bundle: &Bundle,
     options: ValidationOptions<'_>,
 ) -> io::Result<Report> {
-    let scope = options.effective_scope()?;
-    assess(bundle, options, &scope, None)
+    validate_captured(Some(bundle), None, options, None, None)
 }
 
 /// Validate once and write the scope paths for readiness diagnostics to the
@@ -166,8 +178,7 @@ pub fn validate_explained(
     options: ValidationOptions<'_>,
     output: &mut impl io::Write,
 ) -> io::Result<Report> {
-    let scope = options.effective_scope()?;
-    assess(bundle, options, &scope, Some(output))
+    validate_captured(Some(bundle), None, options, None, Some(output))
 }
 
 /// Validate tool inputs before capturing the model and the advisory sources
@@ -182,23 +193,15 @@ pub fn validate_path(
 
 /// Validate a positional input, optionally alongside its primary model. A
 /// distinct secondary ledger contributes records and representation checks.
-/// The report always uses the primary model's scope and snapshot.
+/// A model-bound report uses the primary model's scope and snapshot. The
+/// import.graphify profile alone can also assess positional observations.
 pub fn validate_paths(
     input: &std::path::Path,
     model: Option<&std::path::Path>,
     options: ValidationOptions<'_>,
     explanation: Option<&mut dyn io::Write>,
 ) -> io::Result<Report> {
-    let scope = options.effective_scope()?;
-    let capture_scope = (options.profiles.contains(&Profile::Readiness)
-        && present(options.parallel_plan).is_none())
-    .then(|| scope.iter().copied().map(str::to_owned).collect::<Vec<_>>());
-    let bundle = crate::bundle::capture(
-        model.unwrap_or(input),
-        model.map(|_| input),
-        capture_scope.as_deref(),
-    );
-    assess(&bundle, options, &scope, explanation)
+    validate_paths_with_graphify(input, model, options, Default::default(), explanation)
 }
 
 /// Assess a capture after the caller validated the input envelopes and resolved the scope.
@@ -241,7 +244,7 @@ pub(crate) fn assess<'a>(
     }
     let wants_readiness = report.profiles.contains(&Profile::Readiness);
     let wants_records = report.profiles.contains(&Profile::Records);
-    let wants_model = wants_records || wants_readiness || report.profiles.contains(&Profile::Model);
+    let wants_model = report.profiles != [Profile::Representation];
     report.checks.extend(
         bundle
             .diagnostics()
@@ -359,13 +362,19 @@ pub(crate) fn unavailable_check(id: &str, dimension: &'static str, scope: &[Stri
 }
 
 pub(crate) fn validate_input(kind: &str, input: &Value) -> io::Result<()> {
+    validate_json_input(kind, &to_json(input)?)
+}
+
+fn validate_json_input(kind: &str, input: &JsonValue) -> io::Result<()> {
     static HOST: OnceLock<Validator> = OnceLock::new();
     static PACKAGE: OnceLock<Validator> = OnceLock::new();
     static PARALLEL: OnceLock<Validator> = OnceLock::new();
+    static IMPORT: OnceLock<Validator> = OnceLock::new();
     let slot = match kind {
         "host" => &HOST,
         "package" => &PACKAGE,
         "parallel" => &PARALLEL,
+        "import" => &IMPORT,
         _ => unreachable!(),
     };
     let validator = slot.get_or_init(|| {
@@ -374,7 +383,7 @@ pub(crate) fn validate_input(kind: &str, input: &Value) -> io::Result<()> {
                 .expect("embedded tool schemas are JSON");
         build_schema(&schema["$defs"][kind]).expect("embedded tool schema compiles offline")
     });
-    validator.validate(&to_json(input)?).map_err(|error| {
+    validator.validate(input).map_err(|error| {
         io::Error::new(
             io::ErrorKind::InvalidInput,
             format!("Invalid {kind} input: {error}"),

@@ -116,7 +116,7 @@ fn decode_manifest(bytes: &[u8]) -> Result<Value, Issue> {
 
 /// Compare sorted-object JSON semantics, including the distinct canonical
 /// spellings for integer 1, decimal 1.0, positive zero and negative decimal zero.
-fn same_projection(left: &Value, right: &Value) -> bool {
+pub(crate) fn same_projection(left: &Value, right: &Value) -> bool {
     let mut pairs = vec![(left, right)];
     while let Some((left, right)) = pairs.pop() {
         match (left, right) {

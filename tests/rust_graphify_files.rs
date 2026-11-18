@@ -407,3 +407,45 @@ fn malformed_manifest_prevents_recovery_and_explains_the_failure() {
     assert!(export_graphify(&manifest, &out).is_err());
     assert!(!out.exists());
 }
+
+#[test]
+fn invalid_surrogates_fail_without_changing_recovered_bytes() {
+    let dir = tempdir().unwrap();
+    let source = dir.path().join("source.json");
+    for (ix, (raw, expected)) in [
+        (br#"{"key":"\ud800"}"#.as_slice(), "Invalid Unicode scalar"),
+        (br#"{"key":"\udfff"}"#, "Invalid Unicode scalar"),
+        (br#"{"\ud800":1,"\ud800":2}"#, "Invalid Unicode scalar"),
+        (br#"{"\udfff":1,"\udfff":2}"#, "Invalid Unicode scalar"),
+        (
+            r#"{"café/🔥":1,"café/\ud83d\udd25":2}"#.as_bytes(),
+            "Duplicate JSON key: 'café/🔥'",
+        ),
+        (br#"{"key":"\\ud800"#, "Unexpected end of file"),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        fs::write(&source, raw).unwrap();
+        let bundle = dir.path().join(format!("bundle-{ix}"));
+        let recovered = dir.path().join(format!("recovered-{ix}"));
+        for report in [
+            import_graphify(&source, &bundle, options()).unwrap(),
+            verify_graphify(&bundle, None, None).unwrap(),
+            export_graphify(&bundle, &recovered).unwrap(),
+        ] {
+            assert_eq!(report.exit_code(), 1);
+            let utf8 = serde_json::to_string(&report).unwrap();
+            assert!(utf8.contains(expected), "{utf8}");
+        }
+        assert_eq!(fs::read(recovered).unwrap(), raw);
+    }
+    let paired = br#"{"nodes":[{"id":"n","label":"Node","file_type":"code","source_file":"a.rs"}],"edges":[],"key":"\ud83d\udd25"}"#;
+    fs::write(&source, paired).unwrap();
+    assert_eq!(
+        verify_graphify(&source, Some(AST_PROFILE), None)
+            .unwrap()
+            .exit_code(),
+        0
+    );
+}
