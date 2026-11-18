@@ -9,7 +9,7 @@ use crate::{
     canvas::{Layout, Scene},
     model::{
         EdgeBundle, Filters, FoldProjection, Graph, HumanConcept, Lens, Node, NodeInspection,
-        Selection, Visible,
+        RecordDetails, Selection, Visible,
     },
 };
 
@@ -473,13 +473,8 @@ impl Viewer {
                         });
                     }
                 }
+                show_record_details(ui, &graph, &node.id, &node.details);
                 if let Some(data) = &graph.artifact {
-                    let origin = &data["locations"][&node.id];
-                    ui.label(format!(
-                        "{}{}",
-                        origin[0].as_str().unwrap(),
-                        origin[1].as_str().unwrap()
-                    ));
                     ui.collapsing("Canonical node record", |ui| {
                         ui.monospace(format!("{:#}", data["model"]["nodes"][&node.id]));
                     });
@@ -801,6 +796,7 @@ impl Viewer {
                 self.node_link(ui, edge.from);
                 ui.strong("To");
                 self.node_link(ui, edge.to);
+                show_record_details(ui, &graph, &edge.id, &edge.details);
                 if let Some(data) = &graph.artifact {
                     ui.collapsing("Canonical edge record", |ui| {
                         if let Some(record) = data["model"]["edges"].as_array().and_then(|items| {
@@ -814,6 +810,74 @@ impl Viewer {
                 }
             });
     }
+}
+
+fn show_location(ui: &mut Ui, location: &gdd::bundle::Location) {
+    ui.label(format!("Model file: {}", location.file));
+    ui.label(format!("JSON Pointer: {}", location.pointer));
+}
+
+fn show_record_details(ui: &mut Ui, graph: &Graph, id: &str, details: &RecordDetails) {
+    show_location(ui, &details.location);
+    for (label, declared) in &details.references {
+        ui.strong(*label);
+        let Some(items) = declared.as_array() else {
+            ui.monospace(format!("{declared:#}"));
+            continue;
+        };
+        if items.is_empty() {
+            ui.label("None");
+        }
+        for (index, reference) in items.iter().enumerate() {
+            ui.push_id((id, label, index), |ui| {
+                show_reference(ui, graph, reference)
+            });
+        }
+    }
+}
+
+fn declared_text(value: Option<&Json>) -> String {
+    match value {
+        Some(Json::String(text)) => text.clone(),
+        Some(value) => format!("{value:#}"),
+        None => "Not declared".into(),
+    }
+}
+
+fn show_reference(ui: &mut Ui, graph: &Graph, reference: &Json) {
+    if !reference.is_object() {
+        ui.monospace(format!("{reference:#}"));
+        return;
+    }
+    ui.label(format!(
+        "Source: {}",
+        declared_text(reference.get("source"))
+    ));
+    ui.label(format!(
+        "Purpose: {}",
+        declared_text(reference.get("purpose"))
+    ));
+    ui.strong("Selector");
+    ui.monospace(declared_text(reference.get("selector")));
+    let Some(id) = reference["source"].as_str() else {
+        return;
+    };
+    let Some(source) = graph.sources.get(id) else {
+        ui.label("Source declaration unavailable");
+        return;
+    };
+    ui.collapsing(format!("Inspect source {id}"), |ui| {
+        show_location(ui, &source.location);
+        ui.strong("URI");
+        ui.monospace(declared_text(source.declaration.get("uri")));
+        ui.strong("Declared SHA-256");
+        ui.monospace(declared_text(
+            source.declaration.pointer("/revision/sha256"),
+        ));
+        ui.collapsing("Full source declaration", |ui| {
+            ui.monospace(format!("{:#}", source.declaration));
+        });
+    });
 }
 
 fn filter_choice<'a>(
@@ -1035,4 +1099,4 @@ mod tests {
 }
 
 #[cfg(test)]
-mod scenario_tests;
+mod frame_tests;

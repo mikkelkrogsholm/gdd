@@ -26,6 +26,14 @@ highlights its incoming and outgoing links. Selecting a search result or
 following a connection scrolls the graph to that node when it belongs to the
 current perspective and saved scope.
 
+The node and edge inspectors show the declaring **Model file** and **JSON
+Pointer**. **Source references** and **Design references** show each declared
+source ID, purpose and exact selector, including large ordinal values. Expand
+**Inspect source** to see the declaration's location, URI and SHA-256 digest.
+**Full source declaration** includes fields such as the producer and revision.
+The inspector displays URIs as text and reads the metadata captured in the
+model or saved view.
+
 Choose **All graph**, **User journey**, **Components**, or **Data model** under
 **Perspective**. Each lens includes its primary concepts and direct context.
 The node list includes every visible canonical node. An edge appears when the perspective
@@ -71,8 +79,8 @@ the inspector and keeps the current drawing and filters.
 When sharing a saved view, send the `.gddview` file to a recipient with the
 native viewer installed. Its search and drawing respect the saved scope.
 Following a connection to an omitted node opens its inspector and leaves the
-drawing in scope. A saved node's inspector also shows its source location and
-full record. See the [artifact contract](../../VIEWER.md#share-a-native-view).
+drawing in scope. Expand **Canonical node record** or **Canonical edge record**
+to inspect the full saved record. See the [artifact contract](../../VIEWER.md#share-a-native-view).
 
 The viewer computes the unfolded left-to-right layered layout once using the
 pure Rust graphlay library. Folding lays out the visible figures and directed

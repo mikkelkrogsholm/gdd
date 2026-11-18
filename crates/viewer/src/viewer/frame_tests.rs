@@ -200,3 +200,135 @@ fn scenario_controls_work_in_native_frames_for_source_and_detached_views() {
     window.search("scenario.hidden");
     window.assert_view(true, 0, 0, false);
 }
+
+#[test]
+fn reference_inspection_preserves_selectors_and_endpoint_navigation() {
+    use serde_json::json;
+
+    let source = tempfile::tempdir().unwrap();
+    let saved = tempfile::tempdir().unwrap();
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let mut model: Json = serde_json::from_slice(&fs::read(fixture).unwrap()).unwrap();
+    let action_label = model["nodes"]["constructor"]["label"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    let reference = json!({
+        "source": "source.test", "purpose": "provenance",
+        "selector": {"kind": "markdown-heading", "value": "Title", "ordinal": 9007199254740993_u64},
+    });
+    model["nodes"]["constructor"]["source_refs"] = json!([reference]);
+    model["edges"][0]["source_refs"] = json!([reference]);
+    let mut design = reference;
+    design["purpose"] = json!("contract");
+    model["nodes"]["screen.references"] = json!({
+        "kind": "screen", "description": "Inspect exact design references", "design_refs": [design]
+    });
+    model["sources"]["source.unpinned"] = model["sources"]["source.test"].clone();
+    model["nodes"]["action.second"]["source_refs"] = json!([
+        {"source": "source.unpinned", "purpose": "provenance"},
+        {"source": "source.test", "purpose": "provenance",
+         "selector": {"kind": "markdown-heading", "value": "Later", "ordinal": 36893488147419103233_u128}}
+    ]);
+    let digest = "a".repeat(64);
+    model["sources"]["source.test"]["revision"] = json!({"sha256": digest});
+    let manifest = source.path().join("references.json");
+    fs::write(&manifest, serde_json::to_vec(&model).unwrap()).unwrap();
+    let view = source.path().join("references.gddview");
+    gdd::view::render_view(
+        &manifest,
+        &view,
+        &["constructor".into(), "screen.references".into()],
+    )
+    .unwrap();
+    let direct = Window::open(&manifest);
+    let detached = saved.path().join("detached.gddview");
+    fs::rename(view, &detached).unwrap();
+    source.close().unwrap();
+
+    for (mut window, scoped) in [(direct, false), (Window::open(&detached), true)] {
+        let assert_reference = |window: &mut Window, group, purpose, pointer| {
+            let tree = window.frame(Vec::new());
+            for label in [
+                group,
+                purpose,
+                "Selector",
+                "Model file: references.json",
+                pointer,
+            ] {
+                assert!(
+                    widget(&tree, Role::Label, label).is_some(),
+                    "Missing {label}"
+                );
+            }
+            let text = tree
+                .nodes
+                .iter()
+                .filter_map(|(_, node)| node.value())
+                .collect::<Vec<_>>()
+                .join("\n");
+            assert!(text.contains("markdown-heading") && text.contains("Title"));
+            assert!(text.contains("\"ordinal\": 9007199254740993"), "{text}");
+            assert!(!text.contains("9007199254740992"));
+            if scoped {
+                assert!(widget(&tree, Role::Button, "component.orphan").is_none());
+            }
+        };
+        window.click(Role::Button, "screen.references");
+        assert_reference(
+            &mut window,
+            "Design references",
+            "Purpose: contract",
+            "JSON Pointer: /nodes/screen.references",
+        );
+        window.click(Role::DisclosureTriangle, "Inspect source source.test");
+        let tree = window.frame(Vec::new());
+        for label in [
+            "URI",
+            "javascript:alert(1)",
+            "Declared SHA-256",
+            &digest,
+            "JSON Pointer: /sources/source.test",
+        ] {
+            assert!(
+                widget(&tree, Role::Label, label).is_some(),
+                "Missing {label}"
+            );
+        }
+        assert!(widget(&tree, Role::Link, "javascript:alert(1)").is_none());
+        window.click(Role::Button, &action_label);
+        assert_reference(
+            &mut window,
+            "Source references",
+            "Purpose: provenance",
+            "JSON Pointer: /nodes/constructor",
+        );
+        window.click(Role::Link, "edge.call_one");
+        assert_reference(
+            &mut window,
+            "Source references",
+            "Purpose: provenance",
+            "JSON Pointer: /edges/0",
+        );
+        window.click(Role::Link, "action.second");
+        let tree = window.frame(Vec::new());
+        assert!(widget(&tree, Role::Label, "JSON Pointer: /nodes/action.second").is_some());
+        assert!(widget(&tree, Role::Label, "Not declared").is_some());
+        assert!(
+            tree.nodes
+                .iter()
+                .filter_map(|(_, node)| node.value())
+                .any(|text| text.contains("\"ordinal\": 36893488147419103233"))
+        );
+        window.click(Role::DisclosureTriangle, "Inspect source source.unpinned");
+        let tree = window.frame(Vec::new());
+        assert!(widget(&tree, Role::Label, "JSON Pointer: /sources/source.unpinned").is_some());
+        let undeclared = tree
+            .nodes
+            .iter()
+            .filter(|(_, node)| node.role() == Role::Label && node.value() == Some("Not declared"))
+            .count();
+        assert_eq!(undeclared, 2, "Expected absent selector and absent digest");
+    }
+}

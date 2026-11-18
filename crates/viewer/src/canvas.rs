@@ -374,7 +374,15 @@ mod tests {
     use crate::model::{Edge, Node};
 
     fn graph(ids: &[&str], pairs: &[(usize, usize)]) -> Graph {
+        let details = || crate::model::RecordDetails {
+            location: gdd::bundle::Location {
+                file: "fixture".into(),
+                pointer: String::new(),
+            },
+            references: Vec::new(),
+        };
         Graph {
+            sources: Default::default(),
             title: "Layout fixture".into(),
             shown_nodes: ids.len(),
             shown_edges: pairs.len(),
@@ -392,6 +400,7 @@ mod tests {
                     description: id.into(),
                     human: None,
                     inspection: crate::model::NodeInspection::Other,
+                    details: details(),
                     search_text: id.into(),
                 })
                 .collect(),
@@ -401,6 +410,7 @@ mod tests {
                 .map(|(i, &(from, to))| Edge {
                     id: format!("edge.{i}"),
                     relation: "links".into(),
+                    details: details(),
                     search_text: String::new(),
                     from,
                     to,

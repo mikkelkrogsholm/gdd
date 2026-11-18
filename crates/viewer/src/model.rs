@@ -17,6 +17,7 @@ pub struct Graph {
     pub choices: FilterChoices,
     pub artifact: Option<Json>,
     pub source_boundaries: Option<Json>,
+    pub sources: BTreeMap<String, Source>,
     pub actions: BTreeMap<String, usize>,
     pub perspectives: Result<Perspectives, String>,
 }
@@ -279,6 +280,37 @@ pub enum Selection {
     Bundle(usize, usize),
 }
 
+pub struct Source {
+    pub location: Location,
+    pub declaration: Json,
+}
+
+pub struct RecordDetails {
+    pub location: Location,
+    pub references: Vec<(&'static str, Json)>,
+}
+
+impl RecordDetails {
+    fn new(record: &Object, location: Location) -> Result<Self, String> {
+        let mut references = Vec::new();
+        for (field, label) in [
+            ("source_refs", "Source references"),
+            ("design_refs", "Design references"),
+        ] {
+            if let Some(value) = record.get(field) {
+                references.push((
+                    label,
+                    gdd::validation::to_json(value).map_err(|e| e.to_string())?,
+                ));
+            }
+        }
+        Ok(Self {
+            location,
+            references,
+        })
+    }
+}
+
 pub struct Node {
     pub id: String,
     pub label: String,
@@ -287,6 +319,7 @@ pub struct Node {
     pub human: Option<HumanConcept>,
     pub inspection: NodeInspection,
     pub search_text: String,
+    pub details: RecordDetails,
 }
 
 pub enum NodeInspection {
@@ -316,6 +349,7 @@ pub struct Edge {
     pub relation: String,
     pub to: usize,
     pub search_text: String,
+    pub details: RecordDetails,
 }
 
 impl Graph {
@@ -355,10 +389,26 @@ impl Graph {
         let document = object(&manifest.value, "model")?;
         let project = object(field(document, "project")?, "project")?;
         let title = text(project, "title")?.to_owned();
+        let location = |origin: &Location| Location {
+            file: bundle.declared_fragment_path(&origin.file).to_owned(),
+            pointer: origin.pointer.clone(),
+        };
+        let mut sources = BTreeMap::new();
+        if let Some(Value::Object(entries)) = document.get("sources") {
+            for (id, value) in entries {
+                sources.insert(
+                    id.clone(),
+                    Source {
+                        location: location(bundle.location(id).expect("indexed source")),
+                        declaration: gdd::validation::to_json(value).map_err(|e| e.to_string())?,
+                    },
+                );
+            }
+        }
         let nodes = bundle
             .nodes()
             .map(|record| {
-                project_node(record.id, record.value)
+                project_node(record.id, record.value, location(record.location))
                     .map_err(|error| record_error(record.location, &error))
             })
             .collect::<Result<_, _>>()?;
@@ -369,6 +419,7 @@ impl Graph {
             .and_then(|capture| perspective_data(capture).map_err(|e| e.to_string()));
         let mut graph = Self::project(
             title,
+            sources,
             nodes,
             None,
             projection.as_ref().map_err(Clone::clone),
@@ -376,7 +427,7 @@ impl Graph {
                 bundle
                     .edges()
                     .map(|record| {
-                        project_edge(record.id, record.value, indices)
+                        project_edge(record.id, record.value, indices, location(record.location))
                             .map_err(|error| record_error(record.location, &error))
                     })
                     .collect()
@@ -402,11 +453,33 @@ impl Graph {
         let data = gdd::view::read_view(bytes).map_err(|e| e.to_string())?;
         let model = &data["model"];
         let title = model["project"]["title"].as_str().unwrap().to_owned();
+        // The artifact reader has checked every location against the merged registries.
+        let location = |id: &str| {
+            let origin = &data["locations"][id];
+            Location {
+                file: origin[0].as_str().unwrap().to_owned(),
+                pointer: origin[1].as_str().unwrap().to_owned(),
+            }
+        };
+        let sources = model["sources"]
+            .as_object()
+            .into_iter()
+            .flatten()
+            .map(|(id, value)| {
+                (
+                    id.clone(),
+                    Source {
+                        location: location(id),
+                        declaration: value.clone(),
+                    },
+                )
+            })
+            .collect();
         let nodes = model["nodes"]
             .as_object()
             .unwrap()
             .iter()
-            .map(|(id, node)| project_node(id, &Value::from(node)))
+            .map(|(id, node)| project_node(id, &Value::from(node), location(id)))
             .collect::<Result<_, _>>()?;
         let shown = data["manifest"]["shown_nodes"]
             .as_array()
@@ -416,6 +489,7 @@ impl Graph {
             .collect();
         let mut graph = Self::project(
             title,
+            sources,
             nodes,
             Some(&shown),
             Ok(&data["perspectives"]),
@@ -425,7 +499,8 @@ impl Graph {
                     .unwrap()
                     .iter()
                     .map(|edge| {
-                        project_edge(edge["id"].as_str().unwrap(), &Value::from(edge), indices)
+                        let id = edge["id"].as_str().unwrap();
+                        project_edge(id, &Value::from(edge), indices, location(id))
                     })
                     .collect()
             },
@@ -436,6 +511,7 @@ impl Graph {
 
     fn project(
         title: String,
+        sources: BTreeMap<String, Source>,
         mut nodes: Vec<Node>,
         shown: Option<&BTreeSet<&str>>,
         projection: Result<&Json, String>,
@@ -471,6 +547,7 @@ impl Graph {
             choices: FilterChoices::new(&nodes, &edges),
             perspectives,
             title,
+            sources,
             nodes,
             edges,
             shown_nodes,
@@ -553,7 +630,7 @@ fn search_text(value: &Value) -> Result<String, String> {
         .map_err(|error| error.to_string())
 }
 
-fn project_node(id: &str, value: &Value) -> Result<Node, String> {
+fn project_node(id: &str, value: &Value, location: Location) -> Result<Node, String> {
     let node = object(value, id)?;
     let kind = text(node, "kind")?;
     let description = text(node, "description")?;
@@ -614,6 +691,7 @@ fn project_node(id: &str, value: &Value) -> Result<Node, String> {
     };
     Ok(Node {
         inspection,
+        details: RecordDetails::new(node, location)?,
         search_text: format!("{}\n{}", id.to_lowercase(), search_text(value)?),
         human,
         id: id.to_owned(),
@@ -623,7 +701,12 @@ fn project_node(id: &str, value: &Value) -> Result<Node, String> {
     })
 }
 
-fn project_edge(id: &str, value: &Value, indices: &BTreeMap<&str, usize>) -> Result<Edge, String> {
+fn project_edge(
+    id: &str,
+    value: &Value,
+    indices: &BTreeMap<&str, usize>,
+    location: Location,
+) -> Result<Edge, String> {
     let edge = object(value, "edge")?;
     let relation = text(edge, "relation")?;
     if id.is_empty() || relation.is_empty() {
@@ -637,6 +720,7 @@ fn project_edge(id: &str, value: &Value, indices: &BTreeMap<&str, usize>) -> Res
             .ok_or_else(|| format!("edge {id:?} refers to unknown node {end:?}"))
     };
     Ok(Edge {
+        details: RecordDetails::new(edge, location)?,
         search_text: search_text(value)?,
         from: resolve("from")?,
         to: resolve("to")?,
@@ -962,7 +1046,12 @@ mod tests {
         let inputs = tempfile::tempdir().unwrap();
         let destination = tempfile::tempdir().unwrap();
         let manifest = inputs.path().join("fragmented.gdd.yaml");
-        fs::copy(example("fragmented.gdd.yaml"), &manifest).unwrap();
+        let model = fs::read_to_string(example("fragmented.gdd.yaml")).unwrap();
+        fs::write(
+            &manifest,
+            model.replace("- note.fragment.yaml", "- ./note.fragment.yaml"),
+        )
+        .unwrap();
         fs::copy(
             example("note.fragment.yaml"),
             inputs.path().join("note.fragment.yaml"),
@@ -970,7 +1059,9 @@ mod tests {
         .unwrap();
         let path = destination.path().join("note.gddview");
         gdd::view::render_view(&manifest, &path, &["component.notes".into()]).unwrap();
+        let captured = bundle::load_model_only(&manifest);
         inputs.close().unwrap();
+        let direct = Graph::from_bundle(&captured).unwrap();
         for suffix in ["gddview", "json"] {
             let moved = destination.path().join(format!("received.{suffix}"));
             fs::copy(&path, &moved).unwrap();
@@ -979,10 +1070,13 @@ mod tests {
             assert_fragmented_graph(&graph);
             let layout = crate::canvas::Layout::new(&graph);
             assert!(layout.is_ok());
-            assert_eq!(
-                graph.artifact.unwrap()["locations"]["entity.note"][0],
-                "note.fragment.yaml"
-            );
+            for graph in [&graph, &direct] {
+                let note = &graph.nodes[graph.edges[0].from];
+                assert_eq!(note.details.location.file, "./note.fragment.yaml");
+                assert_eq!(note.details.location.pointer, "/nodes/entity.note");
+                assert_eq!(graph.edges[0].details.location.file, "fragmented.gdd.yaml");
+                assert_eq!(graph.edges[0].details.location.pointer, "/edges/0");
+            }
         }
     }
 

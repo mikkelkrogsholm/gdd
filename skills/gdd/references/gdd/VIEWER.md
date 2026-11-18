@@ -25,6 +25,12 @@ outside this scope and display the original source file, JSON pointer and
 canonical node record. A scoped file contains the complete model and should
 only be shared with someone who can read the whole model.
 
+For both a direct model and a saved view, select a node or edge to see its
+declaring file and JSON Pointer. **Source references** and **Design references**
+show the source ID, purpose and exact selector. Expand **Inspect source** to
+read the source declaration, including its URI and any declared SHA-256 digest.
+Source inspection uses the captured metadata and displays URIs as text.
+
 The native **Perspective** selector works with a model file or a saved view.
 Choose **User journey**, **Components**, or **Data model** to narrow the list
 and drawing to the projection's canonical node and edge IDs. **All graph**

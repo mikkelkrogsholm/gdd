@@ -404,9 +404,9 @@ impl Bundle {
             .map(|(namespace, index)| (namespace.as_str(), &self.documents[*index]))
     }
 
-    // Workplan locations identify the declared include, while snapshot assets
-    // identify its resolved path. Preserve both through symlink replacement.
-    pub(crate) fn declared_fragment_path<'a>(&'a self, path: &'a str) -> &'a str {
+    /// Return the declared include path for a captured fragment's resolved path.
+    /// Model locations use the declaration even when the include is a symlink.
+    pub fn declared_fragment_path<'a>(&'a self, path: &'a str) -> &'a str {
         self.fragment_declarations
             .get(path)
             .map_or(path, String::as_str)
