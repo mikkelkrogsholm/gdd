@@ -2,8 +2,9 @@
 
 The GDD CLI prepares and validates models, work packages and run journals. Your
 existing agent runtime owns reasoning, actual edits, command execution, review
-and trusted policy. A small Python host API avoids recreating snapshot and
-evidence plumbing for every project. It has no LLM or provider dependency.
+and trusted policy. The Rust and Python host APIs capture code snapshots and
+author evidence for existing check receipts. The Python API can also execute a
+caller-selected check. These operations have no LLM or provider dependency.
 
 For a complete small example before using these API details, follow the
 [graph-to-code tutorial](docs/tutorial.md). It runs real local tests and records
@@ -161,6 +162,48 @@ fragment = verification_records(
 )
 append_records(root / "gdd" / "records.json", fragment)
 ```
+
+Rust callers can consume the same saved receipt with `gdd::host`. This example
+assumes the host ran the check described above, verified its coverage and
+performed the named negative control. Supply the checker version and runtime
+description observed during that run.
+
+```rust
+use gdd::host::{append_records, snapshot_code, verification_records, Attestation};
+use serde_json::json;
+use std::{collections::BTreeMap, io, path::Path};
+
+fn record_check(root: &Path, python_version: &str, python_runtime: &str) -> io::Result<()> {
+    let files = ["src/domain.py", "src/cli.py", "tests/test_domain.py"];
+    let baseline = snapshot_code(root, &files)?;
+    println!("Selected code revision {}", baseline.revision);
+
+    let environment = BTreeMap::from([("python".to_owned(), python_runtime.to_owned())]);
+    let checker = json!({"name": "stdlib.unittest", "version": python_version});
+    let controls = ["actual-isolated-mutation".to_owned()];
+    let options = Attestation {
+        root,
+        implementation: "implementation.app",
+        binding_id: "binding.domain.v1",
+        evidence_id: "evidence.domain.v1",
+        test_resource: "tests/",
+        checker: &checker,
+        environment: &environment,
+        verified_negative_controls: &controls,
+    };
+    let fragment = verification_records(
+        &root.join("gdd/gdd.json"), "check.domain",
+        &root.join("evidence/domain.run.json"), &options,
+    )?;
+    append_records(&root.join("gdd/records.json"), &fragment)
+}
+```
+
+A completed checker records boolean `executed: true` and exit codes 0 (PASS)
+or 1 (FAIL). A file binding uses the selected file's SHA-256 digest.
+A directory binding hashes the canonical map of selected descendants, keeping
+their paths relative to the snapshot root. The binding preserves the supplied
+resource spelling, including a directory's trailing slash.
 
 Use new IDs. The helper verifies current check/spec identity, the receipt's source
 freshness, explicit test-resource hashes and required metadata. A PASS or FAIL is

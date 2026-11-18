@@ -17,6 +17,7 @@ pub mod context;
 pub mod design_review;
 pub(crate) mod explain;
 mod extensions;
+pub mod host;
 pub mod impact;
 mod implementation;
 pub(crate) mod inspection;

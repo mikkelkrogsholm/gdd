@@ -1645,8 +1645,8 @@ fn link_or_io(path: &str, error: io::Error) -> Diagnostic {
 }
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
-pub(crate) fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> {
-    use rustix::fs::{Mode, OFlags, openat};
+pub(crate) fn open_regular(root: &Path, relative: &Path) -> io::Result<File> {
+    use rustix::fs::{AtFlags, FileType, Mode, OFlags, openat, statat};
 
     // Open the canonical root and its descendants without following links that
     // may have been substituted after path resolution.
@@ -1659,9 +1659,16 @@ pub(crate) fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> 
     while let Some(part) = parts.next() {
         let flags = OFlags::RDONLY | OFlags::CLOEXEC | OFlags::NOFOLLOW;
         if parts.peek().is_none() {
+            let stat = statat(&parent, part, AtFlags::SYMLINK_NOFOLLOW)?;
+            if FileType::from_raw_mode(stat.st_mode) != FileType::RegularFile {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidData,
+                    "Expected a regular file",
+                ));
+            }
             let flags = flags | OFlags::NONBLOCK | OFlags::NOCTTY;
             let file = openat(&parent, part, flags, Mode::empty())?;
-            return read_file(File::from(file));
+            return require_regular(File::from(file));
         }
         parent = File::from(openat(
             &parent,
@@ -1677,19 +1684,56 @@ pub(crate) fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> 
 }
 
 #[cfg(not(any(target_os = "linux", target_os = "macos")))]
-pub(crate) fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> {
-    read_file(File::open(root.join(relative))?)
+pub(crate) fn open_regular(root: &Path, relative: &Path) -> io::Result<File> {
+    let mut path = root.to_owned();
+    for part in relative.iter() {
+        path.push(part);
+        let metadata = path.symlink_metadata()?;
+        #[cfg(windows)]
+        let link = {
+            use std::os::windows::fs::MetadataExt;
+            use windows_sys::Win32::Storage::FileSystem::FILE_ATTRIBUTE_REPARSE_POINT;
+            metadata.file_attributes() & FILE_ATTRIBUTE_REPARSE_POINT != 0
+        };
+        #[cfg(not(windows))]
+        let link = metadata.is_symlink();
+        if link {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Resource cannot follow symlinks",
+            ));
+        }
+    }
+    if !path.symlink_metadata()?.is_file() {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "Expected a regular file",
+        ));
+    }
+    let mut options = fs::OpenOptions::new();
+    options.read(true);
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::OpenOptionsExt;
+        use windows_sys::Win32::Storage::FileSystem::FILE_FLAG_OPEN_REPARSE_POINT;
+        options.custom_flags(FILE_FLAG_OPEN_REPARSE_POINT);
+    }
+    require_regular(options.open(path)?)
 }
 
-fn read_file(mut file: File) -> io::Result<Vec<u8>> {
+fn require_regular(file: File) -> io::Result<File> {
     if !file.metadata()?.is_file() {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
             "Expected a regular file",
         ));
     }
+    Ok(file)
+}
+
+pub(crate) fn read_regular(root: &Path, relative: &Path) -> io::Result<Vec<u8>> {
     let mut bytes = Vec::new();
-    file.read_to_end(&mut bytes)?;
+    open_regular(root, relative)?.read_to_end(&mut bytes)?;
     Ok(bytes)
 }
 

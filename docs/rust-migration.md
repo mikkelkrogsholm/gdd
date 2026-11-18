@@ -635,4 +635,12 @@ YAML nesting to 256 containers.
 | `analyze_impact`, `impact_text` | Native declared consumers, supporting context, applicable records, JSON and text output, with path-based and captured-bundle entry points. |
 | `diff_models`, `diff_text` | Native comparison of paths or captured models with scoped diagnostics, field changes, relocations and structural advisories. |
 | `check_code` | Python-only code observation API. |
-| `gdd_validator.host` helpers `snapshot_code`, `execute_check`, `verification_records`, `append_records` | Python-only trusted host operations. A code snapshot identifies selected implementation files, while a model snapshot identifies normative GDD assets. See the [host guide](../HOST.md). |
+| `snapshot_code`, `verification_records`, `append_records` | Native library operations in `gdd::host`. Select explicit code files, attest a saved current PASS/FAIL receipt and append new immutable IDs to a records document. See the [host guide](../HOST.md#append-verified-records-and-supply-trust) for the Rust API example. |
+| `execute_check` | Python trusted-host process execution and receipt creation. The Rust authoring API consumes the same `gdd-host-check/0.1` format. |
+
+The version 0.1 receipt reader preserves the Python comparison for
+`exit_code`. A PASS requires numeric zero and a FAIL requires numeric one,
+including equal decimal or exponent spellings. Legacy boolean exit codes
+`false` and `true` compare as zero and one respectively. The separate
+`executed` field must be boolean `true`. Emit integer exit codes when
+producing new receipts.
