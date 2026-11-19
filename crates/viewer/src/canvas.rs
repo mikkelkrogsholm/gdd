@@ -1,5 +1,9 @@
 mod communities;
+mod drag;
 pub use communities::{CommunityGeometry, community_color};
+use drag::NodeDrag;
+pub use drag::RouteWorker;
+use std::sync::Arc;
 
 use eframe::egui::{
     self, FontId, Painter, Pos2, Rect, Sense, Stroke, StrokeKind, TextFormat, Vec2,
@@ -62,6 +66,11 @@ pub struct Layout {
     nodes: Vec<Rect>,
     routes: Vec<Route>,
     bounds: Rect,
+    topology: Arc<graphlay::Graph>,
+    drag: Option<NodeDrag>,
+    revision: u64,
+    needs_routing: bool,
+    route_error: Option<String>,
 }
 
 struct Route {
@@ -76,7 +85,7 @@ pub struct Scene<'a> {
     pub visible: &'a Visible,
     pub folded: Option<&'a FoldProjection>,
     pub selected: Option<Selection>,
-    pub areas: Option<&'a CommunityGeometry>,
+    pub show_areas: bool,
 }
 
 impl Scene<'_> {
@@ -151,14 +160,9 @@ impl Layout {
             builder.connect(from, to);
             edge_ids.push(i);
         }
-        let mut options = LayoutOptions::layered_default();
-        // Straightening chains can dominate layout time on large projections.
-        if edge_ids.len() >= 1_000 {
-            options.tuning.coords.flatten_room = 0;
-        }
-        let drawing =
-            graphlay::layout(&builder.build(), &options).map_err(|error| error.to_string())?;
-        let position = |point: graphlay::Point| egui::pos2(point.x as f32, point.y as f32);
+        let topology = Arc::new(builder.build());
+        let drawing = graphlay::layout(&topology, &layout_options(edge_ids.len()))
+            .map_err(|error| error.to_string())?;
         let nodes = drawing
             .nodes
             .iter()
@@ -169,43 +173,38 @@ impl Layout {
                 )
             })
             .collect();
-        let mut routes = Vec::with_capacity(drawing.edges.len());
-        for (index, route) in drawing.edges.iter().enumerate() {
-            let points: Vec<_> = route.points.iter().copied().map(position).collect();
-            let direction = points.split_last().and_then(|(tip, previous)| {
-                previous
-                    .iter()
-                    .rev()
-                    .find(|p| *p != tip)
-                    .map(|p| (*tip - *p).normalized())
-            });
-            let Some(arrow_direction) = direction else {
-                return Err(format!(
-                    "Edge {} has no drawable route.",
-                    graph.edges[edge_ids[index]].id
-                ));
-            };
-            routes.push(Route {
-                bounds: Rect::from_points(&points),
-                midpoint: route_midpoint(&points),
-                points,
-                arrow_direction,
-            });
-        }
+        let routes = drawing
+            .edges
+            .iter()
+            .zip(edge_ids)
+            .map(|(edge, index)| {
+                Route::from_points(edge.points.iter().copied().map(position).collect())
+                    .ok_or_else(|| format!("Edge {} has no drawable route.", graph.edges[index].id))
+            })
+            .collect::<Result<_, _>>()?;
         Ok(Self {
             nodes,
             routes,
             bounds: Rect::from_min_max(position(drawing.bounds.min), position(drawing.bounds.max)),
+            topology,
+            drag: None,
+            revision: 0,
+            needs_routing: false,
+            route_error: None,
         })
     }
 
     pub fn show(
-        &self,
+        &mut self,
         ui: &mut egui::Ui,
         scene: &Scene<'_>,
         camera: &mut Camera,
         reveal: bool,
+        geometry: &mut Option<CommunityGeometry>,
     ) -> Option<Selection> {
+        if scene.show_areas && geometry.is_none() {
+            *geometry = Some(self.community_geometry(scene.visible, scene.folded));
+        }
         let visible = scene.visible;
         let bounds = if scene.folded.is_some()
             || (visible.nodes.len() == self.nodes.len() && visible.edges.len() == self.routes.len())
@@ -219,9 +218,12 @@ impl Layout {
                 .chain(visible.edges.iter().map(|&i| self.routes[i].bounds))
                 .fold(Rect::NOTHING, Rect::union)
         };
-        let bounds = scene
-            .areas
+        let bounds = geometry
+            .as_ref()
+            .filter(|_| scene.show_areas)
             .map_or(bounds, |areas| bounds.union(areas.bounds));
+        // Use the same world-to-screen mapping until the primary button is released.
+        let bounds = self.drag.as_ref().map_or(bounds, |drag| drag.bounds);
         if camera.reset_scroll {
             if let Some(frame) = camera.frame.take() {
                 egui::scroll_area::State::default().store(ui.ctx(), frame.scroll_id);
@@ -239,7 +241,11 @@ impl Layout {
             .min_scrolled_height(0.0)
             .auto_shrink([false; 2])
             .animated(false)
-            .scroll_source(egui::scroll_area::ScrollSource::ALL)
+            .scroll_source(if self.drag.is_some() {
+                egui::scroll_area::ScrollSource::NONE
+            } else {
+                egui::scroll_area::ScrollSource::ALL
+            })
             .on_drag_cursor(egui::CursorIcon::Grabbing);
         if camera.zoom == Zoom::Fit {
             scroll = scroll
@@ -275,7 +281,13 @@ impl Layout {
                     ui.scroll_to_rect(target, Some(egui::Align::Center));
                 }
             }
-            (self.draw(ui, scene, transform, area), size, scale)
+            if self.update_drag(ui, scene, scale, bounds) {
+                *geometry = scene
+                    .show_areas
+                    .then(|| self.community_geometry(scene.visible, scene.folded));
+            }
+            let areas = geometry.as_ref().filter(|_| scene.show_areas);
+            (self.draw(ui, scene, transform, area, areas), size, scale)
         });
         let (clicked, size, scale) = output.inner;
         if camera.zoom == Zoom::Fit && camera.frame.is_none_or(|prior| prior.scale != scale) {
@@ -302,6 +314,7 @@ impl Layout {
         scene: &Scene<'_>,
         transform: TSTransform,
         area: Rect,
+        areas: Option<&CommunityGeometry>,
     ) -> Option<Selection> {
         let graph = scene.graph;
         let visible = scene.visible;
@@ -316,7 +329,7 @@ impl Layout {
         let pointer = canvas.interact_pointer_pos().filter(|_| canvas.clicked());
         let mut best_distance = 7.0;
         let selected_glyph = scene.selected_glyph();
-        if let Some(areas) = scene.areas {
+        if let Some(areas) = areas {
             areas.paint(ui, self, scene, transform);
         }
         let n_routes = scene
@@ -414,9 +427,13 @@ impl Layout {
                 .interact(
                     rect,
                     ui.scope_id().with(("canvas-node", index)),
-                    Sense::CLICK,
+                    Sense::click_and_drag(),
                 )
+                .on_hover_cursor(egui::CursorIcon::Grab)
                 .on_hover_text(&node.id);
+            if response.dragged() {
+                ui.ctx().set_cursor_icon(egui::CursorIcon::Grabbing);
+            }
             let active = selected_glyph == Some(slot);
             let fill = if active || response.hovered() {
                 selected_fill
@@ -460,6 +477,32 @@ impl Layout {
             painter.galley(center - label.size() * 0.5, label, label_color);
         }
         clicked
+    }
+}
+
+fn layout_options(edge_count: usize) -> LayoutOptions {
+    let mut options = LayoutOptions::layered_default();
+    // Straightening chains can dominate layout time on large projections.
+    if edge_count >= 1_000 {
+        options.tuning.coords.flatten_room = 0;
+    }
+    options
+}
+
+fn position(point: graphlay::Point) -> Pos2 {
+    egui::pos2(point.x as f32, point.y as f32)
+}
+
+impl Route {
+    fn from_points(points: Vec<Pos2>) -> Option<Self> {
+        let (tip, previous) = points.split_last()?;
+        let before = previous.iter().rev().find(|p| *p != tip)?;
+        Some(Self {
+            bounds: Rect::from_points(&points),
+            midpoint: route_midpoint(&points),
+            arrow_direction: (*tip - *before).normalized(),
+            points,
+        })
     }
 }
 
@@ -610,10 +653,11 @@ mod tests {
                     visible: &visible,
                     folded: None,
                     selected: Some(Selection::Node(0)),
-                    areas: None,
+                    show_areas: false,
                 },
                 transform,
                 ui.max_rect(),
+                None,
             );
         });
         frame.textures_delta.clear();
@@ -650,7 +694,7 @@ mod tests {
             visible: &visible,
             folded: Some(&fold),
             selected: None,
-            areas: None,
+            show_areas: false,
         };
         let context = egui::Context::default();
         let transform = TSTransform::from_translation(egui::vec2(20.0, 20.0));
@@ -665,7 +709,7 @@ mod tests {
                         ..Default::default()
                     },
                     |ui| {
-                        clicked = layout.draw(ui, &scene, transform, screen);
+                        clicked = layout.draw(ui, &scene, transform, screen, None);
                     },
                 )
                 .textures_delta

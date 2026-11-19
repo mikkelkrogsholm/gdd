@@ -146,6 +146,17 @@ filtered drawing changes. Below 40%, the overview shows shapes and routes.
 Choose a fixed percentage under **Graph zoom** (50% to 200%) to read labels
 and bundle counts. The list and inspector retain their text size.
 
+Drag a node or folded figure with the primary mouse button to move it.
+Its incident arrows and community outlines follow the pointer. Releasing the
+button reroutes edges around the current node positions in the background.
+A click opens the inspector. Dragging preserves the current selection.
+
+Positions belong to this window. Unfolded positions survive filter changes
+and folding. A new folded projection starts with its own layout. **Fit graph**
+and **Reset camera** keep the positions you set. In Fit mode the drawing
+fits the viewport again after you release the figure. Reopening the model or
+`.gddview` restores the automatic layout. Dragging leaves both files untouched.
+
 When the drawing extends beyond the canvas, drag the background with the
 primary mouse button or scroll to pan. **Reset camera** restores 100% zoom
 and returns to the top left of the current drawing. Smaller drawings center

@@ -1193,3 +1193,85 @@ fn community_legend_preserves_graph_identity_and_opens_the_filtered_community_by
     assert!(!window.viewer.visible.nodes.contains(&target));
     assert_eq!(window.viewer.filters.kind, "action");
 }
+
+#[test]
+fn switching_panes_during_a_drag_keeps_the_last_graph_position_and_saved_view() {
+    let folder = tempfile::tempdir().unwrap();
+    let source = folder.path().join("fixture.json");
+    fs::copy(
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../conformance/fixtures/viewer-multigraph.json"),
+        &source,
+    )
+    .unwrap();
+    let saved = folder.path().join("fixture.gddview");
+    gdd::view::render_view(&source, &saved, &[]).unwrap();
+    let original_files = [fs::read(&source).unwrap(), fs::read(&saved).unwrap()];
+    let open_folded = || {
+        let mut window = Window::open(&saved);
+        window.size = egui::vec2(850.0, 850.0);
+        window.click(Role::DisclosureTriangle, "View filters");
+        window.click(Role::CheckBox, "Fold communities");
+        window.click(Role::Button, "Graph");
+        window.wait_for_zoom();
+        window.click(Role::Button, "Fit graph");
+        window
+    };
+    let glyphs = |frame: egui::FullOutput| {
+        let clip = graph_clip(&frame);
+        frame
+            .shapes
+            .into_iter()
+            .filter_map(|item| match item.shape {
+                egui::Shape::Rect(rect) if item.clip_rect == clip && rect.corner_radius.nw == 6 => {
+                    Some(rect.rect)
+                }
+                _ => None,
+            })
+            .collect::<Vec<_>>()
+    };
+    // Fit can reframe the drawing after release. Compare positions in the
+    // drawing's coordinate system, with another glyph as the reference.
+    let relative = |glyphs: &[egui::Rect], index: usize| {
+        let anchor = glyphs[(index + 1) % glyphs.len()];
+        (glyphs[index].center() - anchor.center()) / anchor.width()
+    };
+    let mut window = open_folded();
+    let before = glyphs(window.render(vec![]));
+    let nodes = window.viewer.visible.nodes.clone();
+    let edges = window.viewer.visible.edges.clone();
+    let projection = Arc::clone(window.viewer.folded.as_ref().unwrap());
+    let node = window.viewer.graph.choices.communities["community.backend"];
+    let slot = window.viewer.folded.as_ref().unwrap().glyph_for[node].unwrap();
+    let start = before[slot].center();
+    let delta = egui::vec2(68.0, -68.0);
+    let button = |pos, pressed| egui::Event::PointerButton {
+        pos,
+        button: egui::PointerButton::Primary,
+        pressed,
+        modifiers: Modifiers::NONE,
+    };
+    window.frame(vec![egui::Event::PointerMoved(start), button(start, true)]);
+    let moved = glyphs(window.render(vec![egui::Event::PointerMoved(start + delta)]));
+    assert!((moved[slot].center() - start - delta).length() < 0.1);
+    window.key(Key::F, Modifiers::COMMAND);
+    assert_eq!(window.viewer.pane, Pane::Nodes);
+    let other = egui::pos2(25.0, 105.0);
+    window.frame(vec![egui::Event::PointerMoved(other), button(other, false)]);
+    window.click(Role::Button, "Graph");
+    let restored = glyphs(window.render(vec![]));
+    assert!((relative(&restored, slot) - relative(&moved, slot)).length() < 0.001);
+    assert_eq!(window.viewer.selected, None);
+    assert_eq!(window.viewer.visible.nodes, nodes);
+    assert_eq!(window.viewer.visible.edges, edges);
+    assert!(Arc::ptr_eq(
+        &projection,
+        window.viewer.folded.as_ref().unwrap()
+    ));
+    assert_eq!(
+        [fs::read(source).unwrap(), fs::read(&saved).unwrap()],
+        original_files
+    );
+    let fresh = glyphs(open_folded().render(vec![]));
+    assert!((relative(&fresh, slot) - relative(&before, slot)).length() < 0.001);
+}

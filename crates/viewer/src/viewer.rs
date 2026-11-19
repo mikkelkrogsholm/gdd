@@ -8,7 +8,7 @@ use eframe::egui::{self, Button, Key, Modifiers, RichText, Ui};
 use serde_json::Value as Json;
 
 use crate::{
-    canvas::{Camera, CommunityGeometry, Layout, Scene, Zoom, community_color},
+    canvas::{Camera, CommunityGeometry, Layout, RouteWorker, Scene, Zoom, community_color},
     model::{
         EdgeBundle, Filters, FoldProjection, Graph, HumanConcept, Lens, Node, NodeInspection,
         RecordDetails, Selection, Source, Visible,
@@ -22,6 +22,19 @@ enum LayoutState {
 }
 
 impl LayoutState {
+    fn for_projection<'a>(
+        &'a mut self,
+        projection: Option<&Arc<FoldProjection>>,
+        folded: Option<&'a mut (Arc<FoldProjection>, Self)>,
+    ) -> Option<&'a mut Self> {
+        match projection {
+            None => Some(self),
+            Some(current) => folded
+                .filter(|(prior, _)| Arc::ptr_eq(prior, current))
+                .map(|(_, state)| state),
+        }
+    }
+
     fn start(graph: Arc<Graph>, fold: Option<Arc<FoldProjection>>, context: egui::Context) -> Self {
         let (sender, receiver) = mpsc::channel();
         match thread::Builder::new()
@@ -66,6 +79,7 @@ pub struct Viewer {
     pane: Pane,
     graph: Arc<Graph>,
     layout: LayoutState,
+    router: RouteWorker,
     filters: Filters,
     visible: Visible,
     show_areas: bool,
@@ -94,6 +108,7 @@ impl Viewer {
             camera: Camera::default(),
             show_areas: true,
             area_geometry: None,
+            router: RouteWorker::default(),
             reveal_selected: false,
             filename,
             selected: None,
@@ -112,6 +127,9 @@ impl Viewer {
     }
 
     fn set_folded(&mut self, enabled: bool) {
+        if let Some(LayoutState::Ready(layout)) = self.current_layout() {
+            layout.end_drag();
+        }
         self.area_geometry = None;
         if !enabled && self.folded.is_none() {
             return;
@@ -154,15 +172,9 @@ impl Viewer {
         }
     }
 
-    fn current_layout(&self) -> Option<&LayoutState> {
-        match &self.folded {
-            None => Some(&self.layout),
-            Some(current) => self
-                .folded_layout
-                .as_ref()
-                .filter(|(prior, _)| Arc::ptr_eq(prior, current))
-                .map(|(_, state)| state),
-        }
+    fn current_layout(&mut self) -> Option<&mut LayoutState> {
+        self.layout
+            .for_projection(self.folded.as_ref(), self.folded_layout.as_mut())
     }
 
     fn inspect(&mut self, selection: Selection) {
@@ -274,6 +286,15 @@ impl Viewer {
         egui::CentralPanel::default()
             .frame(frame)
             .show(ui, |ui| self.show_pane(ui, pane, compact, focus_search));
+        if let Some(LayoutState::Ready(layout)) = self
+            .layout
+            .for_projection(self.folded.as_ref(), self.folded_layout.as_mut())
+        {
+            if pane != Pane::Graph {
+                layout.end_drag();
+            }
+            self.router.update(layout, ui.ctx());
+        }
     }
 
     fn show_pane(&mut self, ui: &mut Ui, pane: Pane, compact: bool, focus_search: bool) {
@@ -379,15 +400,10 @@ impl Viewer {
             return;
         }
         self.update_layout(ui.ctx());
-        if self.show_areas
-            && self.area_geometry.is_none()
-            && let Some(LayoutState::Ready(layout)) = self.current_layout()
-        {
-            self.area_geometry =
-                Some(layout.community_geometry(&self.visible, self.folded.as_deref()));
-        }
-        let reveal = self.reveal_selected;
-        let layout = match self.current_layout() {
+        let layout = self
+            .layout
+            .for_projection(self.folded.as_ref(), self.folded_layout.as_mut());
+        let layout = match layout {
             Some(LayoutState::Ready(layout)) => layout,
             None | Some(LayoutState::Pending(_)) => {
                 ui.centered_and_justified(|ui| ui.label("Calculating graph layout…"));
@@ -400,16 +416,23 @@ impl Viewer {
                 return;
             }
         };
-        let mut camera = self.camera;
         let scene = Scene {
             graph: &self.graph,
             visible: &self.visible,
             folded: self.folded.as_deref(),
             selected: self.selected,
-            areas: self.area_geometry.as_ref().filter(|_| self.show_areas),
+            show_areas: self.show_areas,
         };
-        let clicked = layout.show(ui, &scene, &mut camera, reveal);
-        self.camera = camera;
+        if let Some(error) = layout.route_error() {
+            ui.label(format!("Showing provisional routes: {error}"));
+        }
+        let clicked = layout.show(
+            ui,
+            &scene,
+            &mut self.camera,
+            self.reveal_selected,
+            &mut self.area_geometry,
+        );
         self.reveal_selected = false;
         if let Some(selection) = clicked {
             self.inspect(selection);
@@ -1105,6 +1128,7 @@ mod tests {
             camera: Camera::default(),
             show_areas: true,
             area_geometry: None,
+            router: RouteWorker::default(),
             reveal_selected: false,
             filename: "fragmented.gdd.yaml".into(),
             selected: Some(Selection::Node(0)),
@@ -1184,6 +1208,7 @@ mod tests {
             camera: Camera::default(),
             show_areas: true,
             area_geometry: None,
+            router: RouteWorker::default(),
             reveal_selected: false,
             filename: "partial.gddview".into(),
             selected: None,
@@ -1232,6 +1257,7 @@ mod tests {
             camera: Camera::default(),
             show_areas: true,
             area_geometry: None,
+            router: RouteWorker::default(),
             reveal_selected: false,
             filename: "fixture".into(),
             selected: None,
