@@ -12,14 +12,14 @@ struct Window {
 
 impl Window {
     fn open(path: &Path) -> Self {
+        Self::from_graph(Graph::load(path).unwrap())
+    }
+
+    fn from_graph(graph: Graph) -> Self {
         let context = egui::Context::default();
         context.enable_accesskit();
         context.all_styles_mut(|style| style.animation_time = 0.0);
-        let viewer = Viewer::new(
-            Graph::load(path).unwrap(),
-            "Fixture".into(),
-            context.clone(),
-        );
+        let viewer = Viewer::new(graph, "Fixture".into(), context.clone());
         Self {
             viewer,
             context,
@@ -47,15 +47,15 @@ impl Window {
             .unwrap()
     }
 
-    fn click(&mut self, role: Role, label: &str) {
+    fn click(&mut self, role: Role, label: &str) -> egui::FullOutput {
         // Let the panel measure its contents before using the widget bounds.
         self.frame(Vec::new());
         let tree = self.frame(Vec::new());
-        self.click_at(widget_bounds(&tree, role, label).center());
+        self.click_at(widget_bounds(&tree, role, label).center())
     }
 
-    fn pointer_button(&mut self, pos: egui::Pos2, pressed: bool) {
-        self.frame(vec![
+    fn pointer_button(&mut self, pos: egui::Pos2, pressed: bool) -> egui::FullOutput {
+        self.render(vec![
             egui::Event::PointerMoved(pos),
             egui::Event::PointerButton {
                 pos,
@@ -63,12 +63,12 @@ impl Window {
                 pressed,
                 modifiers: Modifiers::NONE,
             },
-        ]);
+        ])
     }
 
-    fn click_at(&mut self, pos: egui::Pos2) {
+    fn click_at(&mut self, pos: egui::Pos2) -> egui::FullOutput {
         self.pointer_button(pos, true);
-        self.pointer_button(pos, false);
+        self.pointer_button(pos, false)
     }
 
     fn key(&mut self, key: Key, modifiers: Modifiers) -> TreeUpdate {
@@ -1488,4 +1488,125 @@ fn switching_panes_during_a_drag_keeps_the_last_graph_position_and_saved_view() 
     );
     let fresh = glyphs(open_folded().render(vec![]));
     assert!((relative(&fresh, slot) - relative(&before, slot)).length() < 0.001);
+}
+
+#[test]
+fn native_save_and_copy_capture_the_same_live_scoped_projection() {
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let source = tempfile::tempdir().unwrap();
+    let model = source.path().join("model.json");
+    fs::copy(fixture, &model).unwrap();
+    let original = source.path().join("original.gddview");
+    let report = gdd::view::render_view(&model, &original, &["scenario.hidden".into()]).unwrap();
+    let recipient = tempfile::tempdir().unwrap();
+    let relocated = recipient.path().join("received graph.gddview");
+    fs::rename(original, &relocated).unwrap();
+    source.close().unwrap();
+
+    let mut window = Window::open(&relocated);
+    window.search("edge.call_one");
+    window.click(Role::CheckBox, "Fold communities");
+    window.click(Role::DisclosureTriangle, "Current view");
+    window.click(Role::DisclosureTriangle, "Projection details (JSON)");
+    let shown = window
+        .viewer
+        .projection_text
+        .as_ref()
+        .unwrap()
+        .text()
+        .to_owned();
+    let output = window.click(Role::Button, "Copy projection JSON");
+    let clipboard = output
+        .platform_output
+        .commands
+        .iter()
+        .find_map(|command| {
+            if let egui::OutputCommand::CopyText(text) = command {
+                Some(text)
+            } else {
+                None
+            }
+        })
+        .expect("Native clipboard copy command");
+    assert_eq!(clipboard, &shown);
+    let projection: Json = serde_json::from_str(clipboard).unwrap();
+    assert_eq!(projection.as_object().unwrap().len(), 13);
+    assert_eq!(projection["spec_revision"], report["spec_revision"]);
+    assert_eq!(projection["scope"], serde_json::json!(["scenario.hidden"]));
+    assert_eq!(projection["filters"]["search"], "edge.call_one");
+    assert_eq!(projection["folding"]["enabled"], true);
+
+    let before = fs::read(&relocated).unwrap();
+    window.size = egui::vec2(320.0, 600.0);
+    window.click(Role::Button, "Save view state…");
+    window.frame(vec![egui::Event::Text(relocated.to_str().unwrap().into())]);
+    window.click(Role::Button, "Save");
+    assert_labels(
+        &window.frame(Vec::new()),
+        &["Could not save view state: The destination already exists. Choose a new file path."],
+    );
+    assert_eq!(fs::read(&relocated).unwrap(), before);
+    window.click(Role::Button, "Cancel");
+    assert!(window.viewer.save_dialog.is_none());
+
+    fs::remove_file(relocated).unwrap();
+    let destination = recipient.path().join("live scoped projection.json");
+    let tree = window.key(Key::S, Modifiers::COMMAND | Modifiers::SHIFT);
+    assert!(widget(&tree, Role::TextInput, "New file path").is_some());
+    window.frame(vec![egui::Event::Paste(
+        destination.to_str().unwrap().into(),
+    )]);
+    let tree = window.key(Key::Enter, Modifiers::NONE);
+    assert_labels(
+        &tree,
+        &[&format!("Saved view state to {}", destination.display())],
+    );
+    assert!(window.viewer.save_dialog.is_none());
+    let mut envelope: Json = serde_json::from_slice(&fs::read(destination).unwrap()).unwrap();
+    let schema = serde_json::from_str(include_str!(
+        "../../../../schemas/native-view-state.schema.json"
+    ))
+    .unwrap();
+    gdd::validation::build_schema(&schema)
+        .unwrap()
+        .validate(&envelope)
+        .unwrap();
+    let object = envelope.as_object_mut().unwrap();
+    assert_eq!(
+        object.remove("format").unwrap(),
+        "gdd-native-view-state/0.1"
+    );
+    assert_eq!(
+        object.remove("generator").unwrap(),
+        serde_json::json!({
+            "name":"gdd-viewer", "version":env!("CARGO_PKG_VERSION"), "profile":"gdd-viewer-native/0.1"
+        })
+    );
+    assert_eq!(envelope, projection);
+}
+
+#[test]
+fn saving_an_unresolved_model_reports_the_failure_without_creating_a_file() {
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let mut graph = Graph::load(&fixture).unwrap();
+    let crate::model::ViewInput::Model(capture) = &mut graph.input else {
+        unreachable!()
+    };
+    capture.snapshot = None;
+    let mut window = Window::from_graph(graph);
+    let recipient = tempfile::tempdir().unwrap();
+    let destination = recipient.path().join("unresolved.json");
+    window.click(Role::Button, "Save view state…");
+    window.frame(vec![egui::Event::Text(
+        destination.to_str().unwrap().into(),
+    )]);
+    window.click(Role::Button, "Save");
+    assert_labels(
+        &window.frame(Vec::new()),
+        &["Could not save view state: The model has no resolved snapshot revision."],
+    );
+    assert!(!destination.exists());
+    assert_eq!(fs::read_dir(recipient.path()).unwrap().count(), 0);
 }

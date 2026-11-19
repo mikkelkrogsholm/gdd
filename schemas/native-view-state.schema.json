@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gdd.example/schemas/tools/native-view-state-0.1.schema.json",
+  "title": "Native GDD viewer projection state",
+  "description": "A semantic projection of the captured model and current controls. The complete saved scope and current visibility partitions refer to the same revision.",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "gdd-native-view-state/0.1"
+    },
+    "generator": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "const": "gdd-viewer"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile": {
+          "const": "gdd-viewer-native/0.1"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "spec_revision": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "observation_inputs": {
+      "const": []
+    },
+    "scope": {
+      "$ref": "#/$defs/ids"
+    },
+    "artifact_scope": {
+      "type": "object",
+      "properties": {
+        "shown_nodes": {
+          "$ref": "#/$defs/ids"
+        },
+        "shown_edges": {
+          "$ref": "#/$defs/ids"
+        },
+        "omitted_nodes": {
+          "$ref": "#/$defs/ids"
+        },
+        "omitted_edges": {
+          "$ref": "#/$defs/ids"
+        }
+      },
+      "required": [
+        "shown_nodes",
+        "shown_edges",
+        "omitted_nodes",
+        "omitted_edges"
+      ],
+      "additionalProperties": false
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "perspective": {
+          "enum": [
+            "all",
+            "journey",
+            "components",
+            "data"
+          ]
+        },
+        "search": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "relation": {
+          "type": "string"
+        },
+        "community": {
+          "type": "string"
+        },
+        "scenarios": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "perspective",
+        "search",
+        "kind",
+        "relation",
+        "community",
+        "scenarios"
+      ],
+      "additionalProperties": false
+    },
+    "folding": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "overlap_policy": {
+          "const": "first visible community by canonical ID; all memberships retained"
+        }
+      },
+      "required": [
+        "enabled",
+        "overlap_policy"
+      ],
+      "additionalProperties": false
+    },
+    "shown_nodes": {
+      "$ref": "#/$defs/ids"
+    },
+    "shown_edges": {
+      "$ref": "#/$defs/ids"
+    },
+    "omitted_nodes": {
+      "$ref": "#/$defs/ids"
+    },
+    "omitted_edges": {
+      "$ref": "#/$defs/ids"
+    },
+    "glyphs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "node_ids": {
+            "$ref": "#/$defs/ids",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "node_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bundles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "edge_ids": {
+            "$ref": "#/$defs/ids",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "edge_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "folded_internal_edges": {
+      "$ref": "#/$defs/ids"
+    }
+  },
+  "required": [
+    "format",
+    "generator",
+    "spec_revision",
+    "observation_inputs",
+    "scope",
+    "artifact_scope",
+    "filters",
+    "folding",
+    "shown_nodes",
+    "shown_edges",
+    "omitted_nodes",
+    "omitted_edges",
+    "glyphs",
+    "bundles",
+    "folded_internal_edges"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  }
+}

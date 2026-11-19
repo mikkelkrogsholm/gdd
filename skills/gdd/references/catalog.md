@@ -39,6 +39,7 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `schemas/graphify-mapping.schema.json` | [schemas/graphify-mapping.schema.json](gdd/schemas/graphify-mapping.schema.json) |
 | `schemas/impact.schema.json` | [schemas/impact.schema.json](gdd/schemas/impact.schema.json) |
 | `schemas/model-diff.schema.json` | [schemas/model-diff.schema.json](gdd/schemas/model-diff.schema.json) |
+| `schemas/native-view-state.schema.json` | [schemas/native-view-state.schema.json](gdd/schemas/native-view-state.schema.json) |
 | `schemas/observations.schema.json` | [schemas/observations.schema.json](gdd/schemas/observations.schema.json) |
 | `schemas/perspectives.schema.json` | [schemas/perspectives.schema.json](gdd/schemas/perspectives.schema.json) |
 | `schemas/records.schema.json` | [schemas/records.schema.json](gdd/schemas/records.schema.json) |

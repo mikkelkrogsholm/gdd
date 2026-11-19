@@ -1,5 +1,6 @@
 mod overview;
 mod projection;
+mod view_state;
 
 use std::sync::{Arc, mpsc};
 use std::thread;
@@ -92,6 +93,8 @@ pub struct Viewer {
     inspector_scroll: Option<(Option<Selection>, egui::Id)>,
     folded: Option<Arc<FoldProjection>>,
     projection_text: Option<Arc<RichText>>,
+    save_dialog: Option<view_state::SaveDialog>,
+    saved_path: Option<std::path::PathBuf>,
     folded_layout: Option<(Arc<FoldProjection>, LayoutState)>,
 }
 
@@ -117,6 +120,8 @@ impl Viewer {
             inspector_scroll: None,
             folded: None,
             projection_text: None,
+            save_dialog: None,
+            saved_path: None,
             folded_layout: None,
         }
     }
@@ -220,11 +225,19 @@ impl Viewer {
         self.update_layout(ui.ctx());
         ui.spacing_mut().item_spacing = egui::vec2(8.0, 8.0);
         let compact = ui.available_width() < 960.0;
-        let focus_search = ui.input_mut(|input| input.consume_key(Modifiers::COMMAND, Key::F));
+        let save_shortcut =
+            egui::KeyboardShortcut::new(Modifiers::COMMAND | Modifiers::SHIFT, Key::S);
+        if ui.input_mut(|input| input.consume_shortcut(&save_shortcut)) {
+            self.open_save_dialog();
+        }
+        let focus_search = self.save_dialog.is_none()
+            && ui.input_mut(|input| input.consume_key(Modifiers::COMMAND, Key::F));
         if focus_search {
             self.pane = Pane::Nodes;
         }
-        if ui.input_mut(|input| input.consume_key(Modifiers::ALT, Key::Home)) {
+        if self.save_dialog.is_none()
+            && ui.input_mut(|input| input.consume_key(Modifiers::ALT, Key::Home))
+        {
             self.open_overview();
         }
 
@@ -249,7 +262,7 @@ impl Viewer {
                         .on_hover_text(&self.filename);
                 });
                 if compact {
-                    ui.horizontal(|ui| {
+                    ui.horizontal_wrapped(|ui| {
                         for (pane, label) in [
                             (Pane::Nodes, "Nodes"),
                             (Pane::Graph, "Graph"),
@@ -257,13 +270,18 @@ impl Viewer {
                         ] {
                             ui.selectable_value(&mut self.pane, pane, label);
                         }
+                        self.save_button(ui, &save_shortcut);
                     });
                 } else {
                     ui.horizontal_wrapped(|ui| {
                         self.show_perspective(ui);
                         self.show_zoom(ui);
                         self.show_filters(ui);
+                        self.save_button(ui, &save_shortcut);
                     });
+                }
+                if let Some(path) = &self.saved_path {
+                    ui.label(format!("Saved view state to {}", path.display()));
                 }
             });
 
@@ -300,6 +318,7 @@ impl Viewer {
             }
             self.router.update(layout, ui.ctx());
         }
+        self.show_save_dialog(ui.ctx());
     }
 
     fn show_pane(&mut self, ui: &mut Ui, pane: Pane, compact: bool, focus_search: bool) {
@@ -1145,6 +1164,8 @@ mod tests {
             inspector_scroll: None,
             folded: None,
             projection_text: None,
+            save_dialog: None,
+            saved_path: None,
             folded_layout: None,
         };
         let context = egui::Context::default();
@@ -1226,6 +1247,8 @@ mod tests {
             inspector_scroll: None,
             folded: None,
             projection_text: None,
+            save_dialog: None,
+            saved_path: None,
             folded_layout: None,
         };
         viewer.navigate(entity, Lens::All);
@@ -1276,6 +1299,8 @@ mod tests {
             inspector_scroll: None,
             folded: Some(Arc::clone(&prior)),
             projection_text: None,
+            save_dialog: None,
+            saved_path: None,
             folded_layout: Some((Arc::clone(&prior), LayoutState::Pending(receiver))),
         };
         for query in ["backend", "second", "community"] {

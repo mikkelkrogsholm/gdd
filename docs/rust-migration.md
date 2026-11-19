@@ -260,6 +260,12 @@ community figure for represented nodes and internal edges. The node list,
 gap links and inspector remain interactive while graphlay computes the
 drawing. The fold setting applies to the current window.
 
+To migrate a consumer of the HTML **Download view manifest** action, choose
+**Save view state…** (Ctrl+Shift+S or Command+Shift+S) in the native viewer.
+The native file uses `gdd-native-view-state/0.1` and identifies the native
+generator. The 13 projection fields retain their names. **Copy projection JSON**
+in the inspector copies just those fields. [Field mapping and example destination](../VIEWER.md#save-the-current-native-projection)
+
 Use `gdd::view::render_view(model: &Path, output: &Path, scope: &[String])`
 to publish a new artifact and receive the scoped JSON report. Use
 `gdd::view::view_data(&capture, &scope)` to derive the JSON artifact from an

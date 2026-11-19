@@ -170,6 +170,9 @@ impl Viewer {
                     projection_details(graph, &self.filters, &self.visible, self.folded.as_deref());
                 Arc::new(RichText::new(format!("{details:#}")).monospace())
             });
+            if ui.button("Copy projection JSON").clicked() {
+                ui.ctx().copy_text(text.text().to_owned());
+            }
             ui.add(egui::Label::new(Arc::clone(text)).selectable(true));
         });
     }

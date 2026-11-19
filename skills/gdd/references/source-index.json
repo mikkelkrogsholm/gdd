@@ -45,8 +45,8 @@
     {
       "path": "references/gdd/VIEWER.md",
       "source": "VIEWER.md",
-      "sha256": "9195b9d42aa054b0156a267b540f77ace744b4ce8239619d43fc05d9aa969915",
-      "bytes": 22533
+      "sha256": "6e18654e52764d35f30d311f64a0974dfd50452127606610000228210949b62d",
+      "bytes": 24743
     },
     {
       "path": "references/gdd/WORKFLOW.md",
@@ -99,8 +99,8 @@
     {
       "path": "references/gdd/schemas/README.md",
       "source": "schemas/README.md",
-      "sha256": "e4ea5a2d97bfeaf89f1a76bd046b0ff94b553ad4cb728baee42dac50326232d2",
-      "bytes": 5070
+      "sha256": "27e5685f40f808a49784c84da3c3ddd84df4416073bf487653eaba5d224f91e5",
+      "bytes": 5346
     },
     {
       "path": "references/gdd/schemas/boundaries.schema.json",
@@ -167,6 +167,12 @@
       "source": "schemas/model-diff.schema.json",
       "sha256": "dda3d08805a880e89973901e08a601144d6494698e06420064e4e67fcab791bf",
       "bytes": 8888
+    },
+    {
+      "path": "references/gdd/schemas/native-view-state.schema.json",
+      "source": "schemas/native-view-state.schema.json",
+      "sha256": "dcf4a14e6dfdecffcbe49dd5cbd05bea5d86dc6488c76ec46234806075238acb",
+      "bytes": 4349
     },
     {
       "path": "references/gdd/schemas/observations.schema.json",

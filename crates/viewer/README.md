@@ -40,10 +40,19 @@ inputs it contains.
 **Current view** shows the active perspective, filters, zoom and folding.
 Expand a count to select and copy the exact node and edge IDs that are visible,
 filtered within scope, or outside the saved scope. Expand **Projection details
-(JSON)** to copy the revision, scope, filters and folding settings together with
-the shown and omitted IDs for the entire model. The JSON lists each glyph’s
+(JSON)** and choose **Copy projection JSON** to put the revision, scope, filters,
+folding settings and the shown and omitted IDs on your system clipboard. The JSON lists each glyph’s
 canonical nodes, each directed bundle’s edges and all folded internal edges.
 When the captured model has no snapshot, `spec_revision` is `null`.
+
+Choose **Save view state…** in the toolbar or press Ctrl+Shift+S (Command+Shift+S
+on macOS). Type or paste a new destination such as `review.view-state.json`,
+then press Enter or choose **Save**. Relative paths use the launch directory.
+The viewer writes the current projection with its native format and generator,
+and shows the saved path. A resolved model revision is required for file export.
+A destination that already exists stays intact. You can enter another name in
+the same dialog. [View-state fields and migration](../../VIEWER.md#save-the-current-native-projection)
+
 Choose **Model overview**
 or press Alt+Home to clear the selection and keep the filters, folding and
 camera position. Each newly opened record or overview starts at the top,

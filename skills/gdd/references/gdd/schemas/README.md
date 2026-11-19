@@ -39,7 +39,9 @@ Schemas have local identifier URIs under `https://gdd.example/`; this is not a p
 
 The selected Draft 2020-12 contract is described by [JSON Schema](https://json-schema.org/draft/2020-12). The concrete GDD fields and semantics are this draft's own proposals.
 
-[view.schema.json](view.schema.json) and [view-state.schema.json](view-state.schema.json) describe the [viewer's](../VIEWER.md) embedded payload and interactive visibility manifest. They are informative tool contracts. Model fields, exact records/ID partitions and renderer bytes are checked separately; view state does not change snapshot identity.
+[native-view-state.schema.json](native-view-state.schema.json) describes the desktop viewer’s live semantic projection export. All references in this informative schema resolve within the same file. [Native view-state fields](../VIEWER.md#save-the-current-native-projection)
+
+[view.schema.json](view.schema.json) and [view-state.schema.json](view-state.schema.json) describe the released HTML viewer's embedded payload and interactive visibility manifest. They are informative tool contracts. Model fields, exact records/ID partitions and renderer bytes are checked separately; view state does not change snapshot identity.
 
 [workflow.schema.json](workflow.schema.json) describes the agent workflow's request, workplan, packet and event envelopes. It is an informative tool format (`0.1`), supports GDD 0.2/0.3. Complete derived plans are verified against current model bytes and selected check plans; schema alone proves neither package integrity, authorization nor execution.
 

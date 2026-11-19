@@ -123,6 +123,35 @@ An unavailable file, missing `--view`, unsupported generator or nesting limit
 produces UNKNOWN. A historical HTML view selects the released HTML renderer
 and produces UNKNOWN in the native verifier.
 
+## Save the current native projection
+
+Choose **Save view state…** in the toolbar or press Ctrl+Shift+S (Command+Shift+S
+on macOS) from any pane. Enter a new file path such as `review.view-state.json`
+and press Enter or choose **Save**. Relative paths use the directory from which
+you launched the viewer. On success the window shows the saved path. An occupied
+path leaves the existing file intact and the dialog open for another name.
+
+The JSON captures the live perspective, search, filters and folding against
+the model and scope already loaded in the window. The file requires a resolved
+snapshot revision. For the same projection on your system clipboard, open
+**Model overview → Current view → Projection details (JSON)** and choose
+**Copy projection JSON**. The clipboard contains the 13 semantic fields, with
+`spec_revision` set to `null` if the snapshot is unavailable.
+
+| Released HTML manifest | Native export |
+| --- | --- |
+| **Download view manifest**, or read `#gdd-view-manifest` | **Save view state…** writes a JSON file. **Copy projection JSON** copies the fields displayed in the inspector. |
+| `format: gdd-view-state/0.3` | `format: gdd-native-view-state/0.1` |
+| `generator` with `gdd-viewer-html/0.1` | `generator` with name `gdd-viewer`, the native viewer package version and profile `gdd-viewer-native/0.1` |
+| `spec_revision`, `observation_inputs`, `scope`, `artifact_scope` | Same keys. The artifact scope records the original shown and omitted partitions, before interactive filters. |
+| `filters`, `folding`, `shown_nodes`, `shown_edges`, `omitted_nodes`, `omitted_edges` | Same keys. The four ID lists partition the entire captured model according to current visibility. |
+| `glyphs`, `bundles`, `folded_internal_edges` | Same keys. Glyphs name their canonical members. Directed bundles name their edges. Folded internal edges identify edges represented within a single figure. |
+
+Use the [native view-state schema](schemas/native-view-state.schema.json) to
+check the file structure offline. Camera position, zoom, theme and node
+coordinates stay in the window. To reopen the graph or run CLI visualization
+verification, share the model or its portable `.gddview` file.
+
 ## Released browser viewer
 
 For the HTML commands and Python API below, use the [pinned v0.8.0 checkout](INSTALL.md#install-from-source).
