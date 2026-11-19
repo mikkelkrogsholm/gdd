@@ -183,10 +183,10 @@ fn assert_graph_fits(frame: &egui::FullOutput, nodes: usize, routes: usize) {
             }
             egui::Shape::Path(path) => {
                 assert!(path.points.iter().all(|p| inset.contains(*p)));
-                if path.closed {
-                    counts.2 += 1;
-                } else {
+                if !path.closed {
                     counts.1 += 1;
+                } else if path.points.len() == 3 {
+                    counts.2 += 1; // Arrowhead
                 }
             }
             _ => {}
@@ -1094,4 +1094,102 @@ fn short_window_supports_keyboard_pane_navigation_and_canvas_selection() {
     window.scroll(egui::pos2(350.0, 300.0), -800.0);
     window.click(Role::Button, "step.reserve");
     assert_labels(&window.frame(Vec::new()), &["User action"]);
+}
+
+#[test]
+fn community_legend_preserves_graph_identity_and_opens_the_filtered_community_by_keyboard() {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/concert-0.3.gddview");
+    let mut window = Window::open(&path);
+    window.wait_for_zoom();
+    window.click(Role::Button, "Fit graph");
+    window.click(Role::DisclosureTriangle, "Community areas");
+    let before = (
+        window.viewer.visible.nodes.clone(),
+        window.viewer.visible.edges.clone(),
+    );
+    let assert_areas = |frame: &egui::FullOutput, expected: usize| {
+        let mut headings = Vec::new();
+        let mut hulls = 0;
+        for item in &frame.shapes {
+            let clip = item.clip_rect;
+            match &item.shape {
+                egui::Shape::Path(path)
+                    if path.closed && path.points.len() >= 4 && path.fill.a() < 40 =>
+                {
+                    assert!(path.points.iter().all(|p| clip.shrink(14.0).contains(*p)));
+                    hulls += 1;
+                }
+                egui::Shape::Text(text)
+                    if ["1. backend", "2. frontend", "3. reservation feature"]
+                        .contains(&text.galley.text()) =>
+                {
+                    let rect = text.visual_bounding_rect();
+                    assert!(
+                        text.galley.size().y >= 12.0 && clip.contains_rect(rect),
+                        "{rect:?} heading {} outside {clip:?}",
+                        text.galley.text()
+                    );
+                    assert!(
+                        headings
+                            .iter()
+                            .all(|prior: &egui::Rect| !rect.intersects(*prior))
+                    );
+                    headings.push(rect);
+                }
+                _ => {}
+            }
+        }
+        assert_eq!((hulls, headings.len()), (expected, expected));
+    };
+    for theme in [egui::Theme::Light, egui::Theme::Dark] {
+        window.system_theme = Some(theme);
+        assert_areas(&window.render(Vec::new()), 3);
+    }
+    window.click(Role::CheckBox, "Show community areas");
+    assert_areas(&window.render(Vec::new()), 0);
+    assert_eq!(
+        (&window.viewer.visible.nodes, &window.viewer.visible.edges),
+        (&before.0, &before.1)
+    );
+    window.click(Role::Button, "1. backend · 8");
+    let backend = window.viewer.graph.choices.communities["community.backend"];
+    assert_eq!(window.viewer.selected, Some(Selection::Node(backend)));
+
+    window.click(Role::CheckBox, "Fold communities");
+    window.wait_for_zoom();
+    let fold = Arc::clone(window.viewer.folded.as_ref().unwrap());
+    window.click(Role::CheckBox, "Show community areas");
+    assert_areas(&window.render(Vec::new()), 3);
+    assert!(Arc::ptr_eq(&fold, window.viewer.folded.as_ref().unwrap()));
+    assert_eq!(
+        (&window.viewer.visible.nodes, &window.viewer.visible.edges),
+        (&before.0, &before.1)
+    );
+
+    window.click(Role::ComboBox, "Kind");
+    window.click(Role::Button, "action");
+    window.size = egui::vec2(620.0, 640.0);
+    window.click(Role::Button, "Nodes");
+    let label = "3. reservation feature · 1";
+    let mut focused = false;
+    for _ in 0..32 {
+        let tree = window.key(Key::Tab, Modifiers::NONE);
+        let button = widget(&tree, Role::Button, label).unwrap();
+        if tree
+            .nodes
+            .iter()
+            .any(|(id, n)| *id == tree.focus && n == button)
+        {
+            focused = true;
+            break;
+        }
+    }
+    assert!(focused, "Community legend entry must accept keyboard focus");
+    let tree = window.key(Key::Enter, Modifiers::NONE);
+    assert_eq!(window.viewer.pane, Pane::Details);
+    let target = window.viewer.graph.choices.communities["community.reservation_feature"];
+    assert_eq!(window.viewer.selected, Some(Selection::Node(target)));
+    assert_labels(&tree, &["community.reservation_feature"]);
+    assert!(!window.viewer.visible.nodes.contains(&target));
+    assert_eq!(window.viewer.filters.kind, "action");
 }

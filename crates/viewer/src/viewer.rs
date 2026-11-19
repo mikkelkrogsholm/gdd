@@ -8,7 +8,7 @@ use eframe::egui::{self, Button, Key, Modifiers, RichText, Ui};
 use serde_json::Value as Json;
 
 use crate::{
-    canvas::{Camera, Layout, Scene, Zoom},
+    canvas::{Camera, CommunityGeometry, Layout, Scene, Zoom, community_color},
     model::{
         EdgeBundle, Filters, FoldProjection, Graph, HumanConcept, Lens, Node, NodeInspection,
         RecordDetails, Selection, Source, Visible,
@@ -68,6 +68,8 @@ pub struct Viewer {
     layout: LayoutState,
     filters: Filters,
     visible: Visible,
+    show_areas: bool,
+    area_geometry: Option<CommunityGeometry>,
     camera: Camera,
     reveal_selected: bool,
     filename: String,
@@ -90,6 +92,8 @@ impl Viewer {
             layout,
             pane: Pane::Nodes,
             camera: Camera::default(),
+            show_areas: true,
+            area_geometry: None,
             reveal_selected: false,
             filename,
             selected: None,
@@ -108,6 +112,7 @@ impl Viewer {
     }
 
     fn set_folded(&mut self, enabled: bool) {
+        self.area_geometry = None;
         if !enabled && self.folded.is_none() {
             return;
         }
@@ -374,6 +379,13 @@ impl Viewer {
             return;
         }
         self.update_layout(ui.ctx());
+        if self.show_areas
+            && self.area_geometry.is_none()
+            && let Some(LayoutState::Ready(layout)) = self.current_layout()
+        {
+            self.area_geometry =
+                Some(layout.community_geometry(&self.visible, self.folded.as_deref()));
+        }
         let reveal = self.reveal_selected;
         let layout = match self.current_layout() {
             Some(LayoutState::Ready(layout)) => layout,
@@ -394,6 +406,7 @@ impl Viewer {
             visible: &self.visible,
             folded: self.folded.as_deref(),
             selected: self.selected,
+            areas: self.area_geometry.as_ref().filter(|_| self.show_areas),
         };
         let clicked = layout.show(ui, &scene, &mut camera, reveal);
         self.camera = camera;
@@ -444,6 +457,9 @@ impl Viewer {
                         self.show_perspective(ui);
                         ui.horizontal_wrapped(|ui| self.show_filters(ui));
                     });
+                }
+                if !self.visible.communities.is_empty() {
+                    ui.collapsing("Community areas", |ui| self.show_community_legend(ui));
                 }
                 let mut picked = None;
                 if choose_first {
@@ -496,6 +512,28 @@ impl Viewer {
                     _ => {}
                 }
             });
+    }
+
+    fn show_community_legend(&mut self, ui: &mut Ui) {
+        ui.checkbox(&mut self.show_areas, "Show community areas");
+        ui.label("Outlines show extent. Counts include direct members in the current view.");
+        let mut picked = None;
+        for group in &self.visible.communities {
+            let node = &self.graph.nodes[group.node];
+            let title = format!("{} · {}", group.heading, group.members.len());
+            let button = Button::selectable(
+                self.selected == Some(Selection::Node(group.node)),
+                RichText::new(title).color(community_color(group.number, ui.visuals().dark_mode)),
+            )
+            .truncate();
+            if ui.add(button).on_hover_text(&node.id).clicked() {
+                picked = Some(group.node);
+            }
+        }
+        if let Some(node) = picked {
+            self.inspect(Selection::Node(node));
+            self.reveal_selected = true;
+        }
     }
 
     fn open_overview(&mut self) {
@@ -1065,6 +1103,8 @@ mod tests {
             layout: LayoutState::Pending(receiver),
             pane: Pane::Nodes,
             camera: Camera::default(),
+            show_areas: true,
+            area_geometry: None,
             reveal_selected: false,
             filename: "fragmented.gdd.yaml".into(),
             selected: Some(Selection::Node(0)),
@@ -1142,6 +1182,8 @@ mod tests {
             layout: LayoutState::Pending(receiver),
             pane: Pane::Nodes,
             camera: Camera::default(),
+            show_areas: true,
+            area_geometry: None,
             reveal_selected: false,
             filename: "partial.gddview".into(),
             selected: None,
@@ -1188,6 +1230,8 @@ mod tests {
             layout: LayoutState::Failed("Unfolded layout fixture".into()),
             pane: Pane::Nodes,
             camera: Camera::default(),
+            show_areas: true,
+            area_geometry: None,
             reveal_selected: false,
             filename: "fixture".into(),
             selected: None,

@@ -1,3 +1,6 @@
+mod communities;
+pub use communities::{CommunityGeometry, community_color};
+
 use eframe::egui::{
     self, FontId, Painter, Pos2, Rect, Sense, Stroke, StrokeKind, TextFormat, Vec2,
     emath::TSTransform,
@@ -73,6 +76,7 @@ pub struct Scene<'a> {
     pub visible: &'a Visible,
     pub folded: Option<&'a FoldProjection>,
     pub selected: Option<Selection>,
+    pub areas: Option<&'a CommunityGeometry>,
 }
 
 impl Scene<'_> {
@@ -215,6 +219,9 @@ impl Layout {
                 .chain(visible.edges.iter().map(|&i| self.routes[i].bounds))
                 .fold(Rect::NOTHING, Rect::union)
         };
+        let bounds = scene
+            .areas
+            .map_or(bounds, |areas| bounds.union(areas.bounds));
         if camera.reset_scroll {
             if let Some(frame) = camera.frame.take() {
                 egui::scroll_area::State::default().store(ui.ctx(), frame.scroll_id);
@@ -309,6 +316,9 @@ impl Layout {
         let pointer = canvas.interact_pointer_pos().filter(|_| canvas.clicked());
         let mut best_distance = 7.0;
         let selected_glyph = scene.selected_glyph();
+        if let Some(areas) = scene.areas {
+            areas.paint(ui, self, scene, transform);
+        }
         let n_routes = scene
             .folded
             .map_or(visible.edges.len(), |f| f.bundles.len());
@@ -515,6 +525,7 @@ mod tests {
                 .map(|&id| Node {
                     id: id.into(),
                     label: id.into(),
+                    has_label: true,
                     kind: "component".into(),
                     description: id.into(),
                     human: None,
@@ -587,6 +598,7 @@ mod tests {
         let visible = Visible {
             nodes: vec![0, 2],
             edges: vec![1],
+            communities: Vec::new(),
         };
         let transform = TSTransform::from_translation(egui::vec2(20.0, 20.0));
         let context = egui::Context::default();
@@ -598,6 +610,7 @@ mod tests {
                     visible: &visible,
                     folded: None,
                     selected: Some(Selection::Node(0)),
+                    areas: None,
                 },
                 transform,
                 ui.max_rect(),
@@ -637,6 +650,7 @@ mod tests {
             visible: &visible,
             folded: Some(&fold),
             selected: None,
+            areas: None,
         };
         let context = egui::Context::default();
         let transform = TSTransform::from_translation(egui::vec2(20.0, 20.0));

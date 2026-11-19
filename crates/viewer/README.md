@@ -85,6 +85,19 @@ reveals scenarios while preserving the checkbox setting. **Reset filters**
 clears search and all three selectors, enables **Show scenarios**, and restores
 All graph within the saved scope with folding off.
 
+Expand **Community areas** in the **Nodes** pane to see each community with
+a visible member or a visible community node. The numbered outlines enclose
+those figures and may overlap. Each legend entry counts distinct visible
+members declared by `member_of` edges. Select an entry with Tab and Enter to
+inspect the community, including when a filter hides its own node. A shared
+member contributes to each of its communities and appears once on the canvas.
+When folded, every outline follows the figure representing that member.
+
+**Show community areas** toggles the outlines and their headings. Search,
+filters, node and edge counts, and the layout are preserved. **Fit graph**
+includes the visible outlines. Headings retain their text size and appear
+where they fit around the visible figures.
+
 Enable **Fold communities** to represent direct members inside a visible
 community. A shared member appears in the first visible community by canonical
 ID. Select a folded member in the list to see its **Direct communities**

@@ -236,8 +236,17 @@ impl FilterChoices {
 
 #[derive(Default)]
 pub struct Visible {
+    pub communities: Vec<VisibleCommunity>,
     pub nodes: Vec<usize>,
     pub edges: Vec<usize>,
+}
+
+pub struct VisibleCommunity {
+    pub node: usize,
+    // Stable across filters and folding, even when other areas disappear.
+    pub number: usize,
+    pub heading: String,
+    pub members: Vec<usize>,
 }
 
 /// A drawing of the visible canonical records. Member and edge indices
@@ -356,6 +365,7 @@ impl RecordDetails {
 pub struct Node {
     pub id: String,
     pub label: String,
+    pub has_label: bool,
     pub kind: String,
     pub description: String,
     pub human: Option<HumanConcept>,
@@ -650,7 +660,7 @@ impl Graph {
         let include_scenarios =
             filters.show_scenarios || filters.kind == "scenario" || !query.is_empty();
         let community = self.choices.communities.get(&filters.community);
-        let nodes = self.nodes[..self.shown_nodes]
+        let nodes: Vec<_> = self.nodes[..self.shown_nodes]
             .iter()
             .enumerate()
             .filter_map(|(i, node)| {
@@ -675,7 +685,47 @@ impl Graph {
                     .then_some(i)
             })
             .collect();
-        Visible { nodes, edges }
+        let mut members = BTreeMap::<usize, Vec<usize>>::new();
+        for &node in &nodes {
+            for &community in &self.choices.memberships[node] {
+                members.entry(community).or_default().push(node);
+            }
+        }
+        let communities = self
+            .choices
+            .communities
+            .values()
+            .enumerate()
+            .filter_map(|(i, &node)| {
+                let members = members.remove(&node).unwrap_or_default();
+                if members.is_empty() && nodes.binary_search(&node).is_err() {
+                    return None;
+                }
+                let record = &self.nodes[node];
+                let name = if record.has_label {
+                    record.label.clone()
+                } else {
+                    record
+                        .id
+                        .split_once('.')
+                        .map(|(_, tail)| tail)
+                        .filter(|tail| !tail.is_empty())
+                        .unwrap_or(&record.id)
+                        .replace('_', " ")
+                };
+                Some(VisibleCommunity {
+                    node,
+                    number: i + 1,
+                    heading: format!("{}. {name}", i + 1),
+                    members,
+                })
+            })
+            .collect();
+        Visible {
+            nodes,
+            edges,
+            communities,
+        }
     }
 }
 
@@ -695,10 +745,10 @@ fn project_node(id: &str, value: &Value, location: Location) -> Result<Node, Str
             "node {id:?} must have an ID, kind, and description"
         ));
     }
-    let label = match node.get("label") {
-        None => id,
-        Some(Value::String(label)) if label.is_empty() => id,
-        Some(Value::String(label)) => label,
+    let (label, has_label) = match node.get("label") {
+        None => (id, false),
+        Some(Value::String(label)) if label.is_empty() => (id, false),
+        Some(Value::String(label)) => (label.as_str(), true),
         Some(_) => return Err(format!("label for node {id:?} must be a string")),
     };
     let detail = |key| match node.get("data") {
@@ -752,6 +802,7 @@ fn project_node(id: &str, value: &Value, location: Location) -> Result<Node, Str
         human,
         id: id.to_owned(),
         label: label.to_owned(),
+        has_label,
         kind: kind.to_owned(),
         description: description.to_owned(),
     })
@@ -888,6 +939,7 @@ mod tests {
         for community in ["group.z", "group.a"] {
             model["nodes"][community] = json!({"kind":"community","description":community});
         }
+        model["nodes"]["group.a"]["label"] = json!("group.a");
         let edges = model["edges"].as_array_mut().unwrap();
         for (id, from, to) in [
             ("member.z", "node.a", "group.z"),
@@ -907,6 +959,9 @@ mod tests {
                 .collect::<Vec<_>>()
         };
         let visible = graph.visible(&Filters::default());
+        assert_eq!(visible.communities[0].heading, "1. group.a");
+        assert_eq!(visible.communities[0].members, [index("node.a")]);
+        assert_eq!(visible.communities[1].heading, "2. z");
         let fold = visible.project(&graph, true);
         let glyph = &fold.glyphs[fold.glyph_for[index("node.a")].unwrap()];
         assert_eq!(graph.nodes[glyph.node].id, "group.a");
