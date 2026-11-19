@@ -205,6 +205,17 @@ under A and checks that activating B refuses the database without changing its
 files. It reopens A to cancel one reservation, then reopens B on the same
 path and checks the two active reservations and the cancelled request key.
 
+The separate `concert-http-transition` step serves both policies over loopback
+on one temporary database. Alice signs in, books three concerts under A and
+sees three active reservations with an unlimited allowance. After cancelling
+one seat, the test drains the server, checkpoints the database and starts B.
+Alice signs in again and sees two of two active reservations. The test checks
+all three references and states in her history, retries all three request
+keys and verifies that a fresh key returns HTTP 409 with
+`ActiveReservationLimitReached`. It also reads the signed-in HTML desk under
+each policy and checks the displayed count and booking control. The step's
+stdout log includes the observed histories, replays and rejection.
+
 These results describe a new local execution of the Rust reservation policy.
 The [original delivery and attestation replay](#historical-ab-delivery-and-replay)
 has its own instructions and evidence. An error leaves the attempted checks,

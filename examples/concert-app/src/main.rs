@@ -1,6 +1,8 @@
 mod api;
 mod identity;
 mod page;
+#[cfg(test)]
+mod policy_replay;
 mod server;
 
 use std::{error::Error, net::Ipv4Addr, path::PathBuf, process::ExitCode};

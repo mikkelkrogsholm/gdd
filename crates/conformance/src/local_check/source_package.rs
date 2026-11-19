@@ -160,20 +160,13 @@ pub(super) fn concert_package(run: &mut Run<'_>, extraction: &Path) -> Result<Pa
     Ok(concert)
 }
 
-pub(super) fn concert_tests(target: &Path, integration_test: &str) -> Command {
+pub(super) fn concert_tests(target: &Path, selection: [&str; 2]) -> Command {
     let mut test = package_tests(target);
-    test.args([
-        "--test",
-        integration_test,
-        "--",
-        "--format",
-        "pretty",
-        "--color",
-        "never",
-    ])
-    .env_remove("RUST_TEST_NOCAPTURE")
-    // Avoid generating debug symbols for the embedded database on this fresh build.
-    .env("CARGO_PROFILE_TEST_DEBUG", "0");
+    test.args(selection)
+        .args(["--", "--format", "pretty", "--color", "never"])
+        .env_remove("RUST_TEST_NOCAPTURE")
+        // Avoid generating debug symbols for the embedded database on this fresh build.
+        .env("CARGO_PROFILE_TEST_DEBUG", "0");
     test
 }
 
@@ -188,7 +181,7 @@ pub(super) fn requirements(
     } else {
         ("concert-requirements-b", "B", 0)
     };
-    let mut test = concert_tests(target, "requirement_change");
+    let mut test = concert_tests(target, ["--test", "requirement_change"]);
     test.env("GDD_CONCERT_REQUIREMENT_PHASE", phase);
     run.step_checked(step, test, concert, exit_code, |log| {
         super::concert::confirm(&fs::read_to_string(log)?, phase_a)

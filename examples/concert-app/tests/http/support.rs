@@ -1,15 +1,11 @@
 use std::{
     collections::HashMap,
     io::{ErrorKind, Read, Write},
-    net::{Ipv4Addr, SocketAddr, TcpStream},
+    net::{SocketAddr, TcpStream},
     time::Duration,
 };
 
 use serde_json::{Value, json};
-
-#[path = "../support/server.rs"]
-mod server;
-pub use server::Server;
 
 const TIMEOUT: Duration = Duration::from_secs(10);
 
@@ -64,9 +60,11 @@ impl Response {
     }
 }
 
-impl Server {
-    pub fn connect(&self) -> TcpStream {
-        let address = SocketAddr::from((Ipv4Addr::LOCALHOST, self.port));
+pub trait HttpClient {
+    fn address(&self) -> SocketAddr;
+
+    fn connect(&self) -> TcpStream {
+        let address = self.address();
         let stream = TcpStream::connect_timeout(&address, TIMEOUT).unwrap();
         stream.set_read_timeout(Some(TIMEOUT)).unwrap();
         stream.set_write_timeout(Some(TIMEOUT)).unwrap();
@@ -74,14 +72,14 @@ impl Server {
     }
 
     // Each pair is a separate header field, including repeated names.
-    pub fn raw(&self, method: &str, path: &str, headers: &[(&str, &str)], body: &[u8]) -> Response {
+    fn raw(&self, method: &str, path: &str, headers: &[(&str, &str)], body: &[u8]) -> Response {
         let mut request = Vec::new();
         write!(request, "{method} {path} HTTP/1.1\r\nConnection: close\r\n").unwrap();
         if !headers
             .iter()
             .any(|(name, _)| name.eq_ignore_ascii_case("host"))
         {
-            write!(request, "Host: 127.0.0.1:{}\r\n", self.port).unwrap();
+            write!(request, "Host: {}\r\n", self.address()).unwrap();
         }
         for (name, value) in headers {
             write!(request, "{name}: {value}\r\n").unwrap();
@@ -103,11 +101,11 @@ impl Server {
         Response::read(stream)
     }
 
-    pub fn get(&self, path: &str, headers: &[(&str, &str)]) -> Response {
+    fn get(&self, path: &str, headers: &[(&str, &str)]) -> Response {
         self.raw("GET", path, headers, &[])
     }
 
-    pub fn post(&self, path: &str, body: Value, headers: &[(&str, &str)]) -> Response {
+    fn post(&self, path: &str, body: Value, headers: &[(&str, &str)]) -> Response {
         let bytes = serde_json::to_vec(&body).unwrap();
         let length = bytes.len().to_string();
         let mut headers = headers.to_vec();
@@ -118,7 +116,7 @@ impl Server {
         self.raw("POST", path, &headers, &bytes)
     }
 
-    pub fn login(&self, name: &str, previous: Option<&str>) -> String {
+    fn login(&self, name: &str, previous: Option<&str>) -> String {
         let headers: Vec<_> = previous
             .map(|cookie| ("Cookie", cookie))
             .into_iter()

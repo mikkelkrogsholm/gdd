@@ -108,7 +108,9 @@ pub(super) fn confirm(stdout: &str, phase_a: bool) -> Result<Vec<Value>> {
 
 pub(super) const TRANSITION: &str = "phase_a_to_b_requires_explicit_reconciliation";
 
-pub(super) fn confirm_transition(stdout: &str) -> Result<Value> {
+pub(super) const HTTP_TRANSITION: &str = "policy_replay::phase_a_to_b_over_loopback";
+
+pub(super) fn confirm_transition(stdout: &str, test: &str) -> Result<Value> {
     let lines: Vec<_> = stdout.lines().collect();
     let running: Vec<_> = lines
         .iter()
@@ -124,7 +126,7 @@ pub(super) fn confirm_transition(stdout: &str) -> Result<Value> {
         running == ["running 1 test"] && results.len() == 2,
         "expected exactly one transition test"
     );
-    let case = case_result(&results, TRANSITION, "ok")?;
+    let case = case_result(&results, test, "ok")?;
     const PREFIX: &str = "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; ";
     let filtered = results
         .iter()
@@ -196,8 +198,17 @@ mod tests {
             "running 1 test\ntest {TRANSITION} ... ok\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.05s\n"
         );
         assert_eq!(
-            confirm_transition(&report).unwrap(),
+            confirm_transition(&report, TRANSITION).unwrap(),
             json!({"name": TRANSITION, "outcome": "ok"})
+        );
+        assert!(confirm_transition(&report, HTTP_TRANSITION).is_err());
+        assert_eq!(
+            confirm_transition(
+                &report.replace(TRANSITION, HTTP_TRANSITION),
+                HTTP_TRANSITION
+            )
+            .unwrap(),
+            json!({"name": HTTP_TRANSITION, "outcome": "ok"})
         );
         for invalid in [
             report.replace(TRANSITION, "other_test"),
@@ -207,7 +218,10 @@ mod tests {
             report.replace("0 failed", "1 failed"),
             format!("{report}test another_case ... ok\n"),
         ] {
-            assert!(confirm_transition(&invalid).is_err(), "{invalid}");
+            assert!(
+                confirm_transition(&invalid, TRANSITION).is_err(),
+                "{invalid}"
+            );
         }
     }
 

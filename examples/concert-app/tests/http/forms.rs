@@ -1,4 +1,7 @@
-use super::support::{Response, Server};
+use super::{
+    Server,
+    support::{HttpClient, Response},
+};
 use serde_json::json;
 use std::collections::HashMap;
 use tempfile::tempdir;

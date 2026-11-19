@@ -2,14 +2,26 @@
 
 #[path = "http/forms.rs"]
 mod forms;
+#[path = "support/server.rs"]
+mod server;
 #[path = "http/support.rs"]
 mod support;
 
-use std::process::Command;
+use std::{
+    net::{Ipv4Addr, SocketAddr},
+    process::Command,
+};
 
 use serde_json::json;
-use support::Server;
+use server::Server;
+use support::HttpClient;
 use tempfile::tempdir;
+
+impl HttpClient for Server {
+    fn address(&self) -> SocketAddr {
+        (Ipv4Addr::LOCALHOST, self.port).into()
+    }
+}
 
 #[test]
 fn admission_enforces_the_listener_origin_media_type_and_json_limit() {

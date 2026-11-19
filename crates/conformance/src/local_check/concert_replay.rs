@@ -101,20 +101,37 @@ fn check(run: &mut Run<'_>, summary: &mut Value) -> Result<()> {
         }
         result?;
     }
-    let mut command = source_package::concert_tests(target.path(), "reservations");
-    command.args(["--exact", concert::TRANSITION]);
-    let next = run.steps.len();
-    let result = run.step_checked("concert-database-transition", command, &package, 0, |log| {
-        concert::confirm_transition(&fs::read_to_string(log)?)
-    });
-    if let Some(step) = run.steps.get_mut(next) {
-        step["from_spec_revision"] = json!(diff.base.spec_revision);
-        step["to_spec_revision"] = json!(diff.head.spec_revision);
-        if let Ok(outcome) = &result {
-            step["outcome"] = outcome.clone();
+    for (name, selection, test) in [
+        (
+            "concert-database-transition",
+            ["--test", "reservations"],
+            concert::TRANSITION,
+        ),
+        (
+            "concert-http-transition",
+            ["--bin", "gdd-concert"],
+            concert::HTTP_TRANSITION,
+        ),
+    ] {
+        let mut command = source_package::concert_tests(target.path(), selection);
+        command.args(["--exact", test]);
+        if test == concert::HTTP_TRANSITION {
+            // Keep the observed policy transcript without transport traces or session cookies.
+            command.arg("--show-output").env("NTEX_NO_TEST_LOG", "1");
         }
+        let next = run.steps.len();
+        let result = run.step_checked(name, command, &package, 0, |log| {
+            concert::confirm_transition(&fs::read_to_string(log)?, test)
+        });
+        if let Some(step) = run.steps.get_mut(next) {
+            step["from_spec_revision"] = json!(diff.base.spec_revision);
+            step["to_spec_revision"] = json!(diff.head.spec_revision);
+            if let Ok(outcome) = &result {
+                step["outcome"] = outcome.clone();
+            }
+        }
+        result?;
     }
-    result?;
     Ok(())
 }
 
