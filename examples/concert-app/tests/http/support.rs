@@ -1,6 +1,6 @@
 use std::{
     collections::HashMap,
-    io::{Read, Write},
+    io::{ErrorKind, Read, Write},
     net::{Ipv4Addr, SocketAddr, TcpStream},
     time::Duration,
 };
@@ -39,6 +39,9 @@ impl Response {
                 (name.to_ascii_lowercase(), value.trim().to_owned())
             })
             .collect();
+        if let Some(length) = headers.get("content-length") {
+            assert_eq!(body.len(), length.parse::<usize>().unwrap(), "body length");
+        }
         let body = match headers.get("content-type").map(String::as_str) {
             Some("text/html; charset=utf-8" | "text/css; charset=utf-8") => Value::from(body),
             _ => serde_json::from_str(body).expect("JSON response"),
@@ -72,19 +75,31 @@ impl Server {
 
     // Each pair is a separate header field, including repeated names.
     pub fn raw(&self, method: &str, path: &str, headers: &[(&str, &str)], body: &[u8]) -> Response {
-        let mut stream = self.connect();
-        write!(stream, "{method} {path} HTTP/1.1\r\nConnection: close\r\n").unwrap();
+        let mut request = Vec::new();
+        write!(request, "{method} {path} HTTP/1.1\r\nConnection: close\r\n").unwrap();
         if !headers
             .iter()
             .any(|(name, _)| name.eq_ignore_ascii_case("host"))
         {
-            write!(stream, "Host: 127.0.0.1:{}\r\n", self.port).unwrap();
+            write!(request, "Host: 127.0.0.1:{}\r\n", self.port).unwrap();
         }
         for (name, value) in headers {
-            write!(stream, "{name}: {value}\r\n").unwrap();
+            write!(request, "{name}: {value}\r\n").unwrap();
         }
-        stream.write_all(b"\r\n").unwrap();
-        stream.write_all(body).unwrap();
+        request.extend_from_slice(b"\r\n");
+        request.extend_from_slice(body);
+
+        let mut stream = self.connect();
+        if let Err(error) = stream.write_all(&request) {
+            // A peer can send its final response before consuming the request body.
+            assert!(
+                matches!(
+                    error.kind(),
+                    ErrorKind::BrokenPipe | ErrorKind::ConnectionReset
+                ),
+                "writing HTTP request: {error}"
+            );
+        }
         Response::read(stream)
     }
 
