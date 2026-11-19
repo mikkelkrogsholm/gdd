@@ -23,6 +23,40 @@ This bounded loopback demo excludes payments, ticket issuance, expiry, external
 authentication and public deployment. A database already containing more than two
 active reservations for a person is refused without modifying history.
 
+## Native Rust reservation library
+
+The `gdd-concert` workspace package implements the reservation domain and file
+storage in Rust. The HTTP server above still uses the original Python service.
+Run the Rust checks from the repository root with `cargo test --locked -p gdd-concert`.
+
+At startup, await `Reservations::open(path)` to initialize the catalog and
+activate phase B. Clone the resulting handle for concurrent requests. Call
+`catalog()` for public availability. For personal operations, pass the
+session store's resolved ID to `Principal::from_session(Option<&str>)`, then
+await `list_own(principal)`, `reserve(principal, concert_id, request_key)` or
+`cancel(principal, reservation_id)`. Success values serialize with the
+documented HTTP fields. A `DomainError` serializes as its code and provides
+the public text through `message()`. Controlled requirement-change replays
+can explicitly select `Reservations::open_phase_a_for_replay(path)`.
+
+Turso runs in process and opens a fresh connection for each operation on the
+shared database handle. Database paths must be representable as UTF-8.
+Before transferring the main database file, stop admitting requests, drain them,
+await a successful `checkpoint()`, and drop all handles. A busy or incomplete
+checkpoint returns `PersistenceUnavailable` and can be retried. After an abrupt
+exit, reopen the database in place with its WAL to recover committed changes. A
+live Rust handle holds a file lock even between operations. A stock
+`sqlite3 -readonly` query on Linux reported “database is locked” while Rust
+held the file and succeeded after the last handle closed.
+
+Two SQLite files in `tests/fixtures` exercise compatibility with prior data.
+`recorded-phase-a.db` was reconstructed using stock SQLite from the archived
+`evidence/phase-a/database.sql` at Git commit `7e27757`. Its source SQL has
+SHA256 `953d0127838ad73c45349037ca8d6c2e79c6a949d014f44df58ad2605bbf936b`.
+`over-limit.db` was created using the Python storage implementation with three
+active Alice reservations and one cancelled Bob reservation. Rust tests use
+temporary copies to check replay and byte-preserving refusal.
+
 ## Model and checks
 
 Read the [requirements](REQUIREMENTS.md), [HTTP contracts](HTTP.md) and [design](DESIGN.md).
