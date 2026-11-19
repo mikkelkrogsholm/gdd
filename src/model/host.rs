@@ -1,7 +1,5 @@
 //! Explicit trusted-caller operations for code snapshots and immutable evidence.
 
-#[cfg(any(feature = "conformance", test))]
-#[doc(hidden)]
 pub mod process;
 
 use super::{get, inspection, semantics, string, strings};

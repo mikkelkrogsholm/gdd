@@ -11,6 +11,7 @@ include = [
     "/src/**/*.rs", "/schemas/*.schema.json", "/extensions/product-0.1.json",
     "/templates/project/*.json", "/templates/project/SOURCES.md", "/tests/*.rs", "/tests/fixtures/*.rs",
     "/docs/tutorial/refined.gdd.json", "/docs/tutorial/evidence.gdd.json", "/examples/tutorial_prepare.rs",
+    "/examples/tutorial_plan/*.rs", "/examples/tutorial_evidence/*.rs", "/docs/tutorial.md",
     "/examples/*.gdd.yaml", "/examples/note.fragment.yaml", "/examples/*.gddview",
     "/examples/concert*.records.yaml", "/examples/concert.snapshot.json",
     "/examples/illustrative.report.json", "/examples/sources/legacy-concert.gdd.yaml",
@@ -28,6 +29,10 @@ include = [
 
 [[example]]
 name = "tutorial_prepare"
+test = true
+
+[[example]]
+name = "tutorial_evidence"
 test = true
 
 [features]
@@ -52,6 +57,9 @@ sha2 = "0.10"
 tempfile = "3.27"
 unicode-general-category = "1.1"
 unicode-ident = "1.0"
+
+[dev-dependencies]
+time = { version = "0.3", features = ["formatting", "parsing"] }
 
 [target.'cfg(any(target_os = "linux", target_os = "macos"))'.dependencies]
 rustix = { version = "1.1", features = ["fs"] }

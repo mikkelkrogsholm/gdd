@@ -8,8 +8,7 @@ use clap::Parser;
 use gdd::{bundle, host};
 use serde_json::{Value, json};
 
-const MODEL: &str = include_str!("../docs/tutorial/evidence.gdd.json");
-const METHOD: &str = "rust_integer_addition_examples";
+mod tutorial_plan;
 
 #[derive(Parser)]
 #[command(about = "Prepare the Rust integer addition model and check plan")]
@@ -25,8 +24,7 @@ fn write_new(path: &Path, document: &Value) -> io::Result<()> {
 }
 
 fn prepare(output: &Path) -> io::Result<()> {
-    let mut model: Value = serde_json::from_str(MODEL)?;
-    model["nodes"]["rule.sum"]["rule"]["verification"] = json!([METHOD]);
+    let model = tutorial_plan::model();
     let ledger = json!({
         "format": "gdd-records/0.2", "project_id": model["project"]["id"], "records": {}
     });
@@ -53,15 +51,7 @@ fn prepare(output: &Path) -> io::Result<()> {
     })?;
     host::append_records(
         &records_path,
-        &json!({"records": {"check.sum": {
-            "kind": "check",
-            "description": "Run the gdd-tutorial-add checker in docs/tutorial/rust on its five integer addition examples.",
-            "spec_revision": snapshot.revision,
-            "scope": ["rule.sum", "scenario.add"],
-            "method": METHOD,
-            "required_environment": ["rustc"],
-            "negative_controls": ["isolated-subtraction-mutant"]
-        }}}),
+        &json!({"records": {"check.sum": tutorial_plan::check(&snapshot.revision)}}),
     )?;
     let _ = directory.keep();
     Ok(())
@@ -79,6 +69,7 @@ fn preparation_creates_only_a_current_check_and_refuses_reuse() {
     use gdd::report::CheckResult;
     use gdd::validation::{Profile, ValidationOptions, validate_with_options};
     use std::fs;
+    use tutorial_plan::{METHOD, MODEL};
 
     let parent = tempfile::tempdir().unwrap();
     let output = parent.path().join("sum");

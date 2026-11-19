@@ -647,6 +647,11 @@ YAML nesting to 256 containers.
 | `snapshot_code`, `verification_records`, `append_records` | Native library operations in `gdd::host`. Select explicit code files, attest a saved current PASS/FAIL receipt and append new immutable IDs to a records document. See the [host guide](../HOST.md#append-verified-records-and-supply-trust) for the Rust API example. |
 | `execute_check` | Python trusted-host process execution and receipt creation. The Rust authoring API consumes the same `gdd-host-check/0.1` format. |
 
+The native `gdd::host::process::run_checked` reserves the receipt file and
+returns the selected source snapshots and collected execution. The
+[integer addition tutorial](tutorial.md#run-and-inspect-both-native-checks)
+shows how a trusted caller interprets that result and writes its own receipt.
+
 The version 0.1 receipt reader preserves the Python comparison for
 `exit_code`. A PASS requires numeric zero and a FAIL requires numeric one,
 including equal decimal or exponent spellings. Legacy boolean exit codes

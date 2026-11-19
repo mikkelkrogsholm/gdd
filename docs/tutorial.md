@@ -296,51 +296,71 @@ Model and readiness validation exit 0. The records report gives implementation
 `UNKNOWN` (exit 2). The ledger contains only the check plan. Execution,
 reviewed evidence and acceptance authority require separate steps.
 
-### Run the checker and subtraction control
+### Run and inspect both native checks
 
-The [Rust function](tutorial/rust/src/lib.rs) adds two signed arbitrary-precision
-integers. The [checker](tutorial/rust/src/main.rs) calls it on the five tutorial
-examples, including cancellation and `10^100 + 1`. For the large sum, it constructs
-the expected decimal digits independently. Run the checker from the repository root.
-
-```sh
-cargo run --locked -p gdd-tutorial-add
-```
-
-The checker prints `PASS` and exits 0 when all five results match. On the first
-mismatch it prints `FAIL`, the operands, the expected value and the actual value,
-then exits 1. The workspace test suite runs the same comparisons.
-
-To observe a real failure, run this POSIX shell block from the repository root.
-The archive contains the implementation, checker and a package-specific Cargo.lock.
-Each run builds the private source copy in a fresh target directory.
+Package the [implementation](tutorial/rust/src/lib.rs) and [five-example checker](tutorial/rust/src/main.rs)
+to obtain their standalone manifest and lockfile. Populate Cargo's dependency
+cache before working offline. Keep the same shell and `plan_dir` from preparation.
 
 ```sh
-(
-  set -eu
-  scratch=$(mktemp -d)
-  cargo package --locked --allow-dirty --no-verify -p gdd-tutorial-add --target-dir "$scratch"
-  tar -xzf "$scratch/package/gdd-tutorial-add-0.1.0.crate" -C "$scratch"
-  source_dir="$scratch/gdd-tutorial-add-0.1.0"
-  build_and_check() {
-    output="$scratch/$1"
-    cargo build --locked --manifest-path "$source_dir/Cargo.toml" --target-dir "$output" || return 2
-    "$output/debug/gdd-tutorial-add"
-  }
-
-  build_and_check original
-  cp "$source_dir/src/lib.rs" "$scratch/original.rs"
-  sed 's/left + right/left - right/' "$scratch/original.rs" > "$source_dir/src/lib.rs"
-  status=0
-  build_and_check subtraction || status=$?
-  test "$status" -eq 1
-  cp "$scratch/original.rs" "$source_dir/src/lib.rs"
-  build_and_check restored
-)
+scratch=$(mktemp -d)
+cargo package --offline --locked --allow-dirty --no-verify -p gdd-tutorial-add --target-dir "$scratch"
+tar -xzf "$scratch/package/gdd-tutorial-add-0.1.0.crate" -C "$scratch"
+tutorial() { cargo run --offline --locked -p gdd --example tutorial_evidence -- "$@"; }
+tutorial run "$plan_dir" "$scratch/gdd-tutorial-add-0.1.0"
+diff -u "$plan_dir/runs/current/src/lib.rs" "$plan_dir/runs/mutant/src/lib.rs" || test "$?" -eq 1
+cat "$plan_dir/runs/current/src/main.rs"
+cat "$plan_dir/runs/negative.receipt.json" "$plan_dir/runs/pass.receipt.json"
 ```
 
-Subtraction reports `FAIL: -7 + 7: expected 0, got -14`. Restoring addition
-gives a second PASS. The build step returns 2 on error so a failed compilation
-cannot satisfy the negative control. These executions check five concrete sums.
-GDD evidence and acceptance require separate host operations and authority.
-Steps 6–10 use the released Python host and its Python-specific evidence model.
+The run copies `Cargo.toml`, `Cargo.lock`, `src/lib.rs` and `src/main.rs` into
+`runs/current` and `runs/mutant`. In the mutant it replaces `left + right` with
+`left - right`. Each copy runs this literal command with a fresh private target
+directory and the observed `rustc` on PATH. The receipt records the command below.
+
+```text
+cargo run --quiet --offline --locked --manifest-path Cargo.toml --target-dir target --bin gdd-tutorial-add
+```
+
+The mutant must exit 1 with the exact first mismatch
+`FAIL: -7 + 7: expected 0, got -14`. The current copy must exit 0 with
+`PASS: all five integer sums matched`, including the large integer example.
+Each receipt covers the full build and checker run. Inspect its command, working
+directory, timestamps, tool versions, stdout, stderr and code revisions.
+A build error leaves an UNKNOWN receipt with the actual diagnostic.
+An existing runs directory prevents repeating the execution in place.
+
+The [Rust example](../examples/tutorial_evidence/main.rs) explicitly chooses
+the existing reader-compatible `gdd-host-check/0.1` format and records its own
+runner metadata. This choice belongs to this tutorial's trusted caller.
+The example can also run from an extracted `gdd` crate given an extracted
+`gdd-tutorial-add` package as its source argument.
+
+### Record reviewed evidence and assess a later edit
+
+After inspecting both source trees, the five comparisons and both actual
+receipts, attest the coverage and the performed subtraction control:
+
+```sh
+tutorial record "$plan_dir" --attest-reviewed-checks
+validate_sum() { gdd validate "$plan_dir/evidence.gdd.json" --profile records --scope action.add "$@"; }
+expect_unknown() { status=0; "$@" || status=$?; test "$status" -eq 2; }
+expect_unknown validate_sum
+validate_sum --host-context "$plan_dir/review/host-context.json"
+expect_unknown validate_sum --host-context "$plan_dir/review/host-context.json" --activity acceptance
+tutorial drift "$plan_dir"
+expect_unknown validate_sum --host-context "$plan_dir/drift/host-context.json"
+```
+
+`record` rechecks the receipts against the local files, expected command, toolchain,
+outputs and isolated mutation. It binds `src/main.rs` to `check.sum`'s scope,
+appends `binding.sum.v1` and `evidence.sum.v1`, and saves the explicit local host
+context. Without trust the implementation result is **UNKNOWN** (2). With this
+context the current implementation is **PASS** (0). Acceptance authorization is
+**UNRESOLVED** (2) because the caller supplied no acceptance authority.
+
+`drift` appends a comment in a third copy and snapshots those exact bytes.
+It checks that authoring against the old receipt now fails, then supplies
+the changed revision in a separate host context. The final validation reports
+implementation **UNKNOWN** (2). Inspect the ledger to see the original three
+records. To repeat the exercise, prepare a fresh directory.
