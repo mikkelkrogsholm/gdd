@@ -903,12 +903,119 @@ fn assert_captured_overview(format: &str, scope_counts: &str) {
 }
 
 #[test]
+fn raw_projection_disclosure_tracks_the_current_drawing_and_filter_text() {
+    use serde_json::json;
+
+    let source = tempfile::tempdir().unwrap();
+    let path = source.path().join("model.json");
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let bytes = fs::read(fixture).unwrap();
+    fs::write(&path, &bytes).unwrap();
+    let revision = gdd::snapshot_revision(&[("model.json", &gdd::sha256(&bytes))]).unwrap();
+    let mut window = Window::open(&path);
+    source.close().unwrap();
+    let disclosure = "Projection details (JSON)";
+    window.click(Role::DisclosureTriangle, "Current view");
+    assert!(window.viewer.projection_text.is_none());
+    window.click(Role::DisclosureTriangle, disclosure);
+
+    let displayed = |window: &mut Window| {
+        window
+            .frame(Vec::new())
+            .nodes
+            .iter()
+            .filter_map(|(_, n)| n.value())
+            .filter_map(|text| serde_json::from_str::<Json>(text).ok())
+            .find(|value| value.get("glyphs").is_some())
+            .expect("Projection JSON in the overview")
+    };
+    let initial = displayed(&mut window);
+    assert_eq!(initial["spec_revision"], revision);
+    assert_eq!(initial["scope"], json!([]));
+    assert_eq!(initial["observation_inputs"], json!([]));
+    assert_eq!(
+        initial["artifact_scope"],
+        json!({
+            "shown_nodes": ["action.second", "community.backend", "community.frontend", "component.orphan",
+                            "constructor", "entity.precision", "scenario.hidden"],
+            "shown_edges": ["edge.call_one", "edge.call_two", "edge.depends", "edge.loop", "edge.member_backend",
+                            "edge.member_frontend", "edge.reverse", "edge.scenario", "edge.second_frontend"],
+            "omitted_nodes": [], "omitted_edges": []
+        })
+    );
+    assert_eq!(initial["omitted_nodes"], json!(["scenario.hidden"]));
+    assert_eq!(initial["omitted_edges"], json!(["edge.scenario"]));
+    assert_eq!(initial["folding"]["enabled"], false);
+    assert_eq!(initial["folded_internal_edges"], json!([]));
+    assert_eq!(
+        initial["bundles"][0],
+        json!({
+            "from": "constructor", "to": "action.second", "edge_ids": ["edge.call_one", "edge.call_two", "edge.depends"]
+        })
+    );
+    let cached = Arc::clone(window.viewer.projection_text.as_ref().unwrap());
+    window.frame(Vec::new());
+    assert!(Arc::ptr_eq(
+        &cached,
+        window.viewer.projection_text.as_ref().unwrap()
+    ));
+    window.click(Role::CheckBox, "Fold communities");
+    let folded = displayed(&mut window);
+    assert_eq!(folded["shown_nodes"], initial["shown_nodes"]);
+    assert_eq!(folded["shown_edges"], initial["shown_edges"]);
+    assert_eq!(folded["folding"]["enabled"], true);
+    assert_eq!(
+        folded["glyphs"],
+        json!([
+            {"id":"community.frontend", "node_ids":["action.second","community.frontend"]},
+            {"id":"community.backend", "node_ids":["community.backend","constructor"]},
+            {"id":"component.orphan", "node_ids":["component.orphan"]},
+            {"id":"entity.precision", "node_ids":["entity.precision"]}
+        ])
+    );
+    assert_eq!(
+        folded["bundles"],
+        json!([
+            {"from":"community.backend", "to":"community.frontend", "edge_ids":["edge.call_one","edge.call_two","edge.depends","edge.member_frontend"]},
+            {"from":"community.frontend", "to":"community.backend", "edge_ids":["edge.reverse"]}
+        ])
+    );
+    assert_eq!(
+        folded["folded_internal_edges"],
+        json!(["edge.loop", "edge.member_backend", "edge.second_frontend"])
+    );
+
+    // A filter can change without changing the visible IDs or the cached fold.
+    let projection = Arc::clone(window.viewer.folded.as_ref().unwrap());
+    window.search("   ");
+    assert_eq!(displayed(&mut window)["filters"]["search"], "   ");
+    assert!(Arc::ptr_eq(
+        &projection,
+        window.viewer.folded.as_ref().unwrap()
+    ));
+    window.click(Role::DisclosureTriangle, disclosure);
+    window.search("orphan");
+    assert!(window.viewer.projection_text.is_none());
+    window.click(Role::DisclosureTriangle, disclosure);
+    let narrowed = displayed(&mut window);
+    assert_eq!(narrowed["shown_nodes"], json!(["component.orphan"]));
+    assert_eq!(narrowed["bundles"], json!([]));
+}
+
+#[test]
 fn overview_shortcut_preserves_scoped_filters_lens_folding_and_zoom() {
     let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../conformance/fixtures/viewer-multigraph.json");
+    let source = tempfile::tempdir().unwrap();
+    let model = source.path().join("model.json");
+    fs::copy(&fixture, &model).unwrap();
+    let generated = source.path().join("scoped.gddview");
+    let report = gdd::view::render_view(&model, &generated, &["scenario.hidden".into()]).unwrap();
     let saved = tempfile::tempdir().unwrap();
-    let path = saved.path().join("scoped.gddview");
-    gdd::view::render_view(&fixture, &path, &["scenario.hidden".into()]).unwrap();
+    let path = saved.path().join("relocated.gddview");
+    fs::rename(&generated, &path).unwrap();
+    source.close().unwrap();
     let mut window = Window::open(&path);
     window.click(Role::ComboBox, "Perspective");
     window.click(Role::Button, "Components");
@@ -981,6 +1088,43 @@ fn overview_shortcut_preserves_scoped_filters_lens_folding_and_zoom() {
         assert_labels(&window.frame(Vec::new()), &[nodes, edges]);
         window.click(Role::DisclosureTriangle, partition);
     }
+    let disclosure = "Projection details (JSON)";
+    window.click(Role::DisclosureTriangle, disclosure);
+    let shown_nodes = ["action.second", "constructor"];
+    let shown_edges = [
+        "edge.call_one",
+        "edge.call_two",
+        "edge.loop",
+        "edge.reverse",
+    ];
+    assert_json_display(
+        &window.frame(Vec::new()),
+        &serde_json::json!({
+            "spec_revision": report["spec_revision"],
+            "scope": ["scenario.hidden"], "observation_inputs": [],
+            "artifact_scope": {
+                "shown_nodes": ["action.second", "constructor", "scenario.hidden"],
+                "omitted_nodes": ["community.backend", "community.frontend", "component.orphan", "entity.precision"],
+                "shown_edges": ["edge.call_one", "edge.call_two", "edge.depends", "edge.loop", "edge.reverse", "edge.scenario"],
+                "omitted_edges": ["edge.member_backend", "edge.member_frontend", "edge.second_frontend"]
+            },
+            "filters": {"perspective": "components", "kind": "action", "search": "edge.call_one",
+                        "relation": "calls", "scenarios": false, "community": ""},
+            "folding": {"enabled": true, "overlap_policy": "first visible community by canonical ID; all memberships retained"},
+            "shown_nodes": shown_nodes, "shown_edges": shown_edges,
+            "omitted_nodes": ["community.backend", "community.frontend", "component.orphan", "entity.precision", "scenario.hidden"],
+            "omitted_edges": ["edge.depends", "edge.member_backend", "edge.member_frontend", "edge.scenario", "edge.second_frontend"],
+            "glyphs": [{"id":"action.second", "node_ids":["action.second"]},
+                       {"id":"constructor", "node_ids":["constructor"]}],
+            "bundles": [
+                {"from":"constructor", "to":"action.second", "edge_ids":["edge.call_one","edge.call_two"]},
+                {"from":"action.second", "to":"constructor", "edge_ids":["edge.reverse"]},
+                {"from":"constructor", "to":"constructor", "edge_ids":["edge.loop"]}
+            ],
+            "folded_internal_edges": []
+        }),
+    );
+    window.click(Role::DisclosureTriangle, disclosure);
     window.click(Role::Button, "action.second");
     window.click(Role::Button, "Model overview");
     assert_labels(

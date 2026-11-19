@@ -1,4 +1,7 @@
-use super::{Arc, Json, Selection, Ui, Viewer, counted, declared_text, drawing_counts, egui};
+use super::projection::{Partition, projection_details};
+use super::{
+    Arc, Json, RichText, Selection, Ui, Viewer, counted, declared_text, drawing_counts, egui,
+};
 
 impl Viewer {
     pub(super) fn show_overview(&mut self, ui: &mut Ui) {
@@ -84,7 +87,7 @@ impl Viewer {
         show_traceability(ui, overview.snapshot, artifact);
     }
 
-    fn show_current_view(&self, ui: &mut Ui) {
+    fn show_current_view(&mut self, ui: &mut Ui) {
         ui.label(format!("Perspective: {}", self.filters.lens.label()));
         for (name, value) in [
             ("Search", &self.filters.search),
@@ -161,49 +164,19 @@ impl Viewer {
                     }
                 });
         }
+        ui.collapsing("Projection details (JSON)", |ui| {
+            let text = self.projection_text.get_or_insert_with(|| {
+                let details =
+                    projection_details(graph, &self.filters, &self.visible, self.folded.as_deref());
+                Arc::new(RichText::new(format!("{details:#}")).monospace())
+            });
+            ui.add(egui::Label::new(Arc::clone(text)).selectable(true));
+        });
     }
 }
 
 fn graph_counts(nodes: usize, edges: usize) -> String {
     format!("{} · {}", counted(nodes, "node"), counted(edges, "edge"))
-}
-
-#[derive(Clone, Copy)]
-enum Partition {
-    Visible,
-    Filtered,
-    Outside,
-}
-
-impl Partition {
-    fn count(self, visible: usize, scope: usize, total: usize) -> usize {
-        match self {
-            Self::Visible => visible,
-            Self::Filtered => scope - visible,
-            Self::Outside => total - scope,
-        }
-    }
-
-    fn ids<'a, T>(
-        self,
-        records: &'a [T],
-        scope: usize,
-        visible: &[usize],
-        id: impl Fn(&'a T) -> &'a str,
-    ) -> Vec<&'a str> {
-        let mut ids: Vec<_> = match self {
-            Self::Visible => visible.iter().map(|&i| id(&records[i])).collect(),
-            Self::Filtered => records[..scope]
-                .iter()
-                .enumerate()
-                .filter(|(i, _)| visible.binary_search(i).is_err())
-                .map(|(_, record)| id(record))
-                .collect(),
-            Self::Outside => records[scope..].iter().map(id).collect(),
-        };
-        ids.sort_unstable_by(|left, right| left.encode_utf16().cmp(right.encode_utf16()));
-        ids
-    }
 }
 
 fn show_traceability(ui: &mut Ui, snapshot: Option<&Json>, artifact: Option<&Json>) {

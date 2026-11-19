@@ -84,7 +84,7 @@ impl Lens {
         }
     }
 
-    fn key(self) -> &'static str {
+    pub fn key(self) -> &'static str {
         match self {
             Self::All => "all",
             Self::Journey => "journey",

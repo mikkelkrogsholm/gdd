@@ -1,4 +1,5 @@
 mod overview;
+mod projection;
 
 use std::sync::{Arc, mpsc};
 use std::thread;
@@ -90,6 +91,7 @@ pub struct Viewer {
     selected: Option<Selection>,
     inspector_scroll: Option<(Option<Selection>, egui::Id)>,
     folded: Option<Arc<FoldProjection>>,
+    projection_text: Option<Arc<RichText>>,
     folded_layout: Option<(Arc<FoldProjection>, LayoutState)>,
 }
 
@@ -114,11 +116,13 @@ impl Viewer {
             selected: None,
             inspector_scroll: None,
             folded: None,
+            projection_text: None,
             folded_layout: None,
         }
     }
 
     fn refresh(&mut self) {
+        self.projection_text = None;
         let visible = self.graph.visible(&self.filters);
         if self.visible.nodes != visible.nodes || self.visible.edges != visible.edges {
             self.visible = visible;
@@ -146,6 +150,7 @@ impl Viewer {
                 .and_then(|fold| fold.bundles.iter().find(|b| (b.from, b.to) == (from, to)))
                 .map(|b| Selection::Edge(b.edges[0]));
         }
+        self.projection_text = None;
         self.folded = next;
         self.reveal_selected = true;
     }
@@ -1139,6 +1144,7 @@ mod tests {
             selected: Some(Selection::Node(0)),
             inspector_scroll: None,
             folded: None,
+            projection_text: None,
             folded_layout: None,
         };
         let context = egui::Context::default();
@@ -1219,6 +1225,7 @@ mod tests {
             selected: None,
             inspector_scroll: None,
             folded: None,
+            projection_text: None,
             folded_layout: None,
         };
         viewer.navigate(entity, Lens::All);
@@ -1268,6 +1275,7 @@ mod tests {
             selected: None,
             inspector_scroll: None,
             folded: Some(Arc::clone(&prior)),
+            projection_text: None,
             folded_layout: Some((Arc::clone(&prior), LayoutState::Pending(receiver))),
         };
         for query in ["backend", "second", "community"] {

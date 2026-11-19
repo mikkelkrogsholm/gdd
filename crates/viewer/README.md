@@ -39,7 +39,12 @@ inputs it contains.
 
 **Current view** shows the active perspective, filters, zoom and folding.
 Expand a count to select and copy the exact node and edge IDs that are visible,
-filtered within scope, or outside the saved scope. Choose **Model overview**
+filtered within scope, or outside the saved scope. Expand **Projection details
+(JSON)** to copy the revision, scope, filters and folding settings together with
+the shown and omitted IDs for the entire model. The JSON lists each glyph’s
+canonical nodes, each directed bundle’s edges and all folded internal edges.
+When the captured model has no snapshot, `spec_revision` is `null`.
+Choose **Model overview**
 or press Alt+Home to clear the selection and keep the filters, folding and
 camera position. Each newly opened record or overview starts at the top,
 including when you return to one you have already inspected.
