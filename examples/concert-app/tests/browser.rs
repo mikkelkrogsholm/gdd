@@ -1,5 +1,7 @@
 #![cfg(any(unix, windows))]
 
+#[path = "support/response_loss.rs"]
+mod response_loss;
 #[path = "support/server.rs"]
 mod server;
 #[path = "support/webdriver.rs"]
@@ -218,4 +220,69 @@ async fn recorded_phase_a_history_and_shared_cookie_forms_in_chromium() {
     #[cfg(windows)]
     drop(server);
     assert_database(&database, &expected).await;
+}
+
+#[ntex::test]
+#[ignore = "requires local Chromium and a compatible ChromeDriver"]
+async fn recover_a_committed_reservation_after_a_lost_response_in_chromium() {
+    const KEY: &str = "[data-concert-id='midnight'] input[name='request_key']";
+    let dir = tempfile::tempdir().unwrap();
+    let server = Server::start(&dir.path().join("concert.sqlite"));
+    let upstream = format!("http://127.0.0.1:{}", server.port);
+    let proxy = response_loss::ReservationProxy::start(upstream.clone()).await;
+    let site = proxy.site();
+    let browser = Browser::start();
+    browser.open(&site);
+    sign_in(&browser, "alice", "alice-demo");
+    assert_desk(&browser, &upstream, "Alice", &[]);
+    let original = browser.get("/url").as_str().unwrap().to_owned();
+    let key = browser.value(KEY);
+    assert!(!key.is_empty());
+    let cookie = browser.session_cookie();
+
+    browser.click(RESERVE);
+    proxy.assert_submissions(&key);
+    // Chromium has finished the failed navigation, including any automatic retries.
+    let frame = browser.post(
+        "/goog/cdp/execute",
+        json!({"cmd":"Page.getFrameTree","params":{}}),
+    );
+    assert_eq!(
+        frame["frameTree"]["frame"]["unreachableUrl"],
+        format!("{site}/forms/reserve")
+    );
+    let history = browser.api_history_with_cookie(&upstream, &cookie);
+    assert_eq!(history["active_count"], 1);
+    let records = history["reservations"].as_array().unwrap();
+    assert_eq!(records.len(), 1);
+    let id = records[0]["id"].as_str().unwrap();
+    assert!(!id.is_empty());
+    assert_eq!(
+        records[0],
+        json!({"id": id, "concert_id": "midnight", "state": "reserved"})
+    );
+
+    let active = [(id, "midnight", "reserved")];
+    let cancelled = [(id, "midnight", "cancelled")];
+
+    browser.post("/back", json!({}));
+    assert_eq!(browser.get("/url"), original);
+    assert_eq!(browser.value(KEY), key);
+    proxy.deliver_responses();
+    browser.click(RESERVE);
+    proxy.assert_submissions(&key);
+    assert_eq!(browser.text("#status-message"), "Your seat is reserved.");
+    assert_desk(&browser, &upstream, "Alice", &active);
+
+    browser.click(&format!("[data-reservation-id='{id}'] button"));
+    assert_desk(&browser, &upstream, "Alice", &cancelled);
+    browser.open(&original);
+    assert_eq!(browser.value(KEY), key);
+    browser.click(RESERVE);
+    proxy.assert_submissions(&key);
+    assert_eq!(
+        browser.text("#status-message"),
+        "Your reservation is cancelled."
+    );
+    assert_desk(&browser, &upstream, "Alice", &cancelled);
 }

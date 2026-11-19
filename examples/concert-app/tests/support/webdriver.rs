@@ -127,19 +127,29 @@ impl Browser {
             .to_owned()
     }
 
+    pub fn value(&self, css: &str) -> String {
+        self.get(&format!("/element/{}/attribute/value", self.element(css)))
+            .as_str()
+            .unwrap()
+            .to_owned()
+    }
+
     pub fn rect(&self, css: &str) -> Value {
         self.get(&format!("/element/{}/rect", self.element(css)))
     }
 
     pub fn click(&self, css: &str) {
         // Every concert button submits a form. Chrome can return from the click
-        // before the redirected document replaces the one that submitted it.
-        let previous = self.element("#session-status");
+        // before the next document (a desk or network error page) replaces the form.
+        let previous = self.element("html");
         self.post(&format!("/element/{}/click", self.element(css)), json!({}));
         let deadline = Instant::now() + TIMEOUT;
         loop {
-            let header = self.elements("#session-status");
-            if header[0][ELEMENT].as_str().is_some_and(|id| id != previous) {
+            let document = self.elements("html");
+            if document[0][ELEMENT]
+                .as_str()
+                .is_some_and(|id| id != previous)
+            {
                 return;
             }
             assert!(Instant::now() < deadline, "form {css} did not navigate");
@@ -169,17 +179,22 @@ impl Browser {
         handle
     }
 
-    pub fn api_history(&self, site: &str) -> Value {
+    pub fn session_cookie(&self) -> String {
         let cookie = self.get("/cookie/concert_session");
         assert_eq!(cookie["httpOnly"], true);
         assert_eq!(cookie["sameSite"], "Strict");
+        format!("concert_session={}", cookie["value"].as_str().unwrap())
+    }
+
+    pub fn api_history(&self, site: &str) -> Value {
+        self.api_history_with_cookie(site, &self.session_cookie())
+    }
+
+    pub fn api_history_with_cookie(&self, site: &str, cookie: &str) -> Value {
         let mut response = self
             .client
             .get(format!("{site}/api/reservations"))
-            .header(
-                "Cookie",
-                format!("concert_session={}", cookie["value"].as_str().unwrap()),
-            )
+            .header("Cookie", cookie)
             .call()
             .expect("reservation API response");
         assert_eq!(response.status(), 200);

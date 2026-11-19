@@ -25,8 +25,9 @@ allowance while preserving history.
 
 The executable serves the HTML forms and bundled stylesheet. The browser works
 with JavaScript disabled. A completed form submission redirects to a new page.
-If a reservation response is lost, let the browser resubmit the original form.
-Reloading its original program URL also restores the same key for that concert.
+If the browser shows a network error after you reserve, use Back and submit
+the original form again. Reloading its original program URL also restores the
+same key for that concert.
 After a successful redirect, the new program page offers fresh reservations.
 If a shared cookie changes, the old desk asks for explicit sign-in before
 showing private history or accepting another action.
@@ -52,7 +53,7 @@ The HTTP suite starts the executable on ephemeral ports using temporary database
 and exercises its JSON API and native forms.
 On Unix it also exercises SIGINT, SIGTERM, request draining and restart.
 
-To run the phase-B browser regression, install a local Chromium or Chrome and a
+To run the native browser regressions, install a local Chromium or Chrome and a
 matching ChromeDriver. Put `chromedriver` on `PATH` or set `GDD_CHROMEDRIVER`
 to its executable path. Run this command from the repository root.
 
@@ -60,15 +61,21 @@ to its executable path. Run this command from the repository root.
 cargo test --locked -p gdd-concert --test browser -- --ignored
 ```
 
-The test opens a headless browser with JavaScript disabled and a temporary
-profile. It starts the Rust server on a loopback port with a fresh copy of
-`tests/fixtures/recorded-phase-a.db`. It checks the original reservation cards,
+Each test opens a headless browser with JavaScript disabled and a temporary
+profile. The phase-B test starts the Rust server on a loopback port with a copy
+of `tests/fixtures/recorded-phase-a.db`. It checks the original reservation cards,
 the two-seat allowance, cancellation and rebooking through the forms, then
 compares the final history with the JSON API and the saved database. It also
 uses tabs sharing a cookie to check that an outdated Alice desk cannot read
 Bob's history, reserve on his behalf or sign him out. A final check opens the
-public program at a 320-pixel viewport. The ordinary Cargo suite skips this
-browser test.
+public program at a 320-pixel viewport.
+
+The response-loss test uses an empty database. A loopback proxy drops the
+server's completed reservation redirects until Chromium reports a failed
+navigation. The test reads the committed reference from the authenticated API,
+uses Back to resubmit the original form, then cancels and replays the old form.
+The desk and the API must still show one cancelled reservation with that
+reference. The ordinary Cargo suite skips both browser tests.
 
 The native HTTP/1 parser rejects repeated Content-Length fields with the
 JSON error `400 InvalidInput` before routing. The body limit is 16 KiB.
