@@ -6,6 +6,7 @@ use egui::accesskit::{Node, Role, TreeUpdate};
 struct Window {
     viewer: Viewer,
     context: egui::Context,
+    size: egui::Vec2,
 }
 
 impl Window {
@@ -18,24 +19,34 @@ impl Window {
             "Fixture".into(),
             context.clone(),
         );
-        Self { viewer, context }
+        Self {
+            viewer,
+            context,
+            size: egui::vec2(1280.0, 900.0),
+        }
     }
 
-    fn frame(&mut self, events: Vec<egui::Event>) -> TreeUpdate {
+    fn render(&mut self, events: Vec<egui::Event>) -> egui::FullOutput {
         let input = egui::RawInput {
-            screen_rect: Some(egui::Rect::from_min_size(
-                egui::Pos2::ZERO,
-                egui::vec2(1280.0, 900.0),
-            )),
+            screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, self.size)),
             events,
             ..Default::default()
         };
         let mut output = self.context.run_ui(input, |ui| self.viewer.show(ui));
         output.textures_delta.clear();
-        output.platform_output.accesskit_update.unwrap()
+        output
+    }
+
+    fn frame(&mut self, events: Vec<egui::Event>) -> TreeUpdate {
+        self.render(events)
+            .platform_output
+            .accesskit_update
+            .unwrap()
     }
 
     fn click(&mut self, role: Role, label: &str) {
+        // Let the panel measure its contents before using the widget bounds.
+        self.frame(Vec::new());
         let tree = self.frame(Vec::new());
         let bounds = widget(&tree, role, label)
             .unwrap_or_else(|| panic!("Missing {role:?} {label}"))
@@ -45,6 +56,10 @@ impl Window {
             (bounds.x0 + bounds.x1) as f32 / 2.0,
             (bounds.y0 + bounds.y1) as f32 / 2.0,
         );
+        self.click_at(pos);
+    }
+
+    fn click_at(&mut self, pos: egui::Pos2) {
         for pressed in [true, false] {
             self.frame(vec![
                 egui::Event::PointerMoved(pos),
@@ -55,6 +70,47 @@ impl Window {
                     modifiers: Modifiers::NONE,
                 },
             ]);
+        }
+    }
+
+    fn key(&mut self, key: Key, modifiers: Modifiers) -> TreeUpdate {
+        for pressed in [true, false] {
+            self.frame(vec![egui::Event::Key {
+                key,
+                physical_key: None,
+                pressed,
+                repeat: false,
+                modifiers,
+            }]);
+        }
+        self.frame(Vec::new())
+    }
+
+    fn scroll(&mut self, pos: egui::Pos2, delta: f32) {
+        let wheel = |phase| egui::Event::MouseWheel {
+            unit: egui::MouseWheelUnit::Point,
+            delta: egui::vec2(0.0, delta),
+            phase,
+            source: egui::MouseWheelSource::Trackpad,
+            modifiers: Modifiers::NONE,
+        };
+        self.frame(vec![
+            egui::Event::PointerMoved(pos),
+            wheel(egui::TouchPhase::Start),
+            wheel(egui::TouchPhase::Move),
+        ]);
+    }
+
+    fn wait_for_zoom(&mut self) {
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+        while widget(&self.frame(Vec::new()), Role::ComboBox, "Graph zoom").is_none() {
+            assert!(
+                std::time::Instant::now() < deadline,
+                "No zoom control for {} visible nodes and {} visible edges",
+                self.viewer.visible.nodes.len(),
+                self.viewer.visible.edges.len()
+            );
+            std::thread::yield_now();
         }
     }
 
@@ -118,18 +174,7 @@ fn inspector_keeps_its_scroll_until_a_different_record_opens() {
     let second_top = connections_y(&window.frame(Vec::new()));
     window.click(Role::Button, &first);
     let top = connections_y(&window.frame(Vec::new()));
-    let wheel = |phase| egui::Event::MouseWheel {
-        unit: egui::MouseWheelUnit::Point,
-        delta: egui::vec2(0.0, -180.0),
-        phase,
-        source: egui::MouseWheelSource::Trackpad,
-        modifiers: Modifiers::NONE,
-    };
-    window.frame(vec![
-        egui::Event::PointerMoved(egui::pos2(1150.0, 520.0)),
-        wheel(egui::TouchPhase::Start),
-        wheel(egui::TouchPhase::Move),
-    ]);
+    window.scroll(egui::pos2(1150.0, 520.0), -180.0);
     let scrolled = connections_y(&window.frame(Vec::new()));
     assert!(
         top - scrolled > 100.0,
@@ -560,16 +605,7 @@ fn overview_shortcut_preserves_scoped_filters_lens_folding_and_zoom() {
     window.search("edge.call_one");
     window.click(Role::CheckBox, "Show scenarios (1)");
     window.click(Role::CheckBox, "Fold communities");
-    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
-    while widget(&window.frame(Vec::new()), Role::ComboBox, "Graph zoom").is_none() {
-        assert!(
-            std::time::Instant::now() < deadline,
-            "No zoom control for {} visible nodes and {} visible edges",
-            window.viewer.visible.nodes.len(),
-            window.viewer.visible.edges.len()
-        );
-        std::thread::yield_now();
-    }
+    window.wait_for_zoom();
     window.click(Role::ComboBox, "Graph zoom");
     window.click(Role::Button, "150%");
     window.click(Role::Button, "action.second");
@@ -664,4 +700,150 @@ fn overview_shortcut_preserves_scoped_filters_lens_folding_and_zoom() {
         &window.frame(Vec::new()),
         &["scenario.hidden", "edge.scenario"],
     );
+}
+
+#[test]
+fn compact_scoped_view_keeps_filters_and_selection_through_navigation_and_resize() {
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let saved = tempfile::tempdir().unwrap();
+    let title = "Project with a long descriptive name ".repeat(14);
+    let mut model: Json = serde_json::from_slice(&fs::read(fixture).unwrap()).unwrap();
+    model["project"]["title"] = title.clone().into();
+    let manifest = saved.path().join("model.json");
+    fs::write(&manifest, serde_json::to_vec(&model).unwrap()).unwrap();
+    let path = saved.path().join("scoped.gddview");
+    gdd::view::render_view(&manifest, &path, &["scenario.hidden".into()]).unwrap();
+    fs::remove_file(manifest).unwrap();
+
+    let mut window = Window::open(&path);
+    window.size = egui::vec2(400.0, 710.0);
+    let tree = window.frame(Vec::new());
+    let search = widget(&tree, Role::TextInput, "Search graph")
+        .unwrap()
+        .bounds()
+        .unwrap();
+    assert!(search.x1 - search.x0 > 350.0 && search.x1 <= 400.0);
+    assert!(widget(&tree, Role::Label, "Model overview").is_none());
+    let title_box = widget(&tree, Role::Label, &title)
+        .unwrap()
+        .bounds()
+        .unwrap();
+    for tab in ["Nodes", "Graph", "Details"] {
+        let bounds = widget(&tree, Role::Button, tab).unwrap().bounds().unwrap();
+        assert!(bounds.y0 >= title_box.y1 && bounds.x1 <= 400.0);
+    }
+    window.click(Role::DisclosureTriangle, "View filters");
+    window.click(Role::CheckBox, "Fold communities");
+    window.click(Role::CheckBox, "Show scenarios (1)");
+    window.click(Role::ComboBox, "Kind");
+    window.click(Role::Button, "action");
+    window.click(Role::DisclosureTriangle, "View filters");
+    let tree = window.frame(Vec::new());
+    assert_labels(&tree, &["2 of 7 nodes · 5 of 9 edges"]);
+    assert!(widget(&tree, Role::TextInput, "Search graph").is_some());
+    window.click(Role::Button, "action.second");
+    let tree = window.frame(Vec::new());
+    assert_labels(&tree, &["Second action"]);
+    assert!(widget(&tree, Role::TextInput, "Search graph").is_none());
+
+    window.click(Role::Button, "Graph");
+    let tree = window.frame(Vec::new());
+    assert!(widget(&tree, Role::Label, "Second action").is_none());
+    window.wait_for_zoom();
+    window.click(Role::ComboBox, "Graph zoom");
+    window.click(Role::Button, "150%");
+    window.size = egui::vec2(1280.0, 720.0);
+    let tree = window.frame(Vec::new());
+    assert_labels(&tree, &["2 of 7 nodes · 5 of 9 edges", "Second action"]);
+    assert!(widget(&tree, Role::ComboBox, "Graph zoom").is_some());
+    assert!(widget(&tree, Role::Button, "Details").is_none());
+    window.size = egui::vec2(740.0, 360.0);
+    let tree = window.frame(Vec::new());
+    assert!(widget(&tree, Role::ComboBox, "Graph zoom").is_some());
+    assert!(widget(&tree, Role::TextInput, "Search graph").is_none());
+    window.click(Role::Button, "Details");
+    assert_labels(&window.frame(Vec::new()), &["Second action"]);
+    window.click(Role::Button, "Graph");
+    let tree = window.key(Key::Home, Modifiers::ALT);
+    assert_labels(&tree, &["Model overview", &title]);
+    window.size = egui::vec2(400.0, 710.0);
+    window.click(Role::DisclosureTriangle, "Current view");
+    assert_labels(
+        &window.frame(Vec::new()),
+        &[
+            "Scope: scenario.hidden",
+            "Kind: action",
+            "Show scenarios: off",
+            "Folding: 2 figures · 3 bundles · 0 internal edges",
+            "Graph zoom: 150%",
+        ],
+    );
+    let tree = window.key(Key::F, Modifiers::COMMAND);
+    let search = widget(&tree, Role::TextInput, "Search graph").unwrap();
+    assert!(
+        tree.nodes
+            .iter()
+            .any(|(id, n)| *id == tree.focus && n == search)
+    );
+    window.frame(vec![egui::Event::Text("action.second".into())]);
+    assert_labels(&window.key(Key::Enter, Modifiers::NONE), &["Second action"]);
+}
+
+#[test]
+fn short_window_supports_keyboard_pane_navigation_and_canvas_selection() {
+    let path =
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/product/greenfield.gddview");
+    let mut window = Window::open(&path);
+    window.size = egui::vec2(740.0, 360.0);
+    window.frame(Vec::new());
+    // Move to Graph using keyboard focus and activate it with Enter.
+    for _ in 0..10 {
+        let tree = window.key(Key::Tab, Modifiers::NONE);
+        let graph = widget(&tree, Role::Button, "Graph").unwrap();
+        if tree
+            .nodes
+            .iter()
+            .any(|(id, node)| *id == tree.focus && node == graph)
+        {
+            break;
+        }
+    }
+    let tree = window.key(Key::Enter, Modifiers::NONE);
+    assert!(widget(&tree, Role::TextInput, "Search graph").is_none());
+    window.wait_for_zoom();
+    let tree = window.key(Key::F, Modifiers::COMMAND);
+    assert!(widget(&tree, Role::TextInput, "Search graph").is_some());
+    window.click(Role::DisclosureTriangle, "View filters");
+    window.click(Role::ComboBox, "Kind");
+    window.click(Role::Button, "gdd.product.actor");
+    window.key(Key::F, Modifiers::COMMAND);
+    window.frame(vec![egui::Event::Text("actor.guest".into())]);
+    let tree = window.frame(Vec::new());
+    assert!(widget(&tree, Role::TextInput, "Search graph").is_some());
+    window.click(Role::Button, "Graph");
+    assert_eq!(window.viewer.visible.nodes.len(), 1);
+    let glyph = window
+        .render(Vec::new())
+        .shapes
+        .into_iter()
+        .find_map(|item| {
+            if let egui::Shape::Text(text) = item.shape
+                && text.galley.text() == "actor.guest"
+            {
+                return Some(text.visual_bounding_rect().center());
+            }
+            None
+        })
+        .expect("Visible actor glyph in the graph");
+    window.click_at(glyph);
+    let tree = window.frame(Vec::new());
+    assert!(widget(&tree, Role::Button, "Model overview").is_some());
+    assert!(widget(&tree, Role::ComboBox, "Graph zoom").is_none());
+    assert_labels(&tree, &["A human guest."]);
+    window.key(Key::F, Modifiers::COMMAND);
+    window.click(Role::Button, "Reset filters");
+    window.scroll(egui::pos2(350.0, 300.0), -800.0);
+    window.click(Role::Button, "step.reserve");
+    assert_labels(&window.frame(Vec::new()), &["User action"]);
 }

@@ -12,6 +12,19 @@ Building the viewer requires Rust 1.95 or newer. Running it requires a desktop w
 uses X11 or Wayland. The native window was tested on Linux with Xvfb and Mesa
 software rendering. The root CLI remains the default Cargo package.
 
+Wide windows show the node list, graph and inspector side by side. Below 960
+logical pixels wide, the viewer opens on **Nodes**. Choose **Nodes**, **Graph**
+or **Details** to give that pane the full width. Use Tab and Enter to choose a
+pane with the keyboard. On **Nodes**, expand **View filters** for perspective,
+filters and folding. Scroll the list to reach the remaining controls and
+results in short windows. **Graph** contains the zoom control.
+
+Selecting a result or a graph item opens **Details**. Ctrl+F (Command+F on
+macOS) opens **Nodes** and focuses search from any pane. Alt+Home opens the
+overview in **Details**. Switching panes or resizing the window preserves
+scope, filters, folding, zoom and the selected record. Hover over a shortened
+header title or open the overview to read the full project title.
+
 The inspector opens on **Model overview** with the project title, ID and
 goal. Expand **Project fields** or a question to read its complete declaration.
 Select a declared source to inspect its origin and metadata. **Model snapshot**

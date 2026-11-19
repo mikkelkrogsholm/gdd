@@ -55,7 +55,15 @@ impl LayoutState {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+enum Pane {
+    Nodes,
+    Graph,
+    Details,
+}
+
 pub struct Viewer {
+    pane: Pane,
     graph: Arc<Graph>,
     layout: LayoutState,
     filters: Filters,
@@ -79,6 +87,7 @@ impl Viewer {
             filters,
             graph,
             layout,
+            pane: Pane::Nodes,
             zoom_percent: 100,
             reveal_selected: false,
             filename,
@@ -150,8 +159,13 @@ impl Viewer {
         }
     }
 
+    fn inspect(&mut self, selection: Selection) {
+        self.selected = Some(selection);
+        self.pane = Pane::Details;
+    }
+
     fn navigate(&mut self, index: usize, lens: Lens) {
-        self.selected = Some(Selection::Node(index));
+        self.inspect(Selection::Node(index));
         if index < self.graph.shown_nodes {
             self.filters = Filters {
                 lens,
@@ -182,138 +196,209 @@ impl Viewer {
     fn show(&mut self, ui: &mut Ui) {
         self.update_layout(ui.ctx());
         ui.spacing_mut().item_spacing = egui::vec2(8.0, 8.0);
+        let compact = ui.available_width() < 960.0;
+        let focus_search = ui.input_mut(|input| input.consume_key(Modifiers::COMMAND, Key::F));
+        if focus_search {
+            self.pane = Pane::Nodes;
+        }
+        if ui.input_mut(|input| input.consume_key(Modifiers::ALT, Key::Home)) {
+            self.open_overview();
+        }
+
         let white = Color32::WHITE;
         egui::Panel::top("model")
-            .frame(egui::Frame::NONE.fill(white).inner_margin(16))
+            .frame(
+                egui::Frame::NONE
+                    .fill(white)
+                    .inner_margin(if compact { 8 } else { 12 }),
+            )
             .show(ui, |ui| {
-                ui.horizontal_wrapped(|ui| {
-                    ui.heading(RichText::new(self.graph.title()).size(24.0).strong());
-                    ui.label(RichText::new(&self.filename).weak());
-                    let old_lens = self.filters.lens;
-                    egui::ComboBox::from_label("Perspective")
-                        .selected_text(self.filters.lens.label())
-                        .show_ui(ui, |ui| {
-                            for lens in [Lens::All, Lens::Journey, Lens::Components, Lens::Data] {
-                                ui.selectable_value(&mut self.filters.lens, lens, lens.label());
-                            }
-                        });
-                    if self.filters.lens != old_lens {
-                        self.refresh();
-                        self.reveal_selected = true;
-                    }
-                    if matches!(self.current_layout(), Some(LayoutState::Ready(_)))
-                        && !self.visible.nodes.is_empty()
-                    {
-                        egui::ComboBox::from_label("Graph zoom")
-                            .selected_text(format!("{}%", self.zoom_percent))
-                            .width(70.0)
-                            .show_ui(ui, |ui| {
-                                for percent in [50, 75, 100, 125, 150, 200] {
-                                    if ui
-                                        .selectable_value(
-                                            &mut self.zoom_percent,
-                                            percent,
-                                            format!("{percent}%"),
-                                        )
-                                        .changed()
-                                    {
-                                        self.reveal_selected = true;
-                                    }
-                                }
-                            });
-                    }
-                });
-                ui.horizontal_wrapped(|ui| {
-                    let choices = &self.graph.choices;
-                    let kind =
-                        filter_choice(ui, "Kind", &mut self.filters.kind, choices.kinds.iter());
-                    let relation = filter_choice(
-                        ui,
-                        "Relation",
-                        &mut self.filters.relation,
-                        choices.relations.iter(),
-                    );
-                    let community = filter_choice(
-                        ui,
-                        "Community",
-                        &mut self.filters.community,
-                        choices.communities.keys(),
-                    );
-                    let scenarios = ui
-                        .checkbox(
-                            &mut self.filters.show_scenarios,
-                            format!("Show scenarios ({})", choices.scenario_count),
+                let title = self.graph.title();
+                ui.horizontal(|ui| {
+                    ui.scope(|ui| {
+                        ui.set_max_width(ui.available_width() * 0.72);
+                        ui.add(
+                            egui::Label::new(RichText::new(title).size(22.0).strong()).truncate(),
                         )
-                        .changed();
-                    let mut fold = self.folded.is_some();
-                    if ui.checkbox(&mut fold, "Fold communities").changed() {
-                        self.set_folded(fold);
-                        ui.ctx().request_repaint();
-                    }
-                    if ui.button("Reset filters").clicked() {
-                        self.set_folded(false);
-                        self.filters = Filters::default();
-                        self.refresh();
-                    } else if kind || relation || community || scenarios {
-                        self.refresh();
-                    }
+                        .on_hover_text(title);
+                    });
+                    ui.add(egui::Label::new(RichText::new(&self.filename).weak()).truncate())
+                        .on_hover_text(&self.filename);
                 });
+                if compact {
+                    ui.horizontal(|ui| {
+                        for (pane, label) in [
+                            (Pane::Nodes, "Nodes"),
+                            (Pane::Graph, "Graph"),
+                            (Pane::Details, "Details"),
+                        ] {
+                            ui.selectable_value(&mut self.pane, pane, label);
+                        }
+                    });
+                } else {
+                    ui.horizontal_wrapped(|ui| {
+                        self.show_perspective(ui);
+                        self.show_zoom(ui);
+                        self.show_filters(ui);
+                    });
+                }
             });
 
-        egui::Panel::left("nodes")
-            .default_size(226.0)
-            .size_range(178.0..=330.0)
-            .frame(egui::Frame::NONE.fill(white).inner_margin(14))
-            .show(ui, |ui| self.show_nodes(ui));
+        if !compact {
+            egui::Panel::left("nodes")
+                .default_size(226.0)
+                .size_range(178.0..=330.0)
+                .frame(egui::Frame::NONE.fill(white).inner_margin(14))
+                .show(ui, |ui| {
+                    self.show_pane(ui, Pane::Nodes, false, focus_search)
+                });
 
-        egui::Panel::right("details")
-            .default_size(318.0)
-            .size_range(250.0..=430.0)
-            .frame(egui::Frame::NONE.fill(white).inner_margin(16))
-            .show(ui, |ui| self.show_details(ui));
+            egui::Panel::right("details")
+                .default_size(318.0)
+                .size_range(250.0..=430.0)
+                .frame(egui::Frame::NONE.fill(white).inner_margin(16))
+                .show(ui, |ui| self.show_pane(ui, Pane::Details, false, false));
+        }
 
+        let pane = if compact { self.pane } else { Pane::Graph };
+        let frame = match pane {
+            Pane::Graph => egui::Frame::NONE.fill(Color32::from_rgb(244, 247, 251)),
+            _ => egui::Frame::NONE.fill(white).inner_margin(12),
+        };
         egui::CentralPanel::default()
-            .frame(egui::Frame::NONE.fill(Color32::from_rgb(244, 247, 251)))
-            .show(ui, |ui| {
-                if self.visible.nodes.is_empty() {
-                    ui.centered_and_justified(|ui| ui.label(self.empty_message()));
-                    return;
-                }
-                self.update_layout(ui.ctx());
-                let reveal = self.reveal_selected;
-                let layout = match self.current_layout() {
-                    Some(LayoutState::Ready(layout)) => layout,
-                    None | Some(LayoutState::Pending(_)) => {
-                        ui.centered_and_justified(|ui| ui.label("Calculating graph layout…"));
-                        return;
-                    }
-                    Some(LayoutState::Failed(error)) => {
-                        ui.centered_and_justified(|ui| {
-                            ui.label(format!("Cannot lay out this graph: {error}"))
-                        });
-                        return;
-                    }
-                };
-                let zoom = f32::from(self.zoom_percent) / 100.0;
-                let scene = Scene {
-                    graph: &self.graph,
-                    visible: &self.visible,
-                    folded: self.folded.as_deref(),
-                    selected: self.selected,
-                };
-                let clicked = layout.show(ui, &scene, zoom, reveal);
-                self.reveal_selected = false;
-                if let Some(selection) = clicked {
-                    self.selected = Some(selection);
-                    ui.ctx().request_repaint();
-                }
-            });
+            .frame(frame)
+            .show(ui, |ui| self.show_pane(ui, pane, compact, focus_search));
     }
 
-    fn show_nodes(&mut self, ui: &mut Ui) {
-        ui.heading("Nodes");
+    fn show_pane(&mut self, ui: &mut Ui, pane: Pane, compact: bool, focus_search: bool) {
+        // Keep scroll and disclosure state when the pane moves between panels.
+        let scope = egui::UiBuilder::new().scope_id(egui::Id::unique(("viewer-pane", pane)));
+        ui.scope_builder(scope, |ui| match pane {
+            Pane::Nodes => self.show_nodes(ui, compact, focus_search),
+            Pane::Details => self.show_details(ui),
+            Pane::Graph => {
+                if compact {
+                    ui.horizontal(|ui| self.show_zoom(ui));
+                }
+                self.show_graph(ui);
+            }
+        });
+    }
+
+    fn show_perspective(&mut self, ui: &mut Ui) {
+        let old_lens = self.filters.lens;
+        egui::ComboBox::from_label("Perspective")
+            .selected_text(self.filters.lens.label())
+            .show_ui(ui, |ui| {
+                for lens in [Lens::All, Lens::Journey, Lens::Components, Lens::Data] {
+                    ui.selectable_value(&mut self.filters.lens, lens, lens.label());
+                }
+            });
+        if self.filters.lens != old_lens {
+            self.refresh();
+            self.reveal_selected = true;
+        }
+    }
+
+    fn show_zoom(&mut self, ui: &mut Ui) {
+        if matches!(self.current_layout(), Some(LayoutState::Ready(_)))
+            && !self.visible.nodes.is_empty()
+        {
+            egui::ComboBox::from_label("Graph zoom")
+                .selected_text(format!("{}%", self.zoom_percent))
+                .width(70.0)
+                .show_ui(ui, |ui| {
+                    for percent in [50, 75, 100, 125, 150, 200] {
+                        if ui
+                            .selectable_value(
+                                &mut self.zoom_percent,
+                                percent,
+                                format!("{percent}%"),
+                            )
+                            .changed()
+                        {
+                            self.reveal_selected = true;
+                        }
+                    }
+                });
+        }
+    }
+
+    fn show_filters(&mut self, ui: &mut Ui) {
+        let choices = &self.graph.choices;
+        let kind = filter_choice(ui, "Kind", &mut self.filters.kind, choices.kinds.iter());
+        let relation = filter_choice(
+            ui,
+            "Relation",
+            &mut self.filters.relation,
+            choices.relations.iter(),
+        );
+        let community = filter_choice(
+            ui,
+            "Community",
+            &mut self.filters.community,
+            choices.communities.keys(),
+        );
+        let scenarios = ui
+            .checkbox(
+                &mut self.filters.show_scenarios,
+                format!("Show scenarios ({})", choices.scenario_count),
+            )
+            .changed();
+        let mut fold = self.folded.is_some();
+        if ui.checkbox(&mut fold, "Fold communities").changed() {
+            self.set_folded(fold);
+            ui.ctx().request_repaint();
+        }
+        if ui.button("Reset filters").clicked() {
+            self.set_folded(false);
+            self.filters = Filters::default();
+            self.refresh();
+        } else if kind || relation || community || scenarios {
+            self.refresh();
+        }
+    }
+
+    fn show_graph(&mut self, ui: &mut Ui) {
+        if self.visible.nodes.is_empty() {
+            ui.centered_and_justified(|ui| ui.label(self.empty_message()));
+            return;
+        }
+        self.update_layout(ui.ctx());
+        let reveal = self.reveal_selected;
+        let layout = match self.current_layout() {
+            Some(LayoutState::Ready(layout)) => layout,
+            None | Some(LayoutState::Pending(_)) => {
+                ui.centered_and_justified(|ui| ui.label("Calculating graph layout…"));
+                return;
+            }
+            Some(LayoutState::Failed(error)) => {
+                ui.centered_and_justified(|ui| {
+                    ui.label(format!("Cannot lay out this graph: {error}"))
+                });
+                return;
+            }
+        };
+        let zoom = f32::from(self.zoom_percent) / 100.0;
+        let scene = Scene {
+            graph: &self.graph,
+            visible: &self.visible,
+            folded: self.folded.as_deref(),
+            selected: self.selected,
+        };
+        let clicked = layout.show(ui, &scene, zoom, reveal);
+        self.reveal_selected = false;
+        if let Some(selection) = clicked {
+            self.inspect(selection);
+            ui.ctx().request_repaint();
+        }
+    }
+
+    fn show_nodes(&mut self, ui: &mut Ui, compact: bool, focus_search: bool) {
+        if !compact {
+            ui.heading("Nodes");
+        }
         let search_label = ui.label("Search graph");
-        let focus_search = ui.input_mut(|input| input.consume_key(Modifiers::COMMAND, Key::F));
         let search = ui
             .add_sized(
                 [ui.available_width(), 28.0],
@@ -345,18 +430,22 @@ impl Viewer {
         egui::ScrollArea::vertical()
             .auto_shrink([false; 2])
             .show(ui, |ui| {
+                if compact {
+                    ui.collapsing("View filters", |ui| {
+                        self.show_perspective(ui);
+                        ui.horizontal_wrapped(|ui| self.show_filters(ui));
+                    });
+                }
+                let mut picked = None;
                 if choose_first {
                     let query = self.filters.search.trim();
-                    if let Some(&index) = self
+                    picked = self
                         .visible
                         .nodes
                         .iter()
                         .find(|&&i| self.graph.nodes[i].id.eq_ignore_ascii_case(query))
                         .or_else(|| self.visible.nodes.first())
-                    {
-                        self.selected = Some(Selection::Node(index));
-                        self.reveal_selected = true;
-                    }
+                        .copied();
                 }
                 for &index in &self.visible.nodes {
                     let node = &self.graph.nodes[index];
@@ -369,9 +458,12 @@ impl Viewer {
                         .truncate(),
                     );
                     if row.on_hover_text(&node.id).clicked() {
-                        self.selected = Some(Selection::Node(index));
-                        self.reveal_selected = true;
+                        picked = Some(index);
                     }
+                }
+                if let Some(index) = picked {
+                    self.inspect(Selection::Node(index));
+                    self.reveal_selected = true;
                 }
                 let graph = Arc::clone(&self.graph);
                 match &graph.perspectives {
@@ -397,14 +489,18 @@ impl Viewer {
             });
     }
 
+    fn open_overview(&mut self) {
+        self.pane = Pane::Details;
+        self.selected = None;
+        self.reveal_selected = false;
+    }
+
     fn show_details(&mut self, ui: &mut Ui) {
         ui.set_min_width(ui.available_width());
         if self.selected.is_some() {
             let back = ui.button("Model overview").on_hover_text("Alt+Home");
-            if back.clicked() || ui.input_mut(|input| input.consume_key(Modifiers::ALT, Key::Home))
-            {
-                self.selected = None;
-                self.reveal_selected = false;
+            if back.clicked() {
+                self.open_overview();
                 ui.ctx().request_repaint();
             }
         }
@@ -515,7 +611,7 @@ impl Viewer {
             ui.separator();
             ui.push_id(&edge.id, |ui| {
                 if ui.link(RichText::new(&edge.id).monospace()).clicked() {
-                    self.selected = Some(Selection::Edge(edge_index));
+                    self.inspect(Selection::Edge(edge_index));
                 }
                 ui.label(RichText::new(&edge.relation).monospace());
                 ui.horizontal_wrapped(|ui| {
@@ -675,7 +771,7 @@ impl Viewer {
         if in_lens && self.visible.nodes.binary_search(&node).is_err() {
             self.navigate(node, self.filters.lens);
         } else {
-            self.selected = Some(Selection::Node(node));
+            self.inspect(Selection::Node(node));
             self.reveal_selected = true;
         }
     }
@@ -690,7 +786,7 @@ impl Viewer {
     fn edge_link(&mut self, ui: &mut Ui, index: usize) {
         let edge = &self.graph.edges[index];
         if ui.link(&edge.id).on_hover_text(&edge.relation).clicked() {
-            self.selected = Some(Selection::Edge(index));
+            self.inspect(Selection::Edge(index));
         }
     }
 
@@ -753,7 +849,7 @@ impl Viewer {
             ui.strong(format!("Directed bundles ({})", bundles.len()));
             for b in bundles {
                 if ui.link(self.bundle_name(b)).clicked() {
-                    self.selected = Some(Selection::Bundle(b.from, b.to));
+                    self.inspect(Selection::Bundle(b.from, b.to));
                 }
             }
         }
@@ -795,7 +891,7 @@ impl Viewer {
             } else {
                 let to = fold.glyphs[fold.glyph_for[edge.to].unwrap()].node;
                 if ui.link("Inspect directed bundle").clicked() {
-                    self.selected = Some(Selection::Bundle(glyph.node, to));
+                    self.inspect(Selection::Bundle(glyph.node, to));
                 }
             }
         }
@@ -958,6 +1054,7 @@ mod tests {
             visible: graph.visible(&Filters::default()),
             graph: Arc::clone(&graph),
             layout: LayoutState::Pending(receiver),
+            pane: Pane::Nodes,
             zoom_percent: 100,
             reveal_selected: false,
             filename: "fragmented.gdd.yaml".into(),
@@ -1034,6 +1131,7 @@ mod tests {
             graph,
             filters,
             layout: LayoutState::Pending(receiver),
+            pane: Pane::Nodes,
             zoom_percent: 100,
             reveal_selected: false,
             filename: "partial.gddview".into(),
@@ -1079,6 +1177,7 @@ mod tests {
             visible,
             graph,
             layout: LayoutState::Failed("Unfolded layout fixture".into()),
+            pane: Pane::Nodes,
             zoom_percent: 100,
             reveal_selected: false,
             filename: "fixture".into(),

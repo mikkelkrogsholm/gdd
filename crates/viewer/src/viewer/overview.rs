@@ -49,7 +49,7 @@ impl Viewer {
             ui.strong("Declared sources");
             for (index, id) in graph.sources.keys().enumerate() {
                 if ui.link(id).clicked() {
-                    self.selected = Some(Selection::Source(index));
+                    self.inspect(Selection::Source(index));
                     ui.ctx().request_repaint();
                 }
             }

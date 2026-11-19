@@ -22,7 +22,7 @@ fn run(path: &Path) -> Result<(), String> {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([1480.0, 800.0])
-            .with_min_inner_size([850.0, 520.0]),
+            .with_min_inner_size([320.0, 300.0]),
         renderer: eframe::Renderer::Glow,
         ..Default::default()
     };
