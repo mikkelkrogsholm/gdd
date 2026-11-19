@@ -1,7 +1,8 @@
 mod api;
 mod identity;
+mod server;
 
-use std::{error::Error, io::Write, net::Ipv4Addr, path::PathBuf, process::ExitCode};
+use std::{error::Error, net::Ipv4Addr, path::PathBuf, process::ExitCode};
 
 use clap::Parser;
 use gdd_concert::Reservations;
@@ -18,7 +19,7 @@ struct Arguments {
     host: String,
 }
 
-#[tokio::main]
+#[ntex::main(signals = false)]
 async fn main() -> ExitCode {
     match run(Arguments::parse()).await {
         Ok(()) => ExitCode::SUCCESS,
@@ -35,12 +36,8 @@ async fn run(args: Arguments) -> Result<(), Box<dyn Error>> {
     let port = listener.local_addr()?.port();
     let shutdown = shutdown_signal()?;
     let reservations = Reservations::open(args.database).await?;
-    let app = api::router(reservations.clone(), port);
-    println!("Local Sessions: http://127.0.0.1:{port}");
-    std::io::stdout().flush()?;
-    let served = axum::serve(listener, app)
-        .with_graceful_shutdown(shutdown)
-        .await;
+    let app = api::App::new(reservations.clone(), port);
+    let served = server::serve(listener, app, shutdown).await;
     reservations.checkpoint().await.map_err(|error| {
         std::io::Error::other(format!(
             "Database checkpoint failed during shutdown: {error}"

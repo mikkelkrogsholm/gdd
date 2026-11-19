@@ -1,12 +1,11 @@
-use axum::{
-    Json,
-    http::StatusCode,
-    response::{IntoResponse, Response},
-};
 use gdd_concert::DomainError;
+use std::fmt;
+
+use ntex::http::{ConnectionType, Response, ResponseError, StatusCode};
 use serde::Serialize;
 use serde_json::json;
 
+#[derive(Debug)]
 pub enum Error {
     Domain(DomainError),
     InvalidInput(&'static str),
@@ -25,17 +24,17 @@ impl From<DomainError> for Error {
 }
 
 fn response(status: StatusCode, code: impl Serialize, message: &str) -> Response {
-    (
-        status,
-        Json(json!({"error": {"code": code, "message": message}})),
-    )
-        .into_response()
+    super::json_response(status).json(&json!({"error": {"code": code, "message": message}}))
 }
 
-impl IntoResponse for Error {
-    fn into_response(self) -> Response {
+impl Error {
+    pub fn invalid_framing() -> Self {
+        Self::InvalidInput("Send a JSON object with a content length.")
+    }
+
+    pub fn response(&self) -> Response {
         use StatusCode as S;
-        let (status, code, message) = match self {
+        let (status, code, message) = match *self {
             Self::Domain(error) => {
                 let status = match error {
                     DomainError::InvalidInput => S::BAD_REQUEST,
@@ -74,5 +73,23 @@ impl IntoResponse for Error {
             ),
         };
         response(status, code, message)
+    }
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{self:?}")
+    }
+}
+
+impl std::error::Error for Error {}
+
+impl ResponseError for Error {
+    fn error_response(&self) -> Response {
+        let mut response = self.response();
+        response
+            .head_mut()
+            .set_connection_type(ConnectionType::Close);
+        response
     }
 }

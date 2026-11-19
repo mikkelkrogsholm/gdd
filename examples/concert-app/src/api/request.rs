@@ -1,16 +1,16 @@
-use axum::{
-    body::to_bytes,
-    extract::{FromRequest, Request},
-    http::{HeaderMap, HeaderValue, header},
+use ntex::http::{
+    HeaderMap, Request,
+    header::{self, HeaderValue},
 };
 use serde_json::{Map, Value};
 
 use super::error::Error;
 
 const MAX_BODY: usize = 16 * 1024;
+const INVALID: Error = Error::InvalidInput("Send a valid JSON object of at most 16 KiB.");
 
 fn single<'a>(headers: &'a HeaderMap, name: &str) -> Option<&'a HeaderValue> {
-    let mut values = headers.get_all(name).iter();
+    let mut values = headers.get_all(name);
     let first = values.next()?;
     values.next().is_none().then_some(first)
 }
@@ -48,7 +48,7 @@ pub fn token(headers: &HeaderMap) -> Option<&str> {
 }
 
 pub fn expect_principal(headers: &HeaderMap, id: Option<&str>) -> Result<(), Error> {
-    let mut expectations = headers.get_all("x-concert-principal").iter();
+    let mut expectations = headers.get_all("x-concert-principal");
     let first = expectations.next();
     if expectations.next().is_some() {
         return Err(Error::InvalidInput(
@@ -69,13 +69,8 @@ impl JsonObject {
     pub fn string(&self, key: &str) -> Option<&str> {
         self.0.get(key)?.as_str()
     }
-}
 
-impl<S: Send + Sync> FromRequest<S> for JsonObject {
-    type Rejection = Error;
-
-    async fn from_request(request: Request, _: &S) -> Result<Self, Error> {
-        let headers = request.headers();
+    pub fn length(headers: &HeaderMap) -> Result<usize, Error> {
         let length = single(headers, "content-length");
         let media_type = single(headers, "content-type");
         let (Some(length), Some(media_type), false) = (
@@ -83,9 +78,7 @@ impl<S: Send + Sync> FromRequest<S> for JsonObject {
             media_type,
             headers.contains_key(header::TRANSFER_ENCODING),
         ) else {
-            return Err(Error::InvalidInput(
-                "Send a JSON object with a content length.",
-            ));
+            return Err(Error::invalid_framing());
         };
         if !media_type
             .to_str()
@@ -95,16 +88,23 @@ impl<S: Send + Sync> FromRequest<S> for JsonObject {
         {
             return Err(Error::InvalidInput("Send an application/json object."));
         }
-        const INVALID: Error = Error::InvalidInput("Send a valid JSON object of at most 16 KiB.");
-        let length: usize = length
+        length
             .to_str()
             .ok()
             .and_then(|s| s.parse().ok())
             .filter(|&n| n <= MAX_BODY)
-            .ok_or(INVALID)?;
-        let bytes = to_bytes(request.into_body(), MAX_BODY)
-            .await
-            .map_err(|_| INVALID)?;
+            .ok_or(INVALID)
+    }
+
+    pub async fn read(request: &mut Request, length: usize) -> Result<Self, Error> {
+        let mut bytes = Vec::with_capacity(length);
+        while let Some(chunk) = request.payload().recv().await {
+            let chunk = chunk.map_err(|_| INVALID)?;
+            if chunk.len() > length - bytes.len() {
+                return Err(INVALID);
+            }
+            bytes.extend_from_slice(&chunk);
+        }
         if bytes.len() != length {
             return Err(INVALID);
         }

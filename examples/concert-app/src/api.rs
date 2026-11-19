@@ -3,182 +3,156 @@
 mod error;
 mod request;
 
-use std::sync::Arc;
-
-use axum::{
-    Json, Router,
-    extract::{FromRequest, Request, State},
-    http::{HeaderMap, HeaderValue, Method, Uri, header},
-    middleware::{self, Next},
-    response::{IntoResponse, Response},
-    routing::{get, post},
+use gdd_concert::{Principal, Reservations};
+use ntex::http::{
+    HeaderMap, Method, Request, Response, ResponseBuilder, ResponseError, StatusCode, header,
 };
-use gdd_concert::{Catalog, History, Principal, ReservationStatus, Reservations};
-use serde_json::{Value, json};
+use serde_json::json;
 
 use crate::identity::{LoginError, Sessions};
-use error::Error;
+pub use error::Error;
 use request::{JsonObject, check_local, expect_principal, token};
 
-#[derive(Clone)]
-struct App {
-    sessions: Arc<Sessions>,
+pub struct App {
+    sessions: Sessions,
     reservations: Reservations,
+    hosts: [String; 2],
 }
 
-pub fn router(reservations: Reservations, port: u16) -> Router {
-    let hosts = [format!("127.0.0.1:{port}"), format!("localhost:{port}")];
-    Router::new()
-        .route("/api/session", get(session))
-        .route("/api/login", post(login))
-        .route("/api/logout", post(logout))
-        .route("/api/concerts", get(catalog))
-        .route("/api/reservations", get(history).post(reserve))
-        .route("/api/reservations/{id}/cancel", post(cancel))
-        .fallback(unknown)
-        .method_not_allowed_fallback(unknown)
-        .layer(middleware::from_fn_with_state(hosts, local_request))
-        .with_state(App {
-            sessions: Arc::default(),
-            reservations,
-        })
+pub fn invalid_framing() -> Response {
+    Error::invalid_framing().error_response()
 }
 
-async fn local_request(State(hosts): State<[String; 2]>, request: Request, next: Next) -> Response {
-    let mut response = match check_local(request.headers(), &hosts) {
-        Err(error) => error.into_response(),
-        Ok(()) if matches!(*request.method(), Method::GET | Method::POST) => {
-            next.run(request).await
-        }
-        Ok(()) => Error::NotFound.into_response(),
-    };
-    let headers = response.headers_mut();
-    headers.insert(
-        header::CONTENT_TYPE,
-        HeaderValue::from_static("application/json; charset=utf-8"),
-    );
-    headers.insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
-    headers.insert(
-        header::X_CONTENT_TYPE_OPTIONS,
-        HeaderValue::from_static("nosniff"),
-    );
-    headers.insert(
-        header::REFERRER_POLICY,
-        HeaderValue::from_static("same-origin"),
-    );
-    headers.insert(header::CONTENT_SECURITY_POLICY, HeaderValue::from_static("default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"));
+fn json_response(status: StatusCode) -> ResponseBuilder {
+    let mut response = Response::build(status);
+    response
+        .content_type("application/json; charset=utf-8")
+        .header(header::CACHE_CONTROL, "no-store")
+        .header(header::X_CONTENT_TYPE_OPTIONS, "nosniff")
+        .header(header::REFERRER_POLICY, "same-origin")
+        .header(header::CONTENT_SECURITY_POLICY, "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
     response
 }
 
-async fn unknown(request: Request) -> Result<(), Error> {
-    if request.method() == Method::POST {
-        JsonObject::from_request(request, &()).await?;
+impl App {
+    pub fn new(reservations: Reservations, port: u16) -> Self {
+        Self {
+            sessions: Sessions::default(),
+            reservations,
+            hosts: [format!("127.0.0.1:{port}"), format!("localhost:{port}")],
+        }
     }
-    Err(Error::NotFound)
-}
 
-fn principal(app: &App, headers: &HeaderMap) -> Result<Principal<'static>, Error> {
-    let id = app.sessions.profile(token(headers)).map(|p| p.id);
-    let principal = Principal::from_session(id).map_err(|_| Error::Unauthenticated)?;
-    expect_principal(headers, id)?;
-    Ok(principal)
-}
+    pub fn validate_head(&self, request: &Request) -> Result<Option<usize>, Error> {
+        check_local(request.headers(), &self.hosts)?;
+        match *request.method() {
+            Method::GET => Ok(None),
+            Method::POST => JsonObject::length(request.headers()).map(Some),
+            _ => Err(Error::NotFound),
+        }
+    }
 
-async fn session(State(app): State<App>, headers: HeaderMap) -> Json<Value> {
-    Json(json!({"principal": app.sessions.profile(token(&headers))}))
-}
+    pub async fn handle(&self, mut request: Request) -> Result<Response, Error> {
+        let result = match self.validate_head(&request)? {
+            None => self.get(&request).await,
+            Some(length) => {
+                let body = JsonObject::read(&mut request, length).await?;
+                self.post(&request, &body).await
+            }
+        };
+        // Admission errors close the connection because its body may be unread.
+        // Fully admitted requests may reuse the connection after a domain error.
+        Ok(result.unwrap_or_else(|error| error.response()))
+    }
 
-async fn login(
-    State(app): State<App>,
-    headers: HeaderMap,
-    body: JsonObject,
-) -> Result<Response, Error> {
-    let (token, profile) = app
-        .sessions
-        .login(
-            token(&headers),
-            body.string("username"),
-            body.string("password"),
-        )
-        .map_err(|error| match error {
-            LoginError::InvalidCredentials => Error::InvalidCredentials,
-            LoginError::RandomnessUnavailable => Error::Internal,
-        })?;
-    let cookie = format!("concert_session={token}; HttpOnly; SameSite=Strict; Path=/");
-    Ok((
-        [(header::SET_COOKIE, cookie)],
-        Json(json!({"principal": profile})),
-    )
-        .into_response())
-}
+    async fn get(&self, request: &Request) -> Result<Response, Error> {
+        let headers = request.headers();
+        let mut ok = json_response(StatusCode::OK);
+        match request.path() {
+            "/api/session" => {
+                Ok(ok.json(&json!({"principal": self.sessions.profile(token(headers))})))
+            }
+            "/api/concerts" => Ok(ok.json(&self.reservations.catalog().await?)),
+            "/api/reservations" => {
+                Ok(ok.json(&self.reservations.list_own(self.principal(headers)?).await?))
+            }
+            _ => Err(Error::NotFound),
+        }
+    }
 
-async fn logout(
-    State(app): State<App>,
-    headers: HeaderMap,
-    _: JsonObject,
-) -> Result<Response, Error> {
-    let token = token(&headers);
-    expect_principal(&headers, app.sessions.profile(token).map(|p| p.id))?;
-    app.sessions.logout(token);
-    Ok((
-        [(
-            header::SET_COOKIE,
-            "concert_session=; Max-Age=0; HttpOnly; SameSite=Strict; Path=/",
-        )],
-        Json(json!({"principal": null})),
-    )
-        .into_response())
-}
+    async fn post(&self, request: &Request, body: &JsonObject) -> Result<Response, Error> {
+        let headers = request.headers();
+        match request.path() {
+            "/api/login" => self.login(headers, body),
+            "/api/logout" => self.logout(headers),
+            "/api/reservations" => {
+                let reserved = self
+                    .reservations
+                    .reserve(
+                        self.principal(headers)?,
+                        body.string("concert_id").unwrap_or_default(),
+                        body.string("request_key").unwrap_or_default(),
+                    )
+                    .await?;
+                Ok(json_response(StatusCode::OK).json(&reserved))
+            }
+            path => {
+                let id = cancellation_id(path).ok_or(Error::NotFound)?;
+                let cancelled = self
+                    .reservations
+                    .cancel(self.principal(headers)?, id)
+                    .await?;
+                Ok(json_response(StatusCode::OK).json(&cancelled))
+            }
+        }
+    }
 
-async fn catalog(State(app): State<App>) -> Result<Json<Catalog>, Error> {
-    Ok(Json(app.reservations.catalog().await?))
-}
+    fn principal(&self, headers: &HeaderMap) -> Result<Principal<'static>, Error> {
+        let id = self.sessions.profile(token(headers)).map(|p| p.id);
+        let principal = Principal::from_session(id).map_err(|_| Error::Unauthenticated)?;
+        expect_principal(headers, id)?;
+        Ok(principal)
+    }
 
-async fn history(State(app): State<App>, headers: HeaderMap) -> Result<Json<History>, Error> {
-    Ok(Json(
-        app.reservations
-            .list_own(principal(&app, &headers)?)
-            .await?,
-    ))
-}
-
-async fn reserve(
-    State(app): State<App>,
-    headers: HeaderMap,
-    body: JsonObject,
-) -> Result<Json<ReservationStatus>, Error> {
-    Ok(Json(
-        app.reservations
-            .reserve(
-                principal(&app, &headers)?,
-                body.string("concert_id").unwrap_or_default(),
-                body.string("request_key").unwrap_or_default(),
+    fn login(&self, headers: &HeaderMap, body: &JsonObject) -> Result<Response, Error> {
+        let (token, profile) = self
+            .sessions
+            .login(
+                token(headers),
+                body.string("username"),
+                body.string("password"),
             )
-            .await?,
-    ))
+            .map_err(|error| match error {
+                LoginError::InvalidCredentials => Error::InvalidCredentials,
+                LoginError::RandomnessUnavailable => Error::Internal,
+            })?;
+        let cookie = format!("concert_session={token}; HttpOnly; SameSite=Strict; Path=/");
+        Ok(json_response(StatusCode::OK)
+            .header(header::SET_COOKIE, cookie)
+            .json(&json!({"principal": profile})))
+    }
+
+    fn logout(&self, headers: &HeaderMap) -> Result<Response, Error> {
+        let token = token(headers);
+        expect_principal(headers, self.sessions.profile(token).map(|p| p.id))?;
+        self.sessions.logout(token);
+        Ok(json_response(StatusCode::OK)
+            .header(
+                header::SET_COOKIE,
+                "concert_session=; Max-Age=0; HttpOnly; SameSite=Strict; Path=/",
+            )
+            .json(&json!({"principal": null})))
+    }
 }
 
-async fn cancel(
-    State(app): State<App>,
-    headers: HeaderMap,
-    uri: Uri,
-    _: JsonObject,
-) -> Result<Json<ReservationStatus>, Error> {
-    // The public identifier alphabet applies to the original, unescaped path.
-    let id = uri
-        .path()
-        .strip_prefix("/api/reservations/")
-        .and_then(|s| s.strip_suffix("/cancel"))
+// The public identifier alphabet applies to the original, unescaped path.
+fn cancellation_id(path: &str) -> Option<&str> {
+    path.strip_prefix("/api/reservations/")?
+        .strip_suffix("/cancel")
         .filter(|id| {
             !id.is_empty()
                 && id
                     .bytes()
                     .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
         })
-        .ok_or(Error::NotFound)?;
-    Ok(Json(
-        app.reservations
-            .cancel(principal(&app, &headers)?, id)
-            .await?,
-    ))
 }

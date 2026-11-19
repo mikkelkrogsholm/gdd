@@ -113,6 +113,23 @@ fn admission_enforces_the_listener_origin_media_type_and_json_limit() {
 }
 
 #[test]
+fn repeated_content_length_returns_the_public_admission_error() {
+    let dir = tempdir().unwrap();
+    let server = Server::start(&dir.path().join("db"));
+    // The POST helper supplies the matching length of the JSON object.
+    let rejected = server.post("/api/login", json!({}), &[("Content-Length", "2")]);
+    rejected.error(400, "InvalidInput");
+    assert_eq!(
+        rejected.body["error"]["message"],
+        "Send a JSON object with a content length."
+    );
+    assert_eq!(rejected.headers["cache-control"], "no-store");
+    assert_eq!(rejected.headers["x-content-type-options"], "nosniff");
+    assert_eq!(rejected.headers["referrer-policy"], "same-origin");
+    assert!(rejected.headers["content-security-policy"].contains("frame-ancestors 'none'"));
+}
+
+#[test]
 fn login_rotates_revokes_and_preserves_other_sessions_on_stale_actions() {
     let dir = tempdir().unwrap();
     let server = Server::start(&dir.path().join("db"));

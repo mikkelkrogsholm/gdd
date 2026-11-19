@@ -57,10 +57,12 @@ Run the domain and HTTP checks locally with `cargo test --locked -p gdd-concert`
 The HTTP suite starts the executable on ephemeral ports using temporary databases.
 On Unix it also exercises SIGINT, SIGTERM, request draining and restart.
 
-The original service rejects repeated identical Content-Length fields with 400.
-The native HTTP/1 transport normalizes identical lengths to a single field before
-application validation. Both services reject conflicting lengths. The native
-body limit is 16 KiB. This transport difference is open for the native cutover.
+The native HTTP/1 parser rejects repeated Content-Length fields with the
+JSON error `400 InvalidInput` before routing. The body limit is 16 KiB.
+Repeated Host fields or an unexpected Host or Origin on a parsed request
+return `403 Forbidden`. If the same request has both a repeated length and an
+invalid local address or origin, the native parser returns 400. The Python
+service checks the address and origin first and returns 403 in that case.
 
 ## Native Rust reservation library
 
