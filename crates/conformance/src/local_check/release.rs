@@ -129,7 +129,7 @@ pub(super) fn check(run: &mut Run<'_>) -> Result<()> {
             && summary["final_cargo_exit"] == 0,
         "installed quote workflow did not record an accepted red/green Cargo run"
     );
-    Ok(())
+    super::source_package::check(run, recipient.path())
 }
 
 #[cfg(test)]
@@ -160,6 +160,7 @@ mod tests {
             target: dir.path().join("custom cache"),
             cli: None,
             installed: Default::default(),
+            source_package: None,
             steps: Vec::new(),
             toolchain: Default::default(),
         };

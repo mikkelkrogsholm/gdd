@@ -128,14 +128,21 @@ The driver runs all 20 full-check steps, including the nine named conformance
 suites and the standalone Rust skill tests and asset checks. It then runs three
 locked path installs from the selected checkout into `install/bin/` and
 exercises the optimized binaries from a temporary recipient directory outside
-the checkout. Use `--checkout PATH` before `local-check` to select the source
-and fixtures. An explicit `CARGO_TARGET_DIR` supplies the build cache.
+the checkout. It also packages the root CLI and Rust library and runs the locked
+root tests from a fresh extraction of the retained Cargo archive. Use
+`--checkout PATH` before `local-check` to select the source
+and fixtures. An explicit `CARGO_TARGET_DIR` supplies the build cache for
+the checkout. The extracted package uses a fresh build directory so Cargo
+compiles its test executables and dependencies for this archive.
 
 Keep the following artifacts in the output directory.
 
 - `summary.json` records commands, working directories, timings, process
   outcomes, host, toolchain and the paths and SHA-256 identities of installed
-  binaries. Each step has separate stdout and stderr logs.
+  binaries and the source package. Each step has separate stdout and stderr logs.
+- `gdd-<version>.crate` is the tested CLI and library source archive. Its path
+  and SHA-256 are in `summary.json` under `source_package`. The
+  `source-package-tests` logs capture the test run from its extracted sources.
 - `verify-install.json` records the installed CLI's 34 controls and the
   identities of the installed and source-built executables. The source-built
   executable comes from the workspace build's Cargo artifact report.
@@ -147,16 +154,15 @@ Keep the following artifacts in the output directory.
 
 ### Test the root Cargo source package
 
-From a clean checkout, package the `gdd` CLI and library and run the root Rust
-test suite from the extracted source. The example uses a fresh directory for
-the archive and recipient. Add `--offline` to each Cargo command when the
-locked dependencies are already cached.
+From the checkout, unpack the retained archive into a new directory and run
+its tests. For offline verification with cached dependencies, set
+`CARGO_NET_OFFLINE=true` before running the release check or repeating its tests.
 
 ```sh
 GDD_SOURCE_TEST=$(mktemp -d)
-cargo package --locked -p gdd --target-dir "$GDD_SOURCE_TEST/build"
-tar -xzf "$GDD_SOURCE_TEST"/build/package/gdd-*.crate -C "$GDD_SOURCE_TEST"
-(cd "$GDD_SOURCE_TEST"/gdd-* && cargo test --locked)
+tar -xzf ../gdd-native-release/gdd-*.crate -C "$GDD_SOURCE_TEST"
+(cd "$GDD_SOURCE_TEST"/gdd-* && CARGO_BUILD_BUILD_DIR="$GDD_SOURCE_TEST/target" \
+  cargo test --locked --target-dir "$GDD_SOURCE_TEST/target")
 ```
 
 The package tests regenerate both concert model views and the greenfield

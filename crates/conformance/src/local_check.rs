@@ -15,6 +15,7 @@ use time::{OffsetDateTime, format_description::well_known::Rfc3339};
 
 mod plan;
 mod release;
+mod source_package;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(super) enum Mode {
@@ -78,6 +79,7 @@ struct Run<'a> {
     target: PathBuf,
     cli: Option<PathBuf>,
     installed: Map<String, Value>,
+    source_package: Option<Value>,
     steps: Vec<Value>,
     toolchain: Map<String, Value>,
 }
@@ -198,6 +200,7 @@ pub(super) fn run(root: &Path, mode: Mode, output: Option<PathBuf>) -> Result<Ex
         target,
         cli: None,
         installed: Map::new(),
+        source_package: None,
         steps: Vec::new(),
         toolchain: Map::new(),
     };
@@ -213,6 +216,7 @@ pub(super) fn run(root: &Path, mode: Mode, output: Option<PathBuf>) -> Result<Ex
     });
     if mode == Mode::Release {
         summary["installed"] = Value::Object(run.installed);
+        summary["source_package"] = json!(run.source_package);
     }
     if let Err(error) = &result {
         summary["error"] = json!(format!("{error:#}"));
