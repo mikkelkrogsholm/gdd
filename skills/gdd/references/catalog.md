@@ -86,14 +86,17 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `evidence/review-loops/README.md`
 - `evidence/viewer-cytoscape-0.3.0/README.md`
 - `evidence/visualization-review.md`
+- `examples/README.md`
 - `examples/agent-native/README.md`
 - `examples/concert-0.3.gdd.yaml`
+- `examples/concert-0.3.gddview`
 - `examples/concert-0.3.graph.html`
 - `examples/concert.gdd.yaml`
 - `examples/concert.graph.html`
 - `examples/graphify/README.md`
 - `examples/graphify/producer-evidence.json`
 - `examples/product/greenfield.gdd.json`
+- `examples/product/greenfield.gddview`
 - `examples/product/greenfield.graph.html`
 - `examples/product/partial.gdd.json`
 - `examples/product/refactoring.gdd.json`

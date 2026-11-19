@@ -25,11 +25,11 @@ active reservations for a person is refused without modifying history.
 
 ## Model and checks
 
-Read [requirements](REQUIREMENTS.md), [HTTP contracts](HTTP.md), [design](DESIGN.md),
-and the [interactive graph](graph.html). [gdd.json](gdd.json) contains the current
-component rationales and public action contracts.
-The graph is regenerated with the current viewer; its layout is a current
-presentation of the model, separate from the original experiment's captures.
+Read the [requirements](REQUIREMENTS.md), [HTTP contracts](HTTP.md) and [design](DESIGN.md).
+From the repository root, run `gdd-viewer examples/concert-app/graph.gddview`
+to explore the [native graph](graph.gddview). It contains the component rationales
+and public action contracts from [gdd.json](gdd.json). The [released HTML view](graph.html)
+also presents this model. The original execution captures are in the experiment archive.
 
 | Component | Responsibility |
 | --- | --- |

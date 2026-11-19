@@ -123,44 +123,48 @@ fn exit_parse_and_parity_failures_stop_at_the_first_control() -> Result<()> {
 
 #[cfg(unix)]
 #[test]
-fn independent_native_views_must_match_even_with_equal_generation_reports() -> Result<()> {
+fn equal_generation_reports_still_require_matching_generated_and_distributed_views() -> Result<()> {
     let folder = tempfile::tempdir()?;
     let candidate = folder.path().join("installed binary");
     let reference = folder.path().join("reference binary");
-    for (path, artifact) in [
-        (&candidate, "candidate bytes"),
-        (&reference, "reference bytes"),
+    // Both files are valid native views. Only the 0.2 view matches the legacy model.
+    let legacy = "examples/concert.gddview";
+    let current = "examples/concert-0.3.gddview";
+    for (label, reference_artifact, diagnostic) in [
+        ("disagreement", legacy, "native view bytes differ"),
+        (
+            "stale",
+            current,
+            "stale distributed native view examples/concert.gddview",
+        ),
     ] {
-        program(
-            path,
-            &format!(
-                r#"test "$HOME" = "$PWD" && test -f examples/concert.gdd.yaml || exit 9
-if test "$1" = view; then printf '%s' '{artifact}' > "$4"; fi
+        for (path, artifact) in [(&candidate, current), (&reference, reference_artifact)] {
+            program(
+                path,
+                &format!(
+                    r#"test "$HOME" = "$PWD" && test -f examples/concert.gdd.yaml || exit 9
+if test "$1" = view; then command -p cp '{artifact}' "$4" || exit 9; fi
 echo '{{"format":"gdd-report/0.2"}}'"#
-            ),
-        )?;
+                ),
+            )?;
+        }
+        let output = folder.path().join(format!("{label} receipt.json"));
+        assert_eq!(
+            driver(&candidate, &reference, &output)
+                .output()?
+                .status
+                .code(),
+            Some(1)
+        );
+        let report: Value = serde_json::from_slice(&fs::read(output)?)?;
+        let controls = report["controls"].as_array().unwrap();
+        assert_eq!(controls.len(), 5);
+        assert!(controls[..4].iter().all(|item| item["passed"] == true));
+        assert_eq!(controls[4]["name"], "legacy-view");
+        assert_eq!(controls[4]["installed"]["exit_code"], 0);
+        assert_eq!(controls[4]["reference"]["exit_code"], 0);
+        assert!(controls[4]["error"].as_str().unwrap().contains(diagnostic));
     }
-    let output = folder.path().join("view receipt.json");
-    assert_eq!(
-        driver(&candidate, &reference, &output)
-            .output()?
-            .status
-            .code(),
-        Some(1)
-    );
-    let report: Value = serde_json::from_slice(&fs::read(output)?)?;
-    let controls = report["controls"].as_array().unwrap();
-    assert_eq!(controls.len(), 5);
-    assert!(controls[..4].iter().all(|item| item["passed"] == true));
-    assert_eq!(controls[4]["name"], "legacy-view");
-    assert_eq!(controls[4]["installed"]["exit_code"], 0);
-    assert_eq!(controls[4]["reference"]["exit_code"], 0);
-    assert!(
-        controls[4]["error"]
-            .as_str()
-            .unwrap()
-            .contains("native view bytes differ")
-    );
     Ok(())
 }
 

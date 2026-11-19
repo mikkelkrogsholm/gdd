@@ -12,6 +12,20 @@ real-source architecture controls and a portable replay. Its complete original
 experiment is recoverable from the [indexed archive](../archive/experiments/README.md).
 For a new project, use `gdd init` and the [GDD skill](../skills/gdd/SKILL.md).
 
+## Open a native example
+
+From the repository root, open a saved graph with the [installed native viewer](../INSTALL.md#install-the-rust-cli-and-viewer),
+for example `gdd-viewer examples/concert-0.3.gddview`. Each file contains the full graph and opens offline.
+
+| Model | Saved graph | What to explore |
+| --- | --- | --- |
+| [Concert 0.2](concert.gdd.yaml) | [concert.gddview](concert.gddview) | Reservation actions and their interfaces |
+| [Concert 0.3](concert-0.3.gdd.yaml) | [concert-0.3.gddview](concert-0.3.gddview) | Public contracts and community boundaries |
+| [Product](product/greenfield.gdd.json) | [greenfield.gddview](product/greenfield.gddview) | The same booking flow from the journey, component and data perspectives |
+| [Local Sessions](concert-app/gdd.json) | [graph.gddview](concert-app/graph.gddview) | The reservation policy and component responsibilities in the runnable app |
+
+## Model files
+
 - [Product perspectives](../docs/PERSPECTIVES.md): `product/greenfield.gdd.json`,
   `product/refactoring.gdd.json` and `product/partial.gdd.json` connect human journeys,
   components and domain data with stable IDs and an exact local extension asset.
@@ -31,8 +45,7 @@ No workflow policy is chosen in the standard examples below. Missing policy prev
 
 The standard examples are used for format and method semantics. The practical quote example is separate under `agent-native/`; it grants no implicit authorization to other projects.
 
-[concert.graph.html](concert.graph.html) is a generated, interactive, offline [GDD view](../VIEWER.md) of the concert model. It is read-only, contains no application evidence, and is not a normative model asset.
-
+The [concert HTML view](concert.graph.html) opens offline in a browser and illustrates the [released Python viewer](../VIEWER.md#released-browser-viewer).
 
 ## GDD 0.3 design-quality example
 
@@ -47,5 +60,5 @@ these bytes; no reservation application execution is claimed.
 [The planned design review](design-review.planned.json) declares executed=false and
 unknown assessments. It is a format example, not review evidence.
 [The derived public view](concert-0.3.boundaries.json) and
-[interactive graph](concert-0.3.graph.html) preserve IDs and revision.
+[released HTML view](concert-0.3.graph.html) preserve IDs and revision.
 Existing 0.2 examples and the native-agent run remain unchanged.

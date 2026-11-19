@@ -13,9 +13,19 @@ pub(super) fn check(run: &mut Runner) -> Result<()> {
         read_json(&run.recipient.join("examples/concert-0.3.boundaries.json"))?;
     let schema = read_json(&run.recipient.join("schemas/perspectives.schema.json"))?;
     let validator = gdd::validation::build_schema(&schema)?;
-    for (name, model, version) in [
-        ("legacy", "examples/concert.gdd.yaml", "gdd/0.2"),
-        ("current", CURRENT, "gdd/0.3"),
+    for (name, model, version, distributed) in [
+        (
+            "legacy",
+            "examples/concert.gdd.yaml",
+            "gdd/0.2",
+            "examples/concert.gddview",
+        ),
+        (
+            "current",
+            CURRENT,
+            "gdd/0.3",
+            "examples/concert-0.3.gddview",
+        ),
     ] {
         run.case(&format!("{name}-model"), 0, |case| {
             let report = case.compare(&["validate", model])?;
@@ -63,6 +73,13 @@ pub(super) fn check(run: &mut Runner) -> Result<()> {
                 bytes == reference_bytes,
                 "independently generated {name} native view bytes differ; installed SHA-256 {}, reference SHA-256 {}",
                 gdd::sha256(&bytes), gdd::sha256(&reference_bytes)
+            );
+            let shipped = fs::read(case.recipient.join(distributed))
+                .with_context(|| format!("read distributed native view {distributed}"))?;
+            ensure!(
+                bytes == shipped,
+                "stale distributed native view {distributed}: shipped SHA-256 {}, regenerated SHA-256 {}",
+                gdd::sha256(&shipped), gdd::sha256(&bytes)
             );
             Ok(())
         })?;

@@ -1,3 +1,9 @@
+# Model revisions, evidence digests and generated views depend on exact bytes.
+* text=auto eol=lf
+# These captures were committed with CRLF.
+/conformance/code.diagnostics.csv -text
+/evidence/readiness/journeys/existing-final/evidence/commands.csv -text
+
 /templates/project/gdd.json text eol=lf
 /templates/project/records.json text eol=lf
 /templates/project/SOURCES.md text eol=lf

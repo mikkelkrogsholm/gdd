@@ -19,8 +19,10 @@ pub(super) const TOTAL: usize = 33;
 
 const FIXTURES: &[&str] = &[
     "examples/concert.gdd.yaml",
+    "examples/concert.gddview",
     "examples/concert.records.yaml",
     "examples/concert-0.3.gdd.yaml",
+    "examples/concert-0.3.gddview",
     "examples/concert-0.3.records.yaml",
     "examples/sources/legacy-concert.gdd.yaml",
     "examples/concert-0.3.boundaries.json",

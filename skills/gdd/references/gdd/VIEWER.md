@@ -2,7 +2,12 @@
 
 ## Share a native view
 
-Build the CLI and desktop viewer from the repository root. Save a graph with
+To try the [concert reservation graph](examples/concert-0.3.gddview) with an
+installed viewer, run `gdd-viewer examples/concert-0.3.gddview` from the repository root.
+The [example gallery](examples/README.md#open-a-native-example) includes both concert model
+versions, a product journey and the runnable concert application's graph.
+
+To create your own view, build the CLI and desktop viewer from the repository root. Save a graph with
 the Rust CLI, then open its file in the native viewer.
 
 ```sh

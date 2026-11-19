@@ -14,8 +14,9 @@ result through interactive views. The implementation language and agent runtime
 remain project choices.
 
 **Current Rust source checkout.** Install the `gdd` CLI and `gdd-viewer` desktop
-application with Rust 1.95+ and Cargo. Create a draft, validate it, and open a
-portable `.gddview` file by following the [native quickstart](INSTALL.md#install-the-rust-cli-and-viewer).
+application with Rust 1.95+ and Cargo. From the repository root, run
+`gdd-viewer examples/concert-0.3.gddview` to explore the [concert reservation graph](examples/concert-0.3.gddview).
+The [native quickstart](INSTALL.md#install-the-rust-cli-and-viewer) covers installation, creating a draft and saving your own view.
 
 **Tagged Python prerelease.** [v0.8.0](https://github.com/mikkelkrogsholm/gdd/releases/tag/v0.8.0)
 includes the Python 3.11+ CLI, draft GDD 0.3, Graphify adapter, project starter,
@@ -57,8 +58,8 @@ checker can verify the actual implementation.
 
 For a compact product model, describe [human journeys, components and domain data](docs/PERSPECTIVES.md)
 as three connected perspectives of the same graph, including partial sketches and
-component refactoring with stable IDs. Open the [product viewer demo](examples/product/greenfield.graph.html)
-and switch between User journey, Components and Data model.
+component refactoring with stable IDs. Open the [product example](examples/product/greenfield.gddview)
+with `gdd-viewer examples/product/greenfield.gddview` and switch between User journey, Components and Data model.
 
 ## Start with the tutorial
 
@@ -162,7 +163,7 @@ missing required design or contract information stays explicit.
 | Session overview | `gdd status` keeps existing assessments separate and summarizes diagnostic-grounded next actions, with an optional explicit workflow run |
 | Change consequences | `gdd impact` explains declared potential callers/dependents with directional witnesses and separate supporting context |
 | Model review | `gdd diff` compares stable IDs and exact declared fields across two models, with advisory structural weakening indicators |
-| Graph exploration | Generate and verify a standalone interactive HTML view with search, communities and inspectors |
+| Graph exploration | Save and verify a portable graph for the native viewer, with search, communities and inspectors |
 | Agent context and public boundaries | Extract revision-bound context and derived component/community interfaces |
 | Development workflow | Prepare work packages and journal dispatch, submission, integration, cancellation and acceptance |
 | Existing-code observations | Lossless Graphify import/export and explicit unaccepted intent proposals for the documented profiles |

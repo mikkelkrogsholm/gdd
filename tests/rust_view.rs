@@ -21,6 +21,35 @@ fn generate(model: &Path, output: &Path, scope: &[&str]) -> Output {
 const SKETCH: &str = include_str!("../examples/sketch.gdd.yaml");
 
 #[test]
+fn shipped_full_views_match_fresh_cli_output() {
+    let examples = Path::new(env!("CARGO_MANIFEST_DIR")).join("examples");
+    let outputs = tempfile::tempdir().unwrap();
+    for (model, distributed) in [
+        ("concert.gdd.yaml", "concert.gddview"),
+        ("concert-0.3.gdd.yaml", "concert-0.3.gddview"),
+        ("product/greenfield.gdd.json", "product/greenfield.gddview"),
+        ("concert-app/gdd.json", "concert-app/graph.gddview"),
+    ] {
+        let output = outputs
+            .path()
+            .join(Path::new(distributed).file_name().unwrap());
+        let generated = generate(&examples.join(model), &output, &[]);
+        assert!(
+            generated.status.success(),
+            "generate examples/{distributed} from examples/{model}: {} {}",
+            String::from_utf8_lossy(&generated.stderr),
+            String::from_utf8_lossy(&generated.stdout)
+        );
+        let shipped = fs::read(examples.join(distributed))
+            .unwrap_or_else(|error| panic!("read examples/{distributed}: {error}"));
+        assert!(
+            fs::read(output).unwrap() == shipped,
+            "stale distributed native view examples/{distributed}, regenerate from examples/{model}"
+        );
+    }
+}
+
+#[test]
 fn relocated_file_retains_one_capture_with_declared_fragments_and_hashes() {
     let inputs = tempfile::tempdir().unwrap();
     let destination = tempfile::tempdir().unwrap();

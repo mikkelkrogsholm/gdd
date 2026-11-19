@@ -44,13 +44,13 @@ ordering, never a code execution dependency. All product relations have
 
 ## Inspect and compare
 
-From a current source checkout:
+With the native CLI and viewer installed, run these commands from the repository root.
 
 ```sh
-uv run gdd view examples/product/greenfield.gdd.json --output /tmp/product.html
-uv run gdd perspectives examples/product/greenfield.gdd.json
-uv run gdd perspectives examples/product/partial.gdd.json --output /tmp/partial-perspectives.json
-uv run gdd diff examples/product/greenfield.gdd.json examples/product/refactoring.gdd.json
+gdd-viewer examples/product/greenfield.gddview
+gdd perspectives examples/product/greenfield.gdd.json
+gdd perspectives examples/product/partial.gdd.json --output /tmp/partial-perspectives.json
+gdd diff examples/product/greenfield.gdd.json examples/product/refactoring.gdd.json
 ```
 
 Output files must be new paths. The compact [greenfield model](../examples/product/greenfield.gdd.json)
@@ -84,19 +84,19 @@ storage, plus action effects derived through the action's `owned_by` component.
 Every link retains canonical `edge_ids` as witnesses; no synthetic canonical
 edge is created and duplicate endpoint pairs retain their distinct relations.
 
-Python callers can use `perspectives(path)`. A viewer can call
-`load_perspective_bundle(path)` once, then `perspective_data(bundle)` to project
+Rust callers can use `gdd::perspectives::perspectives(path)`. A viewer can call
+`load_perspective_bundle(path)` once, then `perspective_data(&bundle)` to project
 the already validated, unchanged bundle without reading arbitrary model paths.
-Do not mutate the bundle between validation and projection. Returned records
-are copies and may be used by a consumer without mutating the model.
+See the [Rust API example](rust-migration.md#inspect-journey-component-and-data-perspectives).
 
-Open the HTML file offline and use **User journey**, **Components** and **Data
-model** in the Perspective selector. The viewer embeds this same Python projection;
-its lenses intersect with the artifact scope and other filters. Inspector links
+Open the [native product view](../examples/product/greenfield.gddview) offline and choose
+**User journey**, **Components** or **Data model** in the Perspective selector.
+Each perspective intersects with the artifact scope and other filters. Inspector links
 retain canonical IDs across views. Human action/response, actor role/goal, fields,
 rules and cardinalities are inspectable. The visible advisory gap list links to
 canonical targets without making incomplete sketches invalid. See the
-[viewer guide](../VIEWER.md) and [openable demo](../examples/product/greenfield.graph.html).
+[viewer guide](../VIEWER.md). For the released Python renderer, open the
+[standalone HTML example](../examples/product/greenfield.graph.html) in a browser.
 
 ## Advisory limits and compatibility
 
