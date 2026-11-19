@@ -1,7 +1,10 @@
 //! Code snapshot, caller-attested receipt and immutable ledger contracts.
 
 use gdd::bundle::load_model_only;
-use gdd::host::{Attestation, append_records, snapshot_code, verification_records};
+use gdd::host::{
+    Attestation, CheckCommand, append_records, execute_check_v01, snapshot_code,
+    verification_records,
+};
 use gdd::report::CheckResult;
 use gdd::validation::{Profile, ValidationOptions, validate_with_options};
 use serde_json::{Value, json};
@@ -10,6 +13,7 @@ use std::{
     fs, io,
     path::{Path, PathBuf},
     process::Command,
+    time::Duration,
 };
 
 const CHECK: &str = "check.value";
@@ -188,26 +192,27 @@ fn actual_compiler_result_remains_bound_to_explicit_host_trust() {
         project.environment.insert("rustc".into(), version.clone());
         project.checker = json!({"name":"rustc","version":version});
         let before = snapshot_code(root, SOURCES).unwrap();
-        let argv = ["--crate-type=lib", "--emit=metadata", "checks/value.rs"];
-        let output = Command::new("rustc")
-            .args(argv)
-            .current_dir(root)
-            .output()
-            .unwrap();
-        assert_eq!(output.status.code(), Some(code));
-        let after = snapshot_code(root, SOURCES).unwrap();
-        let result = if output.status.success() {
-            "PASS"
-        } else {
-            "FAIL"
+        let command = CheckCommand {
+            argv: &[
+                "rustc",
+                "--crate-type=lib",
+                "--emit=metadata",
+                "checks/value.rs",
+            ],
+            env: &[],
         };
-        write(
+        let receipt = execute_check_v01(
+            root,
+            SOURCES,
             &project.receipt,
-            &json!({"format":"gdd-host-check/0.1","command": ["rustc", argv[0], argv[1], argv[2]],
-            "cwd":root, "executed":true, "exit_code":output.status.code(),"result":result,
-            "stdout":String::from_utf8_lossy(&output.stdout), "stderr":String::from_utf8_lossy(&output.stderr),
-            "snapshot":before,"code_revision":before.revision,"code_revision_after":after.revision}),
-        );
+            command,
+            Duration::from_secs(30),
+            project.checker.as_object().unwrap(),
+        )
+        .unwrap();
+        assert_eq!(receipt["exit_code"], code);
+        assert_eq!(receipt["result"], label);
+        assert_eq!(read(&project.receipt), receipt);
 
         let opts = project.options();
         let fragment = project.attest(&opts).unwrap();

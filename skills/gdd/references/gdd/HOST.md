@@ -2,9 +2,9 @@
 
 The GDD CLI prepares and validates models, work packages and run journals. Your
 existing agent runtime owns reasoning, actual edits, command execution, review
-and trusted policy. The Rust and Python host APIs capture code snapshots and
-author evidence for existing check receipts. The Python API can also execute a
-caller-selected check. These operations have no LLM or provider dependency.
+and trusted policy. The Rust and Python host APIs execute caller-selected checks,
+capture code snapshots and author evidence from reviewed receipts. These
+operations have no LLM or provider dependency.
 
 For a complete small example before using these API details, follow the
 [graph-to-code tutorial](docs/tutorial.md). It runs real local tests and records
@@ -131,12 +131,56 @@ receipt = execute_check(
 )
 ```
 
-Create the evidence parent directory first. An existing receipt is refused before
-execution so an accidental retry cannot repeat effects. Exit 0 is PASS; exit 1 is
-FAIL; other codes, a timeout or unavailable execution are UNKNOWN. Use a checker
-with that exit contract. The receipt includes actual stdout/stderr, argv,
-timestamps, runner metadata and source snapshots before/after. Changed or missing
-selected source during execution remains UNKNOWN, even after exit 0.
+In Rust, select the existing `gdd-host-check/0.1` wire format with
+`execute_check_v01`. Supply the runner metadata you observed. This example
+identifies the application that calls the library.
+
+```rust
+use gdd::host::{CheckCommand, execute_check_v01};
+use serde_json::{Map, Value};
+use std::{io, path::Path, time::Duration};
+
+fn run_domain(root: &Path, python: &str) -> io::Result<Value> {
+    let command = CheckCommand {
+        argv: &[python, "-B", "-m", "unittest", "discover", "-s", "tests"],
+        env: &[],
+    };
+    let runner = Map::from_iter([
+        ("name".into(), env!("CARGO_PKG_NAME").into()),
+        ("version".into(), env!("CARGO_PKG_VERSION").into()),
+        ("os".into(), std::env::consts::OS.into()),
+    ]);
+    execute_check_v01(
+        root, &["src/domain.py", "src/cli.py", "tests/test_domain.py"],
+        &root.join("evidence/domain.run.json"), command, Duration::from_secs(120),
+        &runner,
+    )
+}
+```
+
+Pass the selected interpreter as `python`. Each argv entry must be a nonempty
+UTF-8 string without NUL. The timeout must be positive and at most one day.
+The child inherits the caller's environment, with any native key/value
+overrides supplied in `CheckCommand::env`. The helper preserves the runner
+object, including historical `python` and `platform` fields when supplied.
+The released Python v0.8 reader accepts this format. The Rust API makes the
+wire format and runner metadata explicit at each call.
+
+Create the evidence parent directory first. The helper checks the selected
+sources and reserves the output exclusively before starting the checker in
+the canonical root. An existing receipt prevents repeated effects. The
+returned JSON is also written to the receipt. It contains the literal argv,
+working directory, runner, UTC times, stdout, stderr, execution status, exit
+code, result, reason, initial snapshot and before/after revisions.
+
+Exit 0 reports PASS and exit 1 reports FAIL. Other codes, signals, timeout
+and failure to start report UNKNOWN. A Unix signal has a negative exit code.
+A timeout sets `executed` to true and a failure to start sets it to false.
+Both have a null exit code. Completed output uses UTF-8 replacement and
+normalizes CRLF and CR to LF. Partial output on timeout keeps its line endings.
+Changed or missing selected sources give UNKNOWN, including after exit 0.
+An unresolved final snapshot has a null after revision. Capture or receipt
+I/O errors return an error and retain any existing reservation.
 
 A passing test process still does not establish adequate test coverage. The host
 must verify the assertions and run declared negative controls on isolated code

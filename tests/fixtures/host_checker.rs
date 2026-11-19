@@ -12,10 +12,12 @@ use std::{
 fn main() {
     let mut args = env::args().skip(1);
     match args.next().as_deref().unwrap() {
-        "echo" => {
+        mode @ ("echo" | "echo-args") => {
             let code = args.next().unwrap().parse().unwrap();
             let args = args.collect::<Vec<_>>();
-            assert_eq!(io::stdin().read(&mut [0]).unwrap(), 0);
+            if mode == "echo" {
+                assert_eq!(io::stdin().read(&mut [0]).unwrap(), 0);
+            }
             io::stdout().write_all(args.join("\n").as_bytes()).unwrap();
             eprint!(
                 "{}:{}",
@@ -38,6 +40,13 @@ fn main() {
                 .unwrap();
             for action in args {
                 match action.as_str() {
+                    "output" => {
+                        io::stdout().write_all(b"out\xff\r\nend\r").unwrap();
+                        io::stdout().flush().unwrap();
+                        io::stderr().write_all(b"err\xfe\rbar\r\n").unwrap();
+                        io::stderr().flush().unwrap();
+                    }
+                    "abort" => process::abort(),
                     "change" => fs::write("selected", b"changed").unwrap(),
                     "remove" => fs::remove_file("selected").unwrap(),
                     "wait" => {

@@ -645,12 +645,21 @@ YAML nesting to 256 containers.
 | `diff_models`, `diff_text` | Native comparison of paths or captured models with scoped diagnostics, field changes, relocations and structural advisories. |
 | `check_code` | Native [`gdd::code_check::check_code`](../src/model/code_check/mod.rs) and [`gdd check-code`](python-imports.md#native-rust-command) assess explicit rules against captured Python sources using a caller-supplied CPython target. The [in-memory observer](../src/python_imports/mod.rs) is also available. |
 | `snapshot_code`, `verification_records`, `append_records` | Native library operations in `gdd::host`. Select explicit code files, attest a saved current PASS/FAIL receipt and append new immutable IDs to a records document. See the [host guide](../HOST.md#append-verified-records-and-supply-trust) for the Rust API example. |
-| `execute_check` | Python trusted-host process execution and receipt creation. The Rust authoring API consumes the same `gdd-host-check/0.1` format. |
+| `execute_check` | Trusted Rust callers can explicitly select the existing `gdd-host-check/0.1` format with `gdd::host::execute_check_v01` and supply their actual runner metadata. See the [host guide](../HOST.md#execute-a-host-selected-check) for a complete call. |
 
-The native `gdd::host::process::run_checked` reserves the receipt file and
-returns the selected source snapshots and collected execution. The
-[integer addition tutorial](tutorial.md#run-and-inspect-both-native-checks)
-shows how a trusted caller interprets that result and writes its own receipt.
+Call `execute_check_v01(root, files, output, command, timeout, &runner)` with
+a `gdd::host::CheckCommand { argv, env }`, a positive `Duration` of at most one
+day, and a `serde_json::Map<String, Value>`. The helper preserves the supplied
+runner object and returns the same JSON it writes to the exclusively reserved
+file. Python v0.8 readers can consume these receipts, including ones with
+caller-supplied historical `python` and `platform` metadata. A default Rust
+receipt format and runner metadata policy remain open.
+
+The lower-level `gdd::host::process::run_checked` returns the reserved file,
+snapshots and collected process result for callers with their own receipt
+formats. The integer addition tutorial uses the version 0.1 writer and
+independently checks the five-sum output and its isolated subtraction
+control before attesting coverage. [Run and inspect both native checks](tutorial.md#run-and-inspect-both-native-checks).
 
 The version 0.1 receipt reader preserves the Python comparison for
 `exit_code`. A PASS requires numeric zero and a FAIL requires numeric one,
