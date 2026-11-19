@@ -42,6 +42,3 @@ authoritative files. The second command compares them without writing.
 cargo run --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo.toml -- sync
 cargo run --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo.toml -- sync --check
 ```
-
-The Python migration checks remain available as `scripts/verify_assets.py`
-in the skill and `scripts/sync_skill.py --check` in the source checkout.

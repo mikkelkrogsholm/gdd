@@ -62,7 +62,9 @@ JavaScript and license notices are bundled in each exported HTML file; CLI users
 ### Install from source
 
 To reproduce the [historical Python tutorial](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/docs/tutorial.md),
-use the v0.8.0 checkout for the CLI, examples and commands. From a clone,
+use the v0.8.0 checkout for the CLI, examples and commands. The original Python
+concert and quote experiments and the Graphify fixture-generation script also
+have their tooling in that checkout. From a clone,
 create a separate worktree and install the locked environment with
 [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
@@ -211,7 +213,8 @@ discovery. Existing `agents/openai.yaml` is retained for its original runtime.
 
 ## Optional browser checks
 
-The generated viewer requires no JavaScript installation. Its browser
+For the Rust concert app, use the [native browser tests](CONTRIBUTING.md#browser-checks).
+Use the [pinned Python v0.8.0 worktree](#install-from-source) for all commands below. Its generated HTML file opens offline. Its browser
 conformance harness needs Node.js 24 or later, Playwright 1.64.1 and the corresponding
 Chromium build. Install these test-only dependencies into a fresh location:
 
@@ -226,7 +229,7 @@ node "$GDD_PLAYWRIGHT_MODULE/cli.js" install chromium
 node conformance/run_browser.cjs
 ```
 
-Run these commands from the repository root after source installation.
+Run these commands from that Python worktree’s root after its source installation.
 On supported Linux systems use `install --with-deps chromium` to install
 required OS packages as well; that step may need administrator access.
 [Playwright's browser installation documentation](https://playwright.dev/docs/browsers)
@@ -236,6 +239,5 @@ an existing compatible Chromium executable. `GDD_PYTHON`,
 make the test environment explicit and keep reports outside tracked evidence.
 [VIEWER.md](VIEWER.md) explains what the browser checks assess.
 
-Run the checks locally using [CONTRIBUTING.md](CONTRIBUTING.md). Core tests,
-conformance suites, installed-wheel verification and optional Chromium checks
-are available separately so you can select the checks relevant to your change.
+For the Rust checkout, [CONTRIBUTING.md](CONTRIBUTING.md) describes the local
+workspace tests, desktop viewer checks and native distribution verification.

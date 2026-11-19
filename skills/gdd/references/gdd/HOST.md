@@ -2,9 +2,10 @@
 
 The GDD CLI prepares and validates models, work packages and run journals. Your
 existing agent runtime owns reasoning, actual edits, command execution, review
-and trusted policy. The Rust and Python host APIs execute caller-selected checks,
-capture code snapshots and author evidence from reviewed receipts. These
-operations have no LLM or provider dependency.
+and trusted policy. The Rust `gdd::host` API executes caller-selected checks,
+captures code snapshots and authors evidence from reviewed receipts. For the
+released Python equivalents, see the [v0.8.0 host guide](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/HOST.md)
+and [pinned Python installation](INSTALL.md#install-from-source).
 
 For a complete small example before using these API details, follow the
 [graph-to-code tutorial](docs/tutorial.md). It runs real local tests and records
@@ -22,13 +23,13 @@ Choose the implementation identity and actual files independently of graph
 labels. The manifest may live in `gdd/` while application files live elsewhere;
 code resources are relative to the caller-selected project root.
 
-```python
-from pathlib import Path
-from gdd_validator.host import snapshot_code
+```rust
+use gdd::host::{CodeSnapshot, snapshot_code};
+use std::{io, path::Path};
 
-root = Path.cwd()
-files = ["src/domain.py", "src/cli.py", "tests/test_domain.py"]
-baseline = snapshot_code(root, files)
+fn capture(root: &Path) -> io::Result<CodeSnapshot> {
+    snapshot_code(root, &["src/domain.py", "src/cli.py", "tests/test_domain.py"])
+}
 ```
 
 The result is `gdd-code-snapshot/0.1`: selected paths, actual SHA-256 file hashes
@@ -118,21 +119,9 @@ describe cancellation, retry and reconciliation.
 
 ## Execute a host-selected check
 
-Select the concrete argv from your own assessment. Execute checks on the combined
-code after integration. The helper uses no shell and stores a fresh raw receipt:
-
-```python
-import sys
-from gdd_validator.host import execute_check
-
-receipt = execute_check(
-    root, [sys.executable, "-B", "-m", "unittest", "discover", "-s", "tests"],
-    files, output=root / "evidence" / "domain.run.json", timeout=120,
-)
-```
-
-In Rust, select the existing `gdd-host-check/0.1` wire format with
-`execute_check_v01`. Supply the runner metadata you observed. This example
+Select the concrete argv from your own assessment and run it on the combined
+code after integration. To write an exclusive `gdd-host-check/0.1` receipt,
+use `execute_check_v01`. Supply the runner metadata you observed. This example
 identifies the application that calls the library.
 
 ```rust
@@ -190,24 +179,8 @@ profile; model `imports` edges establish only intended architecture.
 
 ## Append verified records and supply trust
 
-After the host has verified the receipt, coverage, environment and performed
-controls, author a new binding/evidence pair:
-
-```python
-from gdd_validator.host import verification_records, append_records
-
-fragment = verification_records(
-    root / "gdd" / "gdd.json", "check.domain", root / "evidence" / "domain.run.json",
-    root=root, implementation="implementation.app", binding_id="binding.domain.v1",
-    evidence_id="evidence.domain.v1", test_resource="tests/",
-    checker={"name": "stdlib.unittest", "version": sys.version.split()[0]},
-    environment={"python": sys.version},
-    verified_negative_controls=["actual-isolated-mutation"],
-)
-append_records(root / "gdd" / "records.json", fragment)
-```
-
-Rust callers can consume the same saved receipt with `gdd::host`. This example
+To append a new binding and evidence record, call `verification_records` and
+`append_records` from `gdd::host`. This example
 assumes the host ran the check described above, verified its coverage and
 performed the named negative control. Supply the checker version and runtime
 description observed during that run.

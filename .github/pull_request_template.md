@@ -5,7 +5,7 @@
 ## Local verification
 
 <!-- List commands actually run, their results and material limits.
-scripts/check.py --quick, the full default, --matrix and --release retain a fresh summary.json and logs.
+Run cargo run --locked -p gdd-conformance -- local-check with --quick, the full default, or --release for a summary.json and logs.
 Choose checks proportionate to the change. GitHub CI is intentionally absent. -->
 
 ## Revisions and evidence

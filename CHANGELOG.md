@@ -1,11 +1,14 @@
 # Changelog
 
-Package versions identify the Python distribution and CLI. Standard versions
-identify the GDD document contracts. Viewer versions identify the HTML renderer;
-its current profile remains `gdd-viewer-html/0.1`. These version lines do not
-imply a registry publication or a certified standard.
+Package versions identify distributed tools. GDD document formats, portable
+view formats and renderers have independent versions.
 
 ## Unreleased
+
+- Install the CLI and library from the Rust source checkout, build the desktop
+  viewer with Cargo, and run the local conformance and distribution checks
+  through `gdd-conformance`. The [Python v0.8.0 source](https://github.com/mikkelkrogsholm/gdd/tree/0dbb10b8c193f55c9777405de3f4ae22ac2d0825)
+  remains available for its Python API, HTML viewer, wheel and historical checks.
 
 - Add a standalone Rust tool to synchronize skill references from a checkout and
   verify their hashes in a copied skill directory.

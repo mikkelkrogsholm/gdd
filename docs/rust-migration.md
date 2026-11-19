@@ -1,10 +1,29 @@
 # Migrate a Python integration to Rust
 
-The Rust `gdd` crate will replace the public `gdd_validator` Python API after
-the port is complete. The released Python v0.8.0 package remains available for
-existing integrations and historical replay. For an integration that needs an
-operation still listed as Python-only below, keep that operation on the pinned
-Python release until its Rust equivalent is available.
+The current checkout provides the `gdd` Rust library and CLI. The
+[pinned Python v0.8.0 source](https://github.com/mikkelkrogsholm/gdd/tree/0dbb10b8c193f55c9777405de3f4ae22ac2d0825) supplies the
+`gdd_validator` API and HTML renderer for existing integrations and historical
+replay. The table below maps documented Python entry points to the Rust APIs
+and identifies which renderer each implementation accepts.
+
+## Recover the Python sources
+
+The [v0.8.0 tag](https://github.com/mikkelkrogsholm/gdd/tree/0dbb10b8c193f55c9777405de3f4ae22ac2d0825) contains the released `gdd_validator/`
+implementation, HTML assets, wheel configuration and test suite. For an
+executable environment, use the [pinned installation](../INSTALL.md#install-from-source).
+
+Seven files had intermediate revisions in the final mixed-language checkout
+at `02ab572276b6dea90da9ebf72b946d433986eb20`. In a local clone with this
+migration history, inspect or recover their exact bytes with Git. For example:
+
+```sh
+git show 02ab572276b6dea90da9ebf72b946d433986eb20:scripts/skill_wheel.py
+```
+
+The other six paths are `pyproject.toml`, `conformance/verify_readiness_wheel.py`,
+`scripts/check.py`, `scripts/sync_skill.py`, `tests/test_perspectives.py` and
+`tests/test_skill_assets.py`. Use the tagged source for reproducing the
+released wheel and its checks.
 
 ## Validate a scope
 

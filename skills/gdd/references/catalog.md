@@ -69,7 +69,7 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `CONTRIBUTING.md`
 - `INSTALL.md`
 - `RELEASING.md`
-- `archive/experiments/README.md`
+- `archive/experiments/concert-7e27757.index.json`
 - `archive/gdd-0.1/SPEC.md`
 - `archive/gdd-0.1/concert.gdd.yaml`
 - `archive/gdd-0.2/README.md`
@@ -117,6 +117,3 @@ authoritative files. The second command compares them without writing.
 cargo run --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo.toml -- sync
 cargo run --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo.toml -- sync --check
 ```
-
-The Python migration checks remain available as `scripts/verify_assets.py`
-in the skill and `scripts/sync_skill.py --check` in the source checkout.

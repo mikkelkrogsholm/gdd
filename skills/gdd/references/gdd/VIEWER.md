@@ -125,6 +125,7 @@ and produces UNKNOWN in the native verifier.
 
 ## Released browser viewer
 
+For the HTML commands and Python API below, use the [pinned v0.8.0 checkout](INSTALL.md#install-from-source).
 The released Python `gdd view` creates a standalone HTML file containing a validated GDD 0.2 or 0.3 model. Open the file in a browser; it works offline without a server, CDN, Graphify installation, or JavaScript packages. The released 0.8.0 development prerelease uses renderer 0.4.0 with profile `gdd-viewer-html/0.1` and supports version-dispatched GDD 0.2/0.3.
 
 ```sh

@@ -95,25 +95,26 @@ model's scope and snapshot revision. Observation checks retain their own
 diagnostics. Establishing a link to an implementation requires revision-bound
 bindings and actual checkers.
 
-## Python API and verification
+## Library API and verification
 
-```python
-from gdd_validator import import_graphify, verify_graphify, export_graphify, propose_graphify
+The [Rust integration guide](docs/rust-migration.md#import-verify-and-recover-graphify-files)
+shows how to call `gdd::graphify` for import, verification, export and proposal
+generation. The [v0.8.0 API](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/GRAPHIFY.md) documents the
+Python package at its release revision.
 
-report = import_graphify("graph.json", "observations",
-                        profile="graphify-0.9.75-node-link")
-report = verify_graphify("observations")
-export_graphify("observations", "recovered.json")
-proposal = propose_graphify("observations", explicit_mapping)
-```
-
-The observation and mapping schemas are [observations.schema.json](schemas/observations.schema.json) and [graphify-mapping.schema.json](schemas/graphify-mapping.schema.json). They are tool contracts outside the GDD core. `source_uri` in the proposal API is an explicit locator; its default is graphify.raw.json for a model materialized in the observations directory. The mapping and locator must be materializable as JSON with valid UTF-8. Proposals require available original bytes and passed integrity/projection checks.
+The [observation schema](schemas/observations.schema.json) and
+[mapping schema](schemas/graphify-mapping.schema.json) describe the adapter’s
+tool contracts. A proposal requires verified original bytes and a supported
+projection. Supply a source locator that resolves from the candidate model.
 
 ```sh
-uv run pytest -q
-uv run python conformance/run.py
-uv run python conformance/run_graphify.py
-uv build
+cargo test --locked -p gdd
+cargo run --locked -p gdd-conformance -- standard
+cargo run --locked -p gdd-conformance -- graphify
 ```
 
-The original 58 expectations are preserved. The two original import conditions now have concrete Graphify JSON fixtures. A further [18 adapter cases](conformance/graphify-cases.yaml) and pytest check positive/negative imports, raw round-trip, metadata, duplicates, precision, direction, tampering, CLI, and explicit continuation. [The Graphify review](evidence/graphify-review.md) contains actual results and remaining limitations.
+The 58 standard cases include the two original import conditions. The
+[18 adapter cases](conformance/graphify-cases.yaml) check projection and
+byte recovery, including reference, precision, direction and integrity failures.
+The [historical Graphify review](evidence/graphify-review.md) records the checks
+executed on its original revision.

@@ -8,6 +8,7 @@ is required.
 ```sh
 gdd check-code path/to/gdd.yaml --root path/to/source \
   --implementation implementation.main --profile python-imports/0.1 \
+  --python-runtime target-runtime.json \
   --records path/to/current.records.json --scope rule.api_boundary \
   --output new-observation.json
 ```
@@ -41,8 +42,7 @@ checks source architecture, not runtime reachability.
 
 ## Native Rust command
 
-The Rust command takes the same model, records, scope, exclusion and output
-options. Supply a target descriptor with `--python-runtime` to select the
+Supply a target descriptor with `--python-runtime` to select the
 CPython grammar and the builtin/frozen module names that precede project source
 lookup. The supported target grammars are 3.11, 3.12, 3.13 and 3.14.
 
@@ -156,7 +156,7 @@ Recognized dynamic loaders, loader aliases/escaping values, reflective loading,
 import-system namespaces and module-registry access yield UNKNOWN. Detection is
 bounded: arbitrary reflection, custom import hooks, extra import roots, native
 modules and runtime path changes are not proven absent. The report identifies
-the actual Python parser runtime. A PASS is conditional on this stated static
+the Rust parser and the CPython target supplied for analysis. A PASS is conditional on this stated static
 profile and source-root assumption. Python's [import system](https://docs.python.org/3.14/reference/import.html)
 and [import statement](https://docs.python.org/3.14/reference/simple_stmts.html#import)
 explain why package and member resolution need these limits.
@@ -187,7 +187,7 @@ matching snapshots and the host's independent attestations. A raw observation or
 For the copied-source concert control and independent package cases, run locally:
 
 ```sh
-uv run --no-sync python conformance/run_code.py --output /tmp/new-code-conformance.json
+cargo run --locked -p gdd-conformance -- code --output /tmp/new-code-conformance.json
 ```
 
 The harness copies application `.py` files, authors explicit current mapping

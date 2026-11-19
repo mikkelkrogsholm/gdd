@@ -2,7 +2,7 @@
 
 The workflow uses GDD 0.2 or 0.3 to prepare code work and track its
 integration. Existing agents from any vendor can use it. The CLI
-and Python API start no LLM and execute no commands from the graph.
+and Rust API produce plans and journal records. The host chooses and executes commands.
 
 A lead agent chooses a bounded objective, implementation, code base, packages, and
 file areas. The tool derives context, contracts, pseudocode, rules,
@@ -141,12 +141,13 @@ or invalidation of already integrated jobs. Record-only history diagnostics
 are still displayed; current scoped gates are assessed separately and use no historical
 approval/evidence as current. Missing actual evidence yields UNKNOWN.
 
-API: `prepare_workflow`, `verify_workflow`, `create_run`, `run_status`, and
-`advance_run` from `gdd_validator`. Plan preparation returns `{report, artifact}`;
-events return `applied`, `replayed`, a report, and a receipt on commit. Rejected
-gates publish no event. Invalid envelopes/head conflicts raise
-`ValueError`; the CLI displays a controlled error. Report codes follow the existing
-0=PASS/GRANTED, 1=FAIL/DENIED, 2=UNKNOWN/UNRESOLVED. A committed or idempotently recovered event returns 0; other diagnostics are retained in the report. Always inspect `applied`/`replayed` for events.
+Rust callers use `gdd::workflow::{prepare_workflow, verify_workflow}` for
+plans and `gdd::workflow_run::{create_run, run_status, advance_run}` for
+journals. Plan preparation returns a report and optional artifact. For an
+event, inspect `applied`, `replayed`, the report and the committed receipt.
+A rejected gate publishes no event. Report exit codes are 0 for PASS/GRANTED,
+1 for FAIL/DENIED and 2 for UNKNOWN/UNRESOLVED. The CLI returns 0 for a
+committed or idempotently recovered event. Other diagnostics remain in its report.
 
 ## Agent instructions and actual example
 
@@ -156,7 +157,7 @@ API. [The quote example](examples/agent-native/README.md) demonstrates parallel 
 agent repairs from half-up to the graph's floor contract, actual red/green test execution,
 integration, and revision-bound acceptance. Python is only the example implementation.
 
-Run the workflow's 20 named conformance expectations with `uv run python conformance/run_workflow.py --output workflow-conformance.json`. The harness uses the pytest development dependency; the runtime package adds no test or agent dependency.
+Run the 20 named conformance cases with `cargo run --locked -p gdd-conformance -- workflow --output workflow-conformance.json`. The last case executes the Rust quote repair and checks its accepted journal.
 
 
 ## GDD 0.3 boundary context

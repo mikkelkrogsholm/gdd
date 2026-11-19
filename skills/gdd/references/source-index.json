@@ -21,14 +21,14 @@
     {
       "path": "references/gdd/GRAPHIFY.md",
       "source": "GRAPHIFY.md",
-      "sha256": "d7dac862f0dd247ca3190932e2e958a1130dc507c7f5fe7885e0c81463b2f380",
-      "bytes": 12275
+      "sha256": "6c64256500a1e9836303e7a3efc79400fca9a3531f6c35da54d087aef2dfe629",
+      "bytes": 11959
     },
     {
       "path": "references/gdd/HOST.md",
       "source": "HOST.md",
-      "sha256": "4dc441b123e5fe3a1ac19a38c12b9eb5cde0240d39b0b39bc6d9dfd54cf6391b",
-      "bytes": 14001
+      "sha256": "c3f1d04dec3d15d34db5c4251850aff5a4ce1ef6e492916a99273479017eb1e2",
+      "bytes": 13205
     },
     {
       "path": "references/gdd/SPEC.md",
@@ -39,20 +39,20 @@
     {
       "path": "references/gdd/VALIDATOR.md",
       "source": "VALIDATOR.md",
-      "sha256": "0e9b5b354d9b08a1c8209b2ceda7399d4e685fd05be24b7a0afbfc828eab34c9",
-      "bytes": 19359
+      "sha256": "7b8588b797984d4cd8eb990943761163a39caebb2ff0dc51d67d59ddb0b7eeb2",
+      "bytes": 18076
     },
     {
       "path": "references/gdd/VIEWER.md",
       "source": "VIEWER.md",
-      "sha256": "79f550496ff9b86dd6caaad53aeabca7d34076d48b2eca79880e71a491f25f88",
-      "bytes": 22423
+      "sha256": "9195b9d42aa054b0156a267b540f77ace744b4ce8239619d43fc05d9aa969915",
+      "bytes": 22533
     },
     {
       "path": "references/gdd/WORKFLOW.md",
       "source": "WORKFLOW.md",
-      "sha256": "932468473b4020f39f23bfcf8f4c3af10f2d21cc52e1438ceaa68bae97624cf6",
-      "bytes": 9870
+      "sha256": "8c0c53a1d08a18790a81d49227f87c82556d0dc33c94795b4376ca9b6ac2a474",
+      "bytes": 9793
     },
     {
       "path": "references/gdd/agents/gdd-lead.md",
@@ -75,14 +75,14 @@
     {
       "path": "references/gdd/docs/inspection.md",
       "source": "docs/inspection.md",
-      "sha256": "9efc8a2e0b9651b610ec430327cc41755248afc156ebcca52355c58d4315f804",
-      "bytes": 7875
+      "sha256": "749071f32aeabc68d077a02fac938bf2478f89ba32e9118fff7dbed0c7f87835",
+      "bytes": 7688
     },
     {
       "path": "references/gdd/docs/model-diff.md",
       "source": "docs/model-diff.md",
-      "sha256": "dea9c966bfbc84b7c3cf8fca04bb8be2bfdcd5c240881e97de075315ec457510",
-      "bytes": 5197
+      "sha256": "0e5c5a8fe1e339709a5b489b4fedea1bc94ca9c865fbb10ac3908a61360a76f8",
+      "bytes": 5185
     },
     {
       "path": "references/gdd/extensions/product-0.1.json",
@@ -99,8 +99,8 @@
     {
       "path": "references/gdd/schemas/README.md",
       "source": "schemas/README.md",
-      "sha256": "577b355f4b96c098250f82ee51109d7500b8f765e88d4e3324769208886c444c",
-      "bytes": 4962
+      "sha256": "e4ea5a2d97bfeaf89f1a76bd046b0ff94b553ad4cb728baee42dac50326232d2",
+      "bytes": 5070
     },
     {
       "path": "references/gdd/schemas/boundaries.schema.json",
@@ -304,6 +304,12 @@
     },
     {
       "from": "GRAPHIFY.md",
+      "href": "docs/rust-migration.md#import-verify-and-recover-graphify-files",
+      "source_target": "docs/rust-migration.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "GRAPHIFY.md",
       "href": "conformance/graphify-cases.yaml",
       "source_target": "conformance/graphify-cases.yaml",
       "role": "optional-repository-reference"
@@ -312,6 +318,12 @@
       "from": "GRAPHIFY.md",
       "href": "evidence/graphify-review.md",
       "source_target": "evidence/graphify-review.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "HOST.md",
+      "href": "INSTALL.md#install-from-source",
+      "source_target": "INSTALL.md",
       "role": "optional-repository-reference"
     },
     {
@@ -358,6 +370,12 @@
     },
     {
       "from": "VALIDATOR.md",
+      "href": "INSTALL.md#install-the-rust-cli-and-viewer",
+      "source_target": "INSTALL.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
       "href": "docs/consumer-input-limits.md",
       "source_target": "docs/consumer-input-limits.md",
       "role": "optional-repository-reference"
@@ -370,14 +388,20 @@
     },
     {
       "from": "VALIDATOR.md",
-      "href": "CONTRIBUTING.md",
-      "source_target": "CONTRIBUTING.md",
+      "href": "docs/rust-migration.md#numeric-validation-differences",
+      "source_target": "docs/rust-migration.md",
       "role": "optional-repository-reference"
     },
     {
       "from": "VALIDATOR.md",
-      "href": "evidence/README.md",
-      "source_target": "evidence/README.md",
+      "href": "docs/rust-migration.md#validate-a-scope",
+      "source_target": "docs/rust-migration.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VALIDATOR.md",
+      "href": "CONTRIBUTING.md",
+      "source_target": "CONTRIBUTING.md",
       "role": "optional-repository-reference"
     },
     {
@@ -402,6 +426,12 @@
       "from": "VIEWER.md",
       "href": "crates/viewer/README.md",
       "source_target": "crates/viewer/README.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "VIEWER.md",
+      "href": "INSTALL.md#install-from-source",
+      "source_target": "INSTALL.md",
       "role": "optional-repository-reference"
     },
     {
@@ -490,8 +520,8 @@
     },
     {
       "from": "docs/model-diff.md",
-      "href": "../archive/experiments/README.md",
-      "source_target": "archive/experiments/README.md",
+      "href": "../archive/experiments/concert-7e27757.index.json",
+      "source_target": "archive/experiments/concert-7e27757.index.json",
       "role": "optional-repository-reference"
     },
     {

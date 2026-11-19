@@ -25,8 +25,8 @@ body:
     id: version
     attributes:
       label: Version and environment
-      description: Package version or Git tag/commit, Python version, OS and relevant agent/browser.
-      placeholder: "v0.7.0, Python 3.12, macOS; GDD 0.3 model"
+      description: Package version or Git tag/commit, toolchain version, OS and relevant agent or viewer.
+      placeholder: "source commit, Rust 1.95, Linux, GDD 0.3 model"
   - type: textarea
     id: output
     attributes:

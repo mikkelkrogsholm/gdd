@@ -29,7 +29,7 @@ implementation evidence. See [the Python profile](../docs/python-imports.md).
 | report.schema.json | Scoped check results and diagnostics |
 | snapshot.schema.json | Byte assets and model snapshot identity |
 
-[validator-inputs.schema.json](validator-inputs.schema.json) is an informative tool schema with `$defs` for host, package, parallel and import. It describes the [validator's](../VALIDATOR.md) API envelopes and is not a seventh normative GDD document format. It is derived from `gdd_validator.validator.input_schema`.
+[validator-inputs.schema.json](validator-inputs.schema.json) is an informative tool schema with `$defs` for host, package, parallel and import. It describes the [validator's](../VALIDATOR.md) API envelopes and is not a seventh normative GDD document format. It was derived from the [Python input schema helper](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/gdd_validator/validator.py).
 
 [observations.schema.json](observations.schema.json) and [graphify-mapping.schema.json](graphify-mapping.schema.json) describe the [Graphify adapter's](../GRAPHIFY.md) observation bundle and explicit mapping to a proposal. These are tool formats outside the six GDD core documents. The original is preserved alongside the index; schema PASS alone does not verify integrity/projection.
 

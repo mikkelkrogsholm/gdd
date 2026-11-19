@@ -20,7 +20,7 @@ performed. Issue #10 remains open.
 
 This setup was tested for **skill discovery only**, with the installed wheel
 built from GDD commit `b5bfcce`. It is not a verified development journey.
-After installing a wheel using [INSTALL](../INSTALL.md), enter a fresh project
+After installing a tagged Python wheel using [INSTALL](../INSTALL.md#install-a-local-wheel), enter a fresh project
 and copy the installed asset:
 
 ```sh

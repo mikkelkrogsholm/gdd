@@ -63,7 +63,8 @@ implementation, resource, and current code revisions. Do not reuse pre-integrati
 worker evidence as proof of a later combined revision.
 
 For Python import constraints, use `gdd check-code MODEL --root SOURCE_ROOT
---implementation ID --profile python-imports/0.1`; select `--records` explicitly
+--implementation ID --profile python-imports/0.1 --python-runtime TARGET.json`
+with the target CPython descriptor. Select `--records` explicitly
 when needed and repeat `--scope` for rule IDs. Read the bundled
 [observer contract](gdd/VALIDATOR.md#observe-actual-python-import-relationships)
 and [output schema](gdd/schemas/code-observation.schema.json). Inspect witnesses,

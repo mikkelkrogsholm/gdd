@@ -49,10 +49,9 @@ project-complete or acceptance verdict. A fresh sketch therefore exits 1 for its
 readiness blockers, while a ready model-only scope can exit 0 with authorization
 and evidence explicitly unassessed.
 
-The Python API is `gdd_validator.project_status(...)`. Its separate local tool
-contract is `gdd-status/0.1`, described by
-[status.schema.json](../schemas/status.schema.json). `status_text(result)` in
-`gdd_validator.project_status` formats an already computed result.
+Rust callers use `gdd::status::project_status` and `gdd::status::status_text`.
+The [status schema](../schemas/status.schema.json) describes the `gdd-status/0.1`
+result. The text renderer accepts a previously computed report.
 
 ## Impact: what might need review?
 
@@ -112,11 +111,9 @@ empty-safe consequence set. A valid complete in-profile analysis exits 0 even
 when it finds potential impact; known invalid input exits 1 and unresolved/partial
 information exits 2 when no known invalidity takes precedence.
 
-The API is `gdd_validator.analyze_impact(path, scope=[...], implementation=None)`.
-Its separate local tool contract is `gdd-impact/0.1`, described by
-[impact.schema.json](../schemas/impact.schema.json). `impact_text(result)` in
-`gdd_validator.impact` formats that same result. These are tool contracts, not a
-GDD standard revision or a grant of write ownership.
+Rust callers use `gdd::impact::analyze_impact` and `gdd::impact::impact_text`.
+The [impact schema](../schemas/impact.schema.json) describes the `gdd-impact/0.1`
+result. The text renderer uses the same assessed witnesses.
 
 ## Worked planning example
 
@@ -134,8 +131,8 @@ changed or tested. Both commands leave the model bytes unchanged. For declared
 caller and transitive-dependent controls, run the local conformance suites:
 
 ```sh
-uv run --no-sync python conformance/run_status.py --output /tmp/new-status-check.json
-uv run --no-sync python conformance/run_impact.py --output /tmp/new-impact-check.json
+cargo run --locked -p gdd-conformance -- status --output /tmp/new-status-check.json
+cargo run --locked -p gdd-conformance -- impact --output /tmp/new-impact-check.json
 ```
 
 Both commands accept `--output NEW_FILE` and refuse existing files or destination

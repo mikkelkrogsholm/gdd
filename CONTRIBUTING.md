@@ -133,67 +133,24 @@ Use a new file path for each receipt.
 To exercise a separately installed native CLI, run the
 [34 installed CLI controls](conformance/README.md#installed-native-cli).
 
-### Python migration and release checks
+### Browser checks
 
-The Python reference checks on the migration branch use the local runner.
-It records interpreter versions, durations, commands and logs in a new
-temporary directory and stops on the first unsuccessful step.
-
-```sh
-uv sync --locked --dev --python 3.12
-uv run --no-sync python scripts/check.py --quick   # focused parser, diagnostics, Graphify, viewer and skill checks
-uv run --no-sync python scripts/check.py           # full pytest suite and skill synchronization check
-uv run --no-sync python scripts/check.py --matrix  # full pytest on installed Python 3.11, 3.12, 3.13 and 3.14
-```
-
-The full suite can take several minutes. `--matrix` is explicit and sequential;
-it uses isolated environments and refuses automatic Python downloads. A missing
-interpreter is a reported failure, not a skipped success. `--quick --matrix`
-runs the focused set on those interpreters. Install the desired interpreters
-separately. The matrix list is maintained in `scripts/check.py`; it describes
-the tested interpreter lines, not every future version admitted by packaging.
-The host interpreter's exact patch is retained for its matching matrix line;
-choose it with the outer `uv run --python VERSION_OR_PATH` when checking a
-particular patch. Reports always identify the interpreter actually executed.
-
-Use `--output NEW_DIRECTORY` to retain reports in a chosen location; existing
-directories are refused. `summary.json` and per-step logs provide the local
-verification record for a PR. Browser checks remain separate and opt-in.
-Passing pytest scratch directories are discarded; failing cases retain their
-temporary inputs for diagnosis. Full suites on several interpreters can use
-substantial disk space, so matrix execution is sequential.
-
-For Python wheel release verification, use the [pinned v0.8.0 worktree](INSTALL.md#install-from-source)
-at `0dbb10b8c193f55c9777405de3f4ae22ac2d0825`. Its verifier executes the
-Python tutorial from that revision. From its root, run
-`uv run --no-sync python scripts/check.py --release` for the full suite,
-named conformance reports, wheel build and installed verification. To run
-its individual steps, use the same pinned checkout and a fresh output directory.
+To exercise the Rust concert app in Chromium, install a matching ChromeDriver
+and run the following command from the repository root. The [concert app guide](examples/concert-app/README.md#run-the-native-concert-app)
+describes the browser setup and coverage.
 
 ```sh
-uv sync --locked --dev --python 3.12
-GDD_CHECK_DIR="$(mktemp -d)"
-uv run --no-sync python scripts/sync_skill.py --check
-uv run --no-sync pytest -q
-uv run --no-sync python conformance/run.py --output "$GDD_CHECK_DIR/standard.json"
-uv run --no-sync python conformance/run_graphify.py --output "$GDD_CHECK_DIR/graphify.json"
-uv run --no-sync python conformance/run_visualization.py --output "$GDD_CHECK_DIR/visualization.json"
-uv run --no-sync python conformance/run_workflow.py --output "$GDD_CHECK_DIR/workflow.json"
-uv run --no-sync python conformance/run_design.py --output "$GDD_CHECK_DIR/design.json"
-uv run --no-sync python conformance/run_code.py --output "$GDD_CHECK_DIR/code.json"
-uv run --no-sync python conformance/run_status.py --output "$GDD_CHECK_DIR/status.json"
-uv run --no-sync python conformance/run_impact.py --output "$GDD_CHECK_DIR/impact.json"
-uv run --no-sync python conformance/run_diff.py --output "$GDD_CHECK_DIR/diff.json"
-uv build --wheel --out-dir "$GDD_CHECK_DIR/dist"
-uv run --no-sync python conformance/verify_readiness_wheel.py "$GDD_CHECK_DIR"/dist/*.whl --output "$GDD_CHECK_DIR/installed-wheel.json"
+cargo test --locked -p gdd-concert --test browser -- --ignored
 ```
 
-For viewer interactions or browser behavior, also run the optional browser
-recipe in [INSTALL.md](INSTALL.md). Artifact-byte verification and browser
-interaction verification establish different facts. See the historical
-[interpreter coverage](docs/proposals/version-policy.md#python-verification-and-admission)
-for exact patches and full versus focused checks. Identify the runtime and
-environment of new executions explicitly.
+### Reproduce a Python check
+
+The [v0.8.0 checkout](https://github.com/mikkelkrogsholm/gdd/tree/0dbb10b8c193f55c9777405de3f4ae22ac2d0825) contains the released Python tool,
+test suite, wheel builder and HTML browser harness. Follow the
+[pinned installation](INSTALL.md#install-from-source) and use the
+[contributor commands from that revision](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/CONTRIBUTING.md).
+For the intermediate Python packaging, synchronization and tests, see
+[recovering migration sources](docs/rust-migration.md#recover-the-python-sources).
 
 Keep tests focused on observable behavior and meaningful failure controls.
 Use FAIL for a demonstrated violation and UNKNOWN for missing or unsupported
@@ -222,8 +179,7 @@ cargo test --locked --target-dir target --manifest-path skills/gdd/scripts/Cargo
 
 Use `--root PATH` for a different checkout. The index retains its source URL
 and Git base unless supplied with `--repository URL` or `--git-base-revision REV`.
-The hashes describe the actual working-tree bytes. The existing Python freshness
-check remains part of local release verification during the migration.
+The hashes describe the actual working-tree bytes. Run `verify skills/gdd` with the same Cargo command to check the installed-file hashes.
 
 ## Versions and releases
 

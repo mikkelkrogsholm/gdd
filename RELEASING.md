@@ -4,9 +4,10 @@ GDD tracks these version lines independently.
 
 | Surface | Current version | Meaning |
 | --- | --- | --- |
-| Python package and CLI | 0.8.0 | Distributed tool behavior and public Python APIs |
+| Rust crate and CLI | `gdd` 0.1.0 in Cargo.toml | Current source package and command-line tools |
+| Tagged Python package and CLI | 0.8.0 | Released Python APIs and HTML generation in the [v0.8.0 checkout](https://github.com/mikkelkrogsholm/gdd/tree/0dbb10b8c193f55c9777405de3f4ae22ac2d0825) |
 | GDD standard | Draft 0.3; explicit 0.2 support | Document schemas and interpretation contracts |
-| HTML viewer renderer | 0.4.0 | Generated HTML renderer; profile remains `gdd-viewer-html/0.1` |
+| Tagged HTML viewer renderer | 0.4.0 | Generated HTML renderer; profile remains `gdd-viewer-html/0.1` |
 | Native viewer generator | 0.1.0 | Portable desktop artifact with profile `gdd-viewer-native/0.1` |
 
 Git tags identify **package releases** and use `vMAJOR.MINOR.PATCH`, starting
@@ -23,15 +24,15 @@ Published tags are immutable. Never force-update or reuse a tag. A correction
 to published release contents requires a new package version and tag. Contributors
 use CHANGELOG's Unreleased section; the maintainer chooses the next version.
 
-After the port is complete, the [Rust API](docs/rust-migration.md) replaces
-the public Python API. Existing 0.x Python releases and their verification
-evidence remain tied to their original tags and revisions.
+Integrations using the Rust source can follow the [Rust API migration guide](docs/rust-migration.md).
+Existing Python releases and their verification evidence remain tied to their
+original tags. The source cutover assigns no new public release tag.
 
 ## GDD 0.2 compatibility — adopted October 20, 2026
 
 Keep full explicit GDD 0.2 validation and legacy replay throughout the package
-0.x series. Preserve the 0.2 schemas, version dispatch and installed-wheel
-legacy replay checks, including fixes needed to honor the supported semantics.
+0.x series. Preserve the 0.2 schemas, version dispatch and legacy replay checks,
+including the installed native CLI controls and the tagged Python wheel checks.
 New features need not be backported to the 0.2 format. Do not silently migrate
 inputs or reduce support to loading only.
 
@@ -59,14 +60,13 @@ claims. Never relabel old evidence as an execution of a new release.
 
 ### Compatibility inventory
 
-This is the single current compatibility overview. Update affected rows when
-changing a contract or releasing the package. It describes the current checkout,
-not a claim that every historical package supports these versions. A shared
-number in separate rows does not couple their release schedules.
+This inventory identifies current source contracts and the tagged Python and
+HTML implementations. Update the relevant row when its contract changes.
 
 | Surface | Current identifier or version | Version changes when |
 | --- | --- | --- |
-| Package / CLI / public Python API | 0.8.0 | Distributed behavior or public API changes; package rules above apply |
+| Rust crate / CLI | `gdd` 0.1.0 in Cargo.toml | Native tool behavior or Rust API changes |
+| Tagged package / CLI / public Python API | 0.8.0 | Distributed behavior or public API changes; package rules above apply |
 | Model and fragment | `gdd/0.3`, `gdd-fragment/0.3`; explicit `gdd/0.2`, `gdd-fragment/0.2` support | Required structure or interpretation changes |
 | Extensions | `gdd-extension/0.2` | Extension contract changes |
 | Product extension and advisory perspectives | `gdd.product` 0.1.0; `gdd-perspectives/0.1` | Exact hashed optional extension semantics or projection contract changes; supported on unchanged GDD 0.2/0.3 cores |
@@ -81,12 +81,13 @@ number in separate rows does not couple their release schedules.
 | Boundaries and design review | `gdd-boundaries/0.3`, `gdd-design-review/0.3`, `gdd-design-review-status/0.3` | The affected design contract changes |
 | Graphify observations and proposals | `gdd-observations/0.2`, `gdd-graphify-proposal/0.2` | The affected adapter output contract changes |
 | Graphify input profiles | `graphify-0.9.75-ast`, `graphify-0.9.75-node-link` | A new source dialect or interpretation needs an explicit profile |
-| Viewer | Renderer 0.4.0; `gdd-viewer-html/0.1`; `gdd-view/0.3`, `gdd-view-state/0.3` | Renderer implementation, verification profile or serialized projection changes independently |
+| Tagged Python viewer | Renderer 0.4.0; `gdd-viewer-html/0.1`; `gdd-view/0.3`, `gdd-view-state/0.3` | Renderer implementation, verification profile or serialized projection changes independently |
 | Native viewer | Generator `gdd-viewer` 0.1.0, profile `gdd-viewer-native/0.1`, format `gdd-native-view/0.1` | Changes to the generator, interpretation profile and portable file contract are versioned independently. See the [artifact contract](VIEWER.md#share-a-native-view). |
 
 ## Python compatibility — adopted October 20, 2026
 
-Keep package installation metadata at `requires-python = ">=3.11"`.
+For the [Python distribution](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/pyproject.toml), keep package
+installation metadata at `requires-python = ">=3.11"`.
 Installation eligibility does not establish verified support for every later
 Python version or platform.
 
@@ -124,7 +125,7 @@ From the checkout, choose a new evidence directory and run the following command
 cargo run --locked -p gdd-conformance -- local-check --release --output ../gdd-native-release
 ```
 
-The driver runs all 20 full-check steps, including the nine named conformance
+The driver runs the full local checks, including the nine named conformance
 suites and the standalone Rust skill tests and asset checks. It then runs three
 locked path installs from the selected checkout into `install/bin/` and
 exercises the optimized binaries from a temporary recipient directory outside
@@ -187,41 +188,23 @@ gallery view against its model and normative sources in the matching checkout.
 
 ## Prepare the release locally
 
-1. Choose the package version. Update `pyproject.toml`,
-   `gdd_validator/__init__.py`, current package-version documentation and `uv.lock`
-   together. Standard/viewer versions change only when their own contracts change.
-2. Date the changelog entry and describe scope, compatibility and known limits.
-   Leave an Unreleased section for subsequent contributions.
-3. Synchronize the standalone skill with `uv run python scripts/sync_skill.py`
-   when its authoritative references change. Review generated copies and preserve
-   old execution identities rather than rebinding them to this release.
-4. Run the full local checks in [CONTRIBUTING.md](CONTRIBUTING.md). Run the optional
-   [browser checks](INSTALL.md#optional-browser-checks) when viewer/browser behavior
-   changes. Record actual commands, environment and results; retain relevant
-   raw reports in a fresh directory. GitHub Actions CI remains absent.
-   Use `--matrix` explicitly for the installed interpreter lines maintained
-   in the Python runner.
-5. Commit the reviewed changes. Require a clean checkout. Build the wheel from
-   that exact commit into a fresh directory and run its installed-wheel verifier.
+1. Have the maintainer select the release version and affected package surfaces.
+   Update the corresponding Cargo manifests, lockfile and package documentation.
+2. Date the changelog entry and describe the release scope, compatibility and
+   known limits. Keep an Unreleased section for subsequent changes.
+3. Regenerate the [standalone skill references](CONTRIBUTING.md#preserve-revisions-and-evidence)
+   when their sources change. Review the generated copies and hashes.
+4. From the reviewed commit and a clean checkout, run the
+   [native distribution checks](#verify-the-native-distribution-locally) in a
+   fresh directory. Retain its summary, receipts and exact package digests.
+   Exercise the desktop interactions affected by viewer changes.
 
-To reproduce the v0.8.0 Python release checks, start in the
-[pinned Python worktree](INSTALL.md#install-from-source) at
-`0dbb10b8c193f55c9777405de3f4ae22ac2d0825`. Its installed-wheel verifier
-executes the Python tutorial from that revision. Use
-`uv run --no-sync python scripts/check.py --release` there for the full
-release checks, or run the wheel check alone in that same worktree.
+### Reproduce the Python release
 
-```sh
-GDD_RELEASE_DIR="$(mktemp -d)"
-uv build --wheel --out-dir "$GDD_RELEASE_DIR/dist"
-uv run --no-sync python conformance/verify_readiness_wheel.py \
-  "$GDD_RELEASE_DIR"/dist/*.whl --output "$GDD_RELEASE_DIR/installed-wheel.json"
-```
-
-Confirm the package/module version matches the intended tag. Retain the built
-wheel and its SHA-256 if distributing it; do not rebuild or replace a published
-asset silently. Verification results from an older commit are historical evidence,
-not proof that this exact wheel was checked.
+Use the [pinned Python v0.8.0 worktree](INSTALL.md#install-from-source) for
+the [wheel, release procedure and browser checks from that revision](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/RELEASING.md).
+The [migration source recovery instructions](docs/rust-migration.md#recover-the-python-sources)
+identify the intermediate Python packaging and test scripts used during the port.
 
 ## Tag and publish on GitHub
 
@@ -229,7 +212,7 @@ For a new package release, after the checks above, create an annotated tag on th
 commit and push the branch and tag together:
 
 ```sh
-GDD_TAG="v0.8.0"  # Set to the chosen package version; never reuse a published tag.
+GDD_TAG="v${GDD_RELEASE_VERSION:?set the selected package version first}"
 GDD_COMMIT="$(git rev-parse HEAD)"
 git tag -a "$GDD_TAG" "$GDD_COMMIT" -m "GDD $GDD_TAG: draft standard 0.3; CLI and skill"
 git push --atomic origin main "$GDD_TAG"
@@ -243,9 +226,9 @@ is marked as a GitHub prerelease so its experimental status remains explicit.
 Create the GitHub release from the **existing tag**. Include the package,
 standard and renderer versions, user-visible changes, actual verification,
 installation instructions, known limits and contribution links. Attach only
-the exact verified wheel and its checksum when distributing a binary asset.
+the exact verified artifacts chosen for this release and their checksums.
 Check the published tag, release metadata and asset digest after upload.
 
-GitHub source archives and an attached wheel are separate from a package-registry
-release. Publishing to PyPI requires an explicit maintainer decision and its own
-distribution verification. A GitHub release never implies PyPI availability.
+GitHub source archives, explicitly attached artifacts and package-registry
+releases are separate distributions. Registry publication requires an explicit
+maintainer decision and its own distribution verification.

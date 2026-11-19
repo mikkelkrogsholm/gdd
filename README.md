@@ -23,7 +23,7 @@ includes the Python 3.11+ CLI, draft GDD 0.3, Graphify adapter, project starter,
 portable agent skill and offline HTML viewer 0.4.0. Install the tagged source or
 its verified wheel using the [Python installation instructions](INSTALL.md#install-the-tagged-python-cli).
 The [MIT license](LICENSE) covers GDD. The HTML viewer includes Cytoscape.js and
-fCoSE with [third-party notices](gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt).
+fCoSE with [third-party notices](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt).
 
 For library integrations moving from Python to Rust, see the
 [Rust API migration guide](docs/rust-migration.md).
@@ -72,50 +72,31 @@ when the source changes. The exercise runs locally without an LLM account.
 For the method without commands, read [GDD.md](GDD.md). For installation choices,
 see [INSTALL.md](INSTALL.md).
 
-### Try the tagged Python CLI
+### Try the Rust CLI
 
-This source-checkout quickstart requires Python 3.11+ and
-[uv](https://docs.astral.sh/uv/). It needs no LLM credentials, Graphify installation
-or frontend build. The generated graph works offline. These commands use a POSIX shell.
-The quickstart uses the v0.8.0 development prerelease, including the
-Cytoscape.js/fCoSE viewer, community areas and product perspectives.
-Contributors can use `main` for subsequent development changes.
+After [installing the CLI and viewer](INSTALL.md#install-the-rust-cli-and-viewer),
+run these commands from a POSIX shell.
 
 ```sh
-git clone https://github.com/mikkelkrogsholm/gdd.git
-cd gdd
-git checkout v0.8.0
-uv sync --locked
-uv run gdd --help
-
-# Create a new project inside a fresh location.
 GDD_QUICKSTART_DIR="$(mktemp -d)"
-uv run gdd init "$GDD_QUICKSTART_DIR/project" --project-id project.my-app --title "My app"
-uv run gdd validate "$GDD_QUICKSTART_DIR/project/gdd.json"
-uv run gdd view "$GDD_QUICKSTART_DIR/project/gdd.json" --output "$GDD_QUICKSTART_DIR/graph.html"
-uv run gdd validate "$GDD_QUICKSTART_DIR/project/gdd.json" --profile visualization --view "$GDD_QUICKSTART_DIR/graph.html"
-
-# Expected exit 1: a new draft needs requirements and contracts before coding.
-uv run gdd validate "$GDD_QUICKSTART_DIR/project/gdd.json" --profile readiness --scope action.main
+gdd init "$GDD_QUICKSTART_DIR/project" --project-id project.my-app --title "My app"
+gdd validate "$GDD_QUICKSTART_DIR/project/gdd.json"
+gdd view "$GDD_QUICKSTART_DIR/project/gdd.json" --output "$GDD_QUICKSTART_DIR/graph.gddview"
+gdd validate "$GDD_QUICKSTART_DIR/project/gdd.json" --profile visualization --view "$GDD_QUICKSTART_DIR/graph.gddview"
+gdd-viewer "$GDD_QUICKSTART_DIR/graph.gddview"
 ```
 
 Initialization creates `gdd.json`, `SOURCES.md` and an empty `records.json`.
-It refuses existing directories. The model and view checks exit 0; the final
-readiness check exits 1 for the explicit open scope question. The starter supplies
-no accepted requirements, authority or PASS execution evidence.
-
-Open `$GDD_QUICKSTART_DIR/graph.html` in a browser. To explore a richer graph,
-generate a view of `examples/concert-0.3.gdd.yaml` in another fresh output file.
-It contains communities, contracts and pseudocode; its `action.reserve` backend
-scope passes structural readiness while its frontend remains a sketch.
-
-See [CLI reference](VALIDATOR.md) for commands, revision identities and work-package boundaries.
+The model and saved view checks exit 0. To inspect the open scope question, run
+`gdd validate "$GDD_QUICKSTART_DIR/project/gdd.json" --profile readiness --scope action.main`.
+The draft's readiness check exits 1. See the [CLI reference](VALIDATOR.md)
+for revision identities and work-package boundaries.
 
 ## Use GDD with an agent
 
 Install the [GDD skill](skills/gdd/SKILL.md) in your agent runtime's supported
 skill location, or point an agent at its `SKILL.md`. The folder contains its own
-guidance and schemas and also ships in the wheel. Follow the
+guidance, schemas and Cargo-based asset verifier. Follow the
 [installation instructions](INSTALL.md#install-the-standalone-agent-skill);
 the CLI must be installed separately. Give the agent your brief, project location
 and mandate.
@@ -170,7 +151,7 @@ missing required design or contract information stays explicit.
 | Python architecture checks | `gdd check-code` compares static source imports with explicit graph constraints using implementation-specific binding records |
 | Design review | Check a revision-bound advisory review's structure and applicability |
 | Evidence | Assess immutable check plans, bindings and host-verified execution claims against current revisions |
-| Host helpers | Explicit Python API for actual snapshots, command execution and immutable checked evidence records |
+| Host helpers | Rust API for code snapshots, caller-selected check execution and immutable evidence records |
 
 Read [workflow](WORKFLOW.md), [viewer](VIEWER.md), [Graphify integration](GRAPHIFY.md)
 and [design principles](standard/DESIGN-PRINCIPLES.md) for each capability's exact

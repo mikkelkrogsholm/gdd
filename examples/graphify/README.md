@@ -13,17 +13,31 @@ The three parallel reserve→Reservation records are parameter_type-reference, r
 
 [The observation bundle](observations/observations.json) is the importer's actual output from raw.ast.json. [mapping.json](mapping.json) is an explicit, informative interpretation of the module, reserve, and the constructor. It is used for the [unaccepted proposal](observations/proposal.json), which contains GDD sketches and open contract questions. It is not an automatically generated accepted standard model.
 
+Use the [installed Rust CLI](../../INSTALL.md#install-the-rust-cli-and-viewer)
+from the repository root. Choose new paths for the recovered graph and proposal.
+
 ```sh
-uv run gdd validate examples/graphify/observations --profile import.graphify
-uv run gdd graphify export examples/graphify/observations --output recovered.json
-uv run gdd graphify propose examples/graphify/observations \
+gdd validate examples/graphify/observations --profile import.graphify
+gdd graphify export examples/graphify/observations --output recovered.json
+gdd graphify propose examples/graphify/observations \
   --mapping examples/graphify/mapping.json --output proposal.json
 ```
 
-Reproducing the producer fixtures requires an environment with pinned Graphify 0.9.75 and its AST dependencies:
+To reproduce the original extraction, use the [v0.8.0 producer script](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/conformance/generate_graphify_fixture.py)
+in a separate checkout. Set `GRAPHIFY_PYTHON` to the absolute path of an
+interpreter with `graphifyy==0.9.75`, `networkx==3.7`, `tree-sitter==0.25.2`
+and `tree-sitter-python==0.25.0`. The script rewrites the producer artifacts
+and evidence in that checkout.
 
 ```sh
-<graphify-python> conformance/generate_graphify_fixture.py
+GDD_PRODUCER_TREE="$(mktemp -d)/gdd"
+git worktree add --detach "$GDD_PRODUCER_TREE" 0dbb10b8c193f55c9777405de3f4ae22ac2d0825
+(
+  set -e
+  cd "$GDD_PRODUCER_TREE"
+  "$GRAPHIFY_PYTHON" conformance/generate_graphify_fixture.py
+  git diff -- examples/graphify
+)
 ```
 
 Graphify is not a runtime dependency of the GDD adapter. See [GRAPHIFY.md](../../GRAPHIFY.md) for profiles, direction, trust boundaries, and the agent workflow.

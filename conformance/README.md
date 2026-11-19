@@ -16,6 +16,11 @@ preserve the relative paths of their inputs, including example bundles,
 schemas, tutorial models and archives used by the chosen suite. Relative
 output paths resolve from the directory where you run the command.
 
+The catalogs retain Python test identifiers for traceability. Resolve them in
+the [v0.8.0 Python suite](https://github.com/mikkelkrogsholm/gdd/tree/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/tests). To replay Python or Chromium checks,
+use the [pinned Python checkout](../INSTALL.md#install-from-source) and its
+[conformance instructions](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/conformance/README.md). The Cargo commands use this checkout.
+
 ## Installed native CLI
 
 Supply the installed `gdd` and a separate reference `gdd` built for the same
@@ -64,7 +69,6 @@ preserving authoring order when serializing modified fixtures for snapshot
 revisions. Trusted mandates, evidence, parallel plans and import audits are
 synthetic inputs generated for their named cases.
 
-Replay the Python suite with `uv run python conformance/run.py --output python-standard-run.json`.
 The `verification` field preserves the classification from the [standard
 review](../evidence/standard-review.md). The [historical validator
 receipt](../evidence/validator-conformance.json) identifies its own execution.
@@ -95,8 +99,7 @@ The precision case uses the literal endpoint `9007199254740993.0` and node ID
 `9007199254740992`. Rust distinguishes the two and expects FAIL with
 `REFERENCE_UNRESOLVED`. The Python adapter reports UNKNOWN with
 `FORMAT_UNSUPPORTED` at its numeric projection limit. The native receipt
-records the Rust expectation. Replay the Python expectations with
-`uv run python conformance/run_graphify.py`. Producer fixtures and their hashes
+records the Rust expectation. Producer fixtures and their hashes
 are documented in [examples/graphify](../examples/graphify/README.md).
 
 ## Visualization
@@ -117,7 +120,7 @@ Any mismatch or setup error yields a nonzero exit after the remaining cases run.
 [visualization-cases.yaml](visualization-cases.yaml) defines the inputs and
 expectations for both the native and HTML suites. Each native case renders a
 fresh `.gddview` from its example model or the [multigraph fixture](fixtures/viewer-multigraph.json).
-The fixture preserves the bytes emitted by [viewer_fixture.py](viewer_fixture.py),
+The fixture preserves the bytes emitted by [the v0.8.0 fixture generator](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/conformance/viewer_fixture.py),
 including its parallel edges, hostile labels and integer `9007199254740993`.
 The scoped case renders the concert model around `action.reserve`.
 
@@ -127,8 +130,7 @@ trailing content to the passive native file, `blank_html` empties the file,
 and `deep_payload` adds JSON nested beyond the native reader's depth limit.
 The receipt identifies the renderer profile and UTC execution time.
 
-Replay the historical `gdd-viewer-html/0.1` cases with
-`uv run python conformance/run_visualization.py`. [run_browser.cjs](run_browser.cjs)
+The [v0.8.0 visualization runner](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/conformance/run_visualization.py) replays the historical `gdd-viewer-html/0.1` cases. [The v0.8.0 Chromium harness](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/conformance/run_browser.cjs)
 exercises offline browser interactions. See [VIEWER.md](../VIEWER.md) for the
 artifact and interaction verification scopes.
 
@@ -156,9 +158,6 @@ or invalid manifest produces a nonzero exit. Omit `--output` for JSON on
 standard output. With `--output`, the command creates a new file and prints
 the matched case count.
 
-To obtain a Python receipt with pytest exit status and captured output, run
-`uv run python conformance/run_code.py --output python-code-run.json`.
-
 ## Project status
 
 Run the 13 named project status cases (15 parameter instances) locally.
@@ -180,9 +179,7 @@ Omit `--output` for the JSON receipt on standard output. With `--output`, the
 runner creates a new file and prints the matched case count. Each row records
 the manifest ID, assertion, result and attempted instance count. A failed
 expectation or invalid catalog exits nonzero. The native receipt identifies
-its producer in `tool` and `runner`. To run the corresponding Python tests
-and collect pytest output, use
-`uv run python conformance/run_status.py --output python-status-run.json`.
+its producer in `tool` and `runner`.
 
 ## Declared-model impact
 
@@ -209,8 +206,7 @@ Omit `--output` for JSON on standard output. With `--output`, the runner creates
 a new receipt and prints the matched case count. The native receipt identifies
 its producer in `tool` and `runner`. Each row preserves the catalog ID and
 assertion and reports the verdict and number of attempted instances. Failed
-expectations produce a nonzero exit. To collect the Python receipt with pytest
-output, run `uv run python conformance/run_impact.py --output python-impact-run.json`.
+expectations produce a nonzero exit.
 
 ## Stable-identity model diff
 
@@ -230,8 +226,7 @@ indexed concert experiment to compare the phase A and final requirements.
 Omit `--output` to print the JSON receipt. With `--output`, the runner creates
 a new file and prints the matched case count. Each row records the catalog ID,
 assertion, verdict and number of attempted instances. Failed expectations
-produce a nonzero exit. To collect the Python receipt with pytest output, run
-`uv run python conformance/run_diff.py --output python-diff-run.json`.
+produce a nonzero exit.
 
 ## GDD 0.3 boundaries and design principles
 
@@ -260,9 +255,7 @@ checkout.
 Omit `--output` to print the JSON receipt. With `--output`, the runner creates
 a new file and prints the matched case count. Each row identifies the assertion,
 verdict and number of attempted instances. Failed expectations include their
-parameter and error and cause a nonzero exit. To capture the Python receipt
-with its pytest output, run
-`uv run python conformance/run_design.py --output python-design-run.json`.
+parameter and error and cause a nonzero exit.
 Synthetic reviews exercise envelope completeness and applicability. The
 original 58 standard cases run under GDD 0.2.
 
@@ -301,5 +294,3 @@ Omit `--output` from `workflow` to print the JSON receipt. With `--output`,
 the runner creates a new file and prints the matched case count. Each row gives
 the catalog ID, assertion, result and number of attempted instances. Failed
 expectations include the parameter and error and yield a nonzero exit.
-To run the original Python suite and capture its pytest output, use
-`uv run python conformance/run_workflow.py --output python-workflow-run.json`.

@@ -11,9 +11,9 @@ gdd diff base/gdd.json head/gdd.json --output new-comparison.json
 ```
 
 JSON is the default. Text renders the same comparison; an output file must be
-new, and destination symlinks are refused. The Python API is
-`gdd_validator.diff_models(base, head)`; `diff_text(result)` in
-`gdd_validator.model_diff` formats the result without reassessment.
+new, and destination symlinks are refused. Rust callers use
+`gdd::model_diff::diff_models` and format the result with
+`gdd::model_diff::diff_text`.
 
 ## What is compared
 
@@ -81,7 +81,7 @@ The concert reference experiment is archived with byte-preserving restoration.
 From a repository checkout, use a new destination outside the repository:
 
 ```sh
-python scripts/concert_archive.py restore \
+cargo run --locked -p gdd-conformance -- concert-archive restore \
   --archive archive/experiments/concert-7e27757.tar.gz \
   --index archive/experiments/concert-7e27757.index.json \
   --output "$PWD/../gdd-diff-concert-recovered"
@@ -90,8 +90,8 @@ gdd diff \
   "$PWD/../gdd-diff-concert-recovered/examples/concert-app/gdd.json" --format text
 ```
 
-Follow the [archive instructions](../archive/experiments/README.md) to restore
-the experiment into a new destination with a canonical, existing parent. The change summary
+The [archive index](../archive/experiments/concert-7e27757.index.json) identifies
+each restored member. Choose a new destination with a canonical, existing parent. The change summary
 surfaces the per-principal reservation limit and corresponding contract/scenario
 declarations. This is a replay of historical model differences, not a new
 execution of the application or its original experiment.
@@ -99,5 +99,5 @@ execution of the application or its original experiment.
 Run the local behavioral conformance suite with a new receipt path:
 
 ```sh
-uv run --no-sync python conformance/run_diff.py --output /tmp/new-model-diff.json
+cargo run --locked -p gdd-conformance -- diff --output /tmp/new-model-diff.json
 ```

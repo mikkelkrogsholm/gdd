@@ -1,6 +1,6 @@
-# GDD validator 0.8.0 — GDD 0.2 and 0.3
+# GDD validator for GDD 0.2 and 0.3
 
-The validator loads version-dispatched GDD 0.2 and 0.3, checks the model, and assesses the structural readiness of a selected scope. It has a Python API and CLI and writes reports in `gdd-report/0.2`. Pseudocode, extension code, and application tests are not executed.
+The validator loads version-dispatched GDD 0.2 and 0.3, checks the model, and assesses the structural readiness of a selected scope. It has a Rust API and CLI and writes reports in `gdd-report/0.2`. Pseudocode, extension code, and application tests are not executed.
 
 Start with the [graph-to-code tutorial](docs/tutorial.md) for a complete worked
 example, or [INSTALL.md](INSTALL.md) for setup. This page is the command and API
@@ -8,20 +8,19 @@ reference. The [validation standard](standard/VALIDATION.md) defines model,
 readiness, authorization and implementation assessments; [HOST.md](HOST.md)
 explains how actual checks become trusted evidence.
 
-Python 3.11 or newer is required. `uv.lock` pins the installation. Run from the project directory:
+Install the native `gdd` CLI with [Cargo](INSTALL.md#install-the-rust-cli-and-viewer), then run the following commands from the checkout.
 
 ```sh
-uv sync --locked
-uv run gdd validate examples/concert.gdd.yaml
-uv run gdd validate examples/concert.gdd.yaml --profile readiness --scope action.reserve
-uv run gdd validate examples/concert.gdd.yaml --profile readiness --scope screen.reserve
-uv run gdd validate examples/concert.gdd.yaml --profile records
-uv run gdd validate examples/concert.gdd.yaml --profile records --activity implementation --scope action.reserve
+gdd validate examples/concert.gdd.yaml
+gdd validate examples/concert.gdd.yaml --profile readiness --scope action.reserve
+gdd validate examples/concert.gdd.yaml --profile readiness --scope screen.reserve
+gdd validate examples/concert.gdd.yaml --profile records
+gdd validate examples/concert.gdd.yaml --profile records --activity implementation --scope action.reserve
 ```
 
 The five validations yield model-PASS, backend-readiness-PASS, screen-readiness-FAIL, implementation-UNKNOWN, and authorization-UNRESOLVED, respectively. The screen's missing design source is also retained as UNKNOWN. Records contain plans, not executed application evidence.
 
-Repeat `--scope` and `--profile` for multiple selections. `--output report.json` saves the report in a new file; existing files are not overwritten. Validation exit 0 means all reported requested checks are PASS/GRANTED; 1 means at least one FAIL/DENIED; 2 means UNKNOWN/UNRESOLVED without a known failure. Dimensions are separate; `aggregate(report['checks'], 'readiness')` in `gdd_validator.report` aggregates one dimension with FAIL before UNKNOWN before PASS.
+Repeat `--scope` and `--profile` for multiple selections. `--output report.json` saves the report in a new file; existing files are not overwritten. Validation exit 0 means all reported requested checks are PASS/GRANTED; 1 means at least one FAIL/DENIED; 2 means UNKNOWN/UNRESOLVED without a known failure. In Rust, `report.result("readiness")` aggregates the readiness checks with FAIL before UNKNOWN before PASS.
 
 ## Read status and potential change consequences
 
@@ -62,8 +61,7 @@ See [installation and skill setup](INSTALL.md).
 ## Supported checks
 
 The JSON/YAML consumer accepts at most 256 nested containers, counting a root
-mapping or sequence as one. Greater depth yields `FORMAT_UNSUPPORTED`/UNKNOWN,
-independent of the Python parser's changing stack capacity. This is a consumer
+mapping or sequence as one. Greater depth yields `FORMAT_UNSUPPORTED`/UNKNOWN. This is a consumer
 resource limit, not a declaration that deeper GDD documents are invalid.
 Symlink loops are invalid local paths (FAIL); genuinely missing inputs remain
 unavailable (UNKNOWN). See [consumer input limits](docs/consumer-input-limits.md).
@@ -83,7 +81,11 @@ unavailable (UNKNOWN). See [consumer input limits](docs/consumer-input-limits.md
 
 Extensions use exact manifest versions and byte hashes. The generic declarative Draft 2020-12 profile checks `data_schema`, endpoints, and context/dependency/effect, including targets of active local schema references. There is no implicit substitutability with core kinds. Custom implementation readiness requires a separate profile and therefore yields UNKNOWN. Remote schema references are never fetched. Schema/data depth exceeding the runtime validator's capacity yields UNKNOWN. `--unsupported-extension example.sensors` makes missing consumer support explicit.
 
-Numeric inputs use Python integers and finite floats when the number's decimal value can be preserved through round-trip. Ordinary values such as `0.1` are supported. Contract bounds, enum uniqueness, and local JSON Schema assertions are assessed on exact numeric values in temporary copies, including when integers are mixed with decimal numbers. Model data, snapshots, and artifacts retain ordinary JSON values. Decimals that would be rounded to a different decimal value, underflow/overflow, and integers beyond the runtime parser's capacity yield `FORMAT_UNSUPPORTED`/UNKNOWN. This applies to both JSON and YAML, including explicit built-in tags; no positive assessment is inferred from a changed number. Invalid NaN/Infinity literals still yield FAIL.
+The Rust validator preserves finite numeric literals and compares model bounds
+with exact arithmetic within its 10,000-digit budget. Unsupported comparisons
+yield `FORMAT_UNSUPPORTED`/UNKNOWN. Unquoted NaN and Infinity literals yield
+FAIL. See [numeric validation differences](docs/rust-migration.md#numeric-validation-differences)
+for examples and the Python v0.8.0 behavior.
 
 Declared imports edges are checked against architecture constraints in the model. A direct prohibition applies to the specific edge; a transitive prohibition applies to nonempty import paths, including cycles. A contradiction yields CONSTRAINT_INVALID. This proves no actual import relationships in the implementation and does not turn the graph into a complete allowlist.
 
@@ -92,7 +94,7 @@ Readiness scopes are implementation targets: component, entity, action, screen, 
 ## Observe actual Python import relationships
 
 ```sh
-gdd check-code model.gdd.yaml --root src --implementation implementation.main --profile python-imports/0.1 --records current.records.json --scope rule.api_boundary --output new-observation.json
+gdd check-code model.gdd.yaml --root src --implementation implementation.main --profile python-imports/0.1 --python-runtime target-runtime.json --records current.records.json --scope rule.api_boundary --output new-observation.json
 ```
 
 This separate operation reads current binding records, inventories Python source
@@ -117,10 +119,10 @@ messages describe obligations; they do not fill in contract content. The
 [tutorial](docs/tutorial.md) demonstrates the refinement loop.
 
 ```sh
-uv run gdd snapshot examples/concert.gdd.yaml --output snapshot.json
-uv run gdd context examples/concert.gdd.yaml --scope action.reserve --output context.json
-uv run gdd validate examples/concert.gdd.yaml --profile readiness --package context.json
-uv run gdd validate examples/concert.gdd.yaml --profile readiness --parallel-plan plan.json
+gdd snapshot examples/concert.gdd.yaml --output snapshot.json
+gdd context examples/concert.gdd.yaml --scope action.reserve --output context.json
+gdd validate examples/concert.gdd.yaml --profile readiness --package context.json
+gdd validate examples/concert.gdd.yaml --profile readiness --parallel-plan plan.json
 ```
 
 A snapshot uses raw bytes, normalized asset paths, and the standard's SHA-256 profile. Records, reports, and the snapshot file itself are excluded. Errors in a record file do not change the computable model revision. Missing normative model assets yield an unknown revision. Historical record targets are never rebound to the current model; this version does not load historical snapshots, and dependent checks become UNKNOWN.
@@ -135,13 +137,13 @@ revision bundles and reading artifacts without rebinding historical claims.
 
 The parallel plan's tool format is `gdd-parallel-plan/0.2`. Each package has `id`, `scope`, `base_revision`, `write_resources`, `read_resources`, `locked_contracts`, `workspace`, and `integration_plan`. The top level has `packages`, `serialized` with `[before, after]` pairs, and `integration: {owner, checks}`. Missing plan obligations yield UNKNOWN. Exact POSIX file paths are normalized before overlap checking; a terminal `/`, `.`, or `..` owns the directory's subtree. Globs do not prove disjointness. Declared workspace isolation is a structural claim that the orchestrator must establish. Plan-PASS grants no authorization, action readiness, or runtime guarantee.
 
-The tool's envelopes are local API contracts, not new core fields in GDD. Their schemas are in [validator-inputs.schema.json](schemas/validator-inputs.schema.json), derived directly from the API's `input_schema`.
+The [validator input schema](schemas/validator-inputs.schema.json) describes the tool’s host, package, parallel-plan and import-audit envelopes.
 
 ## The host's trust boundary
 
 Without host input, an accepted receipt provides no authority or proof of execution. The CLI flag `--host-context host.json` is an **explicit attestation boundary**: the calling user/host takes responsibility for the trusted claims in the file. The validator never reads this file automatically from the model. Do not use host context supplied by untrusted model/source content.
 
-The opt-in [Python host helpers](HOST.md) capture actual snapshots, execute
+The opt-in [Rust host helpers](HOST.md) capture actual snapshots, execute
 caller-selected argv and append checked records. The validator never invokes
 them automatically from graph content or method labels.
 
@@ -162,28 +164,15 @@ Source lineage follows source+revision identities. Missing historical input revi
 ## Verification and API
 
 ```sh
-uv run pytest -q
-GDD_CHECK_DIR="$(mktemp -d)"
-uv run python conformance/run.py --output "$GDD_CHECK_DIR/validator-conformance.json"
-uv build
+cargo test --locked -p gdd
+cargo run --locked -p gdd-conformance -- standard --output validator-conformance.json
 ```
 
-The conformance runner executes the standard cases against concrete fixtures.
-Regression tests also cover parser, paths, extensions, context, authority,
-supersession, evidence and CLI behavior. Use [CONTRIBUTING.md](CONTRIBUTING.md)
-for the current local check commands and [evidence](evidence/README.md) for
-version-specific execution records. Synthetic mandates and receipts in tests
-are fixtures, not actual approvals or application evidence.
-
-```python
-from gdd_validator import validate, exit_code
-
-report = validate("examples/concert.gdd.yaml",
-                  profiles=["readiness"], scope=["action.reserve"])
-assert exit_code(report) == 0
-```
-
-The API returns a JSON-compatible report object. Invalid tool arguments raise `ValueError`. Model or file failures produce report diagnostics. The API validates revision and report formats internally. The [v0.8.0 Python entry point](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/gdd_validator/validator.py) coordinates the loading, model, readiness, planning and records checks.
+The Rust conformance runner checks the 58 named standard cases. The
+[Rust API example](docs/rust-migration.md#validate-a-scope) validates a selected
+scope and reads the report and exit code. See [CONTRIBUTING.md](CONTRIBUTING.md)
+for other local checks and [the v0.8.0 Python reference](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/VALIDATOR.md)
+for the released Python library.
 
 The [agent workflow](WORKFLOW.md) is a separate tool layer for preparing work
 and tracking integration. For an executed parallel-work example, see the
@@ -205,9 +194,8 @@ text is structurally checked; the quality of its content requires review.
 
 `gdd boundaries MANIFEST` derives public interfaces, community membership basis,
 call classification, unresolved inputs and explicit omitted calls. It writes no
-intent. The Python API is `boundary_view(bundle, scope=None)` in
-`gdd_validator.boundaries`; a supplied scope is a read-context ID list, not an
-assertion that entire communities have been analyzed.
+intent. Rust callers use `gdd::boundaries::boundary_view(&bundle, scope)`.
+The optional scope identifies the read-context IDs used for the assessment.
 
 `gdd design-review MANIFEST --review FILE --implementation ID --code-revision REV
 --scope NODE` checks the advisory envelope and its applicability to host-supplied
@@ -215,4 +203,4 @@ identities/scope. Repeat scope as needed. A missing scope selection reports only
 review's declared scope. COMPLETE returns 0, INVALID 1, UNKNOWN 2. Findings do not
 change blocking acceptance checks. The tool does not inspect code or verify that a
 review actually occurred. Its schema is [design-review](schemas/design-review.schema.json).
-New cases run with `uv run python conformance/run_design.py`.
+Run the named cases with `cargo run --locked -p gdd-conformance -- design`.
