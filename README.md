@@ -63,11 +63,11 @@ with `gdd-viewer examples/product/greenfield.gddview` and switch between User jo
 
 ## Start with the tutorial
 
-[Build a small Python implementation from a GDD graph](docs/tutorial.md).
-Start with a sketch, refine a contract, inspect the graph, implement and test it,
-then capture revision-bound evidence with the host helpers. A deliberately broken
-implementation shows why a check must detect failure before its PASS is trusted.
-The tutorial is included in v0.8.0 and needs no LLM account.
+[Build and verify a Rust integer addition function from a GDD graph](docs/tutorial.md).
+Refine a draft, inspect the action and its planned scenario in the native viewer,
+and run five examples against both addition and an isolated subtraction mutant.
+Review the results, record evidence for the checked revision and see what happens
+when the source changes. The exercise runs locally without an LLM account.
 
 For the method without commands, read [GDD.md](GDD.md). For installation choices,
 see [INSTALL.md](INSTALL.md).

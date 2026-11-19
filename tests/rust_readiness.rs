@@ -22,6 +22,84 @@ fn cli(path: &Path, scope: &str, args: &[&str]) -> Output {
 }
 
 #[test]
+fn tutorial_refinement_has_a_ready_revision_bound_action_scope() {
+    let work = tempfile::tempdir().unwrap();
+    let run = |args: &[&str], expected: i32| -> Value {
+        let output = Command::new(env!("CARGO_BIN_EXE_gdd"))
+            .current_dir(work.path())
+            .args(args)
+            .output()
+            .unwrap();
+        assert_eq!(
+            output.status.code(),
+            Some(expected),
+            "{args:?}: {}{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        serde_json::from_slice(&output.stdout).unwrap()
+    };
+    let draft = run(
+        &[
+            "init",
+            "draft",
+            "--project-id",
+            "project.integer-addition",
+            "--title",
+            "Local integer addition",
+        ],
+        0,
+    );
+    let sketch = work.path().join("draft/gdd.json");
+    let original = fs::read(&sketch).unwrap();
+    run(&["validate", "draft/gdd.json", "--profile", "model"], 0);
+    run(
+        &[
+            "validate",
+            "draft/gdd.json",
+            "--profile",
+            "readiness",
+            "--scope",
+            "action.main",
+        ],
+        1,
+    );
+
+    let model = "refined.gdd.json";
+    let refined = include_bytes!("../docs/tutorial/refined.gdd.json");
+    fs::write(work.path().join(model), refined).unwrap();
+    let ready = run(
+        &[
+            "validate",
+            model,
+            "--profile",
+            "readiness",
+            "--scope",
+            "action.add",
+        ],
+        0,
+    );
+    let diff = run(&["diff", "draft/gdd.json", model], 0);
+    let packet = run(&["context", model, "--scope", "action.add"], 0);
+    assert_eq!(diff["base"]["spec_revision"], draft["spec_revision"]);
+    assert_eq!(diff["comparison"]["semantic_changes"], true);
+    assert_ne!(diff["base"]["spec_revision"], diff["head"]["spec_revision"]);
+    assert_eq!(diff["head"]["spec_revision"], ready["spec_revision"]);
+    assert_eq!(packet["spec_revision"], ready["spec_revision"]);
+    assert_eq!(packet["scope"], json!(["action.add"]));
+    assert_eq!(
+        packet["nodes"],
+        json!(["action.add", "component.arithmetic", "scenario.add"])
+    );
+    assert_eq!(
+        packet["edges"],
+        json!(["edge.add.owner", "edge.add.scenario"])
+    );
+    assert_eq!(fs::read(sketch).unwrap(), original);
+    assert_eq!(fs::read(work.path().join(model)).unwrap(), refined);
+}
+
+#[test]
 fn scoped_component_reads_its_public_action_from_the_owning_fragment() {
     let directory = tempfile::tempdir().unwrap();
     let manifest = directory.path().join("gdd.json");

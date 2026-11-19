@@ -199,11 +199,17 @@ gallery view against its model and normative sources in the matching checkout.
    [browser checks](INSTALL.md#optional-browser-checks) when viewer/browser behavior
    changes. Record actual commands, environment and results; retain relevant
    raw reports in a fresh directory. GitHub Actions CI remains absent.
-   `uv run --no-sync python scripts/check.py --release` collects the release
-   checks in one fresh directory. Use `--matrix` explicitly for the installed
-   interpreter lines maintained in that script; it does not download Python.
+   Use `--matrix` explicitly for the installed interpreter lines maintained
+   in the Python runner.
 5. Commit the reviewed changes. Require a clean checkout. Build the wheel from
-   that exact commit into a fresh directory and run the installed-wheel verifier:
+   that exact commit into a fresh directory and run its installed-wheel verifier.
+
+To reproduce the v0.8.0 Python release checks, start in the
+[pinned Python worktree](INSTALL.md#install-from-source) at
+`0dbb10b8c193f55c9777405de3f4ae22ac2d0825`. Its installed-wheel verifier
+executes the Python tutorial from that revision. Use
+`uv run --no-sync python scripts/check.py --release` there for the full
+release checks, or run the wheel check alone in that same worktree.
 
 ```sh
 GDD_RELEASE_DIR="$(mktemp -d)"

@@ -135,16 +135,15 @@ To exercise a separately installed native CLI, run the
 
 ### Python migration and release checks
 
-The Python reference and distribution checks use the existing local runner.
+The Python reference checks on the migration branch use the local runner.
 It records interpreter versions, durations, commands and logs in a new
 temporary directory and stops on the first unsuccessful step.
 
 ```sh
 uv sync --locked --dev --python 3.12
-uv run --no-sync python scripts/check.py --quick   # focused parser, diagnostics, tutorial, Graphify, viewer and skill checks
+uv run --no-sync python scripts/check.py --quick   # focused parser, diagnostics, Graphify, viewer and skill checks
 uv run --no-sync python scripts/check.py           # full pytest suite and skill synchronization check
 uv run --no-sync python scripts/check.py --matrix  # full pytest on installed Python 3.11, 3.12, 3.13 and 3.14
-uv run --no-sync python scripts/check.py --release # full suite, named conformance reports, wheel build and installed verification
 ```
 
 The full suite can take several minutes. `--matrix` is explicit and sequential;
@@ -163,12 +162,13 @@ verification record for a PR. Browser checks remain separate and opt-in.
 Passing pytest scratch directories are discarded; failing cases retain their
 temporary inputs for diagnosis. Full suites on several interpreters can use
 substantial disk space, so matrix execution is sequential.
-The release mode intentionally executes conformance cases separately to retain
-named receipts; ordinary full checks do not repeat those runners afterward.
 
-The individual commands remain available as a reference. For release
-verification, use the full set below from the repository root with a fresh
-output directory so new verification does not overwrite historical evidence:
+For Python wheel release verification, use the [pinned v0.8.0 worktree](INSTALL.md#install-from-source)
+at `0dbb10b8c193f55c9777405de3f4ae22ac2d0825`. Its verifier executes the
+Python tutorial from that revision. From its root, run
+`uv run --no-sync python scripts/check.py --release` for the full suite,
+named conformance reports, wheel build and installed verification. To run
+its individual steps, use the same pinned checkout and a fresh output directory.
 
 ```sh
 uv sync --locked --dev --python 3.12

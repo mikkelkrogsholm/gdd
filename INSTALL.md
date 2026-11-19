@@ -42,9 +42,8 @@ gdd validate "$GDD_PROJECT/gdd.json" --profile visualization --view "$GDD_PROJEC
 gdd-viewer "$GDD_PROJECT/graph.gddview"
 ```
 
-The [native integer addition tutorial](docs/tutorial.md#native-integer-addition-checker)
-runs a Rust implementation and shows how to verify that its checker detects
-subtraction in an isolated copy.
+The [Rust graph-to-code tutorial](docs/tutorial.md) takes a fresh draft through
+implementation, a failing subtraction control, evidence review and a later edit.
 
 ## Install the tagged Python CLI
 
@@ -62,19 +61,14 @@ JavaScript and license notices are bundled in each exported HTML file; CLI users
 
 ### Install from source
 
-For the [graph-to-code tutorial](docs/tutorial.md), use the v0.8.0 tagged
-checkout, which includes the tutorial assets and `status`, `impact`, `diff` and
-`check-code` commands.
-It covers a small GDD 0.3 model, Python implementation, checks and captured evidence
-without an LLM account.
-
-From the repository root, with [uv](https://docs.astral.sh/uv/getting-started/installation/)
-and Python 3.11+ available (the commands below select Python 3.12):
-
-For the released snapshot, check out `v0.8.0` before installation. Contributors
-should work on a branch from `main`, as described in [CONTRIBUTING.md](CONTRIBUTING.md).
+To reproduce the [historical Python tutorial](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/docs/tutorial.md),
+use the v0.8.0 checkout for the CLI, examples and commands. From a clone,
+create a separate worktree and install the locked environment with
+[uv](https://docs.astral.sh/uv/getting-started/installation/).
 
 ```sh
+git worktree add --detach ../gdd-python-v0.8.0 0dbb10b8c193f55c9777405de3f4ae22ac2d0825
+cd ../gdd-python-v0.8.0
 uv sync --locked --dev --python 3.12
 uv run --no-sync gdd --help
 uv run --no-sync gdd validate examples/concert-0.3.gdd.yaml
@@ -88,7 +82,8 @@ for the repository's development checks.
 
 ### Install a local wheel
 
-Build a wheel into a fresh location from the repository root:
+From the v0.8.0 worktree above, build a wheel into a fresh location.
+The verifier replays the Python tutorial bundled in that checkout.
 
 ```sh
 GDD_BUILD_DIR="$(mktemp -d)"
@@ -138,7 +133,8 @@ an existing directory and repeated initialization exits 1 without overwriting
 files. The model check should exit 0. The readiness check should exit 1 because
 the scaffold is a draft with an unresolved scope question. The view should exit
 0; open the generated HTML file in your browser. Continue with
-[the tutorial](docs/tutorial.md) in the v0.8.0 source checkout to refine and implement a scope.
+[the v0.8.0 Python tutorial](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/docs/tutorial.md)
+in that checkout to refine and implement a scope.
 
 For validation reports, exit 0 means the requested checks passed; exit 1 means
 a FAIL or DENIED result; exit 2 means unresolved or unsupported assessment.

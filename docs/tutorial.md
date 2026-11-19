@@ -1,366 +1,216 @@
 # From a brief to code and current evidence
 
-For the current Rust checkout, start with the [native integer addition checker](#native-integer-addition-checker).
-Steps 1–10 below walk through the released Python implementation and evidence workflow.
+Build one pure Rust function, inspect its GDD graph, and run the same five
+comparisons against the implementation and an isolated subtraction mutant.
+You will produce the model snapshot, native graph view, execution receipts and
+evidence ledger on your own machine.
 
-Build one pure Python function, inspect its GDD graph, run real assertions and
-an isolated failing mutation, and assess current implementation evidence. Use
-Python 3.11 or newer with `gdd` installed in that same environment, following
-[installation](../INSTALL.md). Run these commands from the repository root;
-`python` and `gdd` must select that environment. Keep the same shell open.
-The command blocks use a POSIX shell, as in the installation guide.
-No LLM, account, subscription or network service is used by this exercise.
+Start at the root of the current Rust checkout with Rust 1.95+, Cargo and the
+[native CLI installed](../INSTALL.md#install-the-rust-cli-and-viewer). The
+desktop viewer is optional. Use one fresh POSIX shell for all the command
+blocks. If your Cargo cache is empty, run `cargo fetch --locked` first. The
+exercise runs offline and requires no LLM account.
 
-From a v0.8.0 source checkout, first run `uv sync --locked --dev --python 3.12`,
-then `. .venv/bin/activate` in your POSIX shell. This puts both `python` and
-`gdd` from that environment on PATH. The tutorial assets and commands are included
-in `v0.8.0`; check out that tag for the released exercise, or use `main` for
-subsequent development.
-
-The sequence deliberately distinguishes **valid model**, **implementation
-readiness**, **actual execution**, **trusted current evidence** and
-**authorization**. A result in one dimension does not establish the others.
-All receipts are generated on your machine; the repository supplies no copied
-execution result to trust. The tiny check demonstrates the mechanism and its
-limits, rather than certifying all inputs or a whole project.
-
-## 1. Write a bounded brief
+## Turn a bounded brief into a draft
 
 > A caller supplies two mathematical integers and receives their exact sum.
 > The operation is pure and local. Transport, text parsing and bounded
 > machine-integer overflow handling are outside this exercise.
 
-This is deliberately smaller than a service. One component and one public
-action are sufficient; a new component requires a reason to exist.
-
-## 2. Start with an explicit sketch
-
-Use a new temporary directory; `init` refuses to overwrite an existing bundle.
-Keep this shell open so subsequent commands retain `$GDD_TUTORIAL_DIR`.
+One component and one public action suffice. Initialize a new draft and check
+its structure, then ask if its placeholder action is ready to implement.
 
 ```sh
-GDD_TUTORIAL_DIR="$(mktemp -d "${TMPDIR:-/tmp}/gdd-tutorial.XXXXXX")"
-gdd init "$GDD_TUTORIAL_DIR/project" --project-id project.integer-addition --title "Local integer addition"
-gdd validate "$GDD_TUTORIAL_DIR/project/gdd.json" --profile model
-gdd validate "$GDD_TUTORIAL_DIR/project/gdd.json" --profile readiness --scope action.main || test "$?" -eq 1
+set -eu
+work=$(mktemp -d "${TMPDIR:-/tmp}/gdd-tutorial.XXXXXX")
+draft="$work/draft/gdd.json"
+expect_exit() (
+    expected=$1
+    shift
+    actual=0
+    "$@" || actual=$?
+    test "$actual" -eq "$expected"
+)
+gdd init "$work/draft" --project-id project.integer-addition --title "Local integer addition"
+gdd validate "$draft" --profile model
+expect_exit 1 gdd validate "$draft" --profile readiness --scope action.main
 ```
 
-The model check exits **0**. Readiness exits **1**, intentionally: the sketch
-has no action contract, behavior, component boundary or normal scenario, and
-its implementation scope question is open. Read the diagnostic messages and
-locations. A valid graph is not necessarily ready for implementation.
+Model validation exits **0**. Readiness exits **1**. Find
+`READINESS_CONTRACT_MISSING`, `BOUNDARY_RATIONALE_MISSING`,
+`SCENARIO_CATEGORY_MISSING` and `QUESTION_BLOCKS_SCOPE` in the diagnostics.
+The draft leaves the component boundary, action contract, behavior and normal
+scenario open. Its scope question blocks implementation.
 
-## 3. Make the modeling decisions visible
+## Refine the model and inspect the change
 
-Read [the complete refined model](tutorial/refined.gdd.json) before copying it.
-It is an explicitly authored worked example, not generated code or an automatic repair.
-It replaces the sketch with `component.arithmetic`, `action.add` and a planned
-normal scenario. The component explains its boundary and explicitly publishes
-`action.add`; the action has a matching `owned_by` edge.
-
-The contract specifies both integer inputs, exact integer output, behavior,
-postcondition, empty context/errors and complete effects/dependencies. Each risk
-has a concrete rationale. For this pure operation no identity, shared state,
-external effect or numeric threshold is involved. A bounded integer API, parsing,
-authentication or persistence would change that assessment and require further
-contracts and scenarios. Empty errors and exclusions are deliberate decisions.
+Read the [authored refinement](tutorial/refined.gdd.json). The arithmetic
+component explains its boundary and publishes `action.add`. The action points
+back to its owner. Its contract names both integer inputs, exact integer output
+and postcondition. The explicit empty context, errors and effects, and the risk
+rationales, follow from a calculation with no parsing, identity, shared state
+or range threshold. A bounded integer API would need a different contract.
 
 ```sh
-cp docs/tutorial/refined.gdd.json "$GDD_TUTORIAL_DIR/refined.gdd.json"
-gdd validate "$GDD_TUTORIAL_DIR/refined.gdd.json" --profile model
-gdd validate "$GDD_TUTORIAL_DIR/refined.gdd.json" --profile readiness --scope action.add
-```
-
-Both checks exit **0**. The refined example has no unresolved scope question;
-the original sketch remains untouched. It supplies no mandate, trusted decision,
-implementation record or executed scenario. Structural readiness is a planning
-result, not implementation correctness or authorization to act.
-
-## 4. Inspect the graph and hand context to your agent
-
-```sh
-gdd view "$GDD_TUTORIAL_DIR/refined.gdd.json" --output "$GDD_TUTORIAL_DIR/graph.html"
-gdd context "$GDD_TUTORIAL_DIR/refined.gdd.json" --scope action.add --output "$GDD_TUTORIAL_DIR/context.json"
-```
-
-Open `graph.html` in your browser. The single HTML file works offline and exposes
-the canonical model through its inspector. `context.json` gives your existing
-coding agent revision-bound context for `action.add`, including its owner and
-planned scenario. Review it before implementation. For this exercise we explicitly
-choose local Python source files and standard-library `unittest`; your existing
-agent can author the same bounded implementation. The next steps show every
-selected source, test and host operation. Execute them only under your actual
-working mandate; neither the model nor the copied example grants it.
-
-## 5. Review status before planning a change
-
-```sh
-gdd status "$GDD_TUTORIAL_DIR/refined.gdd.json" --scope action.add --format text
-gdd impact "$GDD_TUTORIAL_DIR/refined.gdd.json" --scope action.add --format text
-```
-
-Both are read-only. Status shows structural readiness separately from unassessed
-authorization and implementation evidence. Impact explains the selected action's
-declared consequences and supporting owner/scenario context without ordering
-edits or claiming an executed scenario. See [the inspection guide](inspection.md)
-for directional caller/dependency examples and coverage limits.
-
-## 6. State what must be verified
-
-The planning model has no blocking rule: it cannot produce a vacuous evidence
-PASS. Read [the new evidence model](tutorial/evidence.gdd.json), then copy it
-alongside the original. It adds only `rule.sum`, a blocking invariant with method
-`python_unittest`, its `constrains` edge to `action.add`, the scenario's `verifies`
-edge, and a separate `record_files` ledger. No old model or record is rewritten.
-The method is a descriptive identifier; validation never executes it.
-
-```sh
-cp docs/tutorial/evidence.gdd.json "$GDD_TUTORIAL_DIR/evidence.gdd.json"
-cp docs/tutorial/tutorial_host.py "$GDD_TUTORIAL_DIR/tutorial_host.py"
-python "$GDD_TUTORIAL_DIR/tutorial_host.py" prepare "$GDD_TUTORIAL_DIR"
-gdd validate "$GDD_TUTORIAL_DIR/evidence.gdd.json" --profile model
-gdd validate "$GDD_TUTORIAL_DIR/evidence.gdd.json" --profile readiness --scope action.add
-```
-
-Read [the complete host script](tutorial/tutorial_host.py) before running it.
-`prepare` creates an empty exclusive `records.json`, resolves the finalized model
-revision, and uses `append_records` to add immutable `check.sum`. Its scope names
-`rule.sum` and `scenario.add`; it requires the actual Python environment and the
-`isolated-subtraction-mutant` control. The model, check and evidence revisions are
-separate identities. Adding records does not edit the finalized model.
-
-## 7. Implement the selected action and inspect the assertions
-
-Read [the implementation](tutorial/integer_add.py) and
-[the unittest file](tutorial/test_integer_add.py). The implementation is exactly:
-
-```python
-def add(left: int, right: int) -> int:
-    return left + right
-```
-
-The selected examples assert `(-7, 7) -> 0` for `scenario.add`, `(2, 3) -> 5`,
-zero, two negatives and an integer larger than a machine word. These assertions
-check concrete cases of `rule.sum`. The type annotations do not validate arbitrary
-Python values: the contract is for caller-supplied mathematical integers, and
-parsing or accepting floats is outside this exercise. Review the one-expression
-implementation for the stated absence of state and external effects.
-
-```sh
-cp docs/tutorial/integer_add.py "$GDD_TUTORIAL_DIR/integer_add.py"
-cp docs/tutorial/test_integer_add.py "$GDD_TUTORIAL_DIR/test_integer_add.py"
-```
-
-This is an explicit worked implementation, not code synthesized by the validator.
-For a real task your agent writes and reviews these artifacts against the context
-packet and contracts before the host selects checks.
-
-## 8. Execute a real negative control, then check the current code
-
-```sh
-python "$GDD_TUTORIAL_DIR/tutorial_host.py" negative "$GDD_TUTORIAL_DIR"
-python "$GDD_TUTORIAL_DIR/tutorial_host.py" check "$GDD_TUTORIAL_DIR"
-```
-
-`negative` creates a fresh `mutant/` copy and changes `return left + right` to
-`return left - right` there. It runs the unchanged assertions with
-`[sys.executable, "-B", "-m", "unittest", "-v", "test_integer_add"]` through
-`execute_check`, requiring an actual exit **1 / FAIL**. Read
-`negative.receipt.json`: the failure must come from the assertions, not an import
-or environment error. Current implementation bytes remain untouched. This control
-shows that the selected assertions distinguish subtraction from addition; it
-cannot establish exhaustive correctness.
-
-`check` selects the same argv in the actual code directory and requires exit
-**0 / PASS**. Inspect `pass.receipt.json` for stdout/stderr, command, runner,
-timestamps and identical before/after source snapshots. Both operations explicitly
-hash `integer_add.py` and `test_integer_add.py`, not the receipts. An unavailable
-checker, timeout or code change during execution yields UNKNOWN rather than PASS.
-Receipts are created exclusively; rerunning a stage cannot silently replace one
-or repeat its checker. The host script does not interpret graph text as commands.
-
-## 9. Author current records and explicitly supply local trust
-
-Only proceed after inspecting the implementation, assertions and both receipts.
-You are the local caller attesting that these executions and this limited coverage
-are the ones you actually reviewed. A copied receipt cannot authenticate itself.
-
-```sh
-python "$GDD_TUTORIAL_DIR/tutorial_host.py" record "$GDD_TUTORIAL_DIR" --attest-reviewed-checks
-gdd validate "$GDD_TUTORIAL_DIR/evidence.gdd.json" --profile records --scope action.add || test "$?" -eq 2
-gdd validate "$GDD_TUTORIAL_DIR/evidence.gdd.json" --profile records --scope action.add --host-context "$GDD_TUTORIAL_DIR/host-context.json"
-```
-
-`--attest-reviewed-checks` is your explicit local review attestation; `record`
-refuses to proceed without it. It checks the isolated FAIL, then calls
-`verification_records` with the current PASS receipt, `check.sum`, implementation identity
-`implementation.integer-addition.python`, actual Python version, selected test
-resource and explicitly performed control. It appends new `binding.sum.v1` and
-`evidence.sum.v1` IDs through `append_records`. The test binding maps both named
-verification targets to the actual hashed unittest file. The evidence references
-the current model revision, immutable check digest and selected code snapshot.
-It is not a separate assertion that all conceivable behavior has been tested.
-
-The first validation deliberately omits host trust: implementation is **UNKNOWN**
-and exit **2**. The second supplies `host-context.json`: the scoped implementation
-assessment is **PASS**, exit **0**. Inspect the `implementation` dimension rather
-than treating a raw process exit as a claim about every project dimension.
-The host fragment lists the actual verified binding, trusted evidence, supported
-method, environment, control and selected implementation/code revision. It has
-**no operational policy, mandate, trusted decision or acceptance authority**.
-Treat it as a local caller assertion, not a credential to share blindly.
-
-You can see that distinction directly:
-
-```sh
-gdd validate "$GDD_TUTORIAL_DIR/evidence.gdd.json" --profile records --scope action.add --host-context "$GDD_TUTORIAL_DIR/host-context.json" --activity acceptance || test "$?" -eq 2
-```
-
-Authorization is **UNRESOLVED**, exit **2**, because this exercise supplies no
-acceptance policy. Do not add a made-up mandate to turn that result green.
-For actual authorized multi-agent execution and run acceptance, continue with
-[the host guide](../HOST.md) and [workflow guide](../WORKFLOW.md).
-
-## 10. Observe what happens when selected code changes
-
-```sh
-python "$GDD_TUTORIAL_DIR/tutorial_host.py" drift "$GDD_TUTORIAL_DIR"
-gdd validate "$GDD_TUTORIAL_DIR/evidence.gdd.json" --profile records --scope action.add --host-context "$GDD_TUTORIAL_DIR/stale-host-context.json" || test "$?" -eq 2
-```
-
-`drift` makes a separate `changed/` copy, appends a comment to its implementation
-and observes that copy's actual new source snapshot. It supplies the new code
-revision in `stale-host-context.json`; the old evidence then yields implementation
-**UNKNOWN**, exit **2**, with stale-evidence diagnostics. GDD does not read your
-source automatically: the host must observe and supply the current revision.
-Even a behavior-preserving edit changes which bytes the receipt covers.
-
-The script also tries `verification_records` with new v2 IDs against the old
-receipt and changed code. Authoring is **refused**; inspect
-`stale-authoring.json`. No replacement records are appended. Original model,
-records, receipts and implementation remain unchanged. To verify actual new code,
-run new checks, assess coverage and controls, and append new identities; preserve
-the earlier history. To repeat this entire tutorial, start a fresh directory.
-
-You now have an authored graph, a bounded implementation, real PASS and FAIL
-receipts and explicitly trusted revision-bound evidence. The separate dimensions,
-limited assertions and unassessed acceptance authority remain visible. The
-[concert example](../examples/concert-app/README.md) shows a larger historical
-implementation; keep its execution claims separate from these new local runs.
-
-## Native integer addition checker
-
-Start at the repository root with the [native CLI and viewer installed](../INSTALL.md#install-the-rust-cli-and-viewer).
-Check the readiness of `action.add` in the [refined model](tutorial/refined.gdd.json),
-then save and verify a portable view in a fresh directory.
-
-```sh
-model=docs/tutorial/refined.gdd.json
-view_dir=$(mktemp -d)
+model="$work/refined.gdd.json"
+cp docs/tutorial/refined.gdd.json "$model"
+gdd diff "$draft" "$model" --format text
+gdd validate "$model" --profile model
 gdd validate "$model" --profile readiness --scope action.add
-gdd view "$model" --output "$view_dir/add.gddview"
-gdd validate "$model" --profile visualization --view "$view_dir/add.gddview"
+gdd status "$model" --scope action.add --format text
+gdd impact "$model" --scope action.add --format text
 ```
 
-Both validations should exit 0. On a desktop, open the graph and select
-`action.add` to inspect the exact-sum contract and its owner,
-`component.arithmetic`. Select `scenario.add` to see the planned example in
-which −7 and 7 sum to zero.
+The diff shows three added nodes, the removed placeholders and the removed
+scope question. The refined model and scoped readiness both pass. Status still
+shows unassessed implementation and authorization. Impact identifies the owner
+and the planned scenario as supporting context. Readiness describes the model
+at this point, before anyone has implemented or run the example.
+
+## Hand off the revision and inspect a detached view
 
 ```sh
-gdd-viewer "$view_dir/add.gddview"
+gdd snapshot "$model" --output "$work/snapshot.json"
+gdd context "$model" --scope action.add --output "$work/context.json"
+cat "$work/snapshot.json" "$work/context.json"
+gdd view "$model" --output "$work/add.gddview"
+gdd validate "$model" --profile visualization --view "$work/add.gddview"
 ```
 
-### Prepare the native check plan
+Compare the snapshot's `revision` with `spec_revision` in the context packet.
+The packet names the selected action, its owner `component.arithmetic`, the
+planned `scenario.add` and the two connecting edges. Give your coding agent
+the model and packet together so it can read the contracts at that revision.
+Choose an implementation, files and checks under your actual working mandate.
 
-Use the [Rust preparation example](../examples/tutorial_prepare.rs) to create a
-new directory with `evidence.gdd.json` and `records.json`. Run from the repository root.
+**Optional desktop step.** Open the self-contained view with
+`gdd-viewer "$work/add.gddview"`. Select `action.add` and expand **Canonical
+node record** for the contract and behavior. The viewer initially hides
+scenarios. Enable **Show scenarios (1)**, select `scenario.add` and expand
+**Canonical node record** to read the given, when and then fields. For inputs
+−7 and 7, the planned result is zero. In a narrow window, open **Nodes** and
+expand **View filters** to reach the checkbox. The saved file can travel on
+its own to another desktop with the viewer.
+
+## Plan the evidence
+
+The planning model contains no blocking verification rule. The
+[evidence model](tutorial/evidence.gdd.json) adds `rule.sum`, its `constrains`
+edge to the action, a `verifies` edge from the scenario and a separate ledger.
+The [Rust preparation example](../examples/tutorial_prepare.rs) copies that
+model with the verification method `rust_integer_addition_examples`, takes
+its new revision and appends the immutable check definition `check.sum`.
 
 ```sh
-plan_dir="$(mktemp -d)/sum"
-cargo run --locked -p gdd --example tutorial_prepare -- "$plan_dir"
-gdd validate "$plan_dir/evidence.gdd.json" --profile model
-gdd validate "$plan_dir/evidence.gdd.json" --profile readiness --scope action.add
-status=0
-gdd validate "$plan_dir/evidence.gdd.json" --profile records --scope action.add || status=$?
-test "$status" -eq 2
+plan="$work/sum"
+cargo run --offline --locked -p gdd --example tutorial_prepare -- "$plan"
+gdd diff "$model" "$plan/evidence.gdd.json" --format text
+gdd validate "$plan/evidence.gdd.json" --profile model
+gdd validate "$plan/evidence.gdd.json" --profile readiness --scope action.add
+validate_sum() { gdd validate "$plan/evidence.gdd.json" --profile records --scope action.add "$@"; }
+cat "$plan/records.json"
+expect_exit 2 validate_sum
 ```
 
-The example changes the verification method in a copy of the [evidence model](tutorial/evidence.gdd.json)
-to `rust_integer_addition_examples`. It loads that copy's revision and appends
-`check.sum` to its ledger. The plan covers `rule.sum` and `scenario.add` and
-requires the Rust compiler version (`rustc`) and the isolated subtraction control.
-An existing output directory causes preparation to fail before writing.
+Read `check.sum`'s scope, `rule.sum` and `scenario.add`. It requires an
+observed Rust compiler version and the `isolated-subtraction-mutant` control.
+The method name describes a check. The host selects the actual command.
+Implementation is **UNKNOWN** (2) while the ledger contains only the plan.
 
-Model and readiness validation exit 0. The records report gives implementation
-`UNKNOWN` (exit 2). The ledger contains only the check plan. Execution,
-reviewed evidence and acceptance authority require separate steps.
+## Run and inspect both native checks
 
-### Run and inspect both native checks
-
-Package the [implementation](tutorial/rust/src/lib.rs) and [five-example checker](tutorial/rust/src/main.rs)
-to obtain their standalone manifest and lockfile. Populate Cargo's dependency
-cache before working offline. Keep the same shell and `plan_dir` from preparation.
+The [implementation](tutorial/rust/src/lib.rs) accepts two borrowed
+`BigInt` values and returns `left + right`. The [checker](tutorial/rust/src/main.rs)
+compares five sums against expected values, covering the planned cancellation,
+two positives, zero, two negatives and an integer larger than a machine word.
+Review the implementation for purity and the examples for coverage.
+Packaging gives the host a standalone Cargo manifest and lockfile.
 
 ```sh
-scratch=$(mktemp -d)
-cargo package --offline --locked --allow-dirty --no-verify -p gdd-tutorial-add --target-dir "$scratch"
-tar -xzf "$scratch/package/gdd-tutorial-add-0.1.0.crate" -C "$scratch"
+cargo package --offline --locked --allow-dirty --no-verify -p gdd-tutorial-add --target-dir "$work"
+tar -xzf "$work/package/gdd-tutorial-add-0.1.0.crate" -C "$work"
+source_dir="$work/gdd-tutorial-add-0.1.0"
+cat "$source_dir/src/lib.rs" "$source_dir/src/main.rs"
 tutorial() { cargo run --offline --locked -p gdd --example tutorial_evidence -- "$@"; }
-tutorial run "$plan_dir" "$scratch/gdd-tutorial-add-0.1.0"
-diff -u "$plan_dir/runs/current/src/lib.rs" "$plan_dir/runs/mutant/src/lib.rs" || test "$?" -eq 1
-cat "$plan_dir/runs/current/src/main.rs"
-cat "$plan_dir/runs/negative.receipt.json" "$plan_dir/runs/pass.receipt.json"
+tutorial run "$plan" "$source_dir"
+current="$plan/runs/current"
+mutant="$plan/runs/mutant"
+for file in Cargo.toml Cargo.lock src/main.rs; do
+    cmp "$current/$file" "$mutant/$file"
+done
+expect_exit 1 diff -u "$current/src/lib.rs" "$mutant/src/lib.rs"
+cat "$plan/runs/negative.receipt.json" "$plan/runs/pass.receipt.json"
 ```
 
-The run copies `Cargo.toml`, `Cargo.lock`, `src/lib.rs` and `src/main.rs` into
-`runs/current` and `runs/mutant`. In the mutant it replaces `left + right` with
-`left - right`. Each copy runs this literal command with a fresh private target
-directory and the observed `rustc` on PATH. The receipt records the command below.
+The [host example](../examples/tutorial_evidence/main.rs) runs the mutant
+first. Only `src/lib.rs` changes, from `left + right` to `left - right`.
+Each copy uses a fresh private target directory and this literal command.
 
 ```text
 cargo run --quiet --offline --locked --manifest-path Cargo.toml --target-dir target --bin gdd-tutorial-add
 ```
 
-The mutant must exit 1 with the exact first mismatch
-`FAIL: -7 + 7: expected 0, got -14`. The current copy must exit 0 with
-`PASS: all five integer sums matched`, including the large integer example.
-Each receipt covers the full build and checker run. Inspect its command, working
-directory, timestamps, tool versions, stdout, stderr and code revisions.
-A build error leaves an UNKNOWN receipt with the actual diagnostic.
-An existing runs directory prevents repeating the execution in place.
+Inspect each receipt's command, working directory, tool versions, timestamps,
+stdout, stderr and before/after revisions. Both snapshots identify the four
+selected files by path and hash. The mutant must return **FAIL** (1) with
+`FAIL: -7 + 7: expected 0, got -14`. The current implementation must return
+**PASS** (0) with `PASS: all five integer sums matched`. A build error yields
+**UNKNOWN** with its diagnostic. The failing comparison shows that these
+examples distinguish addition from subtraction. Their coverage is limited to
+the five cases.
 
-The [Rust example](../examples/tutorial_evidence/main.rs) explicitly chooses
-the existing reader-compatible `gdd-host-check/0.1` format and records its own
-runner metadata. This choice belongs to this tutorial's trusted caller.
-The example can also run from an extracted `gdd` crate given an extracted
-`gdd-tutorial-add` package as its source argument.
+The local release check also runs the host example from an extracted `gdd`
+crate with the separately packaged `gdd-tutorial-add` as the checker source.
+See [repeating the packaged tests](../RELEASING.md#repeat-the-packaged-root-and-tutorial-tests).
 
-### Record reviewed evidence and assess a later edit
+## Record reviewed evidence and assess acceptance
 
-After inspecting both source trees, the five comparisons and both actual
-receipts, attest the coverage and the performed subtraction control:
+After inspecting both implementations, the unchanged checker and both receipts,
+attest that you reviewed their coverage and the performed control.
 
 ```sh
-tutorial record "$plan_dir" --attest-reviewed-checks
-validate_sum() { gdd validate "$plan_dir/evidence.gdd.json" --profile records --scope action.add "$@"; }
-expect_unknown() { status=0; "$@" || status=$?; test "$status" -eq 2; }
-expect_unknown validate_sum
-validate_sum --host-context "$plan_dir/review/host-context.json"
-expect_unknown validate_sum --host-context "$plan_dir/review/host-context.json" --activity acceptance
-tutorial drift "$plan_dir"
-expect_unknown validate_sum --host-context "$plan_dir/drift/host-context.json"
+tutorial record "$plan" --attest-reviewed-checks
+cat "$plan/records.json" "$plan/review/host-context.json"
+expect_exit 2 validate_sum
+validate_sum --host-context "$plan/review/host-context.json"
+expect_exit 2 validate_sum --host-context "$plan/review/host-context.json" --activity acceptance
 ```
 
-`record` rechecks the receipts against the local files, expected command, toolchain,
-outputs and isolated mutation. It binds `src/main.rs` to `check.sum`'s scope,
-appends `binding.sum.v1` and `evidence.sum.v1`, and saves the explicit local host
-context. Without trust the implementation result is **UNKNOWN** (2). With this
-context the current implementation is **PASS** (0). Acceptance authorization is
-**UNRESOLVED** (2) because the caller supplied no acceptance authority.
+The host rechecks the receipts against the files, command, compiler and
+expected outputs. It appends `binding.sum.v1`, which binds the checker file
+to both targets, and `evidence.sum.v1` for `implementation.integer-addition.rust`.
+The evidence identifies the model revision, check digest and exact code snapshot.
 
-`drift` appends a comment in a third copy and snapshots those exact bytes.
-It checks that authoring against the old receipt now fails, then supplies
-the changed revision in a separate host context. The final validation reports
-implementation **UNKNOWN** (2). Inspect the ledger to see the original three
-records. To repeat the exercise, prepare a fresh directory.
+Without caller trust the implementation is **UNKNOWN** (2). With your local
+host context it is **PASS** (0). Look at the separate authorization dimension
+in the last report. Acceptance is **UNRESOLVED** (2) because the caller
+supplied no acceptance policy or authority. For work with an actual mandate
+and run acceptance, see the [workflow guide](../WORKFLOW.md).
+
+## Observe what a later edit does to evidence
+
+```sh
+tutorial drift "$plan"
+expect_exit 1 diff -u "$current/src/lib.rs" "$plan/drift/changed/src/lib.rs"
+expect_exit 2 validate_sum --host-context "$plan/drift/host-context.json"
+```
+
+The drift stage appends a comment in a third copy, observes its new code
+revision, and tries to author fresh binding and evidence IDs from the old PASS
+receipt. Watch for `Old receipt rejected: The selected code snapshot is stale
+or unresolved.` The subsequent validation reports stale evidence and
+implementation **UNKNOWN** (2). Even this behavior-preserving edit changed the
+bytes that the checker would run. The original three ledger records and both
+receipts remain available for inspection. For a new implementation revision,
+run the checks again, review the results and append new records. To repeat
+this exercise from the beginning, start with a fresh directory.
+
+## Reproduce the historical Python tutorial
+
+The Python exercise and its assets are preserved in [the v0.8.0 tutorial](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/docs/tutorial.md).
+For exact reproduction from a clone, create a separate checkout with
+`git worktree add --detach ../gdd-python-v0.8.0 0dbb10b8c193f55c9777405de3f4ae22ac2d0825`.
+In that directory, run `uv sync --locked --dev --python 3.12`, activate
+`. .venv/bin/activate`, and follow its `docs/tutorial.md`. The
+[archived verification](../evidence/tutorial-0.1/README.md) describes the
+historical Python runs.

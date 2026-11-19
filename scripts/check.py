@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MATRIX_PYTHONS = ("3.11", "3.12", "3.13", "3.14")
 QUICK_TESTS = (
     "tests/test_consumer_limits.py", "tests/test_readiness_diagnostics.py",
-    "tests/test_tutorial.py", "tests/test_graphify.py",
+    "tests/test_graphify.py",
     "tests/test_visualization.py", "tests/test_skill_assets.py",
     "tests/test_local_check.py",
     "tests/test_code_check.py", "tests/test_code_check_cli.py", "tests/test_python_imports.py",
