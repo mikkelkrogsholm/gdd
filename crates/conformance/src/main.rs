@@ -38,7 +38,7 @@ enum Command {
         /// Run focused readiness, CLI, viewer and skill checks.
         #[arg(long)]
         quick: bool,
-        /// Run full checks, verify the installed binaries and test the retained CLI and tutorial packages.
+        /// Run full checks, verify the installed binaries and test the retained CLI, tutorial and concert packages.
         #[arg(long, conflicts_with = "quick")]
         release: bool,
         #[arg(long, value_name = "NEW_DIR")]

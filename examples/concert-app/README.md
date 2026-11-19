@@ -182,11 +182,11 @@ exits with status 101 for the first run and 0 for the second.
 
 ```sh
 GDD_CONCERT_REQUIREMENT_PHASE=A cargo test --locked -p gdd-concert --test requirement_change
-cargo test --locked -p gdd-concert --test requirement_change
+GDD_CONCERT_REQUIREMENT_PHASE=B cargo test --locked -p gdd-concert --test requirement_change
 ```
 
 Only this test target reads the phase selector. A opens the unlimited service
-with `Reservations::open_phase_a_for_replay`. The default opens the current
+with `Reservations::open_phase_a_for_replay`. B (the default) opens the current
 service with `Reservations::open`. Both runs execute the same ten tests against
 temporary databases, including copies of the compatible and over-limit
 SQLite fixtures.
@@ -205,8 +205,11 @@ SQLite fixtures.
 | `compatible_a_history_and_cancelled_keys_survive_activation` | Fails. The cancelled key replays and all three rows survive. The history reports an unlimited allowance (`None`). |
 
 A complete run reports two passes and eight failures for A, ten passes for B,
-and zero ignored or filtered tests for each. The original agent, browser and
-attestation replay is described below.
+and zero ignored or filtered tests for each. From the Git checkout,
+`gdd-conformance local-check --release` retains the concert source archive
+and its SHA-256 digest. It runs both phases from that archive and checks each
+test name, outcome and phase-A assertion mismatch against the table above.
+The release summary and logs preserve Cargo’s original exit codes for both runs.
 
 ## Historical A/B delivery and replay
 

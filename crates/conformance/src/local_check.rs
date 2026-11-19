@@ -13,6 +13,7 @@ use std::{
 };
 use time::{OffsetDateTime, format_description::well_known::Rfc3339};
 
+mod concert;
 mod plan;
 mod release;
 mod source_package;
@@ -81,13 +82,14 @@ struct Run<'a> {
     installed: Map<String, Value>,
     source_package: Option<Value>,
     tutorial_source_package: Option<Value>,
+    concert_source_package: Option<Value>,
     steps: Vec<Value>,
     toolchain: Map<String, Value>,
 }
 
 impl Run<'_> {
     fn step(&mut self, name: &str, command: Command, cwd: &Path) -> Result<PathBuf> {
-        self.step_checked(name, command, cwd, |_| Ok(()))
+        self.step_checked(name, command, cwd, 0, |_| Ok(()))
     }
 
     fn step_checked(
@@ -95,6 +97,7 @@ impl Run<'_> {
         name: &str,
         mut command: Command,
         cwd: &Path,
+        expected_exit_code: i32,
         check_stdout: impl FnOnce(&Path) -> Result<()>,
     ) -> Result<PathBuf> {
         let stdout_name = format!("{name}.stdout.txt");
@@ -127,7 +130,7 @@ impl Run<'_> {
         let (passed, code) = match command.status() {
             Ok(status) => {
                 record["exit_status"] = json!(status.to_string());
-                (status.success(), status.code())
+                (status.code() == Some(expected_exit_code), status.code())
             }
             Err(error) => {
                 writeln!(stderr, "Could not run {name}: {error}")?;
@@ -225,6 +228,7 @@ pub(super) fn run(root: &Path, mode: Mode, output: Option<PathBuf>) -> Result<Ex
         installed: Map::new(),
         source_package: None,
         tutorial_source_package: None,
+        concert_source_package: None,
         steps: Vec::new(),
         toolchain: Map::new(),
     };
@@ -242,6 +246,7 @@ pub(super) fn run(root: &Path, mode: Mode, output: Option<PathBuf>) -> Result<Ex
         summary["installed"] = Value::Object(run.installed);
         summary["source_package"] = json!(run.source_package);
         summary["tutorial_source_package"] = json!(run.tutorial_source_package);
+        summary["concert_source_package"] = json!(run.concert_source_package);
     }
     if let Err(error) = &result {
         summary["error"] = json!(format!("{error:#}"));

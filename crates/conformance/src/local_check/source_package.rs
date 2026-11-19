@@ -1,4 +1,4 @@
-//! Retain the native CLI and tutorial checker packages and test their extracted sources.
+//! Retain and test the extracted native source packages.
 
 use super::{Run, os_value};
 use anyhow::{Context, Result, ensure};
@@ -138,9 +138,39 @@ pub(super) fn check(run: &mut Run<'_>, recipient: &Path) -> Result<()> {
             "never",
         ])
         .env("GDD_TUTORIAL_SOURCE", checker);
-    run.step_checked("tutorial-source-package-tests", tutorial, &root, |log| {
+    run.step_checked("tutorial-source-package-tests", tutorial, &root, 0, |log| {
         confirm_tutorial(&fs::read_to_string(log)?)
     })?;
+    let (concert, identity) = package(
+        run,
+        extraction.path(),
+        "concert-source-package",
+        "examples/concert-app/Cargo.toml",
+        "gdd-concert",
+    )?;
+    run.concert_source_package = Some(identity);
+    for (step, phase, exit_code) in [
+        ("concert-requirements-a", "A", 101),
+        ("concert-requirements-b", "B", 0),
+    ] {
+        let mut test = package_tests(target.path());
+        test.args([
+            "--test",
+            "requirement_change",
+            "--",
+            "--format",
+            "pretty",
+            "--color",
+            "never",
+        ])
+        .env("GDD_CONCERT_REQUIREMENT_PHASE", phase)
+        .env_remove("RUST_TEST_NOCAPTURE")
+        // Avoid generating debug symbols for the embedded database on this fresh build.
+        .env("CARGO_PROFILE_TEST_DEBUG", "0");
+        run.step_checked(step, test, &concert, exit_code, |log| {
+            super::concert::confirm(&fs::read_to_string(log)?, phase == "A")
+        })?;
+    }
     Ok(())
 }
 
@@ -206,6 +236,7 @@ mod tests {
             installed: Default::default(),
             source_package: None,
             tutorial_source_package: None,
+            concert_source_package: None,
             steps: Vec::new(),
             toolchain: Default::default(),
         };

@@ -129,25 +129,31 @@ The driver runs the full local checks, including the nine named conformance
 suites and the standalone Rust skill tests and asset checks. It then runs three
 locked path installs from the selected checkout into `install/bin/` and
 exercises the optimized binaries from a temporary recipient directory outside
-the checkout. It also packages `gdd` and `gdd-tutorial-add` independently.
-It extracts both retained archives, runs the locked root tests and checks that
-the named end-to-end tutorial test passes with the extracted checker. Use
+the checkout. It packages and extracts `gdd`, `gdd-tutorial-add` and
+`gdd-concert` independently. It runs the locked root tests, checks the named
+end-to-end tutorial test with the extracted checker, and runs the ten fixed
+requirements against both policies in the extracted concert app. Use
 `--checkout PATH` before `local-check` to select the source
 and fixtures. An explicit `CARGO_TARGET_DIR` supplies the build cache for
-the checkout. A fresh build directory serves both test runs of the extracted
-`gdd` sources and keeps their compiled artifacts separate from checkout builds.
+the checkout. The extracted sources build in a fresh directory shared across
+their test runs. The concert tests build without debug symbols.
 
 Keep the following artifacts in the output directory.
 
 - `summary.json` records commands, working directories, timings, process
   outcomes, host, toolchain and the paths and SHA-256 identities of installed
-  binaries and both source packages. Each step has separate stdout and stderr logs.
+  binaries and all three source packages. Each step has separate stdout and stderr logs.
 - `gdd-<version>.crate` is the tested CLI and library source archive. Its path
   and SHA-256 are in `summary.json` under `source_package`. The
   `source-package-tests` logs capture the test run from its extracted sources.
 - `gdd-tutorial-add-<version>.crate` contains the checker used by the tutorial.
   Its path and SHA-256 are under `tutorial_source_package`. The
   `tutorial-source-package-tests` logs capture the opt-in test run.
+- `gdd-concert-<version>.crate` contains the reservation server, fixtures and
+  fixed requirement tests. Its path and SHA-256 are under `concert_source_package`.
+  The `concert-requirements-a` logs must show two passes and eight specific
+  assertion mismatches (Cargo exit 101). The `concert-requirements-b` logs must
+  show all ten cases passing (exit 0). Both steps record the real exit codes.
 - `verify-install.json` records the installed CLI's 34 controls and the
   identities of the installed and source-built executables. The source-built
   executable comes from the workspace build's Cargo artifact report.
@@ -181,6 +187,11 @@ GDD_SOURCE_TEST=$(mktemp -d)
   grep -F "test result: ok. 1 passed; 0 failed; 0 ignored;" "$GDD_SOURCE_TEST/tutorial.log"
 )
 ```
+
+To repeat the concert control, extract `gdd-concert-<version>.crate` into
+a fresh directory and follow the two phase commands in its README. The
+[concert requirement table](examples/concert-app/README.md#replay-the-requirement-change-in-rust)
+lists the expected outcome of each case.
 
 The package tests regenerate both concert model views and the greenfield
 product view. The installed CLI verifier checks the concert application’s

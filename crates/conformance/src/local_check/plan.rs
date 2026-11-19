@@ -57,6 +57,8 @@ pub(super) fn commands(quick: bool, root: &Path, output: &Path) -> Vec<(&'static
             ),
         ]
     } else {
+        let mut workspace_tests = workspace("test", &["--workspace", "--all-features"]);
+        workspace_tests.env("GDD_CONCERT_REQUIREMENT_PHASE", "B");
         let mut workspace_clippy = workspace("clippy", &["--workspace"]);
         workspace_clippy.args(clippy);
         vec![
@@ -74,10 +76,7 @@ pub(super) fn commands(quick: bool, root: &Path, output: &Path) -> Vec<(&'static
                     ],
                 ),
             ),
-            (
-                "workspace-tests",
-                workspace("test", &["--workspace", "--all-features"]),
-            ),
+            ("workspace-tests", workspace_tests),
             ("skill-tests", skill("test", &["--all-features"])),
             ("workspace-clippy", workspace_clippy),
             ("skill-clippy", skill("clippy", &clippy)),

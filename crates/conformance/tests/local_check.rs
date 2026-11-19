@@ -79,6 +79,8 @@ fn driver(cwd: &Path, checkout: &Path, output: &str) -> Command {
     let mut command = Command::new(RUNNER);
     command
         .current_dir(cwd)
+        // This fixture inspects libtest's captured panic in the stdout log.
+        .env_remove("RUST_TEST_NOCAPTURE")
         .env("GDD_NATIVE_CLI", "unrelated-cli")
         .env("CARGO_TARGET_DIR", "cache with spaces")
         .arg("--checkout")
