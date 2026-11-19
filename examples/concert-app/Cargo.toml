@@ -2,9 +2,16 @@
 name = "gdd-concert"
 version = "0.1.0"
 edition = "2024"
-license = "MIT"
+license-file = "../../LICENSE"
+repository = "https://github.com/mikkelkrogsholm/gdd"
 description = "Local Sessions concert reservations"
 publish = false
+include = [
+    "/src/**/*.rs", "/src/page/*.html", "/concert_app/static/style.css",
+    "/tests/**/*.rs", "/tests/fixtures/recorded-phase-a.db", "/tests/fixtures/over-limit.db",
+    "/README.md", "/REQUIREMENTS.md", "/HTTP.md", "/DESIGN.md",
+    "/gdd.json", "/model.snapshot.json", "/gdd.records.json", "/graph.gddview",
+]
 
 [dependencies]
 base64 = "0.22"
