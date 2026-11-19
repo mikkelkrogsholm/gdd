@@ -1,4 +1,6 @@
 use super::support::{Response, Server};
+use serde_json::json;
+use std::collections::HashMap;
 use tempfile::tempdir;
 
 fn submit(server: &Server, action: &str, body: &str, cookie: &str) -> Response {
@@ -54,15 +56,17 @@ fn fields(html: &str, action: &str) -> String {
     serde_urlencoded::to_string(inputs).unwrap()
 }
 
-fn reserve_fields(html: &str, concert: &str) -> String {
-    let card = html
-        .split_once(&format!("data-concert-id=\"{concert}\""))
+fn concert_card<'a>(html: &'a str, concert: &str) -> &'a str {
+    html.split_once(&format!("data-concert-id=\"{concert}\""))
         .unwrap()
         .1
         .split_once("</article>")
         .unwrap()
-        .0;
-    fields(card, "/forms/reserve")
+        .0
+}
+
+fn reserve_fields(html: &str, concert: &str) -> String {
+    fields(concert_card(html, concert), "/forms/reserve")
 }
 
 #[test]
@@ -112,10 +116,10 @@ fn program_login_reservation_retries_and_cancellation_use_rendered_forms() {
     // Discard the second redirect and replay the submitted page after commit.
     assert_eq!(post(&second).status, 303);
     let reloaded_original = follow(&server, &login, &cookie);
-    assert_eq!(
-        reserve_fields(reloaded_original.body.as_str().unwrap(), "northern"),
-        second
-    );
+    let original = reloaded_original.body.as_str().unwrap();
+    assert_eq!(reserve_fields(original, "northern"), second);
+    assert!(concert_card(original, "northern").contains("<button>Check reservation</button>"));
+    assert!(concert_card(original, "matinee").contains("<button disabled>Allowance full</button>"));
     let replay = follow(&server, &post(&second), &cookie);
     let replay = replay.body.as_str().unwrap();
     assert!(replay.contains("2 of 2"));
@@ -162,6 +166,51 @@ fn program_login_reservation_retries_and_cancellation_use_rendered_forms() {
             .unwrap()
             .contains("You're signed out")
     );
+}
+
+#[test]
+fn sold_out_desk_replays_only_the_matching_principal_concert_and_key() {
+    let dir = tempdir().unwrap();
+    let server = Server::start(&dir.path().join("db"));
+    let (alice, login) = sign_in(&server, "alice", "");
+    let original = follow(&server, &login, &alice);
+    let matinee = reserve_fields(original.body.as_str().unwrap(), "matinee");
+    let created = submit(&server, "/forms/reserve", &matinee, &alice);
+    let fresh = follow(&server, &created, &alice);
+    let fresh_key = |concert| {
+        let fields = reserve_fields(fresh.body.as_str().unwrap(), concert);
+        serde_urlencoded::from_str::<HashMap<String, String>>(&fields).unwrap()["request_key"]
+            .clone()
+    };
+
+    // Bob takes the other seat with the exact key on Alice's fresh matinee form.
+    let bob = server.login("bob", None);
+    let reserve = |cookie, concert, key| {
+        server.post(
+            "/api/reservations",
+            json!({"concert_id":concert, "request_key":key}),
+            &[("Cookie", cookie)],
+        )
+    };
+    assert_eq!(reserve(&bob, "matinee", fresh_key("matinee")).status, 200);
+    let original = follow(&server, &login, &alice);
+    let html = original.body.as_str().unwrap();
+    assert!(html.contains("1 of 2 active reservations"));
+    let card = concert_card(html, "matinee");
+    assert!(card.contains("Sold out · 2 seats"));
+    assert!(card.contains("<button>Check reservation</button>"));
+
+    // Alice binds her fresh northern key to a different concert and fills her allowance.
+    assert_eq!(
+        reserve(&alice, "midnight", fresh_key("northern")).status,
+        200
+    );
+    let fresh = follow(&server, &created, &alice);
+    let html = fresh.body.as_str().unwrap();
+    assert!(concert_card(html, "matinee").contains("<button disabled>Sold out</button>"));
+    for concert in ["midnight", "northern"] {
+        assert!(concert_card(html, concert).contains("<button disabled>Allowance full</button>"));
+    }
 }
 
 #[test]

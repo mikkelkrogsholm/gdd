@@ -1,15 +1,15 @@
 //! Presentation for the browser's public program and personal reservation desk.
 
-use std::fmt::Write;
+use std::{collections::HashSet, fmt::Write};
 
 use gdd_concert::{Catalog, History, State};
-use uuid::Uuid;
 
 use crate::identity::Profile;
 
 pub struct Desk {
     pub profile: Profile,
-    pub page_id: Uuid,
+    pub key_prefix: String,
+    pub replayable: HashSet<String>,
     pub history: History,
 }
 
@@ -126,20 +126,22 @@ pub fn program(home: &str, catalog: &Catalog, desk: Option<&Desk>) -> String {
         if let Some(desk) = desk {
             // A reloaded or restored page still carries the original key. A
             // successful mutation redirects to a fresh page for the next seat.
-            let key = format!("{}:{}", desk.page_id, concert.id);
-            let label = if sold_out {
-                "Sold out"
+            let key = format!("{}{}", desk.key_prefix, concert.id);
+            let (label, disabled) = if desk.replayable.contains(&concert.id) {
+                ("Check reservation", false)
+            } else if sold_out {
+                ("Sold out", true)
             } else if capped {
-                "Allowance full"
+                ("Allowance full", true)
             } else {
-                "Reserve one seat"
+                ("Reserve one seat", false)
             };
             content.push_str(&reserve_form(
                 desk.profile,
                 &concert.id,
                 &key,
                 label,
-                sold_out || capped,
+                disabled,
             ));
         } else {
             content.push_str(if sold_out {

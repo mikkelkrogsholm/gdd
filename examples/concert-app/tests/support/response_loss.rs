@@ -1,4 +1,4 @@
-//! Drop completed reservation responses between the real server and the browser.
+//! Intercept completed reservation redirects between the real server and the browser.
 
 use std::sync::{Arc, Mutex};
 
@@ -16,9 +16,14 @@ struct ReserveForm {
     request_key: String,
 }
 
-#[derive(Default)]
+pub enum Redirect {
+    Deliver,
+    Disconnect,
+    ServerError,
+}
+
 struct Reservations {
-    deliver: bool,
+    redirect: Redirect,
     submissions: Vec<(StatusCode, String)>,
 }
 
@@ -28,8 +33,11 @@ pub struct ReservationProxy {
 }
 
 impl ReservationProxy {
-    pub async fn start(upstream: String) -> Self {
-        let reservations = Arc::new(Mutex::new(Reservations::default()));
+    pub async fn start(upstream: String, redirect: Redirect) -> Self {
+        let reservations = Arc::new(Mutex::new(Reservations {
+            redirect,
+            submissions: Vec::new(),
+        }));
         let trace = Arc::clone(&reservations);
         let server = web::test::server(async move || {
             let client = Client::builder()
@@ -56,8 +64,8 @@ impl ReservationProxy {
         format!("http://{}", self.server.addr())
     }
 
-    pub fn deliver_responses(&self) {
-        self.reservations.lock().unwrap().deliver = true;
+    pub fn set_redirect(&self, redirect: Redirect) {
+        self.reservations.lock().unwrap().redirect = redirect;
     }
 
     pub fn assert_submissions(&self, key: &str) {
@@ -104,8 +112,16 @@ async fn forward(
         trace
             .submissions
             .push((response.status(), form.request_key));
-        if response.status() == StatusCode::SEE_OTHER && !trace.deliver {
-            req.io().unwrap().terminate();
+        if response.status() == StatusCode::SEE_OTHER {
+            match trace.redirect {
+                Redirect::Deliver => {}
+                Redirect::Disconnect => req.io().unwrap().terminate(),
+                Redirect::ServerError => {
+                    return HttpResponse::InternalServerError()
+                        .content_type("text/plain")
+                        .body("Internal server error");
+                }
+            }
         }
     }
     let mut reply = HttpResponse::build(response.status());

@@ -1,4 +1,4 @@
-use std::{fs, io::ErrorKind, path::Path, time::Duration};
+use std::{collections::HashSet, fs, io::ErrorKind, path::Path, time::Duration};
 
 use turso::transaction::TransactionBehavior;
 use turso::{Builder, Connection, Database, Row};
@@ -243,16 +243,30 @@ impl Queries<'_> {
             .transpose()
     }
 
-    pub(crate) async fn history(&self, principal_id: &str) -> turso::Result<Vec<Reservation>> {
-        let mut rows = self.0.query(
-            "SELECT id, concert_id, state FROM reservations WHERE principal_id = ? ORDER BY rowid DESC",
-            [principal_id],
-        ).await?;
+    pub(crate) async fn history(
+        &self,
+        principal_id: &str,
+        key_prefix: Option<&str>,
+    ) -> turso::Result<(Vec<Reservation>, HashSet<String>)> {
+        let mut rows = self
+            .0
+            .query(
+                "SELECT id, concert_id, state, request_key = (?2 || concert_id)
+             FROM reservations WHERE principal_id = ?1 ORDER BY rowid DESC",
+                (principal_id, key_prefix),
+            )
+            .await?;
         let mut history = Vec::new();
+        let mut replayable = HashSet::new();
         while let Some(row) = rows.next().await? {
-            history.push(reservation(row)?);
+            let matches = row.get::<Option<i64>>(3)? == Some(1);
+            let reservation = reservation(row)?;
+            if matches {
+                replayable.insert(reservation.concert_id.clone());
+            }
+            history.push(reservation);
         }
-        Ok(history)
+        Ok((history, replayable))
     }
 
     pub(crate) async fn insert(

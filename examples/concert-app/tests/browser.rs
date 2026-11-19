@@ -9,6 +9,7 @@ mod webdriver;
 
 use std::{fs, path::Path};
 
+use response_loss::{Redirect, ReservationProxy};
 use serde_json::json;
 use server::Server;
 use webdriver::Browser;
@@ -25,7 +26,13 @@ fn sign_in(browser: &Browser, user: &str, password: &str) {
 }
 
 // Match each rendered card and API record by reference, independent of display order.
-fn assert_desk(browser: &Browser, site: &str, user: &str, expected: &[(&str, &str, &str)]) {
+fn assert_desk(
+    browser: &Browser,
+    site: &str,
+    user: &str,
+    expected: &[(&str, &str, &str)],
+    disabled: usize,
+) {
     assert_eq!(
         browser.text("#session-status"),
         format!("Signed in as {user}")
@@ -61,10 +68,7 @@ fn assert_desk(browser: &Browser, site: &str, user: &str, expected: &[(&str, &st
             *state
         );
     }
-    assert_eq!(
-        browser.count("#concerts button:disabled"),
-        if active == 2 { 3 } else { 0 }
-    );
+    assert_eq!(browser.count("#concerts button:disabled"), disabled);
 }
 
 fn assert_stale(browser: &Browser) {
@@ -141,11 +145,11 @@ async fn recorded_phase_a_history_and_shared_cookie_forms_in_chromium() {
         (NORTHERN, "northern", "reserved"),
         (MATINEE, "matinee", "reserved"),
     ];
-    assert_desk(&browser, &site, "Alice", &expected);
+    assert_desk(&browser, &site, "Alice", &expected, 3);
     assert_eq!(browser.text(RESERVE), "Allowance full");
     browser.click(&format!("[data-reservation-id='{NORTHERN}'] button"));
     expected[1] = (NORTHERN, "northern", "cancelled");
-    assert_desk(&browser, &site, "Alice", &expected);
+    assert_desk(&browser, &site, "Alice", &expected, 0);
     assert_eq!(browser.text(RESERVE), "Reserve one seat");
 
     // The current Alice URL includes the cancellation notice. Refreshing its history
@@ -166,11 +170,11 @@ async fn recorded_phase_a_history_and_shared_cookie_forms_in_chromium() {
     let new_id = new_seat["id"].as_str().unwrap();
     assert!(![MIDNIGHT, NORTHERN, MATINEE].contains(&new_id));
     expected.push((new_id, "midnight", "reserved"));
-    assert_desk(&browser, &site, "Alice", &expected);
+    assert_desk(&browser, &site, "Alice", &expected, 3);
 
     browser.click("#sign-out");
     sign_in(&browser, "bob", "bob-demo");
-    assert_desk(&browser, &site, "Bob", &[]);
+    assert_desk(&browser, &site, "Bob", &[], 0);
     for (tab, action) in [
         (&stale_read, "#refresh-reservations"),
         (&stale_reserve, RESERVE),
@@ -181,7 +185,7 @@ async fn recorded_phase_a_history_and_shared_cookie_forms_in_chromium() {
         assert_stale(&browser);
         browser.switch(&current);
         browser.open(&site);
-        assert_desk(&browser, &site, "Bob", &[]);
+        assert_desk(&browser, &site, "Bob", &[], 0);
     }
     browser.click("#sign-out");
     assert_eq!(browser.text("#session-status"), "You're signed out");
@@ -229,12 +233,12 @@ async fn recover_a_committed_reservation_after_a_lost_response_in_chromium() {
     let dir = tempfile::tempdir().unwrap();
     let server = Server::start(&dir.path().join("concert.sqlite"));
     let upstream = format!("http://127.0.0.1:{}", server.port);
-    let proxy = response_loss::ReservationProxy::start(upstream.clone()).await;
+    let proxy = ReservationProxy::start(upstream.clone(), Redirect::Disconnect).await;
     let site = proxy.site();
     let browser = Browser::start();
     browser.open(&site);
     sign_in(&browser, "alice", "alice-demo");
-    assert_desk(&browser, &upstream, "Alice", &[]);
+    assert_desk(&browser, &upstream, "Alice", &[], 0);
     let original = browser.get("/url").as_str().unwrap().to_owned();
     let key = browser.value(KEY);
     assert!(!key.is_empty());
@@ -268,14 +272,14 @@ async fn recover_a_committed_reservation_after_a_lost_response_in_chromium() {
     browser.post("/back", json!({}));
     assert_eq!(browser.get("/url"), original);
     assert_eq!(browser.value(KEY), key);
-    proxy.deliver_responses();
+    proxy.set_redirect(Redirect::Deliver);
     browser.click(RESERVE);
     proxy.assert_submissions(&key);
     assert_eq!(browser.text("#status-message"), "Your seat is reserved.");
-    assert_desk(&browser, &upstream, "Alice", &active);
+    assert_desk(&browser, &upstream, "Alice", &active, 0);
 
     browser.click(&format!("[data-reservation-id='{id}'] button"));
-    assert_desk(&browser, &upstream, "Alice", &cancelled);
+    assert_desk(&browser, &upstream, "Alice", &cancelled, 0);
     browser.open(&original);
     assert_eq!(browser.value(KEY), key);
     browser.click(RESERVE);
@@ -284,5 +288,103 @@ async fn recover_a_committed_reservation_after_a_lost_response_in_chromium() {
         browser.text("#status-message"),
         "Your reservation is cancelled."
     );
-    assert_desk(&browser, &upstream, "Alice", &cancelled);
+    assert_desk(&browser, &upstream, "Alice", &cancelled, 0);
+}
+
+#[ntex::test]
+#[ignore = "requires local Chromium and a compatible ChromeDriver"]
+async fn recover_the_last_seat_from_the_original_desk_after_http_500_in_chromium() {
+    const BUTTON: &str = "[data-concert-id='matinee'] button";
+    const KEY: &str = "[data-concert-id='matinee'] input[name='request_key']";
+    let dir = tempfile::tempdir().unwrap();
+    let server = Server::start(&dir.path().join("concert.sqlite"));
+    let upstream = format!("http://127.0.0.1:{}", server.port);
+    let proxy = ReservationProxy::start(upstream.clone(), Redirect::Deliver).await;
+    let site = proxy.site();
+    let browser = Browser::start();
+    browser.open(&site);
+    sign_in(&browser, "alice", "alice-demo");
+
+    let first_key = browser.value(KEY);
+    browser.click(BUTTON);
+    proxy.assert_submissions(&first_key);
+    let history = browser.api_history(&upstream);
+    let first = history["reservations"][0]["id"].as_str().unwrap();
+    assert_desk(
+        &browser,
+        &upstream,
+        "Alice",
+        &[(first, "matinee", "reserved")],
+        0,
+    );
+
+    let original = browser.get("/url").as_str().unwrap().to_owned();
+    let second_key = browser.value(KEY);
+    assert_ne!(second_key, first_key);
+    proxy.set_redirect(Redirect::ServerError);
+    browser.click(BUTTON);
+    proxy.assert_submissions(&second_key);
+    assert_eq!(browser.text("body"), "Internal server error");
+
+    // Check the real server before revisiting the program or retrying either form.
+    let history = browser.api_history(&upstream);
+    let records = history["reservations"].as_array().unwrap();
+    assert_eq!(history["active_count"], 2);
+    assert_eq!(records.len(), 2);
+    assert!(records.contains(&json!({"id":first,"concert_id":"matinee","state":"reserved"})));
+    let other = records.iter().find(|record| record["id"] != first).unwrap();
+    let second = other["id"].as_str().unwrap();
+    assert!(!second.is_empty());
+    assert_eq!(
+        *other,
+        json!({"id":second,"concert_id":"matinee","state":"reserved"})
+    );
+    let active = [
+        (first, "matinee", "reserved"),
+        (second, "matinee", "reserved"),
+    ];
+
+    // A new GET must render the committed history and the same enabled form.
+    browser.open(&original);
+    assert_desk(&browser, &upstream, "Alice", &active, 2);
+    assert_eq!(browser.value(KEY), second_key);
+    assert_eq!(
+        browser.text(&format!("{BUTTON}:enabled")),
+        "Check reservation"
+    );
+    assert_eq!(browser.text(RESERVE), "Allowance full");
+    assert!(
+        browser
+            .text("[data-concert-id='matinee'] .availability")
+            .contains("Sold out")
+    );
+    proxy.set_redirect(Redirect::Deliver);
+    browser.click(BUTTON);
+    proxy.assert_submissions(&second_key);
+    assert_eq!(browser.text("#status-message"), "Your seat is reserved.");
+
+    // The redirect opens a fresh page, with a new key blocked by both limits.
+    assert_desk(&browser, &upstream, "Alice", &active, 3);
+    assert_ne!(browser.value(KEY), second_key);
+    assert_eq!(browser.text(&format!("{BUTTON}:disabled")), "Sold out");
+
+    browser.click(&format!("[data-reservation-id='{second}'] button"));
+    let cancelled = [
+        (first, "matinee", "reserved"),
+        (second, "matinee", "cancelled"),
+    ];
+    assert_desk(&browser, &upstream, "Alice", &cancelled, 0);
+    browser.open(&original);
+    assert_eq!(browser.value(KEY), second_key);
+    assert_eq!(
+        browser.text(&format!("{BUTTON}:enabled")),
+        "Check reservation"
+    );
+    browser.click(BUTTON);
+    proxy.assert_submissions(&second_key);
+    assert_eq!(
+        browser.text("#status-message"),
+        "Your reservation is cancelled."
+    );
+    assert_desk(&browser, &upstream, "Alice", &cancelled, 0);
 }

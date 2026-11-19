@@ -25,9 +25,11 @@ allowance while preserving history.
 
 The executable serves the HTML forms and bundled stylesheet. The browser works
 with JavaScript disabled. A completed form submission redirects to a new page.
-If the browser shows a network error after you reserve, use Back and submit
-the original form again. Reloading its original program URL also restores the
-same key for that concert.
+If the browser shows an error after you reserve, use Back and submit the
+original form again, or reopen its original desk URL. If your request reached
+the server and reserved a seat, that concert shows **Check reservation**, even
+when your allowance is full or the concert has sold out. Checking returns the
+current state of that reservation, including any cancellation.
 After a successful redirect, the new program page offers fresh reservations.
 If a shared cookie changes, the old desk asks for explicit sign-in before
 showing private history or accepting another action.
@@ -75,7 +77,12 @@ server's completed reservation redirects until Chromium reports a failed
 navigation. The test reads the committed reference from the authenticated API,
 uses Back to resubmit the original form, then cancels and replays the old form.
 The desk and the API must still show one cancelled reservation with that
-reference. The ordinary Cargo suite skips both browser tests.
+reference.
+
+Another test takes both matinee seats and replaces the second redirect with an
+HTTP 500. It reopens the original desk URL to check the committed reservation,
+verifies that a fresh desk blocks new bookings, then cancels and checks the
+same reference again. The ordinary Cargo suite skips these browser tests.
 
 The native HTTP/1 parser rejects repeated Content-Length fields with the
 JSON error `400 InvalidInput` before routing. The body limit is 16 KiB.

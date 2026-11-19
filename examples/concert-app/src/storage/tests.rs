@@ -28,7 +28,7 @@ async fn sql_failure_after_real_insert_and_domain_failure_after_cancel_roll_back
     assert_eq!(error, DomainError::PersistenceUnavailable);
     let first = store
         .write(async |tx| {
-            assert!(tx.history("alice").await?.is_empty());
+            assert!(tx.history("alice", None).await?.0.is_empty());
             Ok(tx.insert("alice", "northern", "retry").await?)
         })
         .await

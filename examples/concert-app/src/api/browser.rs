@@ -103,10 +103,16 @@ impl App {
             let catalog = self.reservations.catalog().await?;
             let desk_data = if let Some((profile, page_id)) = desk {
                 let principal = Principal::from_session(Some(profile.id))?;
+                let key_prefix = format!("{page_id}:");
+                let (history, replayable) = self
+                    .reservations
+                    .list_own_with_replays(principal, Some(&key_prefix))
+                    .await?;
                 Some(page::Desk {
                     profile,
-                    page_id,
-                    history: self.reservations.list_own(principal).await?,
+                    key_prefix,
+                    history,
+                    replayable,
                 })
             } else {
                 None

@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{collections::HashSet, path::Path};
 
 use crate::storage::Store;
 use crate::{Catalog, DomainError, History, ReservationStatus, State};
@@ -85,18 +85,31 @@ impl Reservations {
     }
 
     pub async fn list_own(&self, principal: Principal<'_>) -> Result<History, DomainError> {
+        Ok(self.list_own_with_replays(principal, None).await?.0)
+    }
+
+    /// Read history and identify concerts whose page form already has a reservation.
+    /// A form key is the supplied prefix followed by its concert ID.
+    pub async fn list_own_with_replays(
+        &self,
+        principal: Principal<'_>,
+        key_prefix: Option<&str>,
+    ) -> Result<(History, HashSet<String>), DomainError> {
         self.store
             .read(async |tx| {
-                let reservations = tx.history(principal.0).await?;
+                let (reservations, replayable) = tx.history(principal.0, key_prefix).await?;
                 let active_count = reservations
                     .iter()
                     .filter(|r| r.state == State::Reserved)
                     .count();
-                Ok(History {
-                    reservations,
-                    active_count,
-                    active_limit: self.active_limit,
-                })
+                Ok((
+                    History {
+                        reservations,
+                        active_count,
+                        active_limit: self.active_limit,
+                    },
+                    replayable,
+                ))
             })
             .await
     }
