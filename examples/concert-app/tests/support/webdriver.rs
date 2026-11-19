@@ -23,6 +23,11 @@ pub struct Browser {
 
 impl Browser {
     pub fn start() -> Self {
+        Self::with_preferences(json!({}))
+    }
+
+    pub fn with_preferences(mut preferences: Value) -> Self {
+        preferences["profile.managed_default_content_settings.javascript"] = json!(2);
         let executable = env::var_os("GDD_CHROMEDRIVER").unwrap_or_else(|| "chromedriver".into());
         let driver = Command::new(&executable)
             .arg("--port=0")
@@ -62,7 +67,7 @@ impl Browser {
             "timeouts": {"pageLoad": 15000, "implicit": 0},
             "goog:chromeOptions": {
                 "args": ["--headless", "--disable-dev-shm-usage", "--no-first-run"],
-                "prefs": {"profile.managed_default_content_settings.javascript": 2}
+                "prefs": preferences
             }
         }}});
         let session = browser.command(&url, Some(capabilities));
@@ -138,11 +143,51 @@ impl Browser {
         self.get(&format!("/element/{}/rect", self.element(css)))
     }
 
+    pub fn visible_rects(&self, css: &str) -> Vec<Value> {
+        let elements = self.elements(css);
+        let mut rects = Vec::new();
+        for element in elements.as_array().expect("WebDriver elements") {
+            let id = element[ELEMENT].as_str().expect("element ID");
+            if self.get(&format!("/element/{id}/displayed")) == true {
+                rects.push(self.get(&format!("/element/{id}/rect")));
+            }
+        }
+        rects
+    }
+
+    pub fn focused(&self, css: &str) -> bool {
+        self.get("/element/active")[ELEMENT] == self.element(css)
+    }
+
+    pub fn keys(&self, text: &str) {
+        let mut actions = Vec::new();
+        for key in text.chars() {
+            actions.push(json!({"type": "keyDown", "value": key}));
+            actions.push(json!({"type": "keyUp", "value": key}));
+        }
+        self.post(
+            "/actions",
+            json!({"actions": [{"type": "key", "id": "keyboard", "actions": actions}]}),
+        );
+    }
+
+    pub fn cdp(&self, command: &str, params: Value) -> Value {
+        self.post(
+            "/goog/cdp/execute",
+            json!({"cmd": command, "params": params}),
+        )
+    }
+
     pub fn click(&self, css: &str) {
-        // Every concert button submits a form. Chrome can return from the click
-        // before the next document (a desk or network error page) replaces the form.
+        self.navigate_with(|| {
+            self.post(&format!("/element/{}/click", self.element(css)), json!({}));
+        });
+    }
+
+    // A form click or Enter can return before the new desk or error page replaces the form.
+    pub fn navigate_with(&self, action: impl FnOnce()) {
         let previous = self.element("html");
-        self.post(&format!("/element/{}/click", self.element(css)), json!({}));
+        action();
         let deadline = Instant::now() + TIMEOUT;
         loop {
             let document = self.elements("html");
@@ -152,7 +197,7 @@ impl Browser {
             {
                 return;
             }
-            assert!(Instant::now() < deadline, "form {css} did not navigate");
+            assert!(Instant::now() < deadline, "form did not navigate");
             thread::sleep(Duration::from_millis(25));
         }
     }

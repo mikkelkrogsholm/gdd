@@ -90,7 +90,18 @@ reference.
 Another test takes both matinee seats and replaces the second redirect with an
 HTTP 500. It reopens the original desk URL to check the committed reservation,
 verifies that a fresh desk blocks new bookings, then cancels and checks the
-same reference again. The ordinary Cargo suite skips these browser tests.
+same reference again.
+
+The keyboard test tabs from the public program through the labelled username,
+password and sign-in controls, then presses Enter and reads the signed-in
+status. It checks the form and reservation desk at a 320 CSS-pixel viewport
+and in a 640-pixel window with Chromium's per-host page zoom set to 200%.
+Chromium reports the effective zoom, viewport and content width. Every visible
+button and input must fit horizontally and measure at least 44 CSS pixels high.
+The test also verifies that the reduced-motion rule is active and that the desk
+has one status region and one alert region.
+
+The ordinary Cargo suite skips these browser tests.
 
 The native HTTP/1 parser rejects repeated Content-Length fields with the
 JSON error `400 InvalidInput` before routing. The body limit is 16 KiB.

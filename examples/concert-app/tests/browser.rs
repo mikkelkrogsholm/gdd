@@ -192,12 +192,9 @@ async fn recorded_phase_a_history_and_shared_cookie_forms_in_chromium() {
     assert_eq!(browser.count("#reservations-section"), 0);
     // Headless Chromium enforces a minimum desktop window width. Override its
     // content viewport to exercise the public program at 320 CSS pixels.
-    browser.post(
-        "/goog/cdp/execute",
-        json!({
-            "cmd": "Emulation.setDeviceMetricsOverride",
-            "params": {"width": 320, "height": 710, "deviceScaleFactor": 1, "mobile": false}
-        }),
+    browser.cdp(
+        "Emulation.setDeviceMetricsOverride",
+        json!({"width": 320, "height": 710, "deviceScaleFactor": 1, "mobile": false}),
     );
     browser.open(&site);
     assert_eq!(
@@ -247,10 +244,7 @@ async fn recover_a_committed_reservation_after_a_lost_response_in_chromium() {
     browser.click(RESERVE);
     proxy.assert_submissions(&key);
     // Chromium has finished the failed navigation, including any automatic retries.
-    let frame = browser.post(
-        "/goog/cdp/execute",
-        json!({"cmd":"Page.getFrameTree","params":{}}),
-    );
+    let frame = browser.cdp("Page.getFrameTree", json!({}));
     assert_eq!(
         frame["frameTree"]["frame"]["unreachableUrl"],
         format!("{site}/forms/reserve")
@@ -289,6 +283,122 @@ async fn recover_a_committed_reservation_after_a_lost_response_in_chromium() {
         "Your reservation is cancelled."
     );
     assert_desk(&browser, &upstream, "Alice", &cancelled, 0);
+}
+
+fn assert_reflow(browser: &Browser, zoom: f64) {
+    let metrics = browser.cdp("Page.getLayoutMetrics", json!({}));
+    let visual = &metrics["cssVisualViewport"];
+    assert_eq!(visual["zoom"].as_f64(), Some(zoom), "{metrics}");
+    assert_eq!(visual["scale"].as_f64(), Some(1.0), "{metrics}");
+    let width = metrics["cssLayoutViewport"]["clientWidth"]
+        .as_f64()
+        .unwrap();
+    // Both windows provide 320 CSS pixels before space for a vertical scrollbar.
+    assert!((300.0..=320.0).contains(&width), "{metrics}");
+    assert!(
+        metrics["cssContentSize"]["width"].as_f64().unwrap() <= width + 1.0,
+        "{metrics}"
+    );
+    let controls = browser.visible_rects("button, input");
+    assert!(!controls.is_empty(), "no visible controls");
+    for rect in controls {
+        let x = rect["x"].as_f64().unwrap();
+        let w = rect["width"].as_f64().unwrap();
+        let h = rect["height"].as_f64().unwrap();
+        assert!(
+            x >= 0.0 && w > 0.0 && x + w <= width + 1.0,
+            "control overflows {width}px: {rect}"
+        );
+        assert!(h >= 44.0, "control below 44 CSS pixels: {rect}");
+    }
+}
+
+fn assert_reduced_motion(browser: &Browser) {
+    browser.cdp("DOM.enable", json!({}));
+    browser.cdp("CSS.enable", json!({}));
+    let document = browser.cdp("DOM.getDocument", json!({}));
+    let body = browser.cdp(
+        "DOM.querySelector",
+        json!({
+            "nodeId": document["root"]["nodeId"], "selector": "body"
+        }),
+    );
+    let styles = browser.cdp(
+        "CSS.getMatchedStylesForNode",
+        json!({"nodeId": body["nodeId"]}),
+    );
+    let reduced = styles["matchedCSSRules"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter_map(|entry| entry["rule"]["media"].as_array())
+        .flatten()
+        .any(|media| media["text"] == "(prefers-reduced-motion: reduce)");
+    assert!(
+        reduced,
+        "the body's styles did not match the reduced-motion rule"
+    );
+}
+
+#[test]
+#[ignore = "requires local Chromium and a compatible ChromeDriver"]
+fn keyboard_sign_in_and_reflow_at_320_pixels_and_200_percent_zoom_in_chromium() {
+    const TAB: &str = "\u{e004}";
+    const ENTER: &str = "\u{e007}";
+    let dir = tempfile::tempdir().unwrap();
+    let database = dir.path().join("concert.sqlite");
+    fs::write(&database, include_bytes!("fixtures/recorded-phase-a.db")).unwrap();
+    let server = Server::start(&database);
+    let site = format!("http://127.0.0.1:{}", server.port);
+
+    for zoom in [1.0_f64, 2.0] {
+        // Chrome stores per-host zoom as a level, with a factor of 1.2 per level.
+        let browser = Browser::with_preferences(json!({
+            "partition.per_host_zoom_levels": {"x": {"127.0.0.1": {"zoom_level": zoom.log(1.2)}}}
+        }));
+        if zoom == 1.0 {
+            browser.cdp(
+                "Emulation.setDeviceMetricsOverride",
+                json!({"width": 320, "height": 900, "deviceScaleFactor": 1, "mobile": false}),
+            );
+        } else {
+            let window = browser.post("/window/rect", json!({"width": 640, "height": 900}));
+            assert_eq!(window["width"], 640);
+        }
+        browser.cdp(
+            "Emulation.setEmulatedMedia",
+            json!({"features": [
+                {"name": "prefers-reduced-motion", "value": "reduce"}
+            ]}),
+        );
+        browser.open(&site);
+        assert_reduced_motion(&browser);
+        assert_reflow(&browser, zoom);
+
+        // Reach the form from the start of the document using only the keyboard.
+        for _ in 0..browser.count("a[href], input, button, [tabindex]") {
+            browser.keys(TAB);
+            if browser.focused("#username") {
+                break;
+            }
+        }
+        assert!(browser.focused("#username"));
+        assert_eq!(browser.text("label[for='username']"), "Username");
+        browser.keys("alice");
+        browser.keys(TAB);
+        assert!(browser.focused("#password"));
+        assert_eq!(browser.text("label[for='password']"), "Password");
+        browser.keys("alice-demo");
+        browser.keys(TAB);
+        assert!(browser.focused("#sign-in"));
+        browser.navigate_with(|| browser.keys(ENTER));
+        assert_eq!(browser.text("#session-status"), "Signed in as Alice");
+        assert_eq!(browser.count("#refresh-reservations:enabled"), 1);
+        assert_eq!(browser.count("[role='status']"), 1);
+        assert_eq!(browser.text("[role='status']"), "You're signed in.");
+        assert_eq!(browser.count("[role='alert']"), 1);
+        assert_reflow(&browser, zoom);
+    }
 }
 
 #[ntex::test]
