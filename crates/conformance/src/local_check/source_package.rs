@@ -1,9 +1,9 @@
-//! Retain the root Cargo package and test its extracted sources.
+//! Retain the native CLI and tutorial checker packages and test their extracted sources.
 
 use super::{Run, os_value};
 use anyhow::{Context, Result, ensure};
 use flate2::read::GzDecoder;
-use serde_json::json;
+use serde_json::{Value, json};
 use std::{
     ffi::OsStr,
     fs::{self, File},
@@ -22,28 +22,38 @@ fn package_file(directory: &Path) -> Result<PathBuf> {
     }
     ensure!(
         archives.len() == 1,
-        "expected one .crate in {} after packaging gdd, found {}",
+        "expected one .crate in {} after packaging, found {}",
         directory.display(),
         archives.len()
     );
     Ok(archives.pop().unwrap())
 }
 
-pub(super) fn check(run: &mut Run<'_>, recipient: &Path) -> Result<()> {
+const TUTORIAL_TEST: &str = "tests::attest_actual_checks_and_observe_drift";
+
+fn package(
+    run: &mut Run<'_>,
+    recipient: &Path,
+    step: &str,
+    manifest: &str,
+    name: &str,
+) -> Result<(PathBuf, Value)> {
     let staging = tempfile::tempdir_in(recipient)?;
-    let mut package = Command::new("cargo");
-    package
+    let mut cargo = Command::new("cargo");
+    cargo
         .args([
             "package",
             "--locked",
             "--no-verify",
             "--allow-dirty",
+            "--manifest-path",
+            manifest,
             "-p",
-            "gdd",
+            name,
             "--target-dir",
         ])
         .arg(staging.path());
-    run.step("source-package", package, run.root)?;
+    run.step(step, cargo, run.root)?;
 
     let archive = package_file(&staging.path().join("package"))?;
     let retained = run
@@ -51,20 +61,19 @@ pub(super) fn check(run: &mut Run<'_>, recipient: &Path) -> Result<()> {
         .join(archive.file_name().context("missing Cargo archive name")?);
     io::copy(&mut File::open(archive)?, &mut File::create_new(&retained)?)?;
     let bytes = fs::read(&retained)?;
-    run.source_package = Some(json!({
+    let identity = json!({
         "path": os_value(retained.as_os_str()), "sha256": gdd::sha256(&bytes)
-    }));
-
-    let extraction = tempfile::tempdir_in(recipient)?;
-    tar::Archive::new(GzDecoder::new(bytes.as_slice())).unpack(extraction.path())?;
-    let root = extraction.path().join(
+    });
+    tar::Archive::new(GzDecoder::new(bytes.as_slice())).unpack(recipient)?;
+    let root = recipient.join(
         retained
             .file_stem()
             .context("missing Cargo package directory name")?,
     );
-    // Cargo archives have normalized timestamps. A shared target can reuse tests
-    // from another extraction of the same package name and version.
-    let target = tempfile::tempdir_in(recipient)?;
+    Ok((root, identity))
+}
+
+fn package_tests(target: &Path) -> Command {
     let mut test = Command::new("cargo");
     test.args([
         "test",
@@ -73,15 +82,81 @@ pub(super) fn check(run: &mut Run<'_>, recipient: &Path) -> Result<()> {
         "Cargo.toml",
         "--target-dir",
     ])
-    .arg(target.path())
-    .env("CARGO_BUILD_BUILD_DIR", target.path());
-    run.step("source-package-tests", test, &root)?;
+    .arg(target)
+    // Nested Cargo commands in the tutorial must also use fresh artifacts.
+    .env("CARGO_TARGET_DIR", target)
+    .env("CARGO_BUILD_BUILD_DIR", target);
+    test
+}
+
+fn confirm_tutorial(stdout: &str) -> Result<()> {
+    // The exact filter selects only TUTORIAL_TEST. Child output can interrupt
+    // libtest's per-test status line when the harness runs single-threaded.
+    const PASSED: &str = "test result: ok. 1 passed; 0 failed; 0 ignored;";
+    ensure!(
+        stdout.lines().any(|line| line.starts_with(PASSED)),
+        "the packaged tutorial test {TUTORIAL_TEST} did not report a pass; see tutorial-source-package-tests.stdout.txt"
+    );
+    Ok(())
+}
+
+pub(super) fn check(run: &mut Run<'_>, recipient: &Path) -> Result<()> {
+    let extraction = tempfile::tempdir_in(recipient)?;
+    let (root, identity) = package(
+        run,
+        extraction.path(),
+        "source-package",
+        "Cargo.toml",
+        "gdd",
+    )?;
+    run.source_package = Some(identity);
+    // Cargo archives have normalized timestamps. A shared target can reuse tests
+    // from another extraction of the same package name and version.
+    let target = tempfile::tempdir_in(recipient)?;
+    run.step("source-package-tests", package_tests(target.path()), &root)?;
+
+    let (checker, identity) = package(
+        run,
+        extraction.path(),
+        "tutorial-source-package",
+        "docs/tutorial/rust/Cargo.toml",
+        "gdd-tutorial-add",
+    )?;
+    run.tutorial_source_package = Some(identity);
+    let mut tutorial = package_tests(target.path());
+    tutorial
+        .args([
+            "--example",
+            "tutorial_evidence",
+            "--",
+            "--ignored",
+            "--exact",
+            TUTORIAL_TEST,
+            "--format",
+            "pretty",
+            "--color",
+            "never",
+        ])
+        .env("GDD_TUTORIAL_SOURCE", checker);
+    run.step_checked("tutorial-source-package-tests", tutorial, &root, |log| {
+        confirm_tutorial(&fs::read_to_string(log)?)
+    })?;
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn zero_tests_or_an_ignored_tutorial_cannot_pass_release() {
+        assert!(confirm_tutorial("running 0 tests\ntest result: ok. 0 passed").is_err());
+        assert!(confirm_tutorial("test result: ok. 0 passed; 0 failed; 1 ignored;").is_err());
+        assert!(
+            confirm_tutorial("test result: ok. 1 passed; 0 failed; 0 ignored; 1 filtered out;")
+                .is_ok()
+        );
+    }
 
     #[test]
     fn omitted_fixture_fails_tests_of_the_retained_package() -> Result<()> {
@@ -130,6 +205,7 @@ mod tests {
             cli: None,
             installed: Default::default(),
             source_package: None,
+            tutorial_source_package: None,
             steps: Vec::new(),
             toolchain: Default::default(),
         };

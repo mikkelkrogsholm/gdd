@@ -80,19 +80,32 @@ struct Run<'a> {
     cli: Option<PathBuf>,
     installed: Map<String, Value>,
     source_package: Option<Value>,
+    tutorial_source_package: Option<Value>,
     steps: Vec<Value>,
     toolchain: Map<String, Value>,
 }
 
 impl Run<'_> {
-    fn step(&mut self, name: &str, mut command: Command, cwd: &Path) -> Result<PathBuf> {
+    fn step(&mut self, name: &str, command: Command, cwd: &Path) -> Result<PathBuf> {
+        self.step_checked(name, command, cwd, |_| Ok(()))
+    }
+
+    fn step_checked(
+        &mut self,
+        name: &str,
+        mut command: Command,
+        cwd: &Path,
+        check_stdout: impl FnOnce(&Path) -> Result<()>,
+    ) -> Result<PathBuf> {
         let stdout_name = format!("{name}.stdout.txt");
         let stderr_name = format!("{name}.stderr.txt");
         let stdout = self.output.join(&stdout_name);
         let mut stderr = File::create_new(self.output.join(&stderr_name))?;
+        if !command.get_envs().any(|(key, _)| key == "CARGO_TARGET_DIR") {
+            command.env("CARGO_TARGET_DIR", &self.target);
+        }
         command
             .current_dir(cwd)
-            .env("CARGO_TARGET_DIR", &self.target)
             .env_remove("GDD_NATIVE_CLI")
             .stdin(Stdio::null())
             .stdout(File::create_new(&stdout)?)
@@ -122,6 +135,16 @@ impl Run<'_> {
                 (false, None)
             }
         };
+        let output_error = if passed {
+            check_stdout(&stdout).err()
+        } else {
+            None
+        };
+        if let Some(error) = &output_error {
+            record["error"] = json!(error.to_string());
+            writeln!(stderr, "{error:#}")?;
+        }
+        let passed = passed && output_error.is_none();
         record["finished_at"] = json!(timestamp()?);
         record["seconds"] = json!(start.elapsed().as_secs_f64());
         record["exit_code"] = json!(code);
@@ -201,6 +224,7 @@ pub(super) fn run(root: &Path, mode: Mode, output: Option<PathBuf>) -> Result<Ex
         cli: None,
         installed: Map::new(),
         source_package: None,
+        tutorial_source_package: None,
         steps: Vec::new(),
         toolchain: Map::new(),
     };
@@ -217,6 +241,7 @@ pub(super) fn run(root: &Path, mode: Mode, output: Option<PathBuf>) -> Result<Ex
     if mode == Mode::Release {
         summary["installed"] = Value::Object(run.installed);
         summary["source_package"] = json!(run.source_package);
+        summary["tutorial_source_package"] = json!(run.tutorial_source_package);
     }
     if let Err(error) = &result {
         summary["error"] = json!(format!("{error:#}"));

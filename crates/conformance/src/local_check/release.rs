@@ -161,6 +161,7 @@ mod tests {
             cli: None,
             installed: Default::default(),
             source_package: None,
+            tutorial_source_package: None,
             steps: Vec::new(),
             toolchain: Default::default(),
         };

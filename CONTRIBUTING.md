@@ -77,10 +77,11 @@ under the output directory's `install/` prefix. From outside the checkout it
 runs the 34 installed CLI controls with the workspace-built `gdd` as their
 reference, checks that the installed viewer loads and prints `--help` headlessly,
 and runs the installed quote workflow demo through its failing baseline and
-accepted repair. It then retains the root CLI and library source file
-(`gdd-<version>.crate`), records its path and SHA-256 in `summary.json`, and
-compiles and runs the locked root tests from a fresh extraction outside the
-checkout, using a new build directory for the package and its dependencies.
+accepted repair. It retains the `gdd` and `gdd-tutorial-add` source archives
+and records their paths and SHA-256 digests in `summary.json`. From their
+fresh extractions outside the checkout it runs the locked root tests and the
+opt-in tutorial test with a fresh build directory. The tutorial exercises the
+checker, evidence review, scoped validation and source drift.
 Choose either `--quick` or `--release` for a non-default mode.
 
 The command prints its new output directory and stops at the first failed
@@ -91,7 +92,7 @@ Use `--checkout PATH` **before** `local-check` to build and test another
 checkout. Relative output and `CARGO_TARGET_DIR` paths are resolved from the
 directory where you start the runner. Builds default to the selected checkout's
 `target/`. See [native distribution evidence](RELEASING.md#verify-the-native-distribution-locally)
-for the source package, installed binaries, verifier receipt and workflow journal.
+for the source packages, installed binaries, verifier receipt and workflow journal.
 
 ### Individual Rust checks
 

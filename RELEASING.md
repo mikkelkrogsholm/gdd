@@ -128,21 +128,25 @@ The driver runs all 20 full-check steps, including the nine named conformance
 suites and the standalone Rust skill tests and asset checks. It then runs three
 locked path installs from the selected checkout into `install/bin/` and
 exercises the optimized binaries from a temporary recipient directory outside
-the checkout. It also packages the root CLI and Rust library and runs the locked
-root tests from a fresh extraction of the retained Cargo archive. Use
+the checkout. It also packages `gdd` and `gdd-tutorial-add` independently.
+It extracts both retained archives, runs the locked root tests and checks that
+the named end-to-end tutorial test passes with the extracted checker. Use
 `--checkout PATH` before `local-check` to select the source
 and fixtures. An explicit `CARGO_TARGET_DIR` supplies the build cache for
-the checkout. The extracted package uses a fresh build directory so Cargo
-compiles its test executables and dependencies for this archive.
+the checkout. A fresh build directory serves both test runs of the extracted
+`gdd` sources and keeps their compiled artifacts separate from checkout builds.
 
 Keep the following artifacts in the output directory.
 
 - `summary.json` records commands, working directories, timings, process
   outcomes, host, toolchain and the paths and SHA-256 identities of installed
-  binaries and the source package. Each step has separate stdout and stderr logs.
+  binaries and both source packages. Each step has separate stdout and stderr logs.
 - `gdd-<version>.crate` is the tested CLI and library source archive. Its path
   and SHA-256 are in `summary.json` under `source_package`. The
   `source-package-tests` logs capture the test run from its extracted sources.
+- `gdd-tutorial-add-<version>.crate` contains the checker used by the tutorial.
+  Its path and SHA-256 are under `tutorial_source_package`. The
+  `tutorial-source-package-tests` logs capture the opt-in test run.
 - `verify-install.json` records the installed CLI's 34 controls and the
   identities of the installed and source-built executables. The source-built
   executable comes from the workspace build's Cargo artifact report.
@@ -152,17 +156,29 @@ Keep the following artifacts in the output directory.
   five Cargo test receipts. The replay checks the seven expected baseline
   failures and all 19 passing final tests before recording current acceptance.
 
-### Test the root Cargo source package
+### Repeat the packaged root and tutorial tests
 
-From the checkout, unpack the retained archive into a new directory and run
-its tests. For offline verification with cached dependencies, set
-`CARGO_NET_OFFLINE=true` before running the release check or repeating its tests.
+From the checkout, unpack the retained archives into a new directory. For
+offline verification with cached dependencies, export `CARGO_NET_OFFLINE=true`
+before running the release check or repeating its tests.
 
 ```sh
 GDD_SOURCE_TEST=$(mktemp -d)
-tar -xzf ../gdd-native-release/gdd-*.crate -C "$GDD_SOURCE_TEST"
-(cd "$GDD_SOURCE_TEST"/gdd-* && CARGO_BUILD_BUILD_DIR="$GDD_SOURCE_TEST/target" \
-  cargo test --locked --target-dir "$GDD_SOURCE_TEST/target")
+(
+  set -e
+  tar -xzf ../gdd-native-release/gdd-[0-9]*.crate -C "$GDD_SOURCE_TEST"
+  tar -xzf ../gdd-native-release/gdd-tutorial-add-*.crate -C "$GDD_SOURCE_TEST"
+  cd "$GDD_SOURCE_TEST"/gdd-[0-9]*
+  export CARGO_TARGET_DIR="$GDD_SOURCE_TEST/target"
+  export CARGO_BUILD_BUILD_DIR="$CARGO_TARGET_DIR"
+  set -- "$GDD_SOURCE_TEST"/gdd-tutorial-add-*
+  export GDD_TUTORIAL_SOURCE="$1"
+  cargo test --locked
+  test_name=tests::attest_actual_checks_and_observe_drift
+  cargo test --locked --example tutorial_evidence -- --ignored --exact "$test_name" \
+    --format pretty --color never > "$GDD_SOURCE_TEST/tutorial.log"
+  grep -F "test result: ok. 1 passed; 0 failed; 0 ignored;" "$GDD_SOURCE_TEST/tutorial.log"
+)
 ```
 
 The package tests regenerate both concert model views and the greenfield

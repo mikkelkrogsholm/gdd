@@ -119,9 +119,12 @@ fn execute(runs: &Path, case: Case) -> io::Result<()> {
     let source = runs.join(case.source());
     let runner = runner(&source)?;
     // This target is exclusive to this build. Keep sources and receipts for review.
-    let _target = stage_dir(&source, "target")?;
+    let target = stage_dir(&source, "target")?;
     let mut cargo = Command::new(ARGV[0]);
-    cargo.args(&ARGV[1..]).env("RUSTC", "rustc");
+    cargo
+        .args(&ARGV[1..])
+        .env("RUSTC", "rustc")
+        .env("CARGO_BUILD_BUILD_DIR", target.path().canonicalize()?);
     let checked = run_checked(
         &source,
         FILES,
