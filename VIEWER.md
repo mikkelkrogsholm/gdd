@@ -252,8 +252,19 @@ is required. The CSP permits embedded data-URI glyph images and blocks external
 images and network requests. GDD code remains MIT-licensed. The v0.8.0 HTML
 viewer's [third-party notices](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt)
 cover the bundled components, including the Apache-2.0 JamaJS SVD component
-within layout-base. The [v0.8.0 rebuild instructions](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/scripts/viewer-vendor/README.md)
-describe how to reproduce and check that release's vendor bundle locally.
+within layout-base.
+
+To smoke-test the released bundle, open a separate checkout of v0.8.0 from
+the repository root and run its check with Node.js 20 or newer.
+
+```sh
+git worktree add --detach ../gdd-html-v0.8.0 0dbb10b8c193f55c9777405de3f4ae22ac2d0825
+node ../gdd-html-v0.8.0/scripts/viewer-vendor/verify.mjs
+```
+
+The check loads the shipped bundle and exercises a headless fCoSE layout.
+To rebuild and compare the output byte for byte, use the lockfile and build
+scripts in that same checkout. [v0.8.0 rebuild instructions](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/scripts/viewer-vendor/README.md)
 
 ## Python API and checks
 
