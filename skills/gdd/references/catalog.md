@@ -101,10 +101,7 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `examples/product/greenfield.graph.html`
 - `examples/product/partial.gdd.json`
 - `examples/product/refactoring.gdd.json`
-- `gdd_validator/validator.py`
-- `gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt`
 - `research/2026-10-13-existing-work.md`
-- `scripts/viewer-vendor/README.md`
 
 ## Integrity and maintenance
 

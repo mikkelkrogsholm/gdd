@@ -183,7 +183,7 @@ report = validate("examples/concert.gdd.yaml",
 assert exit_code(report) == 0
 ```
 
-The API returns a JSON-compatible report object. Invalid tool arguments raise `ValueError`; model/file failures produce report diagnostics. Revision and report formats are validated internally. [The code](gdd_validator/validator.py) is the entry point for orchestration; loading/model/readiness/planning/records contain the respective checks.
+The API returns a JSON-compatible report object. Invalid tool arguments raise `ValueError`. Model or file failures produce report diagnostics. The API validates revision and report formats internally. The [v0.8.0 Python entry point](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/gdd_validator/validator.py) coordinates the loading, model, readiness, planning and records checks.
 
 The [agent workflow](WORKFLOW.md) is a separate tool layer for preparing work
 and tracking integration. For an executed parallel-work example, see the

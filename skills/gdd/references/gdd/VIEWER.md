@@ -243,10 +243,11 @@ presentation state and do not modify the semantic manifest.
 The locked vendor bundle and full notices are embedded in the same hashed script
 as the viewer. No sibling JavaScript files, CDN, worker, or runtime npm dependency
 is required. The CSP permits embedded data-URI glyph images and blocks external
-images and network requests. GDD code remains MIT-licensed; bundled components
-retain their [own notices](gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt),
-including the Apache-2.0 JamaJS SVD component within layout-base. Maintainers can
-[rebuild and check the vendor bundle](scripts/viewer-vendor/README.md) locally.
+images and network requests. GDD code remains MIT-licensed. The v0.8.0 HTML
+viewer's [third-party notices](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt)
+cover the bundled components, including the Apache-2.0 JamaJS SVD component
+within layout-base. The [v0.8.0 rebuild instructions](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/scripts/viewer-vendor/README.md)
+describe how to reproduce and check that release's vendor bundle locally.
 
 ## Python API and checks
 

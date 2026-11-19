@@ -39,14 +39,14 @@
     {
       "path": "references/gdd/VALIDATOR.md",
       "source": "VALIDATOR.md",
-      "sha256": "69d64b57429308ebcdca4a76b6b8ab5318587d531806c8eaa450f44c2a322d4b",
-      "bytes": 19284
+      "sha256": "0e9b5b354d9b08a1c8209b2ceda7399d4e685fd05be24b7a0afbfc828eab34c9",
+      "bytes": 19359
     },
     {
       "path": "references/gdd/VIEWER.md",
       "source": "VIEWER.md",
-      "sha256": "db3214c0a9411b1245e778ea1773186d0dcafd6a53b9194fcbfb3f80a1c16f47",
-      "bytes": 21161
+      "sha256": "1ca61a880bfc1de86962ede6173bc2a0e4ccb32f8c592f7394153b5bc0b29b93",
+      "bytes": 21406
     },
     {
       "path": "references/gdd/WORKFLOW.md",
@@ -382,12 +382,6 @@
     },
     {
       "from": "VALIDATOR.md",
-      "href": "gdd_validator/validator.py",
-      "source_target": "gdd_validator/validator.py",
-      "role": "optional-repository-reference"
-    },
-    {
-      "from": "VALIDATOR.md",
       "href": "examples/agent-native/README.md",
       "source_target": "examples/agent-native/README.md",
       "role": "optional-repository-reference"
@@ -426,18 +420,6 @@
       "from": "VIEWER.md",
       "href": "examples/product/partial.gdd.json",
       "source_target": "examples/product/partial.gdd.json",
-      "role": "optional-repository-reference"
-    },
-    {
-      "from": "VIEWER.md",
-      "href": "gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt",
-      "source_target": "gdd_validator/viewer/vendor/THIRD-PARTY-NOTICES.txt",
-      "role": "optional-repository-reference"
-    },
-    {
-      "from": "VIEWER.md",
-      "href": "scripts/viewer-vendor/README.md",
-      "source_target": "scripts/viewer-vendor/README.md",
       "role": "optional-repository-reference"
     },
     {

@@ -3,7 +3,7 @@
 mod advisories;
 mod coverage;
 
-use crate::fixture::{snapshot, write_json};
+use crate::fixture::{restore_concert, snapshot, write_json};
 use crate::named::{self, Behavior};
 use anyhow::{Context, Result, ensure};
 use gdd::model_diff::{ModelDiff, diff_models, diff_text};
@@ -283,14 +283,7 @@ fn readonly(directory: &Path, _: &str) -> Result<()> {
 
 fn concert(directory: &Path, _: &str) -> Result<()> {
     let temp = tempfile::tempdir()?;
-    let restored = temp.path().canonicalize()?.join("restored");
-    let archives = directory.join("../archive/experiments");
-    crate::concert_archive::restore(
-        &archives.join("concert-7e27757.tar.gz"),
-        &archives.join("concert-7e27757.index.json"),
-        &restored,
-    )?;
-    let project = restored.join("examples/concert-app");
+    let project = restore_concert(directory, temp.path())?;
     let report = diff_models(
         &project.join("history/phase-a/gdd.json"),
         &project.join("gdd.json"),

@@ -1,7 +1,7 @@
 //! Source mutation, reachability and coverage controls.
 
 use super::project::{Project, require_diagnostic, rows};
-use crate::fixture::snapshot;
+use crate::fixture::{restore_concert, snapshot};
 use anyhow::{Context, Result, ensure};
 use gdd::code_check::CodeCheckOptions;
 use serde_json::{Value, json};
@@ -52,7 +52,8 @@ pub(super) fn copied_concert_clean_injected_repaired_missing(
     directory: &Path,
     _: &str,
 ) -> Result<()> {
-    let original = directory.join("../examples/concert-app/concert_app");
+    let temp = tempfile::tempdir()?;
+    let original = restore_concert(directory, temp.path())?.join("concert_app");
     let before = snapshot(&original)?;
     let mut project = Project::new(
         "front",
