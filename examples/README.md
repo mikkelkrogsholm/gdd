@@ -4,12 +4,16 @@ Start with the small [graph-to-code tutorial](../docs/tutorial.md) for the
 complete path through implementation, local tests and current evidence. The
 examples below provide larger references and individual format demonstrations.
 
-The standard files below illustrate the format and method. The separate [agent-native example](agent-native/README.md) demonstrates an actually executed, bounded code workflow with red/green tests and revision-bound acceptance.
+Run the [Rust quote workflow](agent-native/README.md) to see seven failing
+rounding tests on the baseline and 19 passing tests after three repairs. Each
+run produces ten workflow events, fresh Cargo receipts and a revision-bound
+acceptance.
 
-The curated [concert application](concert-app/README.md) is the GDD 0.3 end-to-end
-reference: runnable code, a requirement change with fixed red/green assertions,
-real-source architecture controls and a portable replay. Its complete original
-experiment is recoverable from the [indexed archive](../archive/experiments/README.md).
+Start the [Rust concert application](concert-app/README.md) to exercise
+reservations through a browser or its JSON API. Its tests cover the domain,
+HTTP routes, browser interactions and compatibility with a phase-A database.
+The [historical A/B experiment](concert-app/README.md#historical-ab-delivery-and-replay)
+records the original requirement change, red/green checks and agent deliveries.
 For a new project, use `gdd init` and the [GDD skill](../skills/gdd/SKILL.md).
 
 ## Open a native example
@@ -65,4 +69,21 @@ unknown assessments. It is a format example, not review evidence.
 [native saved graph](concert-0.3.gddview) preserve the model IDs and revision.
 The [v0.8.0 concert 0.3 HTML file](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert-0.3.graph.html)
 preserves the browser presentation from that release.
-Existing 0.2 examples and the native-agent run remain unchanged.
+
+## Recover the v0.8.0 examples
+
+To recover the Python examples, submitted worker files, phase-A sources,
+replay tools and all four standalone HTML graphs byte-for-byte, run this
+command in a checkout containing the v0.8.0 commit. It also restores the
+matching validator and dependency lockfile for the release replay commands.
+
+```sh
+release_dir=$(mktemp -d)
+git archive 0dbb10b8c193f55c9777405de3f4ae22ac2d0825 | tar -x -C "$release_dir"
+cd "$release_dir"
+```
+
+Follow the recovered guides for the [quote workflow](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/agent-native/README.md)
+or the [concert replay](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert-app/README.md).
+The [indexed concert archive](../archive/experiments/README.md) separately
+preserves the original 197-file experiment at commit `7e27757`.

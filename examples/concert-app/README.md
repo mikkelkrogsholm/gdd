@@ -1,11 +1,9 @@
 # Local Sessions: a runnable GDD reference
 
-A local concert reservation app developed through an executed GDD 0.3 experiment.
-The `gdd-concert` Cargo source archive contains the Rust server and library,
-their tests, two SQLite fixtures, and the model with its contracts and native
-graph. It includes the repository’s MIT license as `LICENSE`. The Git checkout
-also contains the [original Python application and
-experiment materials](#original-experiment-in-the-git-checkout).
+`gdd-concert` is a Rust reservation server for a local concert program. Its
+Cargo source archive includes the server, domain library, tests, two SQLite
+fixtures, GDD 0.3 model and contracts, portable graph and MIT license.
+The model records the phase-B policy from the [original A/B experiment](#historical-ab-delivery-and-replay).
 
 ## Run the native concert app
 
@@ -59,8 +57,16 @@ Ctrl+C or Unix SIGTERM drains admitted requests and checkpoints the database
 before exit. Wait for a successful exit before copying the main file. Restart
 with the same path to recover reservations and sign in again for a fresh session.
 
-The HTTP tests start the executable on ephemeral ports using temporary
-databases and exercise its JSON API and native forms.
+For focused domain and HTTP checks, run these commands from the app directory.
+
+```sh
+cargo test --locked --lib --test reservations
+cargo test --locked --test http
+```
+
+The domain suite checks the allowance, capacity, retries, concurrent writes
+and phase-A database compatibility. The HTTP tests start the executable on
+ephemeral ports using temporary databases and exercise its JSON API and native forms.
 On Unix they also exercise SIGINT, SIGTERM, request draining and restart.
 
 To run the native browser regressions, install a local Chromium or Chrome and a
@@ -107,8 +113,8 @@ The native HTTP/1 parser rejects repeated Content-Length fields with the
 JSON error `400 InvalidInput` before routing. The body limit is 16 KiB.
 Repeated Host fields or an unexpected Host or Origin on a parsed request
 return `403 Forbidden`. If the same request has both a repeated length and an
-invalid local address or origin, the native parser returns 400. The Python
-service checks the address and origin first and returns 403 in that case.
+invalid local address or origin, the native parser returns 400. The historical
+Python service checked the address and origin first and returned 403 in that case.
 
 ## Native Rust reservation library
 
@@ -167,77 +173,31 @@ gdd-viewer graph.gddview
 SQLite writes acquire `BEGIN IMMEDIATE` before business reads. Capacity, global
 allowance, request-key binding and insertion share one writer transaction.
 
-## Original experiment in the Git checkout
+## Historical A/B delivery and replay
 
-The commands below use a Git checkout. The [concert reference] and [released HTML view]
-are available in GDD v0.8.0. The [byte-indexed archive] preserves the original
-experiment files from Git commit `7e27757`.
+The original agents delivered a Python application in two phases. Phase A had
+no personal reservation limit. Phase B introduced a two-seat limit across all
+concerts. The v0.8.0 replay recreates both deliveries, tests B’s unchanged
+requirements against A, activates B on the same database, and writes new
+journals, checker receipts and host acceptance for each phase. The Rust suite
+above exercises the shipped server and phase-A data compatibility. The
+complete two-phase delivery and attestation replay belongs to v0.8.0.
 
-### Original browser application
-
-Run the Python browser application from the repository root.
-
-```sh
-uv sync --group dev
-uv run python examples/concert-app/run.py --database /tmp/local-sessions.sqlite --port 8765
-```
-
-Open `http://127.0.0.1:8765`. Fictional accounts are `alice` / `alice-demo` and
-`bob` / `bob-demo`. Sign in, browse concerts, reserve, inspect personal history,
-cancel and sign out. Phase B permits at most two active reservations per person
-across all concerts. Cancellation frees allowance and preserves history and the
-successful request key. Reservations persist in SQLite; sessions require a new
-sign-in after restart. The application uses only Python's standard library.
-
-This bounded loopback demo excludes payments, ticket issuance, expiry, external
-authentication and public deployment. A database already containing more than two
-active reservations for a person is refused without modifying history.
-
-### Historical checks
+From a Git checkout containing the v0.8.0 commit, extract that release into an
+empty directory. This recovers the exact Python application, phase-A sources,
+browser assets, replay tools, HTML graph and their matching validator.
 
 ```sh
-(cd examples/concert-app && uv run --project ../.. python -m pytest tests tools/test_import_check.py -q)
-uv run python examples/concert-app/tools/import_check.py --help
+release_dir=$(mktemp -d)
+git archive 0dbb10b8c193f55c9777405de3f4ae22ac2d0825 | tar -x -C "$release_dir"
+cd "$release_dir"
 ```
 
-The bounded Python AST checker detects the precise forbidden direct API-to-Storage
-import. It reports UNKNOWN for missing, dynamic or ambiguous inputs. Broad code-quality
-judgments remain advisory; [historical review status](https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/examples/concert-app/evidence/phase-b/design.review.status.json)
-does not grant acceptance.
-
-### Replay in a fresh directory
-
-Replay copies the delivered A and B patches, creates new journals and evidence,
-runs real SQLite/HTTP/browser checks, obtains red results for the unchanged B
-requirements against A, and verifies B against the same database. It calls no
-LLM agents. Both source/test snapshots must match the original deliveries.
-
-The optional browser checks need Node and Playwright. One explicit setup, following
-[Playwright's library installation guidance](https://playwright.dev/docs/library):
-
-```sh
-npm install --prefix "$PWD/.gdd-browser" --no-audit --no-fund --save-exact playwright@1.64.1
-node "$PWD/.gdd-browser/node_modules/playwright/cli.js" install chromium
-export GDD_PLAYWRIGHT="$PWD/.gdd-browser/node_modules/playwright"
-uv run python examples/concert-app/tools/replay.py --output /tmp/local-sessions-replay
-```
-
-The replay output must not already exist. `GDD_PLAYWRIGHT` selects an installed
-module; otherwise Node resolves `playwright` normally. Playwright launches its
-installed Chromium by default. Set `GDD_CHROME` to an existing browser executable
-when using another installation. `GDD_NODE` or `--node` selects the Node executable.
-The current scripts contain no personal runtime defaults. The earlier recorded
-trial used an explicitly configured existing Playwright 1.62.1 and Chrome
-installation. A separate readiness trial installed Playwright 1.64.1 and its
-Chromium build in a fresh directory and completed both A and B replays; see
-[repository readiness evidence](https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/evidence/repository-readiness.md).
-
-Each replay creates `replay.provenance.json` with the current tool hashes and
-runtime configuration, and binds new checker evidence to the actual script bytes.
-[The current replay verification](https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/examples/concert-app/evidence/current-replay.verification.json) records
-its actual checks separately from the [historical results](https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/examples/concert-app/evidence/summary.json).
-
-### Original execution and recovery
+Follow the [v0.8.0 replay instructions] from that directory, including the
+Node, Playwright and Chromium setup and a new output path. The [v0.8.0
+verification] records a separate run of those curated tools. The [byte-indexed
+archive] preserves the complete original 197-file experiment tree from commit
+`7e27757`, including its original checkers, journals and captures.
 
 | Original stage or control | Observed result |
 | --- | --- |
@@ -254,28 +214,15 @@ Later review found identity-presentation and unknown-500 retry defects in A and 
 uncertain-logout retry defect during B repair. B includes fixes and real controls;
 historical A acceptance covers its executed checks and retains these limitations.
 
-Application code, tests, models, normative assets, snapshots and retained record
-bytes are unchanged by curation. `history/phase-a/`, work requests and host policy
-fixtures are replay inputs; old temporary workspace names in those fixtures are
-replaced by each replay. The historical B record store remains a presentation of
-its original execution. Its browser binding identifies the original archived
-checker, whose bytes differ from the portable current tool. Use newly generated
-replay records for current checks. Do not reuse old receipts to authorize new work.
+For the original checker bindings and acceptance results, see the [experiment
+evidence]. To compare the retained phase-A and phase-B models by stable ID,
+run the native CLI from the concert app directory in the current Git checkout.
 
-[Evidence guidance](https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/examples/concert-app/evidence/README.md) distinguishes original execution, fresh
-verification and reconstructed presentations. [Archive recovery instructions](https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/archive/experiments/README.md)
-cover all original packets, plans, journals, tools, receipts and captures, including
-files removed from this concise reference.
+```sh
+gdd diff history/phase-a/gdd.json gdd.json --format text
+```
 
-### Review the model requirement change
-
-The current `gdd diff` command can compare the archived phase-A and phase-B
-models by stable ID. It surfaces the per-principal reservation limit and the
-changed contract/scenario declarations without executing the app. Follow the
-[restoration and comparison commands](https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/docs/model-diff.md#replay-the-archived-requirement-change).
-This is a current comparison of historical model bytes, not new evidence of
-the application's original execution.
-
-[concert reference]: https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/examples/concert-app/README.md
-[released HTML view]: https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/examples/concert-app/graph.html
-[byte-indexed archive]: https://github.com/mikkelkrogsholm/gdd/blob/v0.8.0/archive/experiments/README.md
+[v0.8.0 replay instructions]: https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert-app/README.md#replay-in-a-fresh-directory
+[v0.8.0 verification]: https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert-app/evidence/current-replay.verification.json
+[byte-indexed archive]: https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/archive/experiments/README.md
+[experiment evidence]: https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert-app/evidence/README.md

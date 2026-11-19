@@ -1,55 +1,57 @@
-# From a GDD graph to actual code
+# Integer quote workflow
 
-The graph requires floor rounding with integer units and discount before tax. The old
-code in `baseline/` uses half-up. Two native agents read the actually dispatched
-GDD packages and repaired one module each in separate temp copies. The lead reviewed and
-integrated them. An agent then read the quote package and added a missing
-large-integer CLI regression. Only the lead modified the shared checkout.
-
-Actual result: **18 baseline tests with 7 rounding failures → 19 passed tests**.
-The original expectations are preserved. For `101, 5000, 5000`, the actual
-CLI now returns discount 50, net 51, tax 25, and total 76. The model is language-neutral; Python
-is only the reference implementation.
+The [quote contract](REQUIREMENTS.md) requires floor rounding in integer minor
+units. Discount applies to the subtotal, then tax applies to the net. From the
+repository root, run the Rust CLI and its acceptance suite.
 
 ```sh
-# From this directory; the application and tests use only the standard library.
-python -B -m unittest discover -s tests -v
-python -B -m quote_demo 101 5000 5000
-
-# From the repository root with gdd-validator installed.
-uv run python examples/agent-native/replay.py --output /tmp/min-gdd-demo
-gdd workflow status examples/agent-native/model.gdd.json \
-  --run examples/agent-native/native-run \
-  --host-context examples/agent-native/host.acceptance.json
+quote_manifest=examples/agent-native/rust/Cargo.toml
+cargo run --quiet --locked --manifest-path "$quote_manifest" -- 101 5000 5000
+# {"discount": 50, "net": 51, "subtotal": 101, "tax": 25, "total": 76}
+cargo test --locked --manifest-path "$quote_manifest" --test acceptance
 ```
 
-The replay script creates a new run in a new directory and reuses the archived
-native-agent repairs. It actually reruns the baseline, module checks, combined suite,
-bindings/evidence, and acceptance. It starts no new LLM. Commands are selected in
-the host script; no command is executed from graph text or check labels.
+## Run the three repairs
 
-| Artifact | Meaning |
-| --- | --- |
-| [model.gdd.json](model.gdd.json), [REQUIREMENTS.md](REQUIREMENTS.md) | Accepted floor contracts, pseudocode, rules, and scenarios. |
-| [workflow.request.json](workflow.request.json), [workflow.plan.json](workflow.plan.json) | Three explicit work packages; discount/tax independent, quote after both. |
-| `native-dispatches/`, `worker-results/` | The actually dispatched packages, native worker patches, and raw results. |
-| `native-run/` | Ten events: three dispatches, three submissions, three integrations, one acceptance. |
-| [evidence/baseline.run.json](evidence/baseline.run.json), [evidence/final.run.json](evidence/final.run.json) | Actual red/green execution, including the real CLI. |
-| [evidence/status.json](evidence/status.json), [evidence/summary.json](evidence/summary.json) | Current revision-bound acceptance and summary. |
-| [model.records.plan.json](model.records.plan.json), [model.records.json](model.records.json) | Planned records plus new, actually host-verified test bindings and evidence. |
+The workflow starts with a half-up baseline. Seven of its 18 tests fail the
+floor assertions. It dispatches the discount and tax packages, integrates
+their repairs, then dispatches the quote package for a large-integer CLI
+regression. All 19 final tests pass, including calls to the compiled binary.
 
-`code.snapshot.json` identifies the baseline; `code.final.snapshot.json` identifies the
-integrated result. The local `demo-code-snapshot/0.1` convention hashes
-canonical JSON of a sorted filename→SHA-256 map for all delivered Python code
-and test files. It is not a Git commit or a new GDD core hashing rule.
-`model.snapshot.json` identifies the separate normative model/source bytes.
+```sh
+cargo fetch --locked --manifest-path examples/agent-native/rust/Cargo.toml
+quote_output=$(mktemp -d)/quote
+cargo run --locked -p gdd-conformance -- workflow-demo --output "$quote_output"
+cargo run --locked -p gdd -- workflow status "$quote_output/model.gdd.json" \
+  --run "$quote_output/run" --host-context "$quote_output/host.acceptance.json"
+```
 
-The included host files are explicit inputs to this bounded local demo.
-The host chooses to trust them after actual verification; an arbitrary file with
-the same fields provides no authority. `acceptance_current` is true only when the
-current host context supports exactly this result. The workers' own PASS
-was not elevated to integration evidence. Workspaces in the request are logical
-declarations; the actual native workers worked in separate temp copies.
+The demo applies bundled Rust source changes in a private copy and runs Cargo
+offline at each check. It writes three dispatches, three submissions, three
+integrations and one acceptance to `run/events/`. Inspect `evidence/baseline.run.json`
+and `evidence/final.run.json` in the output for named results, source snapshots
+and process exits. The status reports `event_count: 10` and
+`acceptance_current: true` against that run's host context. Its model declares
+the Cargo checker and carries its own revision. See the [Rust package
+guide](rust/README.md) for the CLI input grammar and individual repair checks.
 
-See [the workflow contract](../../WORKFLOW.md) and the vendor-independent
-[lead](../../agents/gdd-lead.md)/[worker](../../agents/gdd-worker.md) guides.
+## Original agent delivery
+
+The original agents received the [three work packages](workflow.plan.json) and
+worked in separate copies. They repaired two Python modules and added the CLI
+regression. The lead integrated and accepted their work. The [original
+results](evidence/summary.json), [journal](native-run/run.json), [records](model.records.json)
+and [host context](host.acceptance.json) identify that execution. The
+[baseline](code.snapshot.json) and [final](code.final.snapshot.json) code
+snapshots hash a sorted map of Python source and test file digests. The
+[model snapshot](model.snapshot.json) separately identifies the original graph
+and requirements bytes.
+
+The [v0.8.0 source tree](https://github.com/mikkelkrogsholm/gdd/tree/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/agent-native)
+includes the original baseline, Python CLI, tests, submitted worker files and
+replay script. For an offline copy, follow the [release recovery
+command](../README.md#recover-the-v080-examples). Run the historical replay
+from the root of that recovered release.
+
+See the [workflow contract](../../WORKFLOW.md) and the
+[lead](../../agents/gdd-lead.md) and [worker](../../agents/gdd-worker.md) guides.

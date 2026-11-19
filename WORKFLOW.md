@@ -153,9 +153,11 @@ committed or idempotently recovered event. Other diagnostics remain in its repor
 
 Use [the lead guide](agents/gdd-lead.md) and [the worker guide](agents/gdd-worker.md)
 directly in an existing agent runtime. They contain no vendor-specific
-API. [The quote example](examples/agent-native/README.md) demonstrates parallel native
-agent repairs from half-up to the graph's floor contract, actual red/green test execution,
-integration, and revision-bound acceptance. Python is only the example implementation.
+API. In the [quote example](examples/agent-native/README.md), the Rust
+workflow executes the half-up baseline, integrates three bundled changes and
+accepts the repaired implementation after 19 passing tests. The ten events
+and their Cargo receipts are generated on each run. The example also links
+the original agents’ Python delivery and its historical evidence.
 
 Run the 20 named conformance cases with `cargo run --locked -p gdd-conformance -- workflow --output workflow-conformance.json`. The last case executes the Rust quote repair and checks its accepted journal.
 

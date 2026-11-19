@@ -11,8 +11,9 @@ cargo test --locked --test acceptance
 
 With the locked dependencies cached, both commands also accept `--offline`.
 The CLI accepts signed decimal integer text with optional surrounding whitespace,
-Unicode decimal digits, and single underscores between digits. Invalid input
-exits with status 2 and prints only `InvalidInput` to stderr.
+Unicode decimal digits, and single underscores between digits. For example,
+`cargo run --quiet --locked -- 101 10001 5000` supplies an out-of-range rate.
+The CLI exits with status 2, leaves stdout empty and prints `InvalidInput` to stderr.
 
 The library functions take references to signed, arbitrary-precision `BigInt`
 values. Rust rejects boolean, float, string and optional arguments at compile
@@ -22,7 +23,7 @@ discount on the subtotal and tax on the remaining amount.
 
 ## Replaying the repair
 
-The 19 named cases correspond to the [Python acceptance suite](../tests/).
+The 19 named Rust cases correspond to the [v0.8.0 Python acceptance suite](https://github.com/mikkelkrogsholm/gdd/tree/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/agent-native/tests).
 The [archived execution evidence](../evidence/) records the original Python
 runs. The Rust suite starts its own compiled binary for CLI checks.
 
