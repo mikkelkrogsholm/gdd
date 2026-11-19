@@ -28,8 +28,9 @@ gdd-conformance --checkout /path/to/gdd verify-install \
 ```
 
 The runner stages checkout fixtures in a fresh temporary directory outside the
-checkout and invokes both programs directly. Its 33 controls cover GDD 0.2 and
-0.3 inspection, independently generated native view bytes, product perspectives,
+checkout and invokes both programs directly. Its 34 controls cover GDD 0.2 and
+0.3 inspection, byte-for-byte regeneration of both concert views and the
+concert application gallery view, product perspectives,
 boundaries, planned review, acceptance, project creation, readiness, diff and
 static import observation with an explicit CPython target. It compares parsed
 read-only output and exit codes, validates the checked-in perspectives schema

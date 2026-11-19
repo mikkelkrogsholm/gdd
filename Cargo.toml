@@ -5,6 +5,26 @@ edition = "2024"
 license = "MIT"
 description = "Graph-Driven Development tools"
 publish = false
+include = [
+    "/Cargo.toml", "/Cargo.lock", "/LICENSE", "/README.md", "/INSTALL.md", "/SPEC.md", "/VALIDATOR.md",
+    "/HOST.md", "/docs/rust-migration.md", "/docs/python-imports.md",
+    "/src/**/*.rs", "/schemas/*.schema.json", "/extensions/product-0.1.json",
+    "/templates/project/*.json", "/templates/project/SOURCES.md", "/tests/*.rs", "/tests/fixtures/*.rs",
+    "/docs/tutorial/refined.gdd.json",
+    "/examples/*.gdd.yaml", "/examples/note.fragment.yaml", "/examples/*.gddview",
+    "/examples/concert*.records.yaml", "/examples/concert.snapshot.json",
+    "/examples/illustrative.report.json", "/examples/sources/legacy-concert.gdd.yaml",
+    "/examples/extensions/sensors.extension.json",
+    "/examples/product/*.gdd.json", "/examples/product/greenfield.gddview",
+    "/examples/product/extensions/product-0.1.json",
+    "/examples/graphify/export.*.json", "/examples/graphify/mapping.json",
+    "/examples/graphify/raw.ast.json", "/examples/graphify/observations/*.json",
+    "/examples/graphify/observations/README.md",
+    "/examples/agent-native/REQUIREMENTS.md", "/examples/agent-native/model.gdd.json",
+    "/examples/agent-native/model.records.json", "/examples/agent-native/host.acceptance.json",
+    "/examples/agent-native/host.implementation.json", "/examples/agent-native/workflow.*.json",
+    "/examples/agent-native/native-run/**/*.json",
+]
 
 [features]
 conformance = []

@@ -136,7 +136,7 @@ Keep the following artifacts in the output directory.
 - `summary.json` records commands, working directories, timings, process
   outcomes, host, toolchain and the paths and SHA-256 identities of installed
   binaries. Each step has separate stdout and stderr logs.
-- `verify-install.json` records the installed CLI's 33 controls and the
+- `verify-install.json` records the installed CLI's 34 controls and the
   identities of the installed and source-built executables. The source-built
   executable comes from the workspace build's Cargo artifact report.
 - `installed-viewer-help.stdout.txt` captures the installed desktop executable's
@@ -144,6 +144,24 @@ Keep the following artifacts in the output directory.
 - `workflow-demo/` contains the repaired quote project, ten-event journal and
   five Cargo test receipts. The replay checks the seven expected baseline
   failures and all 19 passing final tests before recording current acceptance.
+
+### Test the root Cargo source package
+
+From a clean checkout, package the `gdd` CLI and library and run the root Rust
+test suite from the extracted source. The example uses a fresh directory for
+the archive and recipient. Add `--offline` to each Cargo command when the
+locked dependencies are already cached.
+
+```sh
+GDD_SOURCE_TEST=$(mktemp -d)
+cargo package --locked -p gdd --target-dir "$GDD_SOURCE_TEST/build"
+tar -xzf "$GDD_SOURCE_TEST"/build/package/gdd-*.crate -C "$GDD_SOURCE_TEST"
+(cd "$GDD_SOURCE_TEST"/gdd-* && cargo test --locked)
+```
+
+The package tests regenerate both concert model views and the greenfield
+product view. The installed CLI verifier checks the concert application’s
+gallery view against its model and normative sources in the matching checkout.
 
 ## Prepare the release locally
 

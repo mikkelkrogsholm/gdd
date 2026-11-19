@@ -15,6 +15,11 @@ cargo install --locked --path crates/viewer --root "$GDD_INSTALL_ROOT"
 export PATH="$GDD_INSTALL_ROOT/bin:$PATH"
 ```
 
+The extracted `gdd` Cargo source package contains the CLI and Rust library.
+From its directory, run `cargo install --locked --path .` to install the CLI,
+or use that directory as a path dependency in a Rust project. Install the
+desktop viewer from a full checkout using the viewer command above.
+
 Initialize a new draft and check the model. The model check should exit 0.
 The scoped readiness check should exit 1 because the draft still has an open
 question about the work in `action.main`.

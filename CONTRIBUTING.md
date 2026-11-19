@@ -74,7 +74,7 @@ its own JSON receipt.
 Release mode runs every full check, then uses `cargo install --locked --path`
 to install optimized builds of `gdd`, `gdd-viewer` and `gdd-conformance`
 under the output directory's `install/` prefix. From outside the checkout it
-runs the 33 installed CLI controls with the workspace-built `gdd` as their
+runs the 34 installed CLI controls with the workspace-built `gdd` as their
 reference, checks that the installed viewer loads and prints `--help` headlessly,
 and runs the installed quote workflow demo through its failing baseline and
 accepted repair. Choose either `--quick` or `--release` for a non-default mode.
@@ -126,7 +126,7 @@ with `cargo run --offline --locked -p gdd-conformance -- design --output native-
 Use a new file path for each receipt.
 
 To exercise a separately installed native CLI, run the
-[33 installed CLI controls](conformance/README.md#installed-native-cli).
+[34 installed CLI controls](conformance/README.md#installed-native-cli).
 
 ### Python migration and release checks
 

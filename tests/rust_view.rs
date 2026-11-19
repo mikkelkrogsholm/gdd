@@ -28,7 +28,6 @@ fn shipped_full_views_match_fresh_cli_output() {
         ("concert.gdd.yaml", "concert.gddview"),
         ("concert-0.3.gdd.yaml", "concert-0.3.gddview"),
         ("product/greenfield.gdd.json", "product/greenfield.gddview"),
-        ("concert-app/gdd.json", "concert-app/graph.gddview"),
     ] {
         let output = outputs
             .path()

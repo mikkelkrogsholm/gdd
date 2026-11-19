@@ -15,7 +15,7 @@ use std::{
     process::{Command, ExitCode, Output, Stdio},
 };
 
-pub(super) const TOTAL: usize = 33;
+pub(super) const TOTAL: usize = 34;
 
 const FIXTURES: &[&str] = &[
     "examples/concert.gdd.yaml",
@@ -26,6 +26,12 @@ const FIXTURES: &[&str] = &[
     "examples/concert-0.3.records.yaml",
     "examples/sources/legacy-concert.gdd.yaml",
     "examples/concert-0.3.boundaries.json",
+    "examples/concert-app/gdd.json",
+    "examples/concert-app/gdd.records.json",
+    "examples/concert-app/REQUIREMENTS.md",
+    "examples/concert-app/HTTP.md",
+    "examples/concert-app/DESIGN.md",
+    "examples/concert-app/graph.gddview",
     "examples/design-review.planned.json",
     "examples/product/greenfield.gdd.json",
     "examples/product/partial.gdd.json",

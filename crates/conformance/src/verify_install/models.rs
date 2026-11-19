@@ -59,30 +59,7 @@ pub(super) fn check(run: &mut Runner) -> Result<()> {
             0,
             &["context", model, "--scope", RESERVE],
         )?;
-        let artifact = format!("{name}.gddview");
-        run.case(&format!("{name}-view"), 0, |case| {
-            let reference = format!("{name}-reference.gddview");
-            let installed =
-                case.json(Program::Installed, &["view", model, "--output", &artifact])?;
-            let bytes =
-                fs::read(case.recipient.join(&artifact)).context("read installed native view")?;
-            let report = case.json(Program::Reference, &["view", model, "--output", &reference])?;
-            check_json("native view generation reports", &report, &installed)?;
-            let reference_bytes = fs::read(case.recipient.join(reference)).context("read reference native view")?;
-            ensure!(
-                bytes == reference_bytes,
-                "independently generated {name} native view bytes differ; installed SHA-256 {}, reference SHA-256 {}",
-                gdd::sha256(&bytes), gdd::sha256(&reference_bytes)
-            );
-            let shipped = fs::read(case.recipient.join(distributed))
-                .with_context(|| format!("read distributed native view {distributed}"))?;
-            ensure!(
-                bytes == shipped,
-                "stale distributed native view {distributed}: shipped SHA-256 {}, regenerated SHA-256 {}",
-                gdd::sha256(&shipped), gdd::sha256(&bytes)
-            );
-            Ok(())
-        })?;
+        let artifact = check_view(run, name, model, distributed)?;
         run.compare(
             &format!("{name}-verify-view"),
             0,
@@ -96,6 +73,13 @@ pub(super) fn check(run: &mut Runner) -> Result<()> {
             ],
         )?;
     }
+
+    check_view(
+        run,
+        "concert-app",
+        "examples/concert-app/gdd.json",
+        "examples/concert-app/graph.gddview",
+    )?;
 
     let mut greenfield = Value::Null;
     for scenario in ["greenfield", "partial", "refactoring"] {
@@ -193,6 +177,34 @@ pub(super) fn check(run: &mut Runner) -> Result<()> {
         ],
     )?;
     Ok(())
+}
+
+fn check_view(run: &mut Runner, name: &str, model: &str, distributed: &str) -> Result<String> {
+    let artifact = format!("{name}.gddview");
+    run.case(&format!("{name}-view"), 0, |case| {
+        let reference = format!("{name}-reference.gddview");
+        let installed =
+            case.json(Program::Installed, &["view", model, "--output", &artifact])?;
+        let bytes =
+            fs::read(case.recipient.join(&artifact)).context("read installed native view")?;
+        let report = case.json(Program::Reference, &["view", model, "--output", &reference])?;
+        check_json("native view generation reports", &report, &installed)?;
+        let reference_bytes = fs::read(case.recipient.join(reference)).context("read reference native view")?;
+        ensure!(
+            bytes == reference_bytes,
+            "independently generated {name} native view bytes differ; installed SHA-256 {}, reference SHA-256 {}",
+            gdd::sha256(&bytes), gdd::sha256(&reference_bytes)
+        );
+        let shipped = fs::read(case.recipient.join(distributed))
+            .with_context(|| format!("read distributed native view {distributed}"))?;
+        ensure!(
+            bytes == shipped,
+            "stale distributed native view {distributed}: shipped SHA-256 {}, regenerated SHA-256 {}",
+            gdd::sha256(&shipped), gdd::sha256(&bytes)
+        );
+        Ok(())
+    })?;
+    Ok(artifact)
 }
 
 fn partial_gaps(projection: &Value) -> Result<()> {
