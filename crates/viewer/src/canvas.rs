@@ -6,6 +6,55 @@ use graphlay::{GraphBuilder, LayoutOptions, Size};
 
 use crate::model::{FoldProjection, Graph, Selection, Visible};
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Zoom {
+    Percent(u16),
+    Fit,
+}
+
+#[derive(Clone, Copy)]
+pub struct Camera {
+    pub zoom: Zoom,
+    frame: Option<CameraFrame>,
+    reset_scroll: bool,
+}
+
+#[derive(Clone, Copy)]
+struct CameraFrame {
+    scroll_id: egui::Id,
+    bounds: Rect,
+    viewport_size: Vec2,
+    center: Pos2,
+    scale: f32,
+}
+
+impl Default for Camera {
+    fn default() -> Self {
+        Self {
+            zoom: Zoom::Percent(100),
+            frame: None,
+            reset_scroll: false,
+        }
+    }
+}
+
+impl Camera {
+    pub fn reset(&mut self, zoom: Zoom) {
+        self.zoom = zoom;
+        self.reset_scroll = true;
+    }
+
+    pub fn label(&self) -> String {
+        match self.zoom {
+            Zoom::Percent(percent) => format!("{percent}%"),
+            Zoom::Fit => self.frame.map_or_else(
+                || "Fit".into(),
+                |frame| format!("Fit ({:.1}%)", frame.scale * 100.0),
+            ),
+        }
+    }
+}
+
 pub struct Layout {
     nodes: Vec<Rect>,
     routes: Vec<Route>,
@@ -150,7 +199,7 @@ impl Layout {
         &self,
         ui: &mut egui::Ui,
         scene: &Scene<'_>,
-        zoom: f32,
+        camera: &mut Camera,
         reveal: bool,
     ) -> Option<Selection> {
         let visible = scene.visible;
@@ -166,21 +215,78 @@ impl Layout {
                 .chain(visible.edges.iter().map(|&i| self.routes[i].bounds))
                 .fold(Rect::NOTHING, Rect::union)
         };
-        egui::ScrollArea::both()
+        if camera.reset_scroll {
+            if let Some(frame) = camera.frame.take() {
+                egui::scroll_area::State::default().store(ui.ctx(), frame.scroll_id);
+            }
+            camera.reset_scroll = false;
+        }
+        // A released graph stays where the user placed it.
+        let kinetic = &mut ui.spacing_mut().scroll.kinetic;
+        kinetic.decay_time = 0.0;
+        kinetic.rubber_band = false;
+        let mut scroll = egui::ScrollArea::both()
+            .id_salt("graph-camera")
+            .content_margin(0)
+            .min_scrolled_width(0.0)
+            .min_scrolled_height(0.0)
             .auto_shrink([false; 2])
-            .show_viewport(ui, |ui, viewport| {
-                let size = (bounds.size() * zoom + Vec2::splat(40.0)).max(viewport.size());
-                let (area, _) = ui.allocate_exact_size(size, Sense::hover());
-                let transform = TSTransform::new(
-                    area.center().to_vec2() - bounds.center().to_vec2() * zoom,
-                    zoom,
-                );
+            .animated(false)
+            .scroll_source(egui::scroll_area::ScrollSource::ALL)
+            .on_drag_cursor(egui::CursorIcon::Grabbing);
+        if camera.zoom == Zoom::Fit {
+            scroll = scroll
+                .scroll_offset(Vec2::ZERO)
+                .scroll_bar_visibility(egui::scroll_area::ScrollBarVisibility::AlwaysHidden);
+        }
+        let output = scroll.show_viewport(ui, |ui, viewport| {
+            let margin = Vec2::splat(20.0).min(viewport.size() * 0.2);
+            let scale = match camera.zoom {
+                Zoom::Percent(percent) => f32::from(percent) / 100.0,
+                Zoom::Fit => {
+                    let available = (viewport.size() - margin * 2.0).max(Vec2::splat(1.0));
+                    (available / bounds.size().max(Vec2::splat(1.0)))
+                        .min_elem()
+                        .min(2.0)
+                }
+            };
+            let size = (bounds.size() * scale + margin * 2.0).max(viewport.size());
+            let (area, _) = ui.allocate_exact_size(size, Sense::hover());
+            let transform = TSTransform::new(
+                area.center().to_vec2() - bounds.center().to_vec2() * scale,
+                scale,
+            );
+            if camera.zoom != Zoom::Fit {
                 if reveal && let Some(index) = scene.selected_glyph() {
                     ui.scroll_to_rect((transform * self.nodes[index]).expand(12.0), None);
+                } else if let Some(prior) = camera.frame
+                    && (prior.bounds != bounds
+                        || prior.viewport_size != viewport.size()
+                        || prior.scale != scale)
+                {
+                    let target = Rect::from_center_size(transform * prior.center, Vec2::ZERO);
+                    ui.scroll_to_rect(target, Some(egui::Align::Center));
                 }
-                self.draw(ui, scene, transform, area)
-            })
-            .inner
+            }
+            (self.draw(ui, scene, transform, area), size, scale)
+        });
+        let (clicked, size, scale) = output.inner;
+        if camera.zoom == Zoom::Fit && camera.frame.is_none_or(|prior| prior.scale != scale) {
+            // The toolbar displays the scale measured by this canvas pass.
+            ui.ctx().request_repaint();
+        }
+        let viewport_size = output.inner_rect.size();
+        // Store the world point at the viewport center after egui applies input.
+        let center = bounds.center()
+            + (output.state.clamped_offset() + (viewport_size - size) * 0.5) / scale;
+        camera.frame = Some(CameraFrame {
+            scroll_id: output.id,
+            bounds,
+            viewport_size,
+            center,
+            scale,
+        });
+        clicked
     }
 
     fn draw(
@@ -208,9 +314,9 @@ impl Layout {
             .map_or(visible.edges.len(), |f| f.bundles.len());
         for highlighted in [false, true] {
             let stroke = if highlighted {
-                Stroke::new(2.0, accent)
+                Stroke::new((2.0 * zoom).clamp(0.7, 2.0), accent)
             } else {
-                Stroke::new(1.2, outline)
+                Stroke::new((1.2 * zoom).clamp(0.15, 1.2), outline)
             };
             for i in 0..n_routes {
                 let (route, source, target, records, selection) = if let Some(fold) = scene.folded {
@@ -258,7 +364,7 @@ impl Layout {
                 let tip = points[points.len() - 1];
                 ui.painter().add(egui::Shape::line(points, stroke));
                 arrowhead(ui.painter(), tip, route.arrow_direction, stroke, zoom);
-                if scene.folded.is_some() && records.len() > 1 {
+                if scene.folded.is_some() && records.len() > 1 && zoom >= 0.4 {
                     let center = transform * route.midpoint;
                     let galley = ui.painter().layout_no_wrap(
                         format!("×{}", records.len()),
@@ -304,6 +410,8 @@ impl Layout {
             let active = selected_glyph == Some(slot);
             let fill = if active || response.hovered() {
                 selected_fill
+            } else if rect.height() < 6.0 {
+                outline
             } else {
                 node_fill
             };
@@ -314,6 +422,12 @@ impl Layout {
             };
             let painter = ui.painter();
             painter.rect(rect, 6, fill, border, StrokeKind::Inside);
+            if response.clicked() {
+                clicked = Some(Selection::Node(index));
+            }
+            if zoom < 0.4 {
+                continue;
+            }
             let mut job = egui::text::LayoutJob::single_section(
                 node.label.clone(),
                 TextFormat::simple(FontId::proportional((13.0 * zoom).max(10.0)), label_color),
@@ -334,9 +448,6 @@ impl Layout {
                 );
             }
             painter.galley(center - label.size() * 0.5, label, label_color);
-            if response.clicked() {
-                clicked = Some(Selection::Node(index));
-            }
         }
         clicked
     }

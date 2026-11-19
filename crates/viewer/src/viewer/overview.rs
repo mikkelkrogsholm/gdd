@@ -112,7 +112,7 @@ impl Viewer {
                 ui.label(format!("Folding: {}", drawing_counts(fold)));
             }
         }
-        ui.label(format!("Graph zoom: {}%", self.zoom_percent));
+        ui.label(format!("Graph zoom: {}", self.camera.label()));
         let graph = &self.graph;
         for (group, label) in [
             (Partition::Visible, "Visible"),

@@ -158,6 +158,135 @@ fn widget<'a>(tree: &'a TreeUpdate, role: Role, name: &str) -> Option<&'a Node> 
     })
 }
 
+fn graph_clip(frame: &egui::FullOutput) -> egui::Rect {
+    frame
+        .shapes
+        .iter()
+        .find(|item| matches!(&item.shape, egui::Shape::Path(path) if !path.closed))
+        .expect("A routed edge on the canvas")
+        .clip_rect
+}
+
+fn assert_graph_fits(frame: &egui::FullOutput, nodes: usize, routes: usize) {
+    let clip = graph_clip(frame);
+    let inset = clip.shrink(15.0);
+    let mut counts = (0, 0, 0);
+    for item in frame.shapes.iter().filter(|item| item.clip_rect == clip) {
+        match &item.shape {
+            egui::Shape::Rect(node) if node.corner_radius.nw == 6 => {
+                assert!(
+                    inset.contains_rect(node.rect),
+                    "Node {:?} vs {clip:?}",
+                    node.rect
+                );
+                counts.0 += 1;
+            }
+            egui::Shape::Path(path) => {
+                assert!(path.points.iter().all(|p| inset.contains(*p)));
+                if path.closed {
+                    counts.2 += 1;
+                } else {
+                    counts.1 += 1;
+                }
+            }
+            _ => {}
+        }
+    }
+    assert_eq!(counts, (nodes, routes, routes));
+}
+
+#[test]
+fn fit_pan_and_reset_operate_on_the_drawn_graph_in_wide_and_compact_windows() {
+    let folder = tempfile::tempdir().unwrap();
+    let path = folder.path().join("chain.json");
+    let nodes: serde_json::Map<_, _> = (0..80)
+        .map(|i| {
+            (
+                format!("part.{i:02}"),
+                serde_json::json!({"kind": "component", "description": "Chain link"}),
+            )
+        })
+        .collect();
+    let edges: Vec<_> = (1..80)
+        .map(|i| {
+            serde_json::json!({
+                "id": format!("edge.{i}"), "from": format!("part.{:02}", i-1),
+                "to": format!("part.{i:02}"), "relation": "links"
+            })
+        })
+        .collect();
+    fs::write(&path, serde_json::to_vec(&serde_json::json!({
+        "format": "gdd/0.2", "project": {"id":"chain","title":"Chain","goal":"Inspect all links"},
+        "nodes": nodes, "edges": edges
+    })).unwrap()).unwrap();
+    let mut window = Window::open(&path);
+    window.wait_for_zoom();
+    let first_node = |frame: &egui::FullOutput| {
+        let clip = graph_clip(frame);
+        frame
+            .shapes
+            .iter()
+            .find_map(|item| {
+                if item.clip_rect == clip
+                    && let egui::Shape::Text(text) = &item.shape
+                    && text.galley.text() == "part.00"
+                {
+                    return Some(text.visual_bounding_rect().center());
+                }
+                None
+            })
+            .expect("First node in the viewport")
+    };
+    let initial = first_node(&window.render(Vec::new()));
+    window.click_at(initial);
+    assert_eq!(window.viewer.selected, Some(Selection::Node(0)));
+    let clip = graph_clip(&window.render(Vec::new()));
+    let start = clip.center_top() + egui::vec2(100.0, 20.0);
+    let end = start - egui::vec2(55.0, 0.0);
+    let button = |pos, pressed| egui::Event::PointerButton {
+        pos,
+        button: egui::PointerButton::Primary,
+        pressed,
+        modifiers: Modifiers::NONE,
+    };
+    window.frame(vec![egui::Event::PointerMoved(start), button(start, true)]);
+    window.frame(vec![egui::Event::PointerMoved(end)]);
+    window.frame(vec![button(end, false)]);
+    let panned = first_node(&window.render(Vec::new()));
+    assert!(
+        (initial.x - panned.x - 55.0).abs() < 1.0,
+        "{initial:?} to {panned:?}"
+    );
+    assert_eq!(window.viewer.selected, Some(Selection::Node(0)));
+    window.key(Key::Home, Modifiers::ALT);
+    assert_eq!(window.viewer.selected, None);
+    assert_eq!(first_node(&window.render(Vec::new())), panned);
+    window.click(Role::Button, "Reset camera");
+    assert_eq!(first_node(&window.render(Vec::new())), initial);
+    window.click_at(initial);
+
+    window.click(Role::Button, "Fit graph");
+    let frame = window.render(Vec::new());
+    assert_graph_fits(&frame, 80, 79);
+    let clip = graph_clip(&frame);
+    assert!(
+        frame
+            .shapes
+            .iter()
+            .all(|item| item.clip_rect != clip || !matches!(item.shape, egui::Shape::Text(_)))
+    );
+    window.size = egui::vec2(320.0, 320.0);
+    window.click(Role::Button, "Graph");
+    assert_graph_fits(&window.render(Vec::new()), 80, 79);
+    window.click(Role::Button, "Reset camera");
+    assert_eq!(window.viewer.camera.zoom, Zoom::Percent(100));
+    assert_eq!(window.viewer.selected, Some(Selection::Node(0)));
+    assert!(first_node(&window.render(Vec::new())).x < 120.0);
+    window.size = egui::vec2(1280.0, 900.0);
+    window.click(Role::Button, "Reset camera");
+    assert_eq!(first_node(&window.render(Vec::new())), initial);
+}
+
 #[test]
 fn system_theme_updates_the_canvas_without_changing_the_view() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -226,7 +355,7 @@ fn system_theme_updates_the_canvas_without_changing_the_view() {
             ));
         }
         assert_eq!(window.viewer.selected, selected);
-        assert_eq!(window.viewer.zoom_percent, 75);
+        assert_eq!(window.viewer.camera.zoom, Zoom::Percent(75));
         assert_eq!(window.viewer.filters.search, "edge.call_one");
     }
 }
@@ -866,6 +995,10 @@ fn compact_scoped_view_keeps_filters_and_selection_through_navigation_and_resize
     let tree = window.frame(Vec::new());
     assert!(widget(&tree, Role::Label, "Second action").is_none());
     window.wait_for_zoom();
+    let selected = window.viewer.selected;
+    window.click(Role::Button, "Fit graph");
+    assert_graph_fits(&window.render(Vec::new()), 2, 3);
+    assert_eq!(window.viewer.selected, selected);
     window.click(Role::ComboBox, "Graph zoom");
     window.click(Role::Button, "150%");
     window.size = egui::vec2(1280.0, 720.0);

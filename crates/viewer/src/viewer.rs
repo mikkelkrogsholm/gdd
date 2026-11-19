@@ -8,7 +8,7 @@ use eframe::egui::{self, Button, Key, Modifiers, RichText, Ui};
 use serde_json::Value as Json;
 
 use crate::{
-    canvas::{Layout, Scene},
+    canvas::{Camera, Layout, Scene, Zoom},
     model::{
         EdgeBundle, Filters, FoldProjection, Graph, HumanConcept, Lens, Node, NodeInspection,
         RecordDetails, Selection, Source, Visible,
@@ -68,7 +68,7 @@ pub struct Viewer {
     layout: LayoutState,
     filters: Filters,
     visible: Visible,
-    zoom_percent: u16,
+    camera: Camera,
     reveal_selected: bool,
     filename: String,
     selected: Option<Selection>,
@@ -89,7 +89,7 @@ impl Viewer {
             graph,
             layout,
             pane: Pane::Nodes,
-            zoom_percent: 100,
+            camera: Camera::default(),
             reveal_selected: false,
             filename,
             selected: None,
@@ -279,7 +279,7 @@ impl Viewer {
             Pane::Details => self.show_details(ui),
             Pane::Graph => {
                 if compact {
-                    ui.horizontal(|ui| self.show_zoom(ui));
+                    ui.horizontal_wrapped(|ui| self.show_zoom(ui));
                 }
                 self.show_graph(ui);
             }
@@ -306,14 +306,14 @@ impl Viewer {
             && !self.visible.nodes.is_empty()
         {
             egui::ComboBox::from_label("Graph zoom")
-                .selected_text(format!("{}%", self.zoom_percent))
+                .selected_text(self.camera.label())
                 .width(70.0)
                 .show_ui(ui, |ui| {
                     for percent in [50, 75, 100, 125, 150, 200] {
                         if ui
                             .selectable_value(
-                                &mut self.zoom_percent,
-                                percent,
+                                &mut self.camera.zoom,
+                                Zoom::Percent(percent),
                                 format!("{percent}%"),
                             )
                             .changed()
@@ -322,6 +322,14 @@ impl Viewer {
                         }
                     }
                 });
+            if ui.button("Fit graph").clicked() {
+                self.camera.reset(Zoom::Fit);
+                self.reveal_selected = false;
+            }
+            if ui.button("Reset camera").clicked() {
+                self.camera.reset(Zoom::Percent(100));
+                self.reveal_selected = false;
+            }
         }
     }
 
@@ -380,14 +388,15 @@ impl Viewer {
                 return;
             }
         };
-        let zoom = f32::from(self.zoom_percent) / 100.0;
+        let mut camera = self.camera;
         let scene = Scene {
             graph: &self.graph,
             visible: &self.visible,
             folded: self.folded.as_deref(),
             selected: self.selected,
         };
-        let clicked = layout.show(ui, &scene, zoom, reveal);
+        let clicked = layout.show(ui, &scene, &mut camera, reveal);
+        self.camera = camera;
         self.reveal_selected = false;
         if let Some(selection) = clicked {
             self.inspect(selection);
@@ -1055,7 +1064,7 @@ mod tests {
             graph: Arc::clone(&graph),
             layout: LayoutState::Pending(receiver),
             pane: Pane::Nodes,
-            zoom_percent: 100,
+            camera: Camera::default(),
             reveal_selected: false,
             filename: "fragmented.gdd.yaml".into(),
             selected: Some(Selection::Node(0)),
@@ -1132,7 +1141,7 @@ mod tests {
             filters,
             layout: LayoutState::Pending(receiver),
             pane: Pane::Nodes,
-            zoom_percent: 100,
+            camera: Camera::default(),
             reveal_selected: false,
             filename: "partial.gddview".into(),
             selected: None,
@@ -1178,7 +1187,7 @@ mod tests {
             graph,
             layout: LayoutState::Failed("Unfolded layout fixture".into()),
             pane: Pane::Nodes,
-            zoom_percent: 100,
+            camera: Camera::default(),
             reveal_selected: false,
             filename: "fixture".into(),
             selected: None,

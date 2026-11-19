@@ -17,12 +17,12 @@ logical pixels wide, the viewer opens on **Nodes**. Choose **Nodes**, **Graph**
 or **Details** to give that pane the full width. Use Tab and Enter to choose a
 pane with the keyboard. On **Nodes**, expand **View filters** for perspective,
 filters and folding. Scroll the list to reach the remaining controls and
-results in short windows. **Graph** contains the zoom control.
+results in short windows. **Graph** contains the camera controls.
 
 Selecting a result or a graph item opens **Details**. Ctrl+F (Command+F on
 macOS) opens **Nodes** and focuses search from any pane. Alt+Home opens the
 overview in **Details**. Switching panes or resizing the window preserves
-scope, filters, folding, zoom and the selected record. Hover over a shortened
+scope, filters, folding, camera settings and the selected record. Hover over a shortened
 header title or open the overview to read the full project title.
 
 In **Model overview**, use Tab to reach the **Theme** choices and Enter to select
@@ -127,8 +127,17 @@ Arrows follow the routed paths into their declared target nodes, including
 links that run back across a cycle.
 In the unfolded drawing, parallel links have separate routes and repeated
 self-loops nest outside the node box. Dense graphs can still have crossings.
-Scroll in both directions to explore them, or use **Graph zoom** to change the
-canvas scale from 50% to 200%. The list and inspector retain their text size.
+**Fit graph** centers all visible nodes and routed edges, or the folded figures
+and bundles, with a margin. The percentage updates as the window or the
+filtered drawing changes. Below 40%, the overview shows shapes and routes.
+Choose a fixed percentage under **Graph zoom** (50% to 200%) to read labels
+and bundle counts. The list and inspector retain their text size.
+
+When the drawing extends beyond the canvas, drag the background with the
+primary mouse button or scroll to pan. **Reset camera** restores 100% zoom
+and returns to the top left of the current drawing. Smaller drawings center
+in the available space. Both camera controls preserve the current scope,
+filters, folding and selection.
 
 Open a GDD 0.2 or 0.3 JSON or YAML manifest. The preview uses the Rust CLI's
 bundle loader to combine the manifest and its declared local fragments.
