@@ -173,15 +173,49 @@ gdd-viewer graph.gddview
 SQLite writes acquire `BEGIN IMMEDIATE` before business reads. Capacity, global
 allowance, request-key binding and insertion share one writer transaction.
 
+## Replay the requirement change in Rust
+
+The [fixed requirement tests](tests/requirement_change.rs) port the ten
+phase-B cases from [the original test file](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert-app/tests/test_requirement_change.py).
+Run both commands from the checkout or the extracted concert crate. Cargo
+exits with status 101 for the first run and 0 for the second.
+
+```sh
+GDD_CONCERT_REQUIREMENT_PHASE=A cargo test --locked -p gdd-concert --test requirement_change
+cargo test --locked -p gdd-concert --test requirement_change
+```
+
+Only this test target reads the phase selector. A opens the unlimited service
+with `Reservations::open_phase_a_for_replay`. The default opens the current
+service with `Reservations::open`. Both runs execute the same ten tests against
+temporary databases, including copies of the compatible and over-limit
+SQLite fixtures.
+
+| Fixed case | Expected result against A |
+| --- | --- |
+| `global_limit_rejects_third_across_concerts_and_leaves_key_unbound` | Fails. Alice's third reservation succeeds. |
+| `principal_allowances_are_independent` | Fails. Bob's third reservation succeeds. |
+| `cancellation_frees_allowance_and_failed_key_can_then_succeed` | Fails. The first attempt with the retry key succeeds before cancellation. |
+| `active_and_cancelled_successful_replay_precede_limit_and_capacity` | Passes. Both replays return the original reservation and its current state. |
+| `precedence_is_input_then_replay_then_existence_then_limit_then_capacity` | Fails. The sold-out concert returns `SoldOut` where B requires `ActiveReservationLimitReached`. |
+| `concurrent_new_keys_across_concerts_share_one_remaining_allowance` | Fails. Both competing requests reserve a seat. |
+| `concurrent_replay_remains_one_reservation_at_limit` | Passes. Eight concurrent retries return the same reservation. |
+| `server_exposes_single_current_policy_value` | Fails. The serialized history returns `null` for `active_limit`. |
+| `incompatible_existing_a_data_is_rejected_without_history_mutation` | Fails. Opening the over-limit fixture succeeds. |
+| `compatible_a_history_and_cancelled_keys_survive_activation` | Fails. The cancelled key replays and all three rows survive. The history reports an unlimited allowance (`None`). |
+
+A complete run reports two passes and eight failures for A, ten passes for B,
+and zero ignored or filtered tests for each. The original agent, browser and
+attestation replay is described below.
+
 ## Historical A/B delivery and replay
 
 The original agents delivered a Python application in two phases. Phase A had
 no personal reservation limit. Phase B introduced a two-seat limit across all
 concerts. The v0.8.0 replay recreates both deliveries, tests B’s unchanged
 requirements against A, activates B on the same database, and writes new
-journals, checker receipts and host acceptance for each phase. The Rust suite
-above exercises the shipped server and phase-A data compatibility. The
-complete two-phase delivery and attestation replay belongs to v0.8.0.
+journals, checker receipts and host acceptance for each phase. This complete
+two-phase delivery and attestation replay belongs to v0.8.0.
 
 From a Git checkout containing the v0.8.0 commit, extract that release into an
 empty directory. This recovers the exact Python application, phase-A sources,

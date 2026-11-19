@@ -1,13 +1,13 @@
-use std::{fs, path::Path, sync::Arc};
+#[path = "support/reservations.rs"]
+mod support;
+
+use std::{fs, sync::Arc};
 
 use gdd_concert::{DomainError as Error, Principal, ReservationStatus, Reservations, State};
 use serde_json::{json, to_value};
+use support::{files_and_bytes, race, signed_in};
 use tempfile::tempdir;
 use tokio::{sync::Barrier, task::JoinSet};
-
-fn signed_in(id: &str) -> Principal<'_> {
-    Principal::from_session(Some(id)).unwrap()
-}
 
 #[tokio::test]
 async fn catalog_and_private_responses_preserve_the_wire_contract() {
@@ -218,16 +218,6 @@ async fn opens_the_recorded_phase_a_schema_and_preserves_existing_keys_and_ids()
     );
 }
 
-fn files_and_bytes(directory: &Path) -> std::collections::BTreeMap<std::ffi::OsString, Vec<u8>> {
-    fs::read_dir(directory)
-        .unwrap()
-        .map(|entry| {
-            let entry = entry.unwrap();
-            (entry.file_name(), fs::read(entry.path()).unwrap())
-        })
-        .collect()
-}
-
 #[tokio::test]
 async fn rejects_incompatible_python_database_without_changing_bytes_or_leaving_sidecars() {
     let dir = tempdir().unwrap();
@@ -303,27 +293,6 @@ async fn unrepresentable_filename_cannot_be_redirected_to_a_lossy_path() {
         Error::PersistenceUnavailable
     );
     assert!(files_and_bytes(dir.path()).is_empty());
-}
-
-async fn race(
-    service: &Reservations,
-    requests: &[(&'static str, &'static str, &'static str)],
-) -> Vec<Result<ReservationStatus, Error>> {
-    let start = Arc::new(Barrier::new(requests.len()));
-    let mut tasks = JoinSet::new();
-    for &(principal, concert, key) in requests {
-        let service = service.clone();
-        let start = start.clone();
-        tasks.spawn(async move {
-            start.wait().await;
-            service.reserve(signed_in(principal), concert, key).await
-        });
-    }
-    let mut results = Vec::new();
-    while let Some(result) = tasks.join_next().await {
-        results.push(result.unwrap());
-    }
-    results
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
