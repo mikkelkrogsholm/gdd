@@ -5,6 +5,20 @@ impl Viewer {
         let graph = Arc::clone(&self.graph);
         let overview = graph.input.overview();
         ui.heading("Model overview");
+        ui.horizontal_wrapped(|ui| {
+            ui.label("Theme");
+            let mut preference = ui.ctx().options(|options| options.theme_preference);
+            for (choice, label) in [
+                (egui::ThemePreference::System, "System"),
+                (egui::ThemePreference::Light, "Light"),
+                (egui::ThemePreference::Dark, "Dark"),
+            ] {
+                if ui.radio_value(&mut preference, choice, label).changed() {
+                    ui.ctx().set_theme(choice);
+                    ui.ctx().request_repaint();
+                }
+            }
+        });
         ui.strong(graph.title());
         if let Some(id) = overview.project.get("id") {
             ui.monospace(declared_text(Some(id)));

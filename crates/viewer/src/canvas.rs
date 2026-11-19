@@ -1,5 +1,5 @@
 use eframe::egui::{
-    self, Color32, FontId, Painter, Pos2, Rect, Sense, Stroke, StrokeKind, TextFormat, Vec2,
+    self, FontId, Painter, Pos2, Rect, Sense, Stroke, StrokeKind, TextFormat, Vec2,
     emath::TSTransform,
 };
 use graphlay::{GraphBuilder, LayoutOptions, Size};
@@ -193,7 +193,11 @@ impl Layout {
         let graph = scene.graph;
         let visible = scene.visible;
         let zoom = transform.scaling;
-        let accent = Color32::from_rgb(32, 91, 165);
+        let accent = ui.visuals().selection.stroke.color;
+        let selected_fill = ui.visuals().selection.bg_fill;
+        let node_fill = ui.visuals().panel_fill;
+        let label_color = ui.visuals().strong_text_color();
+        let outline = ui.visuals().widgets.hovered.bg_stroke.color;
         let mut clicked = None;
         let canvas = ui.interact(area, ui.scope_id().with("canvas"), Sense::click());
         let pointer = canvas.interact_pointer_pos().filter(|_| canvas.clicked());
@@ -206,7 +210,7 @@ impl Layout {
             let stroke = if highlighted {
                 Stroke::new(2.0, accent)
             } else {
-                Stroke::new(1.2, Color32::from_rgb(139, 153, 171))
+                Stroke::new(1.2, outline)
             };
             for i in 0..n_routes {
                 let (route, source, target, records, selection) = if let Some(fold) = scene.folded {
@@ -270,8 +274,7 @@ impl Layout {
                     {
                         clicked = Some(selection);
                     }
-                    ui.painter()
-                        .rect_filled(rect, 4, Color32::from_rgb(230, 239, 252));
+                    ui.painter().rect_filled(rect, 4, selected_fill);
                     ui.painter()
                         .galley(center - galley.size() * 0.5, galley, accent);
                 }
@@ -300,23 +303,20 @@ impl Layout {
                 .on_hover_text(&node.id);
             let active = selected_glyph == Some(slot);
             let fill = if active || response.hovered() {
-                Color32::from_rgb(226, 238, 254)
+                selected_fill
             } else {
-                Color32::WHITE
+                node_fill
             };
             let border = if active || response.hovered() {
                 Stroke::new(2.0, accent)
             } else {
-                Stroke::new(1.0, Color32::from_rgb(166, 180, 198))
+                Stroke::new(1.0, outline)
             };
             let painter = ui.painter();
             painter.rect(rect, 6, fill, border, StrokeKind::Inside);
             let mut job = egui::text::LayoutJob::single_section(
                 node.label.clone(),
-                TextFormat::simple(
-                    FontId::proportional((13.0 * zoom).max(10.0)),
-                    Color32::from_rgb(20, 39, 68),
-                ),
+                TextFormat::simple(FontId::proportional((13.0 * zoom).max(10.0)), label_color),
             );
             job.wrap.max_width = rect.width() - 12.0 * zoom;
             job.wrap.max_rows = 1;
@@ -333,7 +333,7 @@ impl Layout {
                     accent,
                 );
             }
-            painter.galley(center - label.size() * 0.5, label, Color32::BLACK);
+            painter.galley(center - label.size() * 0.5, label, label_color);
             if response.clicked() {
                 clicked = Some(Selection::Node(index));
             }

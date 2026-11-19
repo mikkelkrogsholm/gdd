@@ -25,6 +25,11 @@ overview in **Details**. Switching panes or resizing the window preserves
 scope, filters, folding, zoom and the selected record. Hover over a shortened
 header title or open the overview to read the full project title.
 
+In **Model overview**, use Tab to reach the **Theme** choices and Enter to select
+**System**, **Light** or **Dark** for this window. **System** follows the color
+preference reported by the desktop. When the window backend supplies no
+preference, as on X11, the viewer uses light colors.
+
 The inspector opens on **Model overview** with the project title, ID and
 goal. Expand **Project fields** or a question to read its complete declaration.
 Select a declared source to inspect its origin and metadata. **Model snapshot**

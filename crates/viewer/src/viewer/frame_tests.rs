@@ -7,13 +7,14 @@ struct Window {
     viewer: Viewer,
     context: egui::Context,
     size: egui::Vec2,
+    system_theme: Option<egui::Theme>,
 }
 
 impl Window {
     fn open(path: &Path) -> Self {
         let context = egui::Context::default();
         context.enable_accesskit();
-        context.global_style_mut(|style| style.animation_time = 0.0);
+        context.all_styles_mut(|style| style.animation_time = 0.0);
         let viewer = Viewer::new(
             Graph::load(path).unwrap(),
             "Fixture".into(),
@@ -23,12 +24,14 @@ impl Window {
             viewer,
             context,
             size: egui::vec2(1280.0, 900.0),
+            system_theme: None,
         }
     }
 
     fn render(&mut self, events: Vec<egui::Event>) -> egui::FullOutput {
         let input = egui::RawInput {
             screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, self.size)),
+            system_theme: self.system_theme,
             events,
             ..Default::default()
         };
@@ -153,6 +156,118 @@ fn widget<'a>(tree: &'a TreeUpdate, role: Role, name: &str) -> Option<&'a Node> 
                     node.labelled_by().contains(id) && label.value() == Some(name)
                 }))
     })
+}
+
+#[test]
+fn system_theme_updates_the_canvas_without_changing_the_view() {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let mut window = Window::open(&path);
+    window.search("edge.call_one");
+    window.click(Role::CheckBox, "Fold communities");
+    window.wait_for_zoom();
+    window.click(Role::ComboBox, "Graph zoom");
+    window.click(Role::Button, "75%");
+    window.click(Role::Button, "action.second");
+    let selected = window.viewer.selected;
+    window.size = egui::vec2(740.0, 500.0);
+    window.click(Role::Button, "Graph");
+
+    for reported in [None, Some(egui::Theme::Dark), Some(egui::Theme::Light)] {
+        window.system_theme = reported;
+        let frame = window.render(Vec::new());
+        let theme = reported.unwrap_or(egui::Theme::Light);
+        assert_eq!(window.context.theme(), theme);
+        let visuals = theme.default_visuals();
+        let fill_at = |position| {
+            frame
+                .shapes
+                .iter()
+                .rev()
+                .find_map(|item| match &item.shape {
+                    egui::Shape::Rect(rect)
+                        if rect.rect.contains(position) && rect.fill.a() > 0 =>
+                    {
+                        Some(rect.fill)
+                    }
+                    _ => None,
+                })
+        };
+        assert_eq!(fill_at(egui::pos2(1.0, 1.0)), Some(visuals.panel_fill));
+        assert_eq!(
+            fill_at(egui::pos2(2.0, 490.0)),
+            Some(visuals.extreme_bg_color)
+        );
+        for (label, color) in [
+            ("action.second", visuals.strong_text_color()),
+            ("×3", visuals.selection.stroke.color),
+        ] {
+            let text = frame
+                .shapes
+                .iter()
+                .find_map(|item| match &item.shape {
+                    egui::Shape::Text(text) if text.galley.text() == label => Some(text),
+                    _ => None,
+                })
+                .unwrap_or_else(|| panic!("Missing graph label {label}"));
+            assert_eq!(text.galley.job.sections[0].format.color, color);
+            assert_eq!(
+                fill_at(text.visual_bounding_rect().center()),
+                Some(visuals.selection.bg_fill)
+            );
+        }
+        // Both the incident arrows and the unrelated self-loop remain visible.
+        for color in [
+            visuals.selection.stroke.color,
+            visuals.widgets.hovered.bg_stroke.color,
+        ] {
+            assert!(frame.shapes.iter().any(|item|
+                matches!(&item.shape, egui::Shape::Path(path) if path.closed && path.points.len() == 3 && path.fill == color)
+            ));
+        }
+        assert_eq!(window.viewer.selected, selected);
+        assert_eq!(window.viewer.zoom_percent, 75);
+        assert_eq!(window.viewer.filters.search, "edge.call_one");
+    }
+}
+
+#[test]
+fn theme_controls_allow_keyboard_override_and_restoring_system() {
+    let path =
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/product/greenfield.gddview");
+    let mut window = Window::open(&path);
+    window.system_theme = Some(egui::Theme::Light);
+    window.size = egui::vec2(320.0, 330.0);
+    let mut tree = window.key(Key::Home, Modifiers::ALT);
+    assert_eq!(
+        widget(&tree, Role::RadioButton, "System")
+            .unwrap()
+            .toggled(),
+        Some(true.into())
+    );
+    for _ in 0..12 {
+        tree = window.key(Key::Tab, Modifiers::NONE);
+        if tree
+            .nodes
+            .iter()
+            .any(|(id, node)| *id == tree.focus && node.label() == Some("Dark"))
+        {
+            break;
+        }
+    }
+    let tree = window.key(Key::Enter, Modifiers::NONE);
+    assert_eq!(
+        widget(&tree, Role::RadioButton, "Dark").unwrap().toggled(),
+        Some(true.into())
+    );
+    assert_eq!(window.context.theme(), egui::Theme::Dark);
+
+    window.size = egui::vec2(1280.0, 900.0);
+    window.system_theme = Some(egui::Theme::Dark);
+    window.click(Role::RadioButton, "Light");
+    assert_eq!(window.context.theme(), egui::Theme::Light);
+    window.click(Role::RadioButton, "System");
+    assert_eq!(window.context.theme(), egui::Theme::Dark);
 }
 
 #[test]

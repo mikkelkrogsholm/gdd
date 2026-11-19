@@ -3,7 +3,7 @@ mod overview;
 use std::sync::{Arc, mpsc};
 use std::thread;
 
-use eframe::egui::{self, Button, Color32, Key, Modifiers, RichText, Ui};
+use eframe::egui::{self, Button, Key, Modifiers, RichText, Ui};
 
 use serde_json::Value as Json;
 
@@ -79,6 +79,7 @@ pub struct Viewer {
 
 impl Viewer {
     pub fn new(graph: Graph, filename: String, context: egui::Context) -> Self {
+        context.options_mut(|options| options.fallback_theme = egui::Theme::Light);
         let graph = Arc::new(graph);
         let layout = LayoutState::start(Arc::clone(&graph), None, context);
         let filters = graph.initial_filters();
@@ -205,11 +206,11 @@ impl Viewer {
             self.open_overview();
         }
 
-        let white = Color32::WHITE;
+        let panel_fill = ui.visuals().panel_fill;
         egui::Panel::top("model")
             .frame(
                 egui::Frame::NONE
-                    .fill(white)
+                    .fill(panel_fill)
                     .inner_margin(if compact { 8 } else { 12 }),
             )
             .show(ui, |ui| {
@@ -248,7 +249,7 @@ impl Viewer {
             egui::Panel::left("nodes")
                 .default_size(226.0)
                 .size_range(178.0..=330.0)
-                .frame(egui::Frame::NONE.fill(white).inner_margin(14))
+                .frame(egui::Frame::NONE.fill(panel_fill).inner_margin(14))
                 .show(ui, |ui| {
                     self.show_pane(ui, Pane::Nodes, false, focus_search)
                 });
@@ -256,14 +257,14 @@ impl Viewer {
             egui::Panel::right("details")
                 .default_size(318.0)
                 .size_range(250.0..=430.0)
-                .frame(egui::Frame::NONE.fill(white).inner_margin(16))
+                .frame(egui::Frame::NONE.fill(panel_fill).inner_margin(16))
                 .show(ui, |ui| self.show_pane(ui, Pane::Details, false, false));
         }
 
         let pane = if compact { self.pane } else { Pane::Graph };
         let frame = match pane {
-            Pane::Graph => egui::Frame::NONE.fill(Color32::from_rgb(244, 247, 251)),
-            _ => egui::Frame::NONE.fill(white).inner_margin(12),
+            Pane::Graph => egui::Frame::NONE.fill(ui.visuals().extreme_bg_color),
+            _ => egui::Frame::NONE.fill(panel_fill).inner_margin(12),
         };
         egui::CentralPanel::default()
             .frame(frame)
@@ -404,7 +405,6 @@ impl Viewer {
                 [ui.available_width(), 28.0],
                 egui::TextEdit::singleline(&mut self.filters.search)
                     .hint_text("Node or edge text")
-                    .background_color(Color32::from_rgb(240, 245, 251))
                     .margin(egui::Margin::symmetric(8, 6)),
             )
             .labelled_by(search_label.id);

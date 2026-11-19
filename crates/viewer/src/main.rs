@@ -30,7 +30,6 @@ fn run(path: &Path) -> Result<(), String> {
         "GDD Viewer Preview",
         options,
         Box::new(move |context| {
-            context.egui_ctx.set_theme(egui::Theme::Light);
             Ok(Box::new(Viewer::new(
                 graph,
                 filename.into_owned(),
