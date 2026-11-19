@@ -52,6 +52,24 @@ The HTTP suite starts the executable on ephemeral ports using temporary database
 and exercises its JSON API and native forms.
 On Unix it also exercises SIGINT, SIGTERM, request draining and restart.
 
+To run the phase-B browser regression, install a local Chromium or Chrome and a
+matching ChromeDriver. Put `chromedriver` on `PATH` or set `GDD_CHROMEDRIVER`
+to its executable path. Run this command from the repository root.
+
+```sh
+cargo test --locked -p gdd-concert --test browser -- --ignored
+```
+
+The test opens a headless browser with JavaScript disabled and a temporary
+profile. It starts the Rust server on a loopback port with a fresh copy of
+`tests/fixtures/recorded-phase-a.db`. It checks the original reservation cards,
+the two-seat allowance, cancellation and rebooking through the forms, then
+compares the final history with the JSON API and the saved database. It also
+uses tabs sharing a cookie to check that an outdated Alice desk cannot read
+Bob's history, reserve on his behalf or sign him out. A final check opens the
+public program at a 320-pixel viewport. The ordinary Cargo suite skips this
+browser test.
+
 The native HTTP/1 parser rejects repeated Content-Length fields with the
 JSON error `400 InvalidInput` before routing. The body limit is 16 KiB.
 Repeated Host fields or an unexpected Host or Origin on a parsed request
