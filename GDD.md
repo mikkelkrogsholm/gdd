@@ -3,7 +3,7 @@
 Reading guide for the 0.3 draft. Normative requirements are in [SPEC.md](SPEC.md) and the chapters it references.
 
 1. Read the format version, model manifest and trusted mandate. Do not assume an approval mode.
-2. Register input as sources; maintain the wiki/OKF. Distinguish statements, observations, interpretations and accepted requirements.
+2. Register input as sources and maintain the [shared project wiki](docs/knowledge.md). Search it for existing standards and decisions. Link graph records to exact sections and wiki sections back to graph IDs. Keep stakeholder requests, observed behavior and adopted rules distinguishable.
 3. Use existing Graphify data as observations with provenance. Propose intent explicitly.
 4. Iterate the graph with stable IDs, fixed contracts and free-form pseudocode. Record material questions.
 5. Assemble the task's full contracts, ancestors, relevant data, machines, global/local rules, scenarios and design references. Bound the write area separately.

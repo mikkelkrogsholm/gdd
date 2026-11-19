@@ -5,6 +5,8 @@ actual code/local changes and retain its observed code revision separately from
 the graph/artifact revision. Do not reset the checkout. Existing accepted intent
 continues to govern until a visible authorized model change replaces it.
 
+Use the [shared wiki](gdd/docs/knowledge.md) for the observed business behavior, requests for change and the reasons behind existing exceptions. Link one source section for each claim and preserve the original input. A question owned by the domain team can settle a conflict before the agent changes that behavior.
+
 If Graphify data already exists, preserve that file. If it must be produced, use
 an available Graphify tool with known provenance; this skill installs no extractor
 and assumes no implicit extraction route. Choose the profile for the actual

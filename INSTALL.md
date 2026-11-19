@@ -31,6 +31,8 @@ gdd validate "$GDD_PROJECT/gdd.json"
 gdd validate "$GDD_PROJECT/gdd.json" --profile readiness --scope action.main
 ```
 
+For a draft with a linked project brief, add `--wiki` to the initialization command. Open `wiki/project.md` for the working notes or `gdd-graph.md` to browse the graph. [Project wiki guide](docs/knowledge.md)
+
 Save a view, verify it against the model, and open it on a desktop with OpenGL
 (X11 or Wayland on Linux). A recipient with the native viewer can open the
 single saved file offline. See the [native viewer guide](crates/viewer/README.md)

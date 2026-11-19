@@ -23,8 +23,12 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `agents/gdd-lead.md` | [agents/gdd-lead.md](gdd/agents/gdd-lead.md) |
 | `agents/gdd-worker.md` | [agents/gdd-worker.md](gdd/agents/gdd-worker.md) |
 | `docs/PERSPECTIVES.md` | [docs/PERSPECTIVES.md](gdd/docs/PERSPECTIVES.md) |
+| `docs/alignment.md` | [docs/alignment.md](gdd/docs/alignment.md) |
 | `docs/inspection.md` | [docs/inspection.md](gdd/docs/inspection.md) |
+| `docs/issues.md` | [docs/issues.md](gdd/docs/issues.md) |
+| `docs/knowledge.md` | [docs/knowledge.md](gdd/docs/knowledge.md) |
 | `docs/model-diff.md` | [docs/model-diff.md](gdd/docs/model-diff.md) |
+| `docs/work-overview.md` | [docs/work-overview.md](gdd/docs/work-overview.md) |
 | `extensions/product-0.1.json` | [extensions/product-0.1.json](gdd/extensions/product-0.1.json) |
 | `extensions/product-0.1.json` | [gdd_validator/extensions/product-0.1.json](gdd/gdd_validator/extensions/product-0.1.json) |
 | `schemas/README.md` | [schemas/README.md](gdd/schemas/README.md) |
@@ -95,6 +99,9 @@ The complete source/target list is in [source-index.json](source-index.json).
 - `examples/concert.gdd.yaml`
 - `examples/graphify/README.md`
 - `examples/graphify/producer-evidence.json`
+- `examples/knowledge/model.gdd.json`
+- `examples/knowledge/wiki/requests.md`
+- `examples/knowledge/wiki/rounding.md`
 - `examples/product/greenfield.gdd.json`
 - `examples/product/greenfield.gddview`
 - `examples/product/partial.gdd.json`

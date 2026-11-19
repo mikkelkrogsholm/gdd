@@ -1,0 +1,195 @@
+{
+  "format": "gdd/0.3",
+  "project": {
+    "id": "project.invoices",
+    "title": "Invoice calculation",
+    "goal": "Preserve the amount charged while considering a request about per-line display.",
+    "scope": "Calculating a total from amounts expressed in tenths of a minor currency unit."
+  },
+  "nodes": {
+    "component.billing": {
+      "kind": "component",
+      "description": "Own invoice calculations.",
+      "maturity": "specified",
+      "interfaces": [
+        "action.total"
+      ],
+      "boundary": {
+        "responsibility": "Calculate invoice totals.",
+        "rationale": "The calculation is shared by invoice displays and charge preparation.",
+        "excludes": [
+          "Formatting amounts for display.",
+          "Collecting payment."
+        ]
+      }
+    },
+    "action.total": {
+      "kind": "action",
+      "description": "Calculate the invoice total.",
+      "maturity": "specified",
+      "contract": {
+        "input": {
+          "line_amounts": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "integer"
+        },
+        "errors": {},
+        "preconditions": [],
+        "postconditions": [
+          "The result is the rounded sum in minor currency units."
+        ],
+        "external_effects": [],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": false,
+            "rationale": "Pure local calculation reads no identity, private data or privileged resource.",
+            "scenarios": []
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "No stored state or side effect; repeating the same input returns the same result.",
+            "scenarios": []
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Rounding each line first can change the result.",
+            "scenarios": [
+              "scenario.total"
+            ]
+          },
+          "concurrency": {
+            "relevant": false,
+            "rationale": "No shared mutable state or resource exists.",
+            "scenarios": []
+          },
+          "atomicity": {
+            "relevant": false,
+            "rationale": "No mutation or multi-step commit exists.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {}
+      },
+      "behavior": "Sum the signed integer line amounts, then round once according to the calculation standard.",
+      "source_refs": [
+        {
+          "source": "source.standard",
+          "purpose": "contract",
+          "selector": {
+            "kind": "markdown-heading",
+            "value": "Invoice rounding / Calculation"
+          }
+        },
+        {
+          "source": "source.requests",
+          "purpose": "provenance",
+          "selector": {
+            "kind": "markdown-heading",
+            "value": "Invoice display request / Per-line amounts"
+          }
+        }
+      ]
+    },
+    "scenario.total": {
+      "kind": "scenario",
+      "description": "Two halfway line amounts round once after summation.",
+      "scenario": {
+        "category": "boundary",
+        "given": "Two line amounts of 15 tenths each.",
+        "when": "The total is calculated.",
+        "then": "The amount charged is 3 minor currency units."
+      }
+    },
+    "scenario.whole-units": {
+      "kind": "scenario",
+      "description": "Whole-unit amounts are preserved in the total.",
+      "scenario": {
+        "category": "normal",
+        "given": "Two lines worth 20 and 30 tenths of a minor currency unit.",
+        "when": "The caller calculates the invoice total.",
+        "then": "The amount charged is 5 minor currency units."
+      }
+    }
+  },
+  "edges": [
+    {
+      "id": "edge.owner",
+      "from": "action.total",
+      "to": "component.billing",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.scenario",
+      "from": "scenario.total",
+      "to": "action.total",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.whole-units",
+      "from": "scenario.whole-units",
+      "to": "action.total",
+      "relation": "exercises"
+    }
+  ],
+  "sources": {
+    "source.standard": {
+      "role": "knowledge",
+      "title": "Invoice rounding",
+      "uri": "wiki/rounding.md",
+      "format": "text/markdown",
+      "normative": true,
+      "revision": {
+        "sha256": "baf579bdf302591ee6d284490b0cca783ea061472480fcf805377a64add4f580"
+      }
+    },
+    "source.workshop": {
+      "role": "input",
+      "title": "Original workshop note",
+      "uri": "workshop.md",
+      "format": "text/markdown",
+      "normative": false,
+      "revision": {
+        "sha256": "b39c9b42e2b7009e4a77dbd19d90ff9c00c71a9175952e00ff498be5b6515132"
+      }
+    },
+    "source.requests": {
+      "role": "knowledge",
+      "title": "Invoice display request",
+      "uri": "wiki/requests.md",
+      "format": "text/markdown",
+      "normative": false,
+      "revision": {
+        "sha256": "03a9a878376519b955d13d724c2721f0e89f55b63ef0cba70888a992ab3a3b4d"
+      },
+      "derived_from": [
+        {
+          "source": "source.workshop",
+          "revision": {
+            "sha256": "b39c9b42e2b7009e4a77dbd19d90ff9c00c71a9175952e00ff498be5b6515132"
+          }
+        }
+      ]
+    }
+  },
+  "questions": {
+    "question.rounding": {
+      "statement": "Should displaying rounded lines also change the amount charged?",
+      "targets": [
+        "action.total"
+      ],
+      "blocks": [
+        "acceptance"
+      ],
+      "status": "open"
+    }
+  }
+}

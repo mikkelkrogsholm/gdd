@@ -20,3 +20,15 @@ not to run CI on GitHub because it is too heavy. Do not add GitHub Actions
 workflows unless the maintainer explicitly changes that direction. Run checks
 appropriate to the change; full conformance, wheel and browser checks remain
 available for local release verification. See [contributing](CONTRIBUTING.md).
+
+# Disk use and cleanup
+
+- The local Rust migration worktree has a shared 10 GiB limit for the checkout,
+  build outputs, caches, and temporary files. In this worktree, run builds and
+  tests through `gdd-work` and check free space with `gdd-work --status`.
+- Check space before a large job and while it runs. If the remaining space may
+  be insufficient, stop the job and reclaim space before continuing. Keep
+  temporary files inside the budget, including when retrying a failed job.
+- After every task, including failed or interrupted runs, remove the build
+  outputs, temporary files, and disposable caches you created. Preserve user
+  files and requested deliverables, then check disk usage again.

@@ -9,6 +9,8 @@ design references, and required check plans in the package. Use the supplied loc
 and snapshot hashes to read normative assets from the current model.
 Stop and report model/asset/code-base deviations to the lead before making changes.
 
+Read any `package.knowledge` before choosing implementation details. Follow each contract to its pinned section; use provenance for background. When a choice remains open, cite the graph ID, the conflicting sections and a concrete example to the lead. Keep the decision and its acceptance scenario traceable. [Project wiki](../docs/knowledge.md)
+
 Context closure is read context. It gives no mandate to implement all
 its nodes. Preserve locked boundary contracts; propose graph changes to the lead if
 implementation requires a changed product decision. Choose the programming language and

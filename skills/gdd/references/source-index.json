@@ -9,14 +9,14 @@
     {
       "path": "references/gdd/AGENTS.md",
       "source": "AGENTS.md",
-      "sha256": "beebe0458c4ba57b0e037f03a1bd4438ab1b3a6be472fa8cff232965aaf0aa84",
-      "bytes": 1193
+      "sha256": "a6eb2146756e1ee4f1c168888acb8defe12e7d9b26a137aa08c32ae22fc737b0",
+      "bytes": 1896
     },
     {
       "path": "references/gdd/GDD.md",
       "source": "GDD.md",
-      "sha256": "99a9cd67f7b1ca1cb1cc2e8dadd3de3b7818bd496d05d313bb185a0f1819a020",
-      "bytes": 3429
+      "sha256": "26494eb2e1a3c04212d061bfd1184a98393d57f55b028fac926ab5ad68821a32",
+      "bytes": 3585
     },
     {
       "path": "references/gdd/GRAPHIFY.md",
@@ -51,20 +51,20 @@
     {
       "path": "references/gdd/WORKFLOW.md",
       "source": "WORKFLOW.md",
-      "sha256": "98b7d08bb2f44f9639125e3c351ff46e479a31c9f640d4e2351c4c9b9af4d126",
-      "bytes": 9894
+      "sha256": "ebc515277d381878a85e55f52ba5cd0da1e04a0d9cea2d6308e7094385a90f5b",
+      "bytes": 10540
     },
     {
       "path": "references/gdd/agents/gdd-lead.md",
       "source": "agents/gdd-lead.md",
-      "sha256": "30b7eb799fb16544d46dd57a424cdd0add279591f881b4494ec7b8c1d66cfa35",
-      "bytes": 2986
+      "sha256": "4684a13ddac9582d41c850856da84fe65a97302a2ffd2643f99c58095f46e10a",
+      "bytes": 3253
     },
     {
       "path": "references/gdd/agents/gdd-worker.md",
       "source": "agents/gdd-worker.md",
-      "sha256": "6e47e320dcbcf4d6754376a64809edc53b61a12bbaf559e49758a66ccd5a9eb9",
-      "bytes": 2021
+      "sha256": "f4fad3fb475f9c30b61e26d550ba9be8628398ab5e47e30b16578b7475f56aad",
+      "bytes": 2368
     },
     {
       "path": "references/gdd/docs/PERSPECTIVES.md",
@@ -73,16 +73,40 @@
       "bytes": 7603
     },
     {
+      "path": "references/gdd/docs/alignment.md",
+      "source": "docs/alignment.md",
+      "sha256": "545e71e532a4ad032e66dd64f3e7ad1c11b5f49134291c77b1977960d489ed78",
+      "bytes": 3681
+    },
+    {
       "path": "references/gdd/docs/inspection.md",
       "source": "docs/inspection.md",
       "sha256": "749071f32aeabc68d077a02fac938bf2478f89ba32e9118fff7dbed0c7f87835",
       "bytes": 7688
     },
     {
+      "path": "references/gdd/docs/issues.md",
+      "source": "docs/issues.md",
+      "sha256": "77e23002f0749a0987ceb2bfc157aaef1b74d642746321ed23ef132503f9bb69",
+      "bytes": 2183
+    },
+    {
+      "path": "references/gdd/docs/knowledge.md",
+      "source": "docs/knowledge.md",
+      "sha256": "4cde5b66ce014b5e190160472a2103941c4b2d130bbb49bbf0d6125a6bc7f921",
+      "bytes": 6675
+    },
+    {
       "path": "references/gdd/docs/model-diff.md",
       "source": "docs/model-diff.md",
       "sha256": "0e5c5a8fe1e339709a5b489b4fedea1bc94ca9c865fbb10ac3908a61360a76f8",
       "bytes": 5185
+    },
+    {
+      "path": "references/gdd/docs/work-overview.md",
+      "source": "docs/work-overview.md",
+      "sha256": "1af03e5e2a5bf7ae4076033bf0a5c12ac7e30f78a3040d61b383e75d7fd32e42",
+      "bytes": 2680
     },
     {
       "path": "references/gdd/extensions/product-0.1.json",
@@ -231,8 +255,8 @@
     {
       "path": "references/gdd/schemas/workflow.schema.json",
       "source": "schemas/workflow.schema.json",
-      "sha256": "e57c0cb459e80b1a27a6607508b0c6be1dbae2670bc2485cc2b9121da52155ac",
-      "bytes": 26833
+      "sha256": "8f8b74770b0133d8ae49fe4c69444ed4ffa212e9963d48049bf2e0b48aa574f8",
+      "bytes": 27683
     },
     {
       "path": "references/gdd/standard/AGENT-PROTOCOL.md",
@@ -525,9 +549,33 @@
       "role": "optional-repository-reference"
     },
     {
+      "from": "docs/knowledge.md",
+      "href": "../examples/knowledge/model.gdd.json",
+      "source_target": "examples/knowledge/model.gdd.json",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/knowledge.md",
+      "href": "../examples/knowledge/wiki/rounding.md",
+      "source_target": "examples/knowledge/wiki/rounding.md",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/knowledge.md",
+      "href": "../examples/knowledge/wiki/requests.md",
+      "source_target": "examples/knowledge/wiki/requests.md",
+      "role": "optional-repository-reference"
+    },
+    {
       "from": "docs/model-diff.md",
       "href": "../archive/experiments/concert-7e27757.index.json",
       "source_target": "archive/experiments/concert-7e27757.index.json",
+      "role": "optional-repository-reference"
+    },
+    {
+      "from": "docs/work-overview.md",
+      "href": "../examples/agent-native/README.md",
+      "source_target": "examples/agent-native/README.md",
       "role": "optional-repository-reference"
     },
     {

@@ -37,6 +37,32 @@ lists the asset paths and SHA-256 digests that identify the revision. A saved
 view also identifies its generator and the number of external observation
 inputs it contains.
 
+## Inspect work on the graph
+
+To see which parts of the ideal graph have work assigned, open the model
+or a saved view alongside an explicit work report. From the repository root,
+inspect the archived quote example with these commands.
+
+```sh
+gdd work examples/agent-native/model.gdd.json --run examples/agent-native/native-run \
+  --host-context examples/agent-native/host.acceptance.json --output work.json
+gdd-viewer examples/agent-native/model.gdd.json --work work.json
+```
+
+**Work status** in **Model overview** lists the packages in the report. Select a
+function or component to see its packages, their blockers, linked issue, and
+recorded implementation checks. Expand a package to follow its scope to the
+corresponding nodes. **Report revisions** identifies the captured journal and
+code. The checks describe the assessed code revision at capture. To inspect
+subsequent work, generate a fresh report and reopen the viewer.
+
+For offline sharing, send the matching `.gddview` and work report together and
+open `gdd-viewer quote.gddview --work work.json`. The viewer checks the project
+and model revision before displaying package data. Sharing a work report
+includes its package names, scope, evidence references and any issue metadata.
+
+## Inspect a graph projection
+
 **Current view** shows the active perspective, filters, zoom and folding.
 Expand a count to select and copy the exact node and edge IDs that are visible,
 filtered within scope, or outside the saved scope. Expand **Projection details
@@ -192,7 +218,7 @@ untouched. A layout error leaves the node list and inspector available.
 The viewer derives perspectives from that same captured bundle. If a directly
 opened model can be drawn but fails perspective admission, All graph remains
 available. Expand **Product perspectives unavailable** to read the diagnostic.
-Use the CLI for validation reports and operational record status.
+Use the CLI for full validation reports and workflow history.
 
 Use the Rust CLI to check schema and model semantics or get the bundle's
 revision and asset digests:
@@ -211,3 +237,27 @@ and expand YAML anchors, aliases, or merge keys into explicit values. The Rust
 parser keeps finite numbers as their original decimal text, including values
 outside the Python validator's numeric conversion limits. It reserves bare
 `NaN`, `Infinity`, and `-Infinity` in YAML. Quote them to use them as strings.
+
+## Navigate the project wiki
+
+Opening a model with local Markdown knowledge sources captures its wiki references.
+Choose a page under **Project wiki** in the overview, or select a graph node and
+follow its **Wiki references**. A section shows its available excerpt, graph
+references and any link diagnostics. Select a referenced node, edge or question
+to inspect it. A question links to the graph records it concerns. The page's
+**Sources used for this page** links to the original input declarations and
+shows the recorded source revisions when available.
+
+For a detached view, export a knowledge report from the same model revision and
+send it alongside the graph. The recipient can read the captured excerpts offline.
+Review the report before sharing it; it may include stakeholder material.
+
+```sh
+gdd wiki examples/knowledge/model.gdd.json --output knowledge.json
+gdd view examples/knowledge/model.gdd.json --output project.gddview
+gdd-viewer project.gddview --wiki knowledge.json
+```
+
+Add `--work work.json` to inspect implementation progress in the same window.
+The viewer labels unpinned content, suppresses stale excerpts, and displays
+unresolved links in place. A detached report records knowledge at capture time.

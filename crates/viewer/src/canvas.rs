@@ -562,6 +562,8 @@ mod tests {
         };
         Graph {
             sources: Default::default(),
+            work: None,
+            wiki: None,
             input: crate::model::ViewInput::Model(Box::new(crate::model::CapturedModel {
                 project: serde_json::json!({"title": "Layout fixture"}),
                 questions: None,

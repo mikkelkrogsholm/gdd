@@ -1,7 +1,7 @@
 //! Read an append-only workflow journal and reconcile it against one model capture.
 
 use super::{Source, canonical, require, verify_valid_plan};
-use crate::bundle::{self, Bundle};
+use crate::bundle::Bundle;
 use crate::input::{self, InputError, Value};
 use crate::model::{
     context::ContextGraph, entries, get, items, readiness::decisions, semantics, string, strings,
@@ -143,7 +143,7 @@ fn request_scope(plan: &Value) -> impl Iterator<Item = &str> {
 
 fn capture_model(path: &Path, plan: &Value) -> Bundle {
     let scope = request_scope(plan).map(str::to_owned).collect::<Vec<_>>();
-    bundle::load_for_readiness(path, &scope)
+    super::capture_plan_inputs(path, &scope, plan)
 }
 
 /// Read and structurally replay the journal once, including its hash chain.
@@ -336,7 +336,7 @@ fn status_with_report(
     })
 }
 
-fn bound_host(host: &Value, plan: &Value, code_revision: &str) -> bool {
+pub(crate) fn bound_host(host: &Value, plan: &Value, code_revision: &str) -> bool {
     let request = get(plan, "request").expect("validated plan");
     get(host, "implementation") == get(request, "implementation")
         && get(host, "code_revision").and_then(text) == Some(code_revision)
@@ -348,26 +348,8 @@ fn gate(id: &str, result: CheckResult, reason: &str, scope: &[String]) -> Check 
     check
 }
 
-fn assess_acceptance(
-    bundle: &Bundle,
-    plan: &Value,
-    state: &RunState,
-    host: Option<&Value>,
-    report: &mut Report,
-) -> io::Result<()> {
-    report.profiles = vec![Profile::Model, Profile::Readiness, Profile::Records];
-    let host = validation::present(host).unwrap_or(&Value::Null);
-    let bound = bound_host(host, plan, &state.code_revision);
-    report.checks.push(gate(
-        "workflow.code_binding",
-        if bound {
-            CheckResult::Pass
-        } else {
-            CheckResult::Unknown
-        },
-        "Host implementation and code revision must equal this run's integrated result.",
-        &report.scope,
-    ));
+/// Bind evidence evaluation to the check choices frozen in the workplan.
+pub(crate) fn evidence_context(plan: &Value, host: &Value) -> (Value, bool) {
     let mut selection: BTreeMap<String, Value> = BTreeMap::new();
     let mut conflict = false;
     let supplied = get(host, "check_selection");
@@ -391,6 +373,36 @@ fn assess_acceptance(
                 .is_some_and(|other| other != id);
         }
     }
+    let mut evidence_host = if let Value::Object(fields) = host {
+        fields.clone()
+    } else {
+        BTreeMap::new()
+    };
+    evidence_host.insert("check_selection".into(), Value::Object(selection));
+    (Value::Object(evidence_host), conflict)
+}
+
+fn assess_acceptance(
+    bundle: &Bundle,
+    plan: &Value,
+    state: &RunState,
+    host: Option<&Value>,
+    report: &mut Report,
+) -> io::Result<()> {
+    report.profiles = vec![Profile::Model, Profile::Readiness, Profile::Records];
+    let host = validation::present(host).unwrap_or(&Value::Null);
+    let bound = bound_host(host, plan, &state.code_revision);
+    report.checks.push(gate(
+        "workflow.code_binding",
+        if bound {
+            CheckResult::Pass
+        } else {
+            CheckResult::Unknown
+        },
+        "Host implementation and code revision must equal this run's integrated result.",
+        &report.scope,
+    ));
+    let (evidence_host, conflict) = evidence_context(plan, host);
     report.checks.push(gate(
         "workflow.check_selection",
         if conflict {
@@ -401,13 +413,6 @@ fn assess_acceptance(
         "Verification uses the exact check plans frozen in this workplan.",
         &report.scope,
     ));
-    let mut evidence_host = if let Value::Object(fields) = host {
-        fields.clone()
-    } else {
-        BTreeMap::new()
-    };
-    evidence_host.insert("check_selection".into(), Value::Object(selection));
-    let evidence_host = Value::Object(evidence_host);
     for (dimension, activity, context) in [
         ("implementation", None, &evidence_host),
         ("authorization", Some(Activity::Acceptance), host),

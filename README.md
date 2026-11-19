@@ -28,6 +28,14 @@ fCoSE with [third-party notices](https://github.com/mikkelkrogsholm/gdd/blob/0db
 For library integrations moving from Python to Rust, see the
 [Rust API migration guide](docs/rust-migration.md).
 
+## Develop with a shared wiki
+
+Use a shared project wiki for stakeholder input, standards and decisions. Each action can reference a precise section; a wiki section can take a reader back to an action or its open question. Agents receive the relevant excerpts and source revisions with their work packages. Start with `gdd init project --wiki` or connect an existing Markdown or OpenWiki page. [Try the invoice example](docs/knowledge.md).
+
+## Follow implementation against the intended graph
+
+Inspect the current [work packages and their checks](docs/work-overview.md) in the CLI or native viewer. For an existing project, [compare observed code with the intended architecture](docs/alignment.md) across two Graphify captures. [Link issues to packages](docs/issues.md) to follow the same work across runs.
+
 ## How the method works
 
 ```mermaid

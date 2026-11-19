@@ -3,6 +3,8 @@
 pub mod bundle;
 pub mod graphify;
 pub mod input;
+pub mod issues;
+pub mod knowledge;
 mod model;
 pub use model::canonical::digest as canonical_digest;
 pub use model::workflow::run as workflow_run;
@@ -16,6 +18,7 @@ pub mod report;
 pub mod status;
 pub mod validation;
 pub mod view;
+pub mod work_overview;
 
 use serde::Serialize;
 use serde_json::Value;
@@ -27,19 +30,20 @@ use std::path::Path;
 const MODEL: &str = include_str!("../templates/project/gdd.json");
 const RECORDS: &str = include_str!("../templates/project/records.json");
 const SOURCES: &[u8] = include_bytes!("../templates/project/SOURCES.md");
-const FILES: [&str; 3] = ["SOURCES.md", "gdd.json", "records.json"];
+const WIKI_BRIEF: &[u8] = include_bytes!("../templates/wiki/project.md");
 
 pub const DEFAULT_PROJECT_ID: &str = "project.new";
 pub const DEFAULT_TITLE: &str = "New GDD project";
 
 /// Receipt for the embedded, independently verified starter draft.
 #[derive(Debug, Serialize)]
-pub struct InitReceipt {
+#[serde(bound(serialize = "[&'static str; N]: Serialize"))]
+pub struct InitReceipt<const N: usize = 3> {
     pub format: &'static str,
     pub path: String,
     pub manifest: String,
     pub project_id: String,
-    pub files: [&'static str; 3],
+    pub files: [&'static str; N],
     pub spec_revision: String,
     pub model: &'static str,
     pub readiness: &'static str,
@@ -47,6 +51,42 @@ pub struct InitReceipt {
 
 /// Publish a new draft in an existing directory, without replacing its final name.
 pub fn init_project(path: &Path, project_id: &str, title: &str) -> io::Result<InitReceipt> {
+    init_draft(
+        path,
+        project_id,
+        title,
+        ["SOURCES.md", "gdd.json", "records.json"],
+        false,
+    )
+}
+
+/// Initialize a draft with a shared project brief linked to the first graph nodes.
+pub fn init_project_with_wiki(
+    path: &Path,
+    project_id: &str,
+    title: &str,
+) -> io::Result<InitReceipt<4>> {
+    init_draft(
+        path,
+        project_id,
+        title,
+        [
+            "wiki/project.md",
+            "gdd.json",
+            "records.json",
+            "gdd-graph.md",
+        ],
+        true,
+    )
+}
+
+fn init_draft<const N: usize>(
+    path: &Path,
+    project_id: &str,
+    title: &str,
+    files: [&'static str; N],
+    wiki: bool,
+) -> io::Result<InitReceipt<N>> {
     if !valid_id(project_id) {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
@@ -70,7 +110,8 @@ pub fn init_project(path: &Path, project_id: &str, title: &str) -> io::Result<In
         ));
     }
 
-    let (model, records) = draft_documents(project_id, title)?;
+    let guide = if wiki { WIKI_BRIEF } else { SOURCES };
+    let (model, records) = draft_documents(project_id, title, wiki.then_some(files[0]))?;
     let spec_revision = snapshot_revision(&[("gdd.json", &sha256(&model))])?;
 
     let absolute = if path.is_absolute() {
@@ -96,7 +137,7 @@ pub fn init_project(path: &Path, project_id: &str, title: &str) -> io::Result<In
         path: receipt_path(&output)?,
         manifest: receipt_path(&output.join("gdd.json"))?,
         project_id: project_id.into(),
-        files: FILES,
+        files,
         spec_revision,
         model: "PASS",
         readiness: "FAIL",
@@ -110,8 +151,14 @@ pub fn init_project(path: &Path, project_id: &str, title: &str) -> io::Result<In
         staging.permissions(std::fs::Permissions::from_mode(0o700));
     }
     let staging = staging.tempdir_in(parent)?;
-    for (name, bytes) in FILES.into_iter().zip([SOURCES, &model, &records]) {
+    if wiki {
+        std::fs::create_dir(staging.path().join("wiki"))?;
+    }
+    for (name, bytes) in files.into_iter().zip([guide, &model, &records]) {
         File::create_new(staging.path().join(name))?.write_all(bytes)?;
+    }
+    if wiki {
+        knowledge::navigation::publish_navigation(&staging.path().join("gdd.json"))?;
     }
     match rename_exclusive(staging.path(), &output) {
         Ok(()) => {
@@ -135,7 +182,11 @@ fn valid_id(id: &str) -> bool {
         })
 }
 
-fn draft_documents(project_id: &str, title: &str) -> io::Result<(Vec<u8>, Vec<u8>)> {
+fn draft_documents(
+    project_id: &str,
+    title: &str,
+    wiki: Option<&str>,
+) -> io::Result<(Vec<u8>, Vec<u8>)> {
     // These fingerprints restrict the receipt to the model-valid, unready draft
     // checked by the Python validator. Recheck both profiles after a template
     // change before updating these fingerprints.
@@ -153,6 +204,22 @@ fn draft_documents(project_id: &str, title: &str) -> io::Result<(Vec<u8>, Vec<u8
     let mut model: Value = serde_json::from_str(MODEL)?;
     model["project"]["id"] = project_id.into();
     model["project"]["title"] = title.into();
+
+    if let Some(path) = wiki {
+        model["sources"]["source.brief"] = serde_json::json!({
+            "role": "knowledge", "title": "Shared project brief", "uri": path,
+            "format": "text/markdown", "normative": false
+        });
+        for (node, heading) in [
+            ("action.main", "Intended outcome"),
+            ("component.main", "Engineering standards"),
+        ] {
+            model["nodes"][node]["source_refs"] = serde_json::json!([{
+                "source":"source.brief", "purpose":"provenance",
+                "selector":{"kind":"markdown-heading","value":format!("Project brief / {heading}")}
+            }]);
+        }
+    }
 
     let mut records: Value = serde_json::from_str(RECORDS)?;
     records["project_id"] = project_id.into();

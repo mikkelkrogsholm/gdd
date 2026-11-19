@@ -6,6 +6,7 @@ use super::{
 };
 use crate::bundle::{self, Bundle, DocumentKind};
 use crate::input::Value;
+use crate::knowledge::KnowledgeIndex;
 use crate::report::{Check, CheckResult, Report};
 use crate::validation::{self, Profile, ValidationOptions, to_json};
 use serde::Serialize;
@@ -52,6 +53,21 @@ fn require(value: &Value, kind: &'static str, label: &str) -> io::Result<()> {
         .map_err(|error| invalid(format!("Invalid {label}: {error}")))
 }
 
+const LEGACY_PLAN: &str = "gdd-workplan/0.1";
+const KNOWLEDGE_PLAN: &str = "gdd-workplan/0.2";
+
+fn has_wiki_context(plan: &Value) -> bool {
+    string(plan, "format") == KNOWLEDGE_PLAN
+}
+
+pub(crate) fn capture_plan_inputs(path: &Path, scope: &[String], plan: &Value) -> Bundle {
+    if has_wiki_context(plan) {
+        bundle::load_for_knowledge(path, scope)
+    } else {
+        bundle::load_for_readiness(path, scope)
+    }
+}
+
 enum Source<'a> {
     Path(&'a Path),
     Bundle(&'a Bundle),
@@ -63,17 +79,17 @@ pub fn prepare_workflow(
     request: &Value,
     host_context: Option<&Value>,
 ) -> io::Result<WorkflowResult> {
-    prepare(Source::Path(path), request, host_context)
+    prepare(Source::Path(path), request, host_context, true)
 }
 
-/// Prepare from captured inputs. Use `bundle::load` or `load_for_readiness`
-/// covering all package scopes to include their advisory contract bytes.
+/// Prepare from frozen inputs. Capture all package scopes with
+/// `bundle::load_for_knowledge` to include advisory wiki bytes and backlinks.
 pub fn prepare_workflow_from_bundle(
     bundle: &Bundle,
     request: &Value,
     host_context: Option<&Value>,
 ) -> io::Result<WorkflowResult> {
-    prepare(Source::Bundle(bundle), request, host_context)
+    prepare(Source::Bundle(bundle), request, host_context, true)
 }
 
 /// Re-derive every package from its request and compare the complete plan.
@@ -100,7 +116,12 @@ fn verify(source: Source<'_>, plan: &Value, host: Option<&Value>) -> io::Result<
 }
 
 fn verify_valid_plan(source: Source<'_>, plan: &Value, host: Option<&Value>) -> io::Result<Report> {
-    let expected = prepare(source, get(plan, "request").expect("validated plan"), host)?;
+    let expected = prepare(
+        source,
+        get(plan, "request").expect("validated plan"),
+        host,
+        has_wiki_context(plan),
+    )?;
     let mut report = expected.report;
     let mut check = Check::new(
         "workflow.packet_integrity",
@@ -121,6 +142,7 @@ fn prepare(
     source: Source<'_>,
     request: &Value,
     host: Option<&Value>,
+    include_knowledge: bool,
 ) -> io::Result<WorkflowResult> {
     require(request, "request", "workflow request")?;
     if let Some(host) = validation::present(host) {
@@ -136,7 +158,11 @@ fn prepare(
     let capture;
     let bundle = match source {
         Source::Path(path) => {
-            capture = bundle::load_for_readiness(path, &scope);
+            capture = if include_knowledge {
+                bundle::load_for_knowledge(path, &scope)
+            } else {
+                bundle::load_for_readiness(path, &scope)
+            };
             &capture
         }
         Source::Bundle(bundle) => bundle,
@@ -175,9 +201,17 @@ fn prepare(
     let integration = get(request, "integration").expect("validated request");
     let selected: BTreeSet<_> = strings(integration, "checks").collect();
     let active = selected_checks(&model, &selected, available);
+    let knowledge = if include_knowledge
+        && entries(&manifest.value, "sources")
+            .any(|(_, source)| crate::knowledge::is_wiki_source(source))
+    {
+        Some(KnowledgeIndex::from_bundle(bundle)?)
+    } else {
+        None
+    };
     let packages = items(request, "packages")
         .iter()
-        .map(|p| packet(&model, &graph, p, &active))
+        .map(|p| packet(&model, &graph, p, &active, knowledge.as_ref()))
         .collect::<io::Result<Vec<_>>>()?;
     let required = requirements(
         &model,
@@ -209,8 +243,15 @@ fn prepare(
         }
     };
     assess_packages(&model, request, &packages, complete, readiness, &mut report)?;
+    // Preserve the wiki-aware profile even while no packet links to a page.
+    // A later backlink can be the first reference connecting a page to work.
+    let plan_format = if knowledge.is_some() {
+        KNOWLEDGE_PLAN
+    } else {
+        LEGACY_PLAN
+    };
     let mut artifact = json!({
-        "format":"gdd-workplan/0.1", "request":to_json(request)?,
+        "format":plan_format, "request":to_json(request)?,
         "project_id": string(get(&manifest.value, "project").expect("validated manifest"), "id"),
         "spec_revision":snapshot.revision, "snapshot":snapshot, "scope":scope, "packages":packages,
         "notice":"Derived product data; not authorization, executed evidence or an instruction to launch tools."
@@ -393,11 +434,41 @@ fn requirements<'a>(
     required
 }
 
+/// Preserve every direction and locator while shipping each piece of prose once.
+fn package_knowledge(scoped: KnowledgeIndex) -> io::Result<Json> {
+    let mut excerpts = BTreeMap::new();
+    let mut links = Vec::with_capacity(scoped.links.len());
+    for mut link in scoped.links {
+        let excerpt = link.excerpt.take();
+        let mut serialized = serde_json::to_value(link)?;
+        let fields = serialized
+            .as_object_mut()
+            .expect("serialized knowledge link");
+        fields.remove("excerpt");
+        if let Some(text) = excerpt {
+            let id = format!("sha256:{}", crate::sha256(text.as_bytes()));
+            excerpts.entry(id.clone()).or_insert(text);
+            fields.insert("excerpt_ref".into(), id.into());
+        }
+        links.push(serialized);
+    }
+    Ok(json!({
+        "format": "gdd-package-knowledge/0.1",
+        "project_id": scoped.project_id,
+        "spec_revision": scoped.spec_revision,
+        "pages": scoped.pages,
+        "questions": scoped.questions,
+        "links": links,
+        "excerpts": excerpts,
+    }))
+}
+
 fn packet<'a>(
     model: &Model<'a>,
     graph: &context::ContextGraph<'a>,
     package: &'a Value,
     active: &BTreeMap<&'a str, &'a Value>,
+    knowledge: Option<&KnowledgeIndex>,
 ) -> io::Result<Json> {
     let scope: BTreeSet<_> = strings(package, "scope").collect();
     let selected = graph.scope(scope.iter().copied());
@@ -475,6 +546,19 @@ fn packet<'a>(
         unreachable!()
     };
     out.extend(fields);
+    if let Some(index) = knowledge {
+        let targets = context
+            .nodes
+            .iter()
+            .chain(&context.edges)
+            .chain(&context.questions)
+            .map(|id| (*id).to_owned())
+            .collect::<Vec<_>>();
+        let scoped = index.select(&targets, None)?;
+        if !scoped.links.is_empty() {
+            packet["knowledge"] = package_knowledge(scoped)?;
+        }
+    }
     if is_03 {
         let nodes: Vec<_> = context.nodes.iter().copied().map(str::to_owned).collect();
         packet["boundaries"] = boundaries::boundary_view(model.bundle, Some(&nodes))?;

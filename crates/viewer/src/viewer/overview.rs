@@ -32,6 +32,8 @@ impl Viewer {
         ui.collapsing("Project fields", |ui| {
             ui.monospace(format!("{:#}", overview.project));
         });
+        self.wiki_overview(ui);
+        self.show_work(ui, None);
 
         ui.separator();
         ui.strong("The graph");

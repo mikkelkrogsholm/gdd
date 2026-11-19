@@ -821,21 +821,21 @@ fn endpoints(relation: &str) -> Option<(&'static [&'static str], &'static [&'sta
     })
 }
 
-fn get<'a>(value: &'a Value, key: &str) -> Option<&'a Value> {
+pub(crate) fn get<'a>(value: &'a Value, key: &str) -> Option<&'a Value> {
     match value {
         Value::Object(values) => values.get(key),
         _ => None,
     }
 }
 
-fn text(value: &Value) -> Option<&str> {
+pub(crate) fn text(value: &Value) -> Option<&str> {
     match value {
         Value::String(text) => Some(text),
         _ => None,
     }
 }
 
-fn string<'a>(value: &'a Value, key: &str) -> &'a str {
+pub(crate) fn string<'a>(value: &'a Value, key: &str) -> &'a str {
     get(value, key)
         .and_then(text)
         .expect("schema-validated string")

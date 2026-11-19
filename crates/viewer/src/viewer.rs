@@ -1,6 +1,8 @@
+mod knowledge;
 mod overview;
 mod projection;
 mod view_state;
+mod work;
 
 use std::sync::{Arc, mpsc};
 use std::thread;
@@ -627,7 +629,19 @@ impl Viewer {
                     ui.heading("Source declaration");
                     ui.monospace(id);
                     show_source(ui, source, true);
+                    if let Some(page) = self
+                        .graph
+                        .wiki
+                        .as_ref()
+                        .and_then(|w| w.pages.iter().position(|p| p.id == *id))
+                        && ui.link("Read wiki page").clicked()
+                    {
+                        self.inspect(Selection::WikiPage(page));
+                    }
                 }
+                Some(Selection::WikiPage(index)) => self.wiki_page(ui, index),
+                Some(Selection::WikiSection(index)) => self.wiki_section(ui, index),
+                Some(Selection::WikiQuestion(index)) => self.wiki_question(ui, index),
                 None => self.show_overview(ui),
             });
         // An inspector link can change self.selected while this record is being drawn.
@@ -648,6 +662,8 @@ impl Viewer {
         } else if self.visible.nodes.binary_search(&index).is_err() {
             ui.label("Hidden by current filters");
         }
+        self.show_knowledge_for(ui, &node.id);
+        self.show_work(ui, Some(index));
         self.show_boundary_details(ui, &graph, node);
         self.show_folded_node(ui, index);
         if let Ok(projection) = &graph.perspectives {
@@ -998,6 +1014,7 @@ impl Viewer {
         self.node_link(ui, edge.from);
         ui.strong("To");
         self.node_link(ui, edge.to);
+        self.show_knowledge_for(ui, &edge.id);
         show_record_details(ui, &graph, &edge.id, &edge.details);
         if let Some(data) = graph.input.artifact() {
             ui.collapsing("Canonical edge record", |ui| {

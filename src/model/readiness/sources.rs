@@ -66,7 +66,12 @@ impl Readiness<'_, '_> {
                 &[],
             );
         }
-        if let Err(error) = resolve(format, &asset.bytes, get(reference, "selector")) {
+        if let Err(error) = resolve(
+            format,
+            &asset.bytes,
+            get(reference, "selector"),
+            crate::knowledge::is_wiki_source(source),
+        ) {
             let code = if error == InputError::UnsupportedDepth {
                 "FORMAT_UNSUPPORTED"
             } else {
@@ -77,27 +82,12 @@ impl Readiness<'_, '_> {
     }
 }
 
-// Python splitlines includes Unicode and ASCII separators in addition to CR/LF.
-fn lines(source: &str) -> impl Iterator<Item = &str> {
-    source
-        .split_inclusive([
-            '\n', '\r', '\u{b}', '\u{c}', '\u{1c}', '\u{1d}', '\u{1e}', '\u{85}', '\u{2028}',
-            '\u{2029}',
-        ])
-        .scan(false, |cr, part| {
-            let skip = *cr && part == "\n";
-            *cr = part.ends_with('\r');
-            Some((!skip).then(|| {
-                part.trim_end_matches([
-                    '\n', '\r', '\u{b}', '\u{c}', '\u{1c}', '\u{1d}', '\u{1e}', '\u{85}',
-                    '\u{2028}', '\u{2029}',
-                ])
-            }))
-        })
-        .flatten()
-}
-
-fn resolve(format: &str, bytes: &[u8], selector: Option<&Value>) -> Result<(), InputError> {
+fn resolve(
+    format: &str,
+    bytes: &[u8],
+    selector: Option<&Value>,
+    wiki: bool,
+) -> Result<(), InputError> {
     let invalid = |message: &str| InputError::Invalid(message.into());
     let source = std::str::from_utf8(bytes).map_err(|e| InputError::Invalid(e.to_string()))?;
     let mut structured = match format {
@@ -111,6 +101,21 @@ fn resolve(format: &str, bytes: &[u8], selector: Option<&Value>) -> Result<(), I
     let value = get(selector, "value").and_then(text).unwrap_or("");
     match string(selector, "kind") {
         "opaque" => return Err(invalid("Opaque selector semantics are unsupported.")),
+        "markdown-heading" if wiki => {
+            let ordinal = match get(selector, "ordinal") {
+                None => None,
+                Some(Value::Number(n)) => Some(
+                    n.parse::<usize>()
+                        .ok()
+                        .filter(|i| *i > 0)
+                        .ok_or_else(|| invalid("Invalid heading ordinal."))?,
+                ),
+                Some(_) => return Err(invalid("Invalid heading ordinal.")),
+            };
+            crate::knowledge::markdown::Markdown::parse(source)
+                .heading(value, ordinal)
+                .map_err(|(_, reason)| invalid(reason))?;
+        }
         "markdown-heading" => {
             return Err(invalid(
                 "Markdown-heading selectors are preserved but not resolved by this version.",
@@ -121,14 +126,14 @@ fn resolve(format: &str, bytes: &[u8], selector: Option<&Value>) -> Result<(), I
                 .split_once("-L")
                 .and_then(|(_, end)| end.parse::<usize>().ok());
             if !super::super::is_line_range(value)
-                || end.is_none_or(|end| end > lines(source).count())
+                || end.is_none_or(|end| end > input::source_lines(source).count())
             {
                 return Err(invalid("Line range outside source."));
             }
         }
         "json-pointer" => {
             if format == "design-md/alpha" {
-                let mut lines = lines(source);
+                let mut lines = input::source_lines(source);
                 let mut frontmatter = Vec::new();
                 if lines.next() != Some("---") {
                     return Err(invalid("DESIGN.md has no parseable YAML frontmatter."));

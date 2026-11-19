@@ -5,11 +5,15 @@ use std::sync::Arc;
 use gdd::boundaries::boundary_view;
 use gdd::bundle::{self, Bundle, DocumentKind, Location};
 use gdd::input::Value;
+use gdd::knowledge::KnowledgeIndex;
 use gdd::perspectives::{PerspectiveBundle, perspective_data};
+use gdd::work_overview::WorkOverview;
 use serde_json::Value as Json;
 
 pub struct Graph {
     pub input: ViewInput,
+    pub work: Option<WorkOverview>,
+    pub wiki: Option<KnowledgeIndex>,
     pub nodes: Vec<Node>,
     pub edges: Vec<Edge>,
     // Shown records occupy the leading slice. The inspector can address every index.
@@ -329,6 +333,9 @@ pub enum Selection {
     Edge(usize),
     Bundle(usize, usize),
     Source(usize),
+    WikiPage(usize),
+    WikiSection(usize),
+    WikiQuestion(usize),
 }
 
 pub struct Source {
@@ -405,6 +412,99 @@ pub struct Edge {
 }
 
 impl Graph {
+    /// Detached views use only their captured data and an explicitly supplied report.
+    pub fn load_knowledge(&mut self, model: &Path, report: Option<&Path>) -> Result<(), String> {
+        let wiki: KnowledgeIndex = if let Some(path) = report {
+            let file = std::fs::File::open(path)
+                .map_err(|e| format!("Cannot open {}: {e}", path.display()))?;
+            serde_json::from_reader(std::io::BufReader::new(file))
+                .map_err(|e| format!("Cannot read {}: {e}", path.display()))?
+        } else if self.input.artifact().is_none()
+            && self
+                .sources
+                .values()
+                .any(|s| s.declaration["role"] == "knowledge")
+        {
+            gdd::knowledge::knowledge_index(model).map_err(|e| e.to_string())?
+        } else {
+            return Ok(());
+        };
+        let overview = self.input.overview();
+        if wiki.format != gdd::knowledge::FORMAT {
+            return Err(format!(
+                "Unsupported knowledge report format {}.",
+                wiki.format
+            ));
+        }
+        if Some(wiki.project_id.as_str()) != overview.project["id"].as_str() {
+            return Err("Knowledge report belongs to another project.".into());
+        }
+        let revision = overview.snapshot.and_then(|s| s["revision"].as_str());
+        if revision.is_none() || wiki.spec_revision.as_deref() != revision {
+            return Err(
+                "Knowledge report and graph must have the same resolved model revision.".into(),
+            );
+        }
+        let mut pages = BTreeSet::new();
+        for page in &wiki.pages {
+            if !self
+                .sources
+                .get(&page.id)
+                .is_some_and(|s| s.declaration["role"] == "knowledge")
+                || !pages.insert(&page.id)
+            {
+                return Err(format!(
+                    "Unknown or duplicate knowledge source {}.",
+                    page.id
+                ));
+            }
+        }
+        for link in &wiki.links {
+            if !pages.contains(&link.source) {
+                return Err(format!(
+                    "Knowledge link refers to missing page {}.",
+                    link.source
+                ));
+            }
+        }
+        self.wiki = Some(wiki);
+        Ok(())
+    }
+
+    pub fn load_work_report(&mut self, path: &Path) -> Result<(), String> {
+        let load = || -> Result<WorkOverview, String> {
+            let file = std::fs::File::open(path).map_err(|e| e.to_string())?;
+            let work: WorkOverview = serde_json::from_reader(std::io::BufReader::new(file))
+                .map_err(|e| e.to_string())?;
+            let model = self.input.overview();
+            if work.format != gdd::work_overview::FORMAT {
+                return Err(format!("Unsupported work report format {}.", work.format));
+            }
+            if Some(work.project_id.as_str()) != model.project["id"].as_str() {
+                return Err("Work report belongs to a different project.".into());
+            }
+            let revision = model.snapshot.and_then(|s| s["revision"].as_str());
+            if revision.is_none() || work.spec_revision.as_deref() != revision {
+                return Err(
+                    "Work report and graph must have the same resolved model revision.".into(),
+                );
+            }
+            let nodes: BTreeSet<_> = self.nodes.iter().map(|n| n.id.as_str()).collect();
+            if work.plan_current
+                && let Some(id) = work
+                    .packages
+                    .iter()
+                    .flat_map(|p| p.nodes.iter().chain(&p.scope))
+                    .find(|id| !nodes.contains(id.as_str()))
+            {
+                return Err(format!("Work report refers to an unknown model node {id}."));
+            }
+            Ok(work)
+        };
+        self.work = Some(load().map_err(|e| format!("Cannot open {}: {e}", path.display()))?);
+        Ok(())
+    }
+
     pub fn load(path: &Path) -> Result<Self, String> {
         let result = if path
             .extension()
@@ -606,6 +706,8 @@ impl Graph {
         };
         let perspectives = projection.and_then(|data| Perspectives::new(data, &indices, &edges));
         Ok(Self {
+            work: None,
+            wiki: None,
             actions: nodes
                 .iter()
                 .enumerate()

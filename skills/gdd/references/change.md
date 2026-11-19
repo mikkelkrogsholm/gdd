@@ -13,6 +13,8 @@ Keep unassessed dimensions, stale acceptance and partial analysis visible.
 Potential impact and supporting context do not grant write ownership, and a status
 exit code does not declare project completion. Both commands support JSON and text.
 
+Inspect the [knowledge links](gdd/docs/knowledge.md) for affected nodes before implementing a change. Review the source revision, compare the proposal with the adopted rule, and update the graph question when a stakeholder resolves the choice.
+
 For a changed requirement, register its input and make the authorized model change
 visible: base revision, changed IDs, rationale, and affected contracts/scenarios.
 Use `gdd diff BASE HEAD --format text` to review exact declaration changes by

@@ -76,6 +76,10 @@ code base. The host establishes actual isolation, permissions, and appropriate r
 access. Shared-checkout subagents should remain read-only; concurrent code writers
 must have isolated worktrees. Logical workspace paths prove no isolation.
 
+## Shared project knowledge
+
+When a project declares a supported wiki page, new plans use `gdd-workplan/0.2`. Requests, events and journal formats retain their existing versions. Each package with related wiki links contains `knowledge`, with its relevant pages, graph links, questions and deduplicated section excerpts. Read the preview at `knowledge.excerpts[link.excerpt_ref]` and use the source URI, selector and page digest to inspect a longer section. Reverification checks the frozen package against current inputs before dispatch. Existing 0.1 plans continue to use their original packet format. [Shared project wiki](docs/knowledge.md)
+
 ## Events and progress
 
 All events require `expected_revision` from the latest status and a unique

@@ -1,5 +1,6 @@
 //! Pure observations of one supplied Graphify artifact.
 
+pub mod alignment;
 mod decode;
 mod files;
 pub(crate) use files::same_projection;

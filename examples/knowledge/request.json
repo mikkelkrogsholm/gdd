@@ -1,0 +1,29 @@
+{
+  "format": "gdd-work-request/0.1",
+  "id": "work.invoices",
+  "objective": "Implement the approved total and retain the open display question for acceptance.",
+  "implementation": "implementation.billing",
+  "base_code_revision": "example-base",
+  "packages": [
+    {
+      "id": "package.calculate",
+      "scope": [
+        "action.total"
+      ],
+      "write_resources": [
+        "src/total.rs"
+      ],
+      "read_resources": [],
+      "workspace": "workspaces/calculate",
+      "deliverables": [
+        "Invoice calculation and its rounding example"
+      ],
+      "integration_plan": "Review the total against the published rule and exercise the two-line case."
+    }
+  ],
+  "serialized": [],
+  "integration": {
+    "owner": "actor.lead",
+    "checks": []
+  }
+}

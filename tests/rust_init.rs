@@ -243,3 +243,36 @@ fn competing_initializations_publish_one_complete_bundle() {
     assert_eq!(model["project"]["id"], winners[0].project_id);
     assert_eq!(records["project_id"], winners[0].project_id);
 }
+
+#[test]
+fn wiki_starter_is_navigable_before_the_first_build() {
+    let root = tempfile::tempdir().unwrap();
+    let draft = root.path().join("draft");
+    let receipt = gdd::init_project_with_wiki(&draft, "project.first", "First project").unwrap();
+    for file in receipt.files {
+        assert!(draft.join(file).is_file(), "{file}");
+    }
+    let manifest = draft.join("gdd.json");
+    let report = gdd::knowledge::knowledge_index(&manifest).unwrap();
+    assert_eq!(report.project_id, "project.first");
+    assert_eq!(
+        report.spec_revision.as_deref(),
+        Some(receipt.spec_revision.as_str())
+    );
+    assert!(
+        report
+            .links
+            .iter()
+            .any(|l| l.kind == "graph-reference" && l.target == "action.main")
+    );
+    assert!(
+        report
+            .links
+            .iter()
+            .any(|l| l.kind == "wiki-link" && l.target == "question.scope")
+    );
+    let graph = fs::read_to_string(draft.join("gdd-graph.md")).unwrap();
+    assert!(graph.contains("gdd-question-question.scope"));
+    assert!(graph.contains("wiki/project.md"));
+    assert!(gdd::init_project_with_wiki(&draft, "project.first", "Existing").is_err());
+}

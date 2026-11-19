@@ -1610,3 +1610,133 @@ fn saving_an_unresolved_model_reports_the_failure_without_creating_a_file() {
     assert!(!destination.exists());
     assert_eq!(fs::read_dir(recipient.path()).unwrap().count(), 0);
 }
+
+#[test]
+fn work_report_follows_the_selected_node_and_rejects_stale_model_revisions() {
+    let source = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/agent-native");
+    let model = source.join("model.gdd.json");
+    let temp = tempfile::tempdir().unwrap();
+    let plan = temp.path().join("run");
+    fs::create_dir_all(plan.join("events")).unwrap();
+    fs::copy(source.join("native-run/run.json"), plan.join("run.json")).unwrap();
+    let overview = gdd::work_overview::work_overview(&model, &plan, None).unwrap();
+    let report = temp.path().join("work.json");
+    fs::write(&report, serde_json::to_vec(&overview).unwrap()).unwrap();
+    let view = temp.path().join("quote.gddview");
+    gdd::view::render_view(&model, &view, &[]).unwrap();
+    for path in [&model, &view] {
+        let mut graph = Graph::load(path).unwrap();
+        graph.load_work_report(&report).unwrap();
+        let index = graph
+            .nodes
+            .iter()
+            .position(|node| node.id == "action.quote")
+            .unwrap();
+        let mut window = Window::from_graph(graph);
+        let whole = window.frame(Vec::new());
+        assert!(widget(&whole, Role::DisclosureTriangle, "package.tax · available").is_some());
+        assert!(widget(&whole, Role::DisclosureTriangle, "package.quote · blocked").is_some());
+        assert!(
+            widget(
+                &whole,
+                Role::Label,
+                "Waiting for package.tax to be integrated."
+            )
+            .is_some()
+        );
+        window.viewer.inspect(Selection::Node(index));
+        let scoped = window.frame(Vec::new());
+        assert!(widget(&scoped, Role::DisclosureTriangle, "package.tax · available").is_none());
+        assert!(widget(&scoped, Role::DisclosureTriangle, "package.quote · blocked").is_some());
+    }
+
+    let mut stale = serde_json::to_value(&overview).unwrap();
+    stale["spec_revision"] = "another-revision".into();
+    fs::write(&report, serde_json::to_vec(&stale).unwrap()).unwrap();
+    let mut graph = Graph::load(&view).unwrap();
+    let error = graph.load_work_report(&report).unwrap_err();
+    assert!(error.contains("same resolved model revision"), "{error}");
+    assert!(graph.work.is_none());
+}
+
+#[test]
+fn wiki_sections_connect_a_detached_view_with_graph_records_and_questions() {
+    let dir = tempfile::tempdir().unwrap();
+    let draft = dir.path().join("draft");
+    gdd::init_project(&draft, "project.wiki", "Rounding").unwrap();
+    let model = draft.join("gdd.json");
+    let mut json: Json = serde_json::from_slice(&fs::read(&model).unwrap()).unwrap();
+    json["sources"]["source.policy"] = serde_json::json!({
+        "role":"knowledge", "format":"text/markdown", "uri":"policy.md", "title":"Fare policy", "normative": false
+    });
+    json["sources"]["source.notes"] = serde_json::json!({
+        "role":"input", "format":"text/plain", "uri":"workshop.txt", "title":"Workshop notes", "normative":false, "revision":{"producer_revision":"workshop-1"}
+    });
+    json["sources"]["source.policy"]["derived_from"] = serde_json::json!([{
+        "source":"source.notes", "revision":{"producer_revision":"workshop-1"}
+    }]);
+    json["nodes"]["action.main"]["source_refs"] = serde_json::json!([{
+        "source":"source.policy", "purpose":"provenance", "selector":{"kind":"markdown-heading","value":"Rounding"}
+    }]);
+    fs::write(&model, serde_json::to_vec(&json).unwrap()).unwrap();
+    fs::write(draft.join("policy.md"), "# Rounding\nRound once at the end.\nSee [calculation](gdd:node/action.main) and [clarification](gdd:question/question.scope).\n").unwrap();
+    let mut direct = Graph::load(&model).unwrap();
+    direct.load_knowledge(&model, None).unwrap();
+    let report = dir.path().join("knowledge.json");
+    fs::write(&report, serde_json::to_vec(&direct.wiki).unwrap()).unwrap();
+    let view = dir.path().join("detached.gddview");
+    gdd::view::render_view(&model, &view, &[]).unwrap();
+    json["sources"]["source.policy"]["revision"] = serde_json::json!({"sha256": "0".repeat(64)});
+    fs::write(&model, serde_json::to_vec(&json).unwrap()).unwrap();
+    let mut changed = Graph::load(&model).unwrap();
+    changed.load_knowledge(&model, None).unwrap();
+    let mut changed = Window::from_graph(changed);
+    changed.click(Role::Link, "Fare policy");
+    let stale_page = changed.frame(Vec::new());
+    assert!(widget(&stale_page, Role::Label, "Advisory source · stale").is_some());
+    changed.click(Role::Link, "Rounding");
+    let stale_section = changed.frame(Vec::new());
+    assert!(
+        widget(
+            &stale_section,
+            Role::Label,
+            "The page bytes differ from its declared SHA-256."
+        )
+        .is_some()
+    );
+    fs::remove_dir_all(&draft).unwrap();
+
+    let mut graph = Graph::load(&view).unwrap();
+    graph.load_knowledge(&view, Some(&report)).unwrap();
+    let action = graph
+        .nodes
+        .iter()
+        .position(|n| n.id == "action.main")
+        .unwrap();
+    let mut window = Window::from_graph(graph);
+    window.click(Role::Link, "Fare policy");
+    window.click(Role::Link, "source.notes");
+    assert!(matches!(window.viewer.selected, Some(Selection::Source(_))));
+    window.viewer.open_overview();
+    window.click(Role::Link, "Fare policy");
+    window.click(Role::Link, "Rounding");
+    window.click(Role::Link, "question.scope");
+    assert!(matches!(
+        window.viewer.selected,
+        Some(Selection::WikiQuestion(_))
+    ));
+    window.click(Role::Link, "action.main");
+    assert_eq!(window.viewer.selected, Some(Selection::Node(action)));
+    window.click(Role::Link, "Fare policy · Rounding");
+    let section = window.frame(Vec::new());
+    assert!(widget(&section, Role::Link, "action.main").is_some());
+
+    let mut stale: Json = serde_json::from_slice(&fs::read(&report).unwrap()).unwrap();
+    stale["spec_revision"] = "another-revision".into();
+    fs::write(&report, serde_json::to_vec(&stale).unwrap()).unwrap();
+    let error = Graph::load(&view)
+        .unwrap()
+        .load_knowledge(&view, Some(&report))
+        .unwrap_err();
+    assert!(error.contains("same resolved model revision"), "{error}");
+}

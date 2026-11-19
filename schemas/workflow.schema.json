@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "GDD workflow tool envelopes 0.1 (not GDD core)",
+  "title": "GDD workflow tool envelopes and workplans 0.1/0.2",
   "oneOf": [
     {
       "$ref": "#/$defs/request"
@@ -156,7 +156,7 @@
       "type": "object",
       "properties": {
         "format": {
-          "const": "gdd-workplan/0.1"
+          "enum": ["gdd-workplan/0.1", "gdd-workplan/0.2"]
         },
         "request": {
           "$ref": "#/$defs/request"
@@ -207,6 +207,8 @@
         "notice",
         "revision"
       ],
+      "if": {"properties": {"format": {"const": "gdd-workplan/0.1"}}},
+      "then": {"properties": {"packages": {"items": {"not": {"required": ["knowledge"]}}}}},
       "additionalProperties": false
     },
     "event": {
@@ -613,6 +615,22 @@
             "extensions"
           ],
           "additionalProperties": false
+        },
+        "knowledge": {
+          "type": "object",
+          "required": ["format", "project_id", "pages", "links", "questions", "excerpts"],
+          "properties": {
+            "format": {"const": "gdd-package-knowledge/0.1"},
+            "project_id": {"type": "string"},
+            "pages": {"type": "array", "minItems": 1},
+            "links": {"type": "array", "minItems": 1},
+            "questions": {"type": "array"},
+            "excerpts": {
+              "type": "object",
+              "propertyNames": {"pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])"},
+              "additionalProperties": {"type": "string"}
+            }
+          }
         },
         "model_slice": {
           "type": "object"

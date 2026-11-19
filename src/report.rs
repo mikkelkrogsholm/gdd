@@ -9,7 +9,7 @@ use crate::valid_id;
 use crate::validation::{Activity, Profile};
 
 /// Verdicts in increasing order of precedence for aggregation.
-#[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd, serde::Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum CheckResult {
     Pass,

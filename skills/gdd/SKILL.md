@@ -45,6 +45,10 @@ and open it with `gdd-viewer graph.gddview`. Switch between **User journey**,
 **Components** and **Data model**. Follow inspector links to the same canonical records.
 This adds no implementation or acceptance evidence.
 
+Use the [work overview](references/gdd/docs/work-overview.md) to choose a package and explain blockers. For a refactoring, [compare current observations to the intended graph](references/gdd/docs/alignment.md). Connect [tracker issues](references/gdd/docs/issues.md) to stable package IDs across attempts and plans. Report applicable checks separately from tracker state.
+
+Use the [shared project wiki](references/gdd/docs/knowledge.md) throughout the project. For a new brief, capture stakeholder goals and open decisions there. For legacy work, link observations and requested behavior separately. Search before asking a repeated question, read the knowledge captured in each work package, and return adopted decisions to the wiki, graph and applicable scenarios.
+
 ## Keep the decisions separate
 
 The project's trusted mandate and platform permissions determine authority. Reuse

@@ -6,6 +6,7 @@ existing agent runtime to edit and check code.
 1. Read the GDD manifest, relevant input/Graphify observations, and actual code.
    Propose and iterate the agent's graph changes when the mandate includes this. Show
    the result with `gdd view`. Observation is not accepted intention.
+   Use the [shared wiki](../docs/knowledge.md) to locate the standard or decision behind each public obligation. Link the relevant section to its graph scope. When stakeholders disagree, target a graph question at the affected work and keep it visible to the worker.
 2. Choose a bounded objective, implementation, and host-verified code base. Prepare
    `gdd-work-request/0.1` with scope, explicit file areas, deliverables, and
    integration checks. Specify only actual work dependencies as `serialized`.

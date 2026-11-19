@@ -13,11 +13,10 @@ Use the installed Rust CLI (`gdd`) and desktop viewer (`gdd-viewer`). From the
 parent directory, create a draft in a new directory named `project`.
 
 ```sh
-gdd init project --project-id project.example --title "Example project"
+gdd init project --wiki --project-id project.example --title "Example project"
 ```
 
-Read the draft manifest at `project/gdd.json` and the accompanying
-`SOURCES.md` and `records.json` in the same directory. Fill the project's real goal
+Use `project/wiki/project.md` to capture the outcome, relevant standards and unresolved choices. Follow the [wiki guide](gdd/docs/knowledge.md) to pin an adopted source or publish browsable backlinks. Open `project/gdd-graph.md` to follow those backlinks. Read the draft manifest at `project/gdd.json` and its `records.json` ledger. Fill the project's real goal
 and preserve the input as a source. The scaffold contains no trusted mandate or
 implementation evidence. If initialization is unavailable, install the documented
 CLI or author a JSON/YAML manifest from [FORMAT](gdd/standard/FORMAT.md) and

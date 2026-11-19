@@ -188,6 +188,7 @@ pub struct Bundle {
     // a project identity or record declarations. Reuse these checks in reports.
     representation_checks: BTreeMap<usize, Check>,
     normative_sources: BTreeMap<String, Asset>,
+    source_mismatches: BTreeMap<String, String>,
     fragment_declarations: BTreeMap<String, String>,
     advisory_paths: BTreeMap<String, Result<String, String>>,
     advisory_assets: BTreeMap<String, Asset>,
@@ -351,6 +352,10 @@ impl Bundle {
 
     pub fn normative_sources(&self) -> &BTreeMap<String, Asset> {
         &self.normative_sources
+    }
+
+    pub(crate) fn source_mismatch(&self, id: &str) -> Option<&str> {
+        self.source_mismatches.get(id).map(String::as_str)
     }
 
     pub(crate) fn contract_asset(&self, id: &str) -> Result<&Asset, &str> {
@@ -517,6 +522,51 @@ pub(crate) fn load_for_inspection(path: &Path) -> Bundle {
 /// empty scope captures all contract inputs for subsequent readiness queries.
 pub fn load_for_readiness(path: &Path, scope: &[String]) -> Bundle {
     capture(path, None, Some(scope))
+}
+
+/// Freeze the declared local Markdown knowledge pages as well as scoped readiness inputs.
+pub fn load_for_knowledge(path: &Path, scope: &[String]) -> Bundle {
+    let mut bundle = load_for_readiness(path, scope);
+    let Some(root) = bundle.path().parent() else {
+        return bundle;
+    };
+    let reader = Reader {
+        primary: None,
+        root: root.to_owned(),
+        seen: BTreeSet::new(),
+    };
+    let Some(sources) = bundle
+        .manifest()
+        .and_then(|m| registry(&m.value, "sources"))
+    else {
+        return bundle;
+    };
+    let mut ids = BTreeSet::new();
+    for (id, source) in sources
+        .iter()
+        .filter(|(_, s)| crate::knowledge::is_wiki_source(s))
+    {
+        ids.insert(id.as_str());
+        ids.extend(
+            crate::model::items(source, "derived_from")
+                .iter()
+                .filter_map(|origin| get_string(origin, "source")),
+        );
+    }
+    let pages = ids
+        .into_iter()
+        .filter_map(|id| {
+            let source = sources.get(id)?;
+            if get(source, "normative") != Some(&Value::Boolean(false))
+                || bundle.advisory_paths.contains_key(id)
+            {
+                return None;
+            }
+            Some((id.to_owned(), get_string(source, "uri")?.to_owned()))
+        })
+        .collect();
+    capture_advisory_paths(&reader, &mut bundle, pages);
+    bundle
 }
 
 /// Capture a primary model, its contract sources, and an explicit secondary
@@ -808,12 +858,15 @@ fn load_model(reader: &mut Reader, bundle: &mut Bundle, paired: bool) {
             Ok(asset) if asset.sha256 == hash => {
                 bundle.normative_sources.insert(id.to_owned(), asset);
             }
-            Ok(_) => bundle.diagnostics.push(invalid(
-                "CONTRACT_SOURCE_UNPINNED",
-                file,
-                &pointer,
-                "Normative source hash mismatch.",
-            )),
+            Ok(asset) => {
+                bundle.source_mismatches.insert(id.into(), asset.sha256);
+                bundle.diagnostics.push(invalid(
+                    "CONTRACT_SOURCE_UNPINNED",
+                    file,
+                    &pointer,
+                    "Normative source hash mismatch.",
+                ));
+            }
             Err(mut issue) => {
                 issue.location = Location {
                     file: file.into(),
@@ -1033,6 +1086,10 @@ fn capture_advisory_contracts(reader: &Reader, bundle: &mut Bundle, scope: &[Str
             Some((id.to_owned(), get_string(source, "uri")?.to_owned()))
         })
         .collect();
+    capture_advisory_paths(reader, bundle, advisory);
+}
+
+fn capture_advisory_paths(reader: &Reader, bundle: &mut Bundle, advisory: Vec<(String, String)>) {
     for (id, uri) in advisory {
         let result = reader.relative_path(&uri).and_then(|path| {
             if let Some(observed) = bundle.captured_asset(&path) {

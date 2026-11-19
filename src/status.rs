@@ -207,7 +207,10 @@ pub fn project_status_with_run(
     {
         capture_scope.extend(journal.request_scope().map(str::to_owned));
     }
-    let bundle = bundle::load_for_readiness(path, &capture_scope);
+    let bundle = match &journal {
+        Ok(journal) => crate::workflow::capture_plan_inputs(path, &capture_scope, journal.plan()),
+        Err(_) => bundle::load_for_readiness(path, &capture_scope),
+    };
     compose(&bundle, request, Some(journal))
 }
 

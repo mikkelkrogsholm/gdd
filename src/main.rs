@@ -1,3 +1,8 @@
+#[path = "cli/wiki.rs"]
+mod wiki_cli;
+#[path = "cli/work.rs"]
+mod work_cli;
+
 use std::fs::File;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
@@ -81,6 +86,18 @@ enum WorkflowCommand {
 
 #[derive(Subcommand)]
 enum GraphifyCommand {
+    /// Compare reviewed links between ideal model nodes and observed code.
+    Align {
+        path: PathBuf,
+        #[arg(long)]
+        observations: PathBuf,
+        #[arg(long)]
+        mapping: PathBuf,
+        #[arg(long)]
+        previous_observations: Option<PathBuf>,
+        #[arg(long)]
+        output: Option<PathBuf>,
+    },
     /// Preserve a raw artifact and publish a new observation bundle.
     #[command(args_override_self = true)]
     Import {
@@ -131,6 +148,15 @@ enum GraphifyCommand {
 
 #[derive(Subcommand)]
 enum Command {
+    /// Show scoped work packages, blockers, implementation checks and issue links.
+    Work(work_cli::WorkArgs),
+    /// Inspect project wiki sections, graph references and open questions.
+    Wiki(wiki_cli::WikiArgs),
+    /// Link tracker issues and publish work results.
+    Issues {
+        #[command(subcommand)]
+        command: work_cli::IssueCommand,
+    },
     /// Check explicit architecture constraints against static Python imports.
     #[command(args_override_self = true)]
     CheckCode {
@@ -173,6 +199,9 @@ enum Command {
         project_id: String,
         #[arg(long, default_value = DEFAULT_TITLE, allow_negative_numbers = true)]
         title: String,
+        /// Start the graph with a linked, editable project wiki.
+        #[arg(long)]
+        wiki: bool,
     },
     /// Summarize scoped assessments and open questions from one model capture.
     #[command(args_override_self = true)]
@@ -439,6 +468,22 @@ fn workflow_command(command: WorkflowCommand) -> io::Result<ExitCode> {
 fn graphify_command(command: GraphifyCommand) -> io::Result<ExitCode> {
     use gdd::graphify::{GraphifyOptions, export_graphify, import_graphify, verify_graphify};
     let report = match command {
+        GraphifyCommand::Align {
+            path,
+            observations,
+            mapping,
+            previous_observations,
+            output,
+        } => {
+            let alignment = gdd::graphify::alignment::align_with_previous(
+                &path,
+                &observations,
+                &mapping,
+                previous_observations.as_deref(),
+            )?;
+            write_output(output.as_deref(), &alignment)?;
+            return Ok(ExitCode::SUCCESS);
+        }
         GraphifyCommand::Import {
             path,
             output,
@@ -492,13 +537,26 @@ fn graphify_command(command: GraphifyCommand) -> io::Result<ExitCode> {
 
 fn run() -> io::Result<ExitCode> {
     match Cli::parse().command {
+        Command::Work(args) => work_cli::show(args)?,
+        Command::Wiki(args) => return wiki_cli::show(args),
+        Command::Issues { command } => work_cli::issue_command(command)?,
         Command::Init {
             path,
             project_id,
             title,
+            wiki,
         } => {
-            let receipt = init_project(&path, &project_id, &title)?;
-            write_json(&mut io::stdout().lock(), &receipt)?;
+            if wiki {
+                write_json(
+                    &mut io::stdout().lock(),
+                    &gdd::init_project_with_wiki(&path, &project_id, &title)?,
+                )?;
+            } else {
+                write_json(
+                    &mut io::stdout().lock(),
+                    &init_project(&path, &project_id, &title)?,
+                )?;
+            }
         }
         Command::Workflow { command } => return workflow_command(command),
         Command::CheckCode {

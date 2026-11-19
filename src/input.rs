@@ -9,6 +9,26 @@ use libyaml_safer::{EventData, Parser, ScalarStyle};
 
 pub const MAX_CONTAINER_DEPTH: usize = 256;
 
+// Python splitlines includes Unicode and ASCII separators in addition to CR/LF.
+pub(crate) fn source_lines(source: &str) -> impl Iterator<Item = &str> {
+    source
+        .split_inclusive([
+            '\n', '\r', '\u{b}', '\u{c}', '\u{1c}', '\u{1d}', '\u{1e}', '\u{85}', '\u{2028}',
+            '\u{2029}',
+        ])
+        .scan(false, |cr, part| {
+            let skip = *cr && part == "\n";
+            *cr = part.ends_with('\r');
+            Some((!skip).then(|| {
+                part.trim_end_matches([
+                    '\n', '\r', '\u{b}', '\u{c}', '\u{1c}', '\u{1d}', '\u{1e}', '\u{85}',
+                    '\u{2028}', '\u{2029}',
+                ])
+            }))
+        })
+        .flatten()
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Value {
     Null,

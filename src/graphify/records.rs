@@ -5,13 +5,13 @@ use serde_json::{Map, Value, json};
 use std::collections::BTreeMap;
 
 #[derive(Ord, PartialOrd, Eq, PartialEq)]
-enum Identity {
+pub(super) enum Identity {
     Text(String),
     // Signed coefficient with no trailing zeros, and its power of ten.
     Number(String, BigInt),
 }
 
-fn identity(value: &Value) -> Option<Identity> {
+pub(super) fn identity(value: &Value) -> Option<Identity> {
     match value {
         Value::String(s) if !s.is_empty() => Some(Identity::Text(s.clone())),
         Value::Number(n) => {
