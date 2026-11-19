@@ -1,5 +1,6 @@
 mod communities;
 mod drag;
+mod groups;
 pub use communities::{CommunityGeometry, community_color};
 use drag::NodeDrag;
 pub use drag::RouteWorker;
@@ -142,8 +143,10 @@ impl Layout {
     ) -> Result<Self, String> {
         // Graphlay retains insertion order, including routes reversed for layer assignment.
         let mut builder = GraphBuilder::new();
-        let ids: Vec<_> = nodes
-            .map(|i| {
+        let records: Vec<_> = nodes.collect();
+        let ids: Vec<_> = records
+            .iter()
+            .map(|&i| {
                 let width =
                     (24.0 + 7.0 * graph.nodes[i].label.chars().count() as f64).clamp(132.0, 236.0);
                 builder.add_box(Size::new(width, 44.0))
@@ -160,9 +163,14 @@ impl Layout {
             builder.connect(from, to);
             edge_ids.push(i);
         }
-        let topology = Arc::new(builder.build());
-        let drawing = graphlay::layout(&topology, &layout_options(edge_ids.len()))
-            .map_err(|error| error.to_string())?;
+        let mut topology = builder.build();
+        let drawing = groups::layout(
+            graph,
+            &records,
+            &mut topology,
+            &layout_options(edge_ids.len()),
+        )
+        .map_err(|error| error.to_string())?;
         let nodes = drawing
             .nodes
             .iter()
@@ -186,7 +194,7 @@ impl Layout {
             nodes,
             routes,
             bounds: Rect::from_min_max(position(drawing.bounds.min), position(drawing.bounds.max)),
-            topology,
+            topology: Arc::new(topology),
             drag: None,
             revision: 0,
             needs_routing: false,
@@ -480,10 +488,12 @@ impl Layout {
     }
 }
 
+const LARGE_EDGE_COUNT: usize = 1_000;
+
 fn layout_options(edge_count: usize) -> LayoutOptions {
     let mut options = LayoutOptions::layered_default();
     // Straightening chains can dominate layout time on large projections.
-    if edge_count >= 1_000 {
+    if edge_count >= LARGE_EDGE_COUNT {
         options.tuning.coords.flatten_room = 0;
     }
     options

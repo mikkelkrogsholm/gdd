@@ -61,7 +61,9 @@ impl Canvas {
         let size = if self.camera.zoom == Zoom::Fit {
             vec2(600.0, 400.0)
         } else {
-            vec2(1900.0, 1200.0)
+            // Keep every route selectable throughout this fixed-zoom gesture.
+            // Scrollbars animate the viewport when a drop changes its bounds.
+            vec2(2600.0, 2400.0)
         };
         let input = egui::RawInput {
             screen_rect: Some(Rect::from_min_size(Pos2::ZERO, size)),
@@ -117,7 +119,12 @@ impl Canvas {
             .shapes
             .iter()
             .filter_map(|item| match &item.shape {
-                egui::Shape::Rect(r) if r.corner_radius.nw == 6 => Some(r.rect),
+                // Scrollbar handles can have the same corner radius as a node.
+                egui::Shape::Rect(r)
+                    if r.corner_radius.nw == 6 && r.stroke_kind == egui::StrokeKind::Inside =>
+                {
+                    Some(r.rect)
+                }
                 _ => None,
             })
             .collect()

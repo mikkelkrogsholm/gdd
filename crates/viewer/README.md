@@ -128,9 +128,16 @@ drawing in scope. Expand **Canonical node record** or **Canonical edge record**
 to inspect the full saved record. See the [artifact contract](../../VIEWER.md#share-a-native-view).
 
 The viewer computes the unfolded left-to-right layered layout once using the
-pure Rust graphlay library. Folding lays out the visible figures and directed
-bundles. To draw large graphs sooner, the viewer skips a pass that straightens
-edge chains when laying out at least 1,000 edges. Each folded bundle counts as
+pure Rust graphlay library. It keeps related figures together using the first
+in-scope direct community by canonical ID, or a chain of unique owners leading
+to a community or component. Scenarios and rules can follow the nodes they
+exercise, apply to or change. These placement choices preserve every declared
+membership, including shared ones. The viewer packs groups into rows and routes
+every arrow around the resulting node positions. Folding lays out the visible
+figures and directed bundles. With at least 1,000 edges, graphlay computes
+the layers for the whole drawing, and the viewer separates groups vertically
+to preserve those layers. It also skips a pass that straightens edge chains.
+Each folded bundle counts as
 one edge. If the filters change during layout, the viewer draws the latest
 projection. You can search the node list, inspect nodes and follow connections
 while graphlay runs. When the drawing is ready, the canvas scrolls to your
