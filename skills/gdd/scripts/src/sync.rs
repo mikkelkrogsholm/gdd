@@ -9,6 +9,8 @@ use std::path::{Path, PathBuf};
 use std::sync::LazyLock;
 use walkdir::WalkDir;
 
+const PRODUCT: &str = "extensions/product-0.1.json";
+
 const CORE: &[&str] = &[
     "AGENTS.md",
     "GDD.md",
@@ -23,7 +25,7 @@ const CORE: &[&str] = &[
     "docs/inspection.md",
     "docs/model-diff.md",
     "docs/PERSPECTIVES.md",
-    "gdd_validator/extensions/product-0.1.json",
+    PRODUCT,
 ];
 
 #[derive(Default, Deserialize, Serialize)]
@@ -185,7 +187,8 @@ fn catalog(index: &Index) -> String {
         .iter()
         .map(|entry| {
             let name = &entry.source;
-            format!("| `{name}` | [{name}](gdd/{name}) |")
+            let copy = entry.path.strip_prefix("references/gdd/").unwrap();
+            format!("| `{name}` | [{copy}](gdd/{copy}) |")
         })
         .collect();
     let targets: BTreeSet<_> = index
@@ -228,14 +231,21 @@ fn assets(root: &Path, origin: Origin) -> Result<BTreeMap<String, Vec<u8>>> {
                 .repository_only_links
                 .extend(citations(root, name, &data, &names)?);
         }
-        let path = format!("{COPIES}/{name}");
-        index.files.push(Entry {
-            path: path.clone(),
-            source: name.to_owned(),
-            sha256: digest(&data),
-            bytes: data.len() as u64,
-        });
-        assets.insert(path, data);
+        let mut copies = vec![name.clone()];
+        if name == PRODUCT {
+            // Keep the path shipped in earlier standalone skills.
+            copies.push(format!("gdd_validator/{name}"));
+        }
+        for copy in copies {
+            let path = format!("{COPIES}/{copy}");
+            index.files.push(Entry {
+                path: path.clone(),
+                source: name.to_owned(),
+                sha256: digest(&data),
+                bytes: data.len() as u64,
+            });
+            assets.insert(path, data.clone());
+        }
     }
     let mut bytes = serde_json::to_vec_pretty(&index)?;
     bytes.push(b'\n');

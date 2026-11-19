@@ -124,6 +124,25 @@ fn source_fixture(root: &Path) -> PathBuf {
 }
 
 #[test]
+fn product_extension_syncs_to_both_installed_paths_from_the_canonical_source() {
+    let temp = tempdir().unwrap();
+    let root = temp.path();
+    let skill = source_fixture(root);
+    let cli = Path::new(BINARY);
+    let product = "extensions/product-0.1.json";
+    assert!(!root.join("gdd_validator").exists());
+    write(&root.join(product), "canonical bytes");
+    success(invoke(cli, root, &["sync"]));
+    for copy in [product.to_owned(), format!("gdd_validator/{product}")] {
+        assert_eq!(
+            fs::read(skill.join("references/gdd").join(copy)).unwrap(),
+            b"canonical bytes"
+        );
+    }
+    success(invoke(cli, &skill, &["verify"]));
+}
+
+#[test]
 fn sync_checks_and_repairs_drift_and_preflights_all_required_sources() {
     let temp = tempdir().unwrap();
     let root = temp.path();

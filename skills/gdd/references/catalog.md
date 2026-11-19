@@ -25,7 +25,8 @@ drift detection, not a signature, authorization, or new execution evidence.
 | `docs/PERSPECTIVES.md` | [docs/PERSPECTIVES.md](gdd/docs/PERSPECTIVES.md) |
 | `docs/inspection.md` | [docs/inspection.md](gdd/docs/inspection.md) |
 | `docs/model-diff.md` | [docs/model-diff.md](gdd/docs/model-diff.md) |
-| `gdd_validator/extensions/product-0.1.json` | [gdd_validator/extensions/product-0.1.json](gdd/gdd_validator/extensions/product-0.1.json) |
+| `extensions/product-0.1.json` | [extensions/product-0.1.json](gdd/extensions/product-0.1.json) |
+| `extensions/product-0.1.json` | [gdd_validator/extensions/product-0.1.json](gdd/gdd_validator/extensions/product-0.1.json) |
 | `schemas/README.md` | [schemas/README.md](gdd/schemas/README.md) |
 | `schemas/boundaries.schema.json` | [schemas/boundaries.schema.json](gdd/schemas/boundaries.schema.json) |
 | `schemas/code-observation.schema.json` | [schemas/code-observation.schema.json](gdd/schemas/code-observation.schema.json) |

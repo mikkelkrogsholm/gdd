@@ -15,11 +15,11 @@ fields express domain types and references independently of a database or
 implementation language. Keep storage, framework and language decisions in
 component descriptions or later implementation contracts when needed.
 
-Copy the exact [product extension](../gdd_validator/extensions/product-0.1.json)
+Copy the exact [product extension](../extensions/product-0.1.json)
 into the manifest's local asset directory. Declare its `namespace: gdd.product`,
 `version: 0.1.0`, relative `path`, and SHA-256 of the exact file bytes in the
 manifest's `extensions` registry. The extension is also bundled in the portable
-GDD skill at `references/gdd/gdd_validator/extensions/product-0.1.json`.
+GDD skill at `references/gdd/extensions/product-0.1.json`.
 Never reconstruct a similarly named definition and assume it has these semantics.
 The normal loader checks declared asset hashes; perspectives additionally pins
 interpretation to the exact shipped version, definition and bytehash.

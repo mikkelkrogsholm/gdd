@@ -12,13 +12,14 @@ import sys
 from urllib.parse import unquote, urlsplit
 
 
+PRODUCT = "extensions/product-0.1.json"
 CORE_REFERENCES = (
     "AGENTS.md", "GDD.md", "SPEC.md", "WORKFLOW.md", "VALIDATOR.md",
     "GRAPHIFY.md", "VIEWER.md", "HOST.md", "agents/gdd-lead.md", "agents/gdd-worker.md",
     "docs/inspection.md",
     "docs/model-diff.md",
     "docs/PERSPECTIVES.md",
-    "gdd_validator/extensions/product-0.1.json",
+    PRODUCT,
 )
 COPY_DIRECTORY = Path("references/gdd")
 INDEX_PATH = Path("references/source-index.json")
@@ -65,18 +66,23 @@ def generated_assets(root: Path, origin: dict) -> dict[Path, bytes]:
     paths = source_paths(root)
     assets = {}
     entries = []
+    rows = []
     for source in paths:
         data = (root / source).read_bytes()
-        destination = COPY_DIRECTORY / source
-        assets[destination] = data
-        entries.append({"path": destination.as_posix(), "source": source,
-                        "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)})
+        copies = [source]
+        if source == PRODUCT:
+            copies.append(f"gdd_validator/{source}")
+        for copy in copies:
+            destination = COPY_DIRECTORY / copy
+            assets[destination] = data
+            entries.append({"path": destination.as_posix(), "source": source,
+                            "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)})
+            rows.append(f"| `{source}` | [{copy}](gdd/{copy}) |")
     optional = repository_only_links(root, set(paths))
     index = {"format": "gdd-skill-assets/1", "origin": origin,
              "files": entries, "repository_only_links": optional}
     assets[INDEX_PATH] = (json.dumps(index, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
     template = Path(__file__).resolve().parents[1] / "skills/gdd/scripts/catalog.template"
-    rows = (f"| `{source}` | [{source}](gdd/{source}) |" for source in paths)
     targets = sorted({link["source_target"] for link in optional})
     catalog = template.read_text(encoding="utf-8").format(
         source_rows="\n".join(rows), optional_targets="\n".join(f"- `{target}`" for target in targets))

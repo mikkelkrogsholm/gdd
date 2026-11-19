@@ -1,0 +1,141 @@
+{
+  "format": "gdd-extension/0.2",
+  "namespace": "gdd.product",
+  "version": "0.1.0",
+  "node_kinds": {
+    "gdd.product.actor": {
+      "description": "A human user participating in a journey; services and automated agents are components, not actors.",
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "goal": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "gdd.product.journey_step": {
+      "description": "A human-facing journey step; incomplete sketches are allowed.",
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "user_action": {
+            "type": "string",
+            "minLength": 1
+          },
+          "system_response": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "relations": {
+    "gdd.product.participates": {
+      "description": "A human participates in the journey step.",
+      "from": [
+        "gdd.product.actor"
+      ],
+      "to": [
+        "gdd.product.journey_step"
+      ],
+      "context": "both",
+      "dependency": false,
+      "effect": "none",
+      "data_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    "gdd.product.next": {
+      "description": "A possible next journey step; branches and cycles are allowed, without execution dependency semantics.",
+      "from": [
+        "gdd.product.journey_step"
+      ],
+      "to": [
+        "gdd.product.journey_step"
+      ],
+      "context": "both",
+      "dependency": false,
+      "effect": "none",
+      "data_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    "gdd.product.realized_by": {
+      "description": "A component is responsible for realizing the journey step.",
+      "from": [
+        "gdd.product.journey_step"
+      ],
+      "to": [
+        "component"
+      ],
+      "context": "both",
+      "dependency": false,
+      "effect": "none",
+      "data_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    "gdd.product.uses": {
+      "description": "A component uses a domain entity without implying storage technology or an executable effect.",
+      "from": [
+        "component"
+      ],
+      "to": [
+        "entity"
+      ],
+      "context": "both",
+      "dependency": false,
+      "effect": "none",
+      "data_schema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    "gdd.product.relates_to": {
+      "description": "A conceptual relationship between entities, independent of database or programming language.",
+      "from": [
+        "entity"
+      ],
+      "to": [
+        "entity"
+      ],
+      "context": "both",
+      "dependency": false,
+      "effect": "none",
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "from_cardinality": {
+            "enum": [
+              "0..1",
+              "1",
+              "0..*",
+              "1..*"
+            ]
+          },
+          "to_cardinality": {
+            "enum": [
+              "0..1",
+              "1",
+              "0..*",
+              "1..*"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -69,8 +69,8 @@
     {
       "path": "references/gdd/docs/PERSPECTIVES.md",
       "source": "docs/PERSPECTIVES.md",
-      "sha256": "d2f5dc503c0430f2f32e83dffa7ec4098ff8c73e53878c9fcedfc129cf26e3ec",
-      "bytes": 7478
+      "sha256": "84d63846f83fa7383078a7f8c2becfb7d889b65171a012db282a603bbc01c3f6",
+      "bytes": 7450
     },
     {
       "path": "references/gdd/docs/inspection.md",
@@ -85,8 +85,14 @@
       "bytes": 5197
     },
     {
+      "path": "references/gdd/extensions/product-0.1.json",
+      "source": "extensions/product-0.1.json",
+      "sha256": "a78514e534911cb3859b9c4fb2d6eb8f46e98691d2341e6b9a43ddd78ebbb832",
+      "bytes": 3478
+    },
+    {
       "path": "references/gdd/gdd_validator/extensions/product-0.1.json",
-      "source": "gdd_validator/extensions/product-0.1.json",
+      "source": "extensions/product-0.1.json",
       "sha256": "a78514e534911cb3859b9c4fb2d6eb8f46e98691d2341e6b9a43ddd78ebbb832",
       "bytes": 3478
     },

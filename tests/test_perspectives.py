@@ -195,7 +195,10 @@ def test_cli_is_deterministic_and_output_is_exclusive(tmp_path):
 
 
 def test_extension_copy_is_byte_exact():
-    assert (EXAMPLES / "extensions/product-0.1.json").read_bytes() == (ROOT / "gdd_validator/extensions/product-0.1.json").read_bytes()
+    asset = Path("extensions/product-0.1.json")
+    canonical = (ROOT / asset).read_bytes()
+    assert (EXAMPLES / asset).read_bytes() == canonical
+    assert (ROOT / "gdd_validator" / asset).read_bytes() == canonical
 
 
 @pytest.mark.parametrize("format", ["gdd/0.2", "gdd/0.3"])

@@ -11,7 +11,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
 const PRODUCT: &str = "gdd.product";
-const PRODUCT_DEFINITION: &[u8] = include_bytes!("../../gdd_validator/extensions/product-0.1.json");
+const PRODUCT_DEFINITION: &[u8] = include_bytes!("../../extensions/product-0.1.json");
 
 /// One captured model admitted for product perspectives.
 #[derive(Debug)]
