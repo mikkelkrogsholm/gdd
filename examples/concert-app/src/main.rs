@@ -1,5 +1,6 @@
 mod api;
 mod identity;
+mod page;
 mod server;
 
 use std::{error::Error, net::Ipv4Addr, path::PathBuf, process::ExitCode};
@@ -8,7 +9,7 @@ use clap::Parser;
 use gdd_concert::Reservations;
 use tokio::net::TcpListener;
 
-/// Run the Local Sessions JSON API on loopback.
+/// Run the Local Sessions concert program and JSON API on loopback.
 #[derive(Parser)]
 struct Arguments {
     #[arg(long)]

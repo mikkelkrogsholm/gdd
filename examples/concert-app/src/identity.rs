@@ -11,6 +11,10 @@ use subtle::ConstantTimeEq;
 pub struct Profile {
     pub id: &'static str,
     pub name: &'static str,
+    // Browser forms identify the session they were drawn for. This value
+    // cannot authenticate a request and is separate from the cookie token.
+    #[serde(skip)]
+    pub view: uuid::Uuid,
 }
 
 #[derive(Default)]
@@ -48,10 +52,15 @@ impl Sessions {
         if !bool::from(expected.as_bytes().ct_eq(password.unwrap_or("").as_bytes())) {
             return Err(LoginError::InvalidCredentials);
         }
-        let profile = Profile { id, name };
-        let mut bytes = [0; 32];
+        let mut bytes = [0; 48];
         getrandom::fill(&mut bytes).map_err(|_| LoginError::RandomnessUnavailable)?;
-        let token = URL_SAFE_NO_PAD.encode(bytes);
+        let (secret, view) = bytes.split_at(32);
+        let token = URL_SAFE_NO_PAD.encode(secret);
+        let profile = Profile {
+            id,
+            name,
+            view: uuid::Uuid::from_slice(view).expect("16-byte view identifier"),
+        };
         self.0.lock().unwrap().insert(token.clone(), profile);
         Ok((token, profile))
     }

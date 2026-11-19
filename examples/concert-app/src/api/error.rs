@@ -27,6 +27,20 @@ fn response(status: StatusCode, code: impl Serialize, message: &str) -> Response
     super::json_response(status).json(&json!({"error": {"code": code, "message": message}}))
 }
 
+pub(super) fn domain_status(error: DomainError) -> StatusCode {
+    use StatusCode as S;
+    match error {
+        DomainError::InvalidInput => S::BAD_REQUEST,
+        DomainError::Unauthenticated => S::UNAUTHORIZED,
+        DomainError::ConcertNotFound | DomainError::ReservationNotFound => S::NOT_FOUND,
+        DomainError::SoldOut
+        | DomainError::IdempotencyConflict
+        | DomainError::ActiveReservationLimitReached => S::CONFLICT,
+        DomainError::PersistenceUnavailable => S::SERVICE_UNAVAILABLE,
+        DomainError::PolicyMigrationRequired => S::INTERNAL_SERVER_ERROR,
+    }
+}
+
 impl Error {
     pub fn invalid_framing() -> Self {
         Self::InvalidInput("Send a JSON object with a content length.")
@@ -36,17 +50,7 @@ impl Error {
         use StatusCode as S;
         let (status, code, message) = match *self {
             Self::Domain(error) => {
-                let status = match error {
-                    DomainError::InvalidInput => S::BAD_REQUEST,
-                    DomainError::Unauthenticated => S::UNAUTHORIZED,
-                    DomainError::ConcertNotFound | DomainError::ReservationNotFound => S::NOT_FOUND,
-                    DomainError::SoldOut
-                    | DomainError::IdempotencyConflict
-                    | DomainError::ActiveReservationLimitReached => S::CONFLICT,
-                    DomainError::PersistenceUnavailable => S::SERVICE_UNAVAILABLE,
-                    DomainError::PolicyMigrationRequired => S::INTERNAL_SERVER_ERROR,
-                };
-                return response(status, error, error.message());
+                return response(domain_status(error), error, error.message());
             }
             Self::InvalidInput(message) => (S::BAD_REQUEST, "InvalidInput", message),
             Self::Forbidden(message) => (S::FORBIDDEN, "Forbidden", message),

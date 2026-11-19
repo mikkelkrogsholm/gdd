@@ -5,6 +5,60 @@ The reference keeps the current model, application, meaningful tests, phase-A re
 fixtures and selected results. The [complete original experiment](../../archive/experiments/README.md)
 is preserved in a byte-indexed archive from Git commit `7e27757`.
 
+## Run the native concert app
+
+From the repository root, start `gdd-concert` with a database for the local demo.
+
+```sh
+cargo run --locked -p gdd-concert -- --database /tmp/local-sessions-rust.sqlite --port 8766
+```
+
+The startup line reports the listening address once the database is ready. Use
+`--port 0` for a free port, or omit the option for port 8765. The server binds
+to IPv4 loopback and accepts `127.0.0.1` and `localhost` with its actual port.
+Open `http://127.0.0.1:8766/` to browse the program. Sign in with the fictional
+account `alice` / `alice-demo` or `bob` / `bob-demo`. Reserve one seat at a time,
+refresh availability, and use **Your reservations** to see or cancel your seats.
+The desk shows the active allowance returned by the reservation service. The
+current limit is two per person across all concerts, and cancellations free
+allowance while preserving history.
+
+The executable serves the HTML forms and bundled stylesheet. The browser works
+with JavaScript disabled. A completed form submission redirects to a new page.
+If a reservation response is lost, let the browser resubmit the original form.
+Reloading its original program URL also restores the same key for that concert.
+After a successful redirect, the new program page offers fresh reservations.
+If a shared cookie changes, the old desk asks for explicit sign-in before
+showing private history or accepting another action.
+
+The same server implements the seven JSON routes in the [HTTP contract](HTTP.md).
+Open `http://127.0.0.1:8766/api/concerts` to read the public catalog. To sign in
+and read your history from a terminal, use a temporary cookie jar.
+
+```sh
+jar=$(mktemp)
+curl --silent --show-error --cookie-jar "$jar" --json '{"username":"alice","password":"alice-demo"}' \
+  http://127.0.0.1:8766/api/login
+curl --silent --show-error --cookie "$jar" http://127.0.0.1:8766/api/reservations
+rm "$jar"
+```
+
+Ctrl+C or Unix SIGTERM drains admitted requests and checkpoints the database
+before exit. Wait for a successful exit before copying the main file. Restart
+with the same path to recover reservations and sign in again for a fresh session.
+
+Run the domain and HTTP checks locally with `cargo test --locked -p gdd-concert`.
+The HTTP suite starts the executable on ephemeral ports using temporary databases
+and exercises its JSON API and native forms.
+On Unix it also exercises SIGINT, SIGTERM, request draining and restart.
+
+The native HTTP/1 parser rejects repeated Content-Length fields with the
+JSON error `400 InvalidInput` before routing. The body limit is 16 KiB.
+Repeated Host fields or an unexpected Host or Origin on a parsed request
+return `403 Forbidden`. If the same request has both a repeated length and an
+invalid local address or origin, the native parser returns 400. The Python
+service checks the address and origin first and returns 403 in that case.
+
 ## Original browser application
 
 Run the Python browser application from the repository root.
@@ -24,45 +78,6 @@ sign-in after restart. The application uses only Python's standard library.
 This bounded loopback demo excludes payments, ticket issuance, expiry, external
 authentication and public deployment. A database already containing more than two
 active reservations for a person is refused without modifying history.
-
-## Native Rust JSON API
-
-The `gdd-concert` executable serves the seven JSON routes in the [HTTP contract](HTTP.md).
-Use a separate database to try the Rust server alongside the Python browser application.
-Run these commands from the repository root.
-
-```sh
-cargo run --locked -p gdd-concert -- --database /tmp/local-sessions-rust.sqlite --port 8766
-```
-
-The startup line reports the listening address once the database is ready. Use
-`--port 0` for a free port, or omit the option for port 8765. The server binds
-to IPv4 loopback and accepts `127.0.0.1` and `localhost` with its actual port.
-Open `http://127.0.0.1:8766/api/concerts` to view the public catalog. To sign in
-and read your history from another terminal, use a temporary cookie jar.
-
-```sh
-jar=$(mktemp)
-curl --silent --show-error --cookie-jar "$jar" --json '{"username":"alice","password":"alice-demo"}' \
-  http://127.0.0.1:8766/api/login
-curl --silent --show-error --cookie "$jar" http://127.0.0.1:8766/api/reservations
-rm "$jar"
-```
-
-Ctrl+C or Unix SIGTERM drains admitted requests and checkpoints the database
-before exit. Wait for a successful exit before copying the main file. Restart
-with the same path to recover reservations and sign in again for a fresh session.
-
-Run the domain and HTTP checks locally with `cargo test --locked -p gdd-concert`.
-The HTTP suite starts the executable on ephemeral ports using temporary databases.
-On Unix it also exercises SIGINT, SIGTERM, request draining and restart.
-
-The native HTTP/1 parser rejects repeated Content-Length fields with the
-JSON error `400 InvalidInput` before routing. The body limit is 16 KiB.
-Repeated Host fields or an unexpected Host or Origin on a parsed request
-return `403 Forbidden`. If the same request has both a repeated length and an
-invalid local address or origin, the native parser returns 400. The Python
-service checks the address and origin first and returns 403 in that case.
 
 ## Native Rust reservation library
 

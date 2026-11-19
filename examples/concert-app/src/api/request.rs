@@ -7,7 +7,6 @@ use serde_json::{Map, Value};
 use super::error::Error;
 
 const MAX_BODY: usize = 16 * 1024;
-const INVALID: Error = Error::InvalidInput("Send a valid JSON object of at most 16 KiB.");
 
 fn single<'a>(headers: &'a HeaderMap, name: &str) -> Option<&'a HeaderValue> {
     let mut values = headers.get_all(name);
@@ -70,7 +69,28 @@ impl JsonObject {
         self.0.get(key)?.as_str()
     }
 
-    pub fn length(headers: &HeaderMap) -> Result<usize, Error> {
+    pub fn parse(bytes: &[u8]) -> Result<Self, Error> {
+        serde_json::from_slice(bytes)
+            .map(Self)
+            .map_err(|_| BodyType::Json.invalid())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub enum BodyType {
+    Json,
+    Form,
+}
+
+impl BodyType {
+    fn invalid(self) -> Error {
+        Error::InvalidInput(match self {
+            Self::Json => "Send a valid JSON object of at most 16 KiB.",
+            Self::Form => "Send a valid form of at most 16 KiB.",
+        })
+    }
+
+    pub fn length(self, headers: &HeaderMap) -> Result<usize, Error> {
         let length = single(headers, "content-length");
         let media_type = single(headers, "content-type");
         let (Some(length), Some(media_type), false) = (
@@ -80,36 +100,41 @@ impl JsonObject {
         ) else {
             return Err(Error::invalid_framing());
         };
+        let expected = match self {
+            Self::Json => "application/json",
+            Self::Form => "application/x-www-form-urlencoded",
+        };
         if !media_type
             .to_str()
             .ok()
             .and_then(|s| s.split(';').next())
-            .is_some_and(|s| s.trim().eq_ignore_ascii_case("application/json"))
+            .is_some_and(|s| s.trim().eq_ignore_ascii_case(expected))
         {
-            return Err(Error::InvalidInput("Send an application/json object."));
+            return Err(match self {
+                Self::Json => Error::InvalidInput("Send an application/json object."),
+                Self::Form => self.invalid(),
+            });
         }
         length
             .to_str()
             .ok()
             .and_then(|s| s.parse().ok())
             .filter(|&n| n <= MAX_BODY)
-            .ok_or(INVALID)
+            .ok_or_else(|| self.invalid())
     }
 
-    pub async fn read(request: &mut Request, length: usize) -> Result<Self, Error> {
+    pub async fn read(self, request: &mut Request, length: usize) -> Result<Vec<u8>, Error> {
         let mut bytes = Vec::with_capacity(length);
         while let Some(chunk) = request.payload().recv().await {
-            let chunk = chunk.map_err(|_| INVALID)?;
+            let chunk = chunk.map_err(|_| self.invalid())?;
             if chunk.len() > length - bytes.len() {
-                return Err(INVALID);
+                return Err(self.invalid());
             }
             bytes.extend_from_slice(&chunk);
         }
         if bytes.len() != length {
-            return Err(INVALID);
+            return Err(self.invalid());
         }
-        serde_json::from_slice(&bytes)
-            .map(Self)
-            .map_err(|_| INVALID)
+        Ok(bytes)
     }
 }

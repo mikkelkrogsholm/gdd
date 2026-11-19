@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Local Sessions — Concert reservations</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="page">
+    <header class="masthead">
+      <a class="brand" href="{home}" aria-label="Local Sessions home">
+        <span class="brand-mark" aria-hidden="true">LS</span>
+        <span>Local Sessions<span class="brand-caption">A small concert club</span></span>
+      </a>
+      <div class="session-control">
+        <span id="session-status">{identity}</span>
+        {logout}
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <section class="introduction" aria-labelledby="page-title">
+        <p class="eyebrow">The local program</p>
+        <h1 id="page-title">Make room for<br> a good evening.</h1>
+        <p class="intro-copy">A few concerts, a seat of your own. Choose an evening below and keep your reservations in one place.</p>
+        <p class="program-note">Fictional concerts · One seat per reservation</p>
+      </section>
+      <div class="feedback" aria-label="Reservation updates">
+        <p id="status-message" class="status-message" role="status" aria-live="polite">{notice}</p>
+        <p id="error-message" class="error-message" role="alert"{error_hidden}>{error}</p>
+      </div>
+      {content}
+    </main>
+    <footer><p>Local Sessions</p><p>A fictional program. No payments or ticket delivery.</p></footer>
+  </div>
+</body>
+</html>

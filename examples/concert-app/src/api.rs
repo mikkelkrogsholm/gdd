@@ -1,5 +1,6 @@
 //! Translate local HTTP requests into public identity and reservation operations.
 
+mod browser;
 mod error;
 mod request;
 
@@ -9,9 +10,9 @@ use ntex::http::{
 };
 use serde_json::json;
 
-use crate::identity::{LoginError, Sessions};
+use crate::identity::{LoginError, Profile, Sessions};
 pub use error::Error;
-use request::{JsonObject, check_local, expect_principal, token};
+use request::{BodyType, JsonObject, check_local, expect_principal, token};
 
 pub struct App {
     sessions: Sessions,
@@ -23,16 +24,26 @@ pub fn invalid_framing() -> Response {
     Error::invalid_framing().error_response()
 }
 
-fn json_response(status: StatusCode) -> ResponseBuilder {
+fn response(status: StatusCode, media_type: &str, policy: &str) -> ResponseBuilder {
     let mut response = Response::build(status);
     response
-        .content_type("application/json; charset=utf-8")
+        .content_type(media_type)
         .header(header::CACHE_CONTROL, "no-store")
         .header(header::X_CONTENT_TYPE_OPTIONS, "nosniff")
         .header(header::REFERRER_POLICY, "same-origin")
-        .header(header::CONTENT_SECURITY_POLICY, "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
+        .header(header::CONTENT_SECURITY_POLICY, policy);
     response
 }
+
+fn json_response(status: StatusCode) -> ResponseBuilder {
+    response(
+        status,
+        "application/json; charset=utf-8",
+        "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+    )
+}
+
+const EXPIRED_COOKIE: &str = "concert_session=; Max-Age=0; HttpOnly; SameSite=Strict; Path=/";
 
 impl App {
     pub fn new(reservations: Reservations, port: u16) -> Self {
@@ -43,11 +54,14 @@ impl App {
         }
     }
 
-    pub fn validate_head(&self, request: &Request) -> Result<Option<usize>, Error> {
+    pub fn validate_head(&self, request: &Request) -> Result<Option<(BodyType, usize)>, Error> {
         check_local(request.headers(), &self.hosts)?;
         match *request.method() {
             Method::GET => Ok(None),
-            Method::POST => JsonObject::length(request.headers()).map(Some),
+            Method::POST => {
+                let kind = body_type(request.path());
+                Ok(Some((kind, kind.length(request.headers())?)))
+            }
             _ => Err(Error::NotFound),
         }
     }
@@ -55,9 +69,12 @@ impl App {
     pub async fn handle(&self, mut request: Request) -> Result<Response, Error> {
         let result = match self.validate_head(&request)? {
             None => self.get(&request).await,
-            Some(length) => {
-                let body = JsonObject::read(&mut request, length).await?;
-                self.post(&request, &body).await
+            Some((kind, length)) => {
+                let bytes = kind.read(&mut request, length).await?;
+                match kind {
+                    BodyType::Form => self.browser_post(&request, &bytes).await,
+                    BodyType::Json => self.post(&request, &JsonObject::parse(&bytes)?).await,
+                }
             }
         };
         // Admission errors close the connection because its body may be unread.
@@ -76,7 +93,7 @@ impl App {
             "/api/reservations" => {
                 Ok(ok.json(&self.reservations.list_own(self.principal(headers)?).await?))
             }
-            _ => Err(Error::NotFound),
+            _ => self.browser_get(request).await,
         }
     }
 
@@ -114,19 +131,26 @@ impl App {
         Ok(principal)
     }
 
-    fn login(&self, headers: &HeaderMap, body: &JsonObject) -> Result<Response, Error> {
+    fn sign_in(
+        &self,
+        headers: &HeaderMap,
+        username: Option<&str>,
+        password: Option<&str>,
+    ) -> Result<(String, Profile), Error> {
         let (token, profile) = self
             .sessions
-            .login(
-                token(headers),
-                body.string("username"),
-                body.string("password"),
-            )
+            .login(token(headers), username, password)
             .map_err(|error| match error {
                 LoginError::InvalidCredentials => Error::InvalidCredentials,
                 LoginError::RandomnessUnavailable => Error::Internal,
             })?;
         let cookie = format!("concert_session={token}; HttpOnly; SameSite=Strict; Path=/");
+        Ok((cookie, profile))
+    }
+
+    fn login(&self, headers: &HeaderMap, body: &JsonObject) -> Result<Response, Error> {
+        let (cookie, profile) =
+            self.sign_in(headers, body.string("username"), body.string("password"))?;
         Ok(json_response(StatusCode::OK)
             .header(header::SET_COOKIE, cookie)
             .json(&json!({"principal": profile})))
@@ -137,10 +161,7 @@ impl App {
         expect_principal(headers, self.sessions.profile(token).map(|p| p.id))?;
         self.sessions.logout(token);
         Ok(json_response(StatusCode::OK)
-            .header(
-                header::SET_COOKIE,
-                "concert_session=; Max-Age=0; HttpOnly; SameSite=Strict; Path=/",
-            )
+            .header(header::SET_COOKIE, EXPIRED_COOKIE)
             .json(&json!({"principal": null})))
     }
 }
@@ -155,4 +176,11 @@ fn cancellation_id(path: &str) -> Option<&str> {
                     .bytes()
                     .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
         })
+}
+
+fn body_type(path: &str) -> BodyType {
+    match path {
+        "/forms/login" | "/forms/logout" | "/forms/reserve" | "/forms/cancel" => BodyType::Form,
+        _ => BodyType::Json,
+    }
 }

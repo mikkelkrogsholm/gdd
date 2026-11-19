@@ -38,13 +38,16 @@ impl Response {
             .unwrap()
             .parse()
             .unwrap();
-        let headers = lines
+        let headers: HashMap<String, String> = lines
             .map(|line| {
                 let (name, value) = line.split_once(':').unwrap();
                 (name.to_ascii_lowercase(), value.trim().to_owned())
             })
             .collect();
-        let body = serde_json::from_str(body).expect("JSON response");
+        let body = match headers.get("content-type").map(String::as_str) {
+            Some("text/html; charset=utf-8" | "text/css; charset=utf-8") => Value::from(body),
+            _ => serde_json::from_str(body).expect("JSON response"),
+        };
         Self {
             status,
             headers,

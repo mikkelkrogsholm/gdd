@@ -1,0 +1,21 @@
+<section id="sign-in-panel" class="sign-in-panel" aria-labelledby="sign-in-heading">
+  <div class="sign-in-intro">
+    <p class="eyebrow">Your reservation desk</p>
+    <h2 id="sign-in-heading">Start with a sign-in.</h2>
+    <p>Sign in to reserve a seat, see your history and cancel a reservation.</p>
+  </div>
+  <div class="sign-in-fields">
+    <form id="sign-in-form" method="post" action="/forms/login">
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button id="sign-in" type="submit">Sign in</button>
+    </form>
+    <p class="demo-hint">Fictional demo accounts are <strong>alice</strong> / <code>alice-demo</code> or <strong>bob</strong> / <code>bob-demo</code>.</p>
+  </div>
+</section>

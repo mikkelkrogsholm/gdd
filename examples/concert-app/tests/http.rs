@@ -1,5 +1,7 @@
 #![cfg(any(unix, windows))]
 
+#[path = "http/forms.rs"]
+mod forms;
 #[path = "http/support.rs"]
 mod support;
 
