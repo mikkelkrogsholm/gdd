@@ -1970,6 +1970,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "gdd-tutorial-add"
+version = "0.1.0"
+dependencies = [
+ "num-bigint",
+]
+
+[[package]]
 name = "gdd-viewer"
 version = "0.1.0"
 dependencies = [

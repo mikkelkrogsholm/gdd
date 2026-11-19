@@ -37,6 +37,10 @@ gdd validate "$GDD_PROJECT/gdd.json" --profile visualization --view "$GDD_PROJEC
 gdd-viewer "$GDD_PROJECT/graph.gddview"
 ```
 
+The [native integer addition tutorial](docs/tutorial.md#native-integer-addition-checker)
+runs a Rust implementation and shows how to verify that its checker detects
+subtraction in an isolated copy.
+
 ## Install the tagged Python CLI
 
 The Python distribution is named **gdd-validator** and installs the **gdd**

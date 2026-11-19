@@ -1,5 +1,8 @@
 # From a brief to code and current evidence
 
+For the current Rust checkout, start with the [native integer addition checker](#native-integer-addition-checker).
+Steps 1–10 below walk through the released Python implementation and evidence workflow.
+
 Build one pure Python function, inspect its GDD graph, run real assertions and
 an isolated failing mutation, and assess current implementation evidence. Use
 Python 3.11 or newer with `gdd` installed in that same environment, following
@@ -244,3 +247,73 @@ receipts and explicitly trusted revision-bound evidence. The separate dimensions
 limited assertions and unassessed acceptance authority remain visible. The
 [concert example](../examples/concert-app/README.md) shows a larger historical
 implementation; keep its execution claims separate from these new local runs.
+
+## Native integer addition checker
+
+Start at the repository root with the [native CLI and viewer installed](../INSTALL.md#install-the-rust-cli-and-viewer).
+Check the readiness of `action.add` in the [refined model](tutorial/refined.gdd.json),
+then save and verify a portable view in a fresh directory.
+
+```sh
+model=docs/tutorial/refined.gdd.json
+view_dir=$(mktemp -d)
+gdd validate "$model" --profile readiness --scope action.add
+gdd view "$model" --output "$view_dir/add.gddview"
+gdd validate "$model" --profile visualization --view "$view_dir/add.gddview"
+```
+
+Both validations should exit 0. On a desktop, open the graph and select
+`action.add` to inspect the exact-sum contract and its owner,
+`component.arithmetic`. Select `scenario.add` to see the planned example in
+which −7 and 7 sum to zero.
+
+```sh
+gdd-viewer "$view_dir/add.gddview"
+```
+
+The [Rust function](tutorial/rust/src/lib.rs) adds two signed arbitrary-precision
+integers. The [checker](tutorial/rust/src/main.rs) calls it on the five tutorial
+examples, including cancellation and `10^100 + 1`. For the large sum, it constructs
+the expected decimal digits independently. Run the checker from the repository root.
+
+```sh
+cargo run --locked -p gdd-tutorial-add
+```
+
+The checker prints `PASS` and exits 0 when all five results match. On the first
+mismatch it prints `FAIL`, the operands, the expected value and the actual value,
+then exits 1. The workspace test suite runs the same comparisons.
+
+To observe a real failure, run this POSIX shell block from the repository root.
+The archive contains the implementation, checker and a package-specific Cargo.lock.
+Each run builds the private source copy in a fresh target directory.
+
+```sh
+(
+  set -eu
+  scratch=$(mktemp -d)
+  cargo package --locked --allow-dirty --no-verify -p gdd-tutorial-add --target-dir "$scratch"
+  tar -xzf "$scratch/package/gdd-tutorial-add-0.1.0.crate" -C "$scratch"
+  source_dir="$scratch/gdd-tutorial-add-0.1.0"
+  build_and_check() {
+    output="$scratch/$1"
+    cargo build --locked --manifest-path "$source_dir/Cargo.toml" --target-dir "$output" || return 2
+    "$output/debug/gdd-tutorial-add"
+  }
+
+  build_and_check original
+  cp "$source_dir/src/lib.rs" "$scratch/original.rs"
+  sed 's/left + right/left - right/' "$scratch/original.rs" > "$source_dir/src/lib.rs"
+  status=0
+  build_and_check subtraction || status=$?
+  test "$status" -eq 1
+  cp "$scratch/original.rs" "$source_dir/src/lib.rs"
+  build_and_check restored
+)
+```
+
+Subtraction reports `FAIL: -7 + 7: expected 0, got -14`. Restoring addition
+gives a second PASS. The build step returns 2 on error so a failed compilation
+cannot satisfy the negative control. These executions check five concrete sums.
+GDD evidence and acceptance require separate host operations and authority.
+Steps 6–10 use the released Python host and its Python-specific evidence model.
