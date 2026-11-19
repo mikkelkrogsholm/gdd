@@ -51,29 +51,24 @@ impl Window {
         // Let the panel measure its contents before using the widget bounds.
         self.frame(Vec::new());
         let tree = self.frame(Vec::new());
-        let bounds = widget(&tree, role, label)
-            .unwrap_or_else(|| panic!("Missing {role:?} {label}"))
-            .bounds()
-            .unwrap();
-        let pos = egui::pos2(
-            (bounds.x0 + bounds.x1) as f32 / 2.0,
-            (bounds.y0 + bounds.y1) as f32 / 2.0,
-        );
-        self.click_at(pos);
+        self.click_at(widget_bounds(&tree, role, label).center());
+    }
+
+    fn pointer_button(&mut self, pos: egui::Pos2, pressed: bool) {
+        self.frame(vec![
+            egui::Event::PointerMoved(pos),
+            egui::Event::PointerButton {
+                pos,
+                button: egui::PointerButton::Primary,
+                pressed,
+                modifiers: Modifiers::NONE,
+            },
+        ]);
     }
 
     fn click_at(&mut self, pos: egui::Pos2) {
-        for pressed in [true, false] {
-            self.frame(vec![
-                egui::Event::PointerMoved(pos),
-                egui::Event::PointerButton {
-                    pos,
-                    button: egui::PointerButton::Primary,
-                    pressed,
-                    modifiers: Modifiers::NONE,
-                },
-            ]);
-        }
+        self.pointer_button(pos, true);
+        self.pointer_button(pos, false);
     }
 
     fn key(&mut self, key: Key, modifiers: Modifiers) -> TreeUpdate {
@@ -106,10 +101,12 @@ impl Window {
 
     fn wait_for_zoom(&mut self) {
         let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
-        while widget(&self.frame(Vec::new()), Role::ComboBox, "Graph zoom").is_none() {
+        while widget(&self.frame(Vec::new()), Role::ComboBox, "Graph zoom")
+            .is_none_or(Node::is_disabled)
+        {
             assert!(
                 std::time::Instant::now() < deadline,
-                "No zoom control for {} visible nodes and {} visible edges",
+                "Zoom unavailable for {} visible nodes and {} visible edges",
                 self.viewer.visible.nodes.len(),
                 self.viewer.visible.edges.len()
             );
@@ -156,6 +153,17 @@ fn widget<'a>(tree: &'a TreeUpdate, role: Role, name: &str) -> Option<&'a Node> 
                     node.labelled_by().contains(id) && label.value() == Some(name)
                 }))
     })
+}
+
+fn widget_bounds(tree: &TreeUpdate, role: Role, label: &str) -> egui::Rect {
+    let bounds = widget(tree, role, label)
+        .unwrap_or_else(|| panic!("Missing {role:?} {label}"))
+        .bounds()
+        .unwrap();
+    egui::Rect::from_min_max(
+        egui::pos2(bounds.x0 as f32, bounds.y0 as f32),
+        egui::pos2(bounds.x1 as f32, bounds.y1 as f32),
+    )
 }
 
 fn graph_clip(frame: &egui::FullOutput) -> egui::Rect {
@@ -430,6 +438,68 @@ fn inspector_keeps_its_scroll_until_a_different_record_opens() {
     assert_eq!(connections_y(&window.frame(Vec::new())), second_top);
     window.click(Role::Button, &first);
     assert_eq!(connections_y(&window.frame(Vec::new())), top);
+}
+
+#[test]
+fn toolbar_checkboxes_keep_the_pressed_target_when_layout_finishes() {
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let mut window = Window::open(&fixture);
+    for checkbox in ["Fold communities", "Show scenarios (1)"] {
+        let (sender, receiver) = mpsc::channel();
+        *window.viewer.current_layout().unwrap() = LayoutState::Pending(receiver);
+        window.frame(Vec::new());
+        let pending = window.frame(Vec::new());
+        let target = widget_bounds(&pending, Role::CheckBox, checkbox);
+        window.pointer_button(target.center(), true);
+
+        let graph = &window.viewer.graph;
+        let layout = match &window.viewer.folded {
+            None => Layout::new(graph),
+            Some(fold) => Layout::folded(graph, fold),
+        };
+        sender.send(Ok(layout.unwrap())).unwrap();
+        let ready = window.frame(Vec::new());
+        assert_eq!(widget_bounds(&ready, Role::CheckBox, checkbox), target);
+        for (role, label) in [
+            (Role::ComboBox, "Graph zoom"),
+            (Role::Button, "Fit graph"),
+            (Role::Button, "Reset camera"),
+        ] {
+            assert!(widget(&pending, role, label).unwrap().is_disabled());
+            assert!(!widget(&ready, role, label).unwrap().is_disabled());
+        }
+
+        window.pointer_button(target.center(), false);
+        let tree = window.frame(Vec::new());
+        assert_eq!(
+            widget(&tree, Role::CheckBox, checkbox).unwrap().toggled(),
+            Some(true.into())
+        );
+    }
+    window.assert_view(true, 7, 9, true);
+}
+
+#[test]
+fn search_with_no_matches_closes_the_zoom_menu_and_disables_the_camera() {
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../conformance/fixtures/viewer-multigraph.json");
+    let mut window = Window::open(&fixture);
+    window.wait_for_zoom();
+    window.click(Role::ComboBox, "Graph zoom");
+    assert!(widget(&window.frame(Vec::new()), Role::Button, "200%").is_some());
+    window.key(Key::F, Modifiers::COMMAND);
+    window.frame(vec![egui::Event::Text("absent text".into())]);
+    let empty = window.frame(Vec::new());
+    assert!(window.viewer.visible.nodes.is_empty());
+    assert!(
+        widget(&empty, Role::ComboBox, "Graph zoom")
+            .unwrap()
+            .is_disabled()
+    );
+    assert!(widget(&empty, Role::Button, "200%").is_none());
+    window.click(Role::Button, "Fit graph");
+    assert_eq!(window.viewer.camera.zoom, Zoom::Percent(100));
 }
 
 #[test]

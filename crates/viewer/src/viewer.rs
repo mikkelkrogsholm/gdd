@@ -328,13 +328,18 @@ impl Viewer {
     }
 
     fn show_zoom(&mut self, ui: &mut Ui) {
-        if matches!(self.current_layout(), Some(LayoutState::Ready(_)))
-            && !self.visible.nodes.is_empty()
-        {
+        let ready = matches!(self.current_layout(), Some(LayoutState::Ready(_)))
+            && !self.visible.nodes.is_empty();
+        ui.add_enabled_ui(ready, |ui| {
             egui::ComboBox::from_label("Graph zoom")
                 .selected_text(self.camera.label())
                 .width(70.0)
                 .show_ui(ui, |ui| {
+                    // An already-open popup has its own UI outside the disabled toolbar.
+                    if !ready {
+                        ui.close();
+                        return;
+                    }
                     for percent in [50, 75, 100, 125, 150, 200] {
                         if ui
                             .selectable_value(
@@ -356,7 +361,7 @@ impl Viewer {
                 self.camera.reset(Zoom::Percent(100));
                 self.reveal_selected = false;
             }
-        }
+        });
     }
 
     fn show_filters(&mut self, ui: &mut Ui) {
