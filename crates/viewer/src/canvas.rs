@@ -98,8 +98,13 @@ impl Layout {
             builder.connect(from, to);
             edge_ids.push(i);
         }
-        let drawing = graphlay::layout(&builder.build(), &LayoutOptions::layered_default())
-            .map_err(|error| error.to_string())?;
+        let mut options = LayoutOptions::layered_default();
+        // Straightening chains can dominate layout time on large projections.
+        if edge_ids.len() >= 1_000 {
+            options.tuning.coords.flatten_room = 0;
+        }
+        let drawing =
+            graphlay::layout(&builder.build(), &options).map_err(|error| error.to_string())?;
         let position = |point: graphlay::Point| egui::pos2(point.x as f32, point.y as f32);
         let nodes = drawing
             .nodes

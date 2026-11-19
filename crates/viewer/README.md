@@ -98,7 +98,9 @@ to inspect the full saved record. See the [artifact contract](../../VIEWER.md#sh
 
 The viewer computes the unfolded left-to-right layered layout once using the
 pure Rust graphlay library. Folding lays out the visible figures and directed
-bundles. If the filters change during layout, the viewer draws the latest
+bundles. To draw large graphs sooner, the viewer skips a pass that straightens
+edge chains when laying out at least 1,000 edges. Each folded bundle counts as
+one edge. If the filters change during layout, the viewer draws the latest
 projection. You can search the node list, inspect nodes and follow connections
 while graphlay runs. When the drawing is ready, the canvas scrolls to your
 selected node or its representative.
