@@ -271,6 +271,33 @@ which −7 and 7 sum to zero.
 gdd-viewer "$view_dir/add.gddview"
 ```
 
+### Prepare the native check plan
+
+Use the [Rust preparation example](../examples/tutorial_prepare.rs) to create a
+new directory with `evidence.gdd.json` and `records.json`. Run from the repository root.
+
+```sh
+plan_dir="$(mktemp -d)/sum"
+cargo run --locked -p gdd --example tutorial_prepare -- "$plan_dir"
+gdd validate "$plan_dir/evidence.gdd.json" --profile model
+gdd validate "$plan_dir/evidence.gdd.json" --profile readiness --scope action.add
+status=0
+gdd validate "$plan_dir/evidence.gdd.json" --profile records --scope action.add || status=$?
+test "$status" -eq 2
+```
+
+The example changes the verification method in a copy of the [evidence model](tutorial/evidence.gdd.json)
+to `rust_integer_addition_examples`. It loads that copy's revision and appends
+`check.sum` to its ledger. The plan covers `rule.sum` and `scenario.add` and
+requires the Rust compiler version (`rustc`) and the isolated subtraction control.
+An existing output directory causes preparation to fail before writing.
+
+Model and readiness validation exit 0. The records report gives implementation
+`UNKNOWN` (exit 2). The ledger contains only the check plan. Execution,
+reviewed evidence and acceptance authority require separate steps.
+
+### Run the checker and subtraction control
+
 The [Rust function](tutorial/rust/src/lib.rs) adds two signed arbitrary-precision
 integers. The [checker](tutorial/rust/src/main.rs) calls it on the five tutorial
 examples, including cancellation and `10^100 + 1`. For the large sum, it constructs

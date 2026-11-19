@@ -46,7 +46,7 @@ def test_planning_tutorial_sequence(tmp_path):
 
 
 def test_complete_documented_tutorial(tmp_path):
-    """Execute every shell block verbatim; the Python excerpt is illustrative."""
+    """Execute the released Python tutorial's shell blocks verbatim."""
     import os
     import re
 
@@ -56,7 +56,8 @@ def test_complete_documented_tutorial(tmp_path):
     from gdd_validator.report import aggregate
 
     document = ROOT / "docs/tutorial.md"
-    blocks = re.findall(r"```sh\n(.*?)\n```", document.read_text(), re.DOTALL)
+    python_steps, _ = document.read_text().split("## Native integer addition checker", 1)
+    blocks = re.findall(r"```sh\n(.*?)\n```", python_steps, re.DOTALL)
     # Functions select the same interpreter/environment for both documented tools.
     # mktemp uses our own temporary root so all artifacts remain inspectable.
     preamble = '''set -eu

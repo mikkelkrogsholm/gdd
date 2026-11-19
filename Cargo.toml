@@ -10,7 +10,7 @@ include = [
     "/HOST.md", "/docs/rust-migration.md", "/docs/python-imports.md",
     "/src/**/*.rs", "/schemas/*.schema.json", "/extensions/product-0.1.json",
     "/templates/project/*.json", "/templates/project/SOURCES.md", "/tests/*.rs", "/tests/fixtures/*.rs",
-    "/docs/tutorial/refined.gdd.json",
+    "/docs/tutorial/refined.gdd.json", "/docs/tutorial/evidence.gdd.json", "/examples/tutorial_prepare.rs",
     "/examples/*.gdd.yaml", "/examples/note.fragment.yaml", "/examples/*.gddview",
     "/examples/concert*.records.yaml", "/examples/concert.snapshot.json",
     "/examples/illustrative.report.json", "/examples/sources/legacy-concert.gdd.yaml",
@@ -25,6 +25,10 @@ include = [
     "/examples/agent-native/host.implementation.json", "/examples/agent-native/workflow.*.json",
     "/examples/agent-native/native-run/**/*.json",
 ]
+
+[[example]]
+name = "tutorial_prepare"
+test = true
 
 [features]
 conformance = []
