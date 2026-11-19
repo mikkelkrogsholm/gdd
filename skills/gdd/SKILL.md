@@ -39,9 +39,10 @@ cargo run --locked --target-dir "$HOME/.cache/gdd/skill-assets" \
 For human journeys, domain data and their responsible components, use the optional
 [product perspectives guide](references/gdd/docs/PERSPECTIVES.md). Copy its bundled
 exact extension asset into the model bundle, preserve stable IDs during refactoring,
-and keep missing links advisory. Inspect with `gdd perspectives PATH` or generate an offline `gdd view PATH --output NEW.html`
-and switch between User journey, Components and Data model. Gap links are advisory;
-use inspector perspective links to follow the same canonical records.
+and keep missing links advisory. Inspect the model with `gdd perspectives PATH`.
+To explore it offline, save a portable view with `gdd view PATH --output graph.gddview`
+and open it with `gdd-viewer graph.gddview`. Switch between **User journey**,
+**Components** and **Data model**. Follow inspector links to the same canonical records.
 This adds no implementation or acceptance evidence.
 
 ## Keep the decisions separate

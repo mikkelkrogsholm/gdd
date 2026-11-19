@@ -15,7 +15,10 @@ Reading guide for the 0.3 draft. Normative requirements are in [SPEC.md](SPEC.md
 
 For existing code graphs, use the [Graphify adapter](GRAPHIFY.md) to create a lossless observation bundle. Then select an interpretation and stable model IDs through an explicit mapping; propose creates an unaccepted sketch that must go through the project's normal model-change process. Producer claims are not authorization or implementation evidence.
 
-The package now includes the [GDD validator](VALIDATOR.md). Run `uv run gdd validate <manifest> --profile readiness --scope <node-id>` for structural readiness. Model, readiness, authorization and implementation are reported separately under the [validation contract](standard/VALIDATION.md). Do not invent tool results or treat planned tests as executed.
+Use the installed [GDD validator](VALIDATOR.md) to check structural readiness.
+For the initial action in a fresh `project` scaffold, run
+`gdd validate project/gdd.json --profile readiness --scope action.main`.
+For another scope, supply its manifest path and target node ID. Model, readiness, authorization and implementation are reported separately under the [validation contract](standard/VALIDATION.md). Do not invent tool results or treat planned tests as executed.
 
 ## Agent workflow
 
