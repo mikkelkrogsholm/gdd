@@ -47,6 +47,33 @@ and the expected and observed exit codes of each attempted control. The first
 failure ends the run with a diagnostic and a nonzero exit. Use a fresh path
 for each receipt or omit `--output` to print it.
 
+## Concert policy replay
+
+Run the packaged Rust concert checks against the two concert model revisions
+in the selected checkout. Set `CARGO_NET_OFFLINE=true` to use cached locked
+dependencies. Choose a new output directory. Relative paths resolve from the
+directory where you start the runner.
+
+```sh
+gdd-conformance --checkout /path/to/gdd concert-policy-replay --output concert-replay
+```
+
+From the checkout root, you can also use
+`cargo run --locked -p gdd-conformance -- concert-policy-replay --output concert-replay`.
+
+Open `summary.json` for the `.crate` path and digest, model revisions, added
+rule and checked test outcomes. The summary points to the process logs and
+the full model diff. The `models/` directories contain copies of the checkout
+inputs, including their historical record files. Replay observations come
+from the three new Cargo test runs. Each policy run records its `policy_spec_revision`
+and the `requirements_spec_revision` of the ten fixed phase-B cases. The
+runner checks the precise revision pair those cases exercise. Cargo
+exits 101 with eight specific assertion failures for A and exits 0 with ten
+passes for B. A separate named test exercises refusal, reconciliation and
+activation on the same database. A failed run keeps its available artifacts
+and diagnostics. See the [concert replay guide](../examples/concert-app/README.md#replay-the-requirement-change-in-rust)
+for the case expectations and the provenance of the historical experiment.
+
 ## Standard validator
 
 Run the 58 named cases from this checkout with the locked Cargo dependencies

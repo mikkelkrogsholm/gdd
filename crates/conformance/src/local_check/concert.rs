@@ -1,6 +1,7 @@
 //! Check the fixed concert cases against the archived phase-A and phase-B outcomes.
 
-use anyhow::{Result, ensure};
+use anyhow::{Context, Result, ensure};
+use serde_json::{Value, json};
 
 // The two passing cases have no phase-A assertion mismatch. Phase B passes all ten.
 const LIMIT: &str = "Err(ActiveReservationLimitReached)";
@@ -44,7 +45,17 @@ const CASES: [(&str, Option<(&str, &str)>); 10] = [
     ),
 ];
 
-pub(super) fn confirm(stdout: &str, phase_a: bool) -> Result<()> {
+fn case_result(lines: &[&str], name: &str, expected: &str) -> Result<Value> {
+    let prefix = format!("test {name} ... ");
+    let actual = lines.iter().find_map(|line| line.strip_prefix(&prefix));
+    ensure!(
+        actual == Some(expected),
+        "expected {name} to report {expected}"
+    );
+    Ok(json!({ "name": name, "outcome": actual }))
+}
+
+pub(super) fn confirm(stdout: &str, phase_a: bool) -> Result<Vec<Value>> {
     let lines: Vec<_> = stdout.lines().collect();
     let summary = if phase_a {
         "test result: FAILED. 2 passed; 8 failed; 0 ignored; 0 measured; 0 filtered out;"
@@ -65,31 +76,70 @@ pub(super) fn confirm(stdout: &str, phase_a: bool) -> Result<()> {
         starts("---- ") == failures && stdout.matches("panicked at").count() == failures,
         "expected {failures} assertion failures in the concert test report"
     );
+    let mut outcomes = Vec::new();
     for (name, phase_a_mismatch) in CASES {
         let mismatch = if phase_a { phase_a_mismatch } else { None };
         let outcome = if mismatch.is_some() { "FAILED" } else { "ok" };
-        ensure!(
-            lines.contains(&format!("test {name} ... {outcome}").as_str()),
-            "expected {name} to report {outcome}"
-        );
+        let mut case = case_result(&lines, name, outcome)?;
         if let Some((left, right)) = mismatch {
             let header = format!("---- {name} stdout ----");
             let mut report = stdout.lines().skip_while(|&line| line != header).skip(1);
             ensure!(report.next() == Some(""), "missing panic report for {name}");
             // libtest identifies the case in its capture header. Rust may remap
             // the panic location or include a platform-specific thread ID.
+            let equality_assertion = report
+                .next()
+                .is_some_and(|line| line.contains("panicked at "))
+                && report.next() == Some("assertion `left == right` failed");
+            let observed = (
+                report.next().and_then(|line| line.strip_prefix("  left: ")),
+                report.next().and_then(|line| line.strip_prefix(" right: ")),
+            );
             ensure!(
-                report
-                    .next()
-                    .is_some_and(|line| line.contains("panicked at "))
-                    && report.next() == Some("assertion `left == right` failed")
-                    && report.next() == Some(&format!("  left: {left}"))
-                    && report.next() == Some(&format!(" right: {right}")),
+                equality_assertion && observed == (Some(left), Some(right)),
                 "expected {name} to fail its requirement assertion with left {left} and right {right}"
             );
+            case["assertion"] = json!({ "left": observed.0, "right": observed.1 });
         }
+        outcomes.push(case);
     }
-    Ok(())
+    Ok(outcomes)
+}
+
+pub(super) const TRANSITION: &str = "phase_a_to_b_requires_explicit_reconciliation";
+
+pub(super) fn confirm_transition(stdout: &str) -> Result<Value> {
+    let lines: Vec<_> = stdout.lines().collect();
+    let running: Vec<_> = lines
+        .iter()
+        .copied()
+        .filter(|s| s.starts_with("running "))
+        .collect();
+    let results: Vec<_> = lines
+        .iter()
+        .copied()
+        .filter(|s| s.starts_with("test "))
+        .collect();
+    ensure!(
+        running == ["running 1 test"] && results.len() == 2,
+        "expected exactly one transition test"
+    );
+    let case = case_result(&results, TRANSITION, "ok")?;
+    const PREFIX: &str = "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; ";
+    let filtered = results
+        .iter()
+        .find_map(|line| line.strip_prefix(PREFIX))
+        .and_then(|rest| rest.split_once(" filtered out;"))
+        .context("expected a passing transition test summary")?
+        .0;
+    filtered
+        .parse::<usize>()
+        .context("invalid transition test summary")?;
+    ensure!(
+        !stdout.contains("panicked at"),
+        "unexpected transition test panic"
+    );
+    Ok(case)
 }
 
 #[cfg(test)]
@@ -137,6 +187,27 @@ mod tests {
             format!("{green}unexpected thread panicked at src/lib.rs:1:2\n"),
         ] {
             assert!(confirm(&output, false).is_err());
+        }
+    }
+
+    #[test]
+    fn transition_requires_the_named_test_and_a_single_pass() {
+        let report = format!(
+            "running 1 test\ntest {TRANSITION} ... ok\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.05s\n"
+        );
+        assert_eq!(
+            confirm_transition(&report).unwrap(),
+            json!({"name": TRANSITION, "outcome": "ok"})
+        );
+        for invalid in [
+            report.replace(TRANSITION, "other_test"),
+            report.replace("running 1 test", "running 0 tests"),
+            report.replace(" ... ok", " ... ignored"),
+            report.replace("1 passed", "0 passed"),
+            report.replace("0 failed", "1 failed"),
+            format!("{report}test another_case ... ok\n"),
+        ] {
+            assert!(confirm_transition(&invalid).is_err(), "{invalid}");
         }
     }
 

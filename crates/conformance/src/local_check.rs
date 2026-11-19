@@ -14,6 +14,8 @@ use std::{
 use time::{OffsetDateTime, format_description::well_known::Rfc3339};
 
 mod concert;
+mod concert_replay;
+pub(super) use concert_replay::replay;
 mod plan;
 mod release;
 mod source_package;
@@ -87,19 +89,34 @@ struct Run<'a> {
     toolchain: Map<String, Value>,
 }
 
-impl Run<'_> {
-    fn step(&mut self, name: &str, command: Command, cwd: &Path) -> Result<PathBuf> {
-        self.step_checked(name, command, cwd, 0, |_| Ok(()))
+impl<'a> Run<'a> {
+    fn new(root: &'a Path, output: &'a Path, target: PathBuf) -> Self {
+        Self {
+            root,
+            output,
+            target,
+            cli: None,
+            installed: Map::new(),
+            source_package: None,
+            tutorial_source_package: None,
+            concert_source_package: None,
+            steps: Vec::new(),
+            toolchain: Map::new(),
+        }
     }
 
-    fn step_checked(
+    fn step(&mut self, name: &str, command: Command, cwd: &Path) -> Result<PathBuf> {
+        self.step_checked(name, command, cwd, 0, |stdout| Ok(stdout.to_owned()))
+    }
+
+    fn step_checked<T>(
         &mut self,
         name: &str,
         mut command: Command,
         cwd: &Path,
         expected_exit_code: i32,
-        check_stdout: impl FnOnce(&Path) -> Result<()>,
-    ) -> Result<PathBuf> {
+        check_stdout: impl FnOnce(&Path) -> Result<T>,
+    ) -> Result<T> {
         let stdout_name = format!("{name}.stdout.txt");
         let stderr_name = format!("{name}.stderr.txt");
         let stdout = self.output.join(&stdout_name);
@@ -138,16 +155,12 @@ impl Run<'_> {
                 (false, None)
             }
         };
-        let output_error = if passed {
-            check_stdout(&stdout).err()
-        } else {
-            None
-        };
-        if let Some(error) = &output_error {
+        let checked = passed.then(|| check_stdout(&stdout));
+        if let Some(Err(error)) = &checked {
             record["error"] = json!(error.to_string());
             writeln!(stderr, "{error:#}")?;
         }
-        let passed = passed && output_error.is_none();
+        let passed = matches!(checked, Some(Ok(_)));
         record["finished_at"] = json!(timestamp()?);
         record["seconds"] = json!(start.elapsed().as_secs_f64());
         record["exit_code"] = json!(code);
@@ -158,8 +171,10 @@ impl Run<'_> {
             if passed { "PASS" } else { "FAIL" },
             start.elapsed().as_secs_f64()
         );
-        ensure!(passed, "{name} failed; see {stdout_name} and {stderr_name}");
-        Ok(stdout)
+        match checked {
+            Some(Ok(result)) => Ok(result),
+            _ => anyhow::bail!("{name} failed; see {stdout_name} and {stderr_name}"),
+        }
     }
 
     fn checks(&mut self, mode: Mode) -> Result<()> {
@@ -220,18 +235,7 @@ pub(super) fn run(root: &Path, mode: Mode, output: Option<PathBuf>) -> Result<Ex
     println!("Local check output: {}", output.display());
     let started_at = timestamp()?;
     let start = Instant::now();
-    let mut run = Run {
-        root,
-        output: &output,
-        target,
-        cli: None,
-        installed: Map::new(),
-        source_package: None,
-        tutorial_source_package: None,
-        concert_source_package: None,
-        steps: Vec::new(),
-        toolchain: Map::new(),
-    };
+    let mut run = Run::new(root, &output, target);
     let result = run.checks(mode);
     let mut summary = json!({
         "mode": match mode { Mode::Quick => "quick", Mode::Full => "full", Mode::Release => "release" },
@@ -251,9 +255,13 @@ pub(super) fn run(root: &Path, mode: Mode, output: Option<PathBuf>) -> Result<Ex
     if let Err(error) = &result {
         summary["error"] = json!(format!("{error:#}"));
     }
-    let mut file = File::create_new(output.join("summary.json"))?;
-    serde_json::to_writer_pretty(&mut file, &summary)?;
-    writeln!(file)?;
+    write_new_json(&output.join("summary.json"), &summary)?;
     result?;
     Ok(ExitCode::SUCCESS)
+}
+
+fn write_new_json(path: &Path, value: &impl serde::Serialize) -> Result<()> {
+    let mut file = File::create_new(path)?;
+    serde_json::to_writer_pretty(&mut file, value)?;
+    Ok(writeln!(file)?)
 }

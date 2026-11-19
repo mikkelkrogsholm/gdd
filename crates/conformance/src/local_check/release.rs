@@ -74,6 +74,17 @@ fn receipt(path: &Path) -> Result<Value> {
     .with_context(|| format!("parse {}", path.display()))
 }
 
+pub(super) fn recipient(root: &Path, prefix: &str) -> Result<tempfile::TempDir> {
+    let temp = env::temp_dir().canonicalize()?;
+    let parent = if temp.starts_with(root) {
+        root.parent()
+            .context("locate a recipient outside the checkout")?
+    } else {
+        &temp
+    };
+    Ok(tempfile::Builder::new().prefix(prefix).tempdir_in(parent)?)
+}
+
 pub(super) fn check(run: &mut Run<'_>) -> Result<()> {
     let prefix = run.output.join("install");
     for (step, name, command) in installations(run.root, &prefix) {
@@ -89,17 +100,7 @@ pub(super) fn check(run: &mut Run<'_>) -> Result<()> {
         );
     }
 
-    let temp = env::temp_dir().canonicalize()?;
-    let parent = if temp.starts_with(run.root) {
-        run.root
-            .parent()
-            .context("locate a recipient outside the checkout")?
-    } else {
-        &temp
-    };
-    let recipient = tempfile::Builder::new()
-        .prefix("gdd-release-recipient-")
-        .tempdir_in(parent)?;
+    let recipient = recipient(run.root, "gdd-release-recipient-")?;
     let reference = run
         .cli
         .as_deref()
@@ -154,18 +155,7 @@ mod tests {
             "version = 4\n[[package]]\nname = 'gdd'\nversion = '0.0.0'\n",
         )?;
         fs::write(root.join("src/main.rs"), "fn main() {}")?;
-        let mut run = Run {
-            root: &root,
-            output: &output,
-            target: dir.path().join("custom cache"),
-            cli: None,
-            installed: Default::default(),
-            source_package: None,
-            tutorial_source_package: None,
-            concert_source_package: None,
-            steps: Vec::new(),
-            toolchain: Default::default(),
-        };
+        let mut run = Run::new(&root, &output, dir.path().join("custom cache"));
         let error = check(&mut run).unwrap_err();
         assert!(
             error.to_string().contains("install-viewer failed"),

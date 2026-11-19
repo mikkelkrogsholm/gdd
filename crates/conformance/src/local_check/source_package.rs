@@ -141,37 +141,58 @@ pub(super) fn check(run: &mut Run<'_>, recipient: &Path) -> Result<()> {
     run.step_checked("tutorial-source-package-tests", tutorial, &root, 0, |log| {
         confirm_tutorial(&fs::read_to_string(log)?)
     })?;
+    let concert = concert_package(run, extraction.path())?;
+    for phase_a in [true, false] {
+        requirements(run, &concert, target.path(), phase_a)?;
+    }
+    Ok(())
+}
+
+pub(super) fn concert_package(run: &mut Run<'_>, extraction: &Path) -> Result<PathBuf> {
     let (concert, identity) = package(
         run,
-        extraction.path(),
+        extraction,
         "concert-source-package",
         "examples/concert-app/Cargo.toml",
         "gdd-concert",
     )?;
     run.concert_source_package = Some(identity);
-    for (step, phase, exit_code) in [
-        ("concert-requirements-a", "A", 101),
-        ("concert-requirements-b", "B", 0),
-    ] {
-        let mut test = package_tests(target.path());
-        test.args([
-            "--test",
-            "requirement_change",
-            "--",
-            "--format",
-            "pretty",
-            "--color",
-            "never",
-        ])
-        .env("GDD_CONCERT_REQUIREMENT_PHASE", phase)
-        .env_remove("RUST_TEST_NOCAPTURE")
-        // Avoid generating debug symbols for the embedded database on this fresh build.
-        .env("CARGO_PROFILE_TEST_DEBUG", "0");
-        run.step_checked(step, test, &concert, exit_code, |log| {
-            super::concert::confirm(&fs::read_to_string(log)?, phase == "A")
-        })?;
-    }
-    Ok(())
+    Ok(concert)
+}
+
+pub(super) fn concert_tests(target: &Path, integration_test: &str) -> Command {
+    let mut test = package_tests(target);
+    test.args([
+        "--test",
+        integration_test,
+        "--",
+        "--format",
+        "pretty",
+        "--color",
+        "never",
+    ])
+    .env_remove("RUST_TEST_NOCAPTURE")
+    // Avoid generating debug symbols for the embedded database on this fresh build.
+    .env("CARGO_PROFILE_TEST_DEBUG", "0");
+    test
+}
+
+pub(super) fn requirements(
+    run: &mut Run<'_>,
+    concert: &Path,
+    target: &Path,
+    phase_a: bool,
+) -> Result<Vec<Value>> {
+    let (step, phase, exit_code) = if phase_a {
+        ("concert-requirements-a", "A", 101)
+    } else {
+        ("concert-requirements-b", "B", 0)
+    };
+    let mut test = concert_tests(target, "requirement_change");
+    test.env("GDD_CONCERT_REQUIREMENT_PHASE", phase);
+    run.step_checked(step, test, concert, exit_code, |log| {
+        super::concert::confirm(&fs::read_to_string(log)?, phase_a)
+    })
 }
 
 #[cfg(test)]
@@ -228,18 +249,7 @@ mod tests {
             String::from_utf8_lossy(&warm.stderr)
         );
         assert!(String::from_utf8_lossy(&warm.stdout).contains("check_fixture ... ok"));
-        let mut run = Run {
-            root: &root,
-            output: &output,
-            target,
-            cli: None,
-            installed: Default::default(),
-            source_package: None,
-            tutorial_source_package: None,
-            concert_source_package: None,
-            steps: Vec::new(),
-            toolchain: Default::default(),
-        };
+        let mut run = Run::new(&root, &output, target);
         let error = check(&mut run, temp.path()).unwrap_err();
         assert!(
             error.to_string().contains("source-package-tests failed"),

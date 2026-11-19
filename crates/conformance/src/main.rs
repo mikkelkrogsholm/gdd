@@ -53,6 +53,11 @@ enum Command {
         #[arg(long, value_name = "NEW_FILE")]
         output: Option<PathBuf>,
     },
+    /// Replay the packaged Rust concert policy change and its database transition.
+    ConcertPolicyReplay {
+        #[arg(long, value_name = "NEW_DIR")]
+        output: PathBuf,
+    },
     /// Build, verify or restore an indexed concert experiment archive.
     ConcertArchive {
         #[command(subcommand)]
@@ -168,6 +173,10 @@ fn main() -> Result<ExitCode> {
                 &reference,
                 output,
             );
+        }
+        Command::ConcertPolicyReplay { output } => {
+            let directory = suite_directory(cli.checkout.as_deref())?.canonicalize()?;
+            return local_check::replay(directory.parent().context("locate checkout")?, output);
         }
         Command::ConcertArchive { action } => return concert_archive::command(action),
         Command::WorkflowDemo { output } => {

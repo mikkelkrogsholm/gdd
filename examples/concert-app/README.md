@@ -175,6 +175,42 @@ allowance, request-key binding and insertion share one writer transaction.
 
 ## Replay the requirement change in Rust
 
+From any directory with the matching checkout and installed conformance runner, run
+
+```sh
+gdd-conformance --checkout /path/to/gdd concert-policy-replay --output concert-replay
+```
+
+The new output directory holds the exact concert Cargo archive, its SHA-256
+digest in `summary.json`, both captured models and their declared assets, and
+the full `model-diff.json`. The summary links the addition of
+`rule.active_limit` and the two specification revisions to the named test
+outcomes and Cargo logs. For each run, `policy_spec_revision` identifies the
+exercised policy, A or B. Both runs use the same fixed phase-B assertions and
+record B as their `requirements_spec_revision`. The runner builds in a fresh
+directory from the extracted archive. With the locked dependencies cached,
+set `CARGO_NET_OFFLINE=true` to run offline.
+
+The fixed checks cover A at
+`sha256:6e63e184d19f87e79056d66d9922c3d7dbbd62db481f50e59d5f194fbe7d1ab9`
+and B at
+`sha256:fcc1dd8ef8d20fc4fa8d0718c27f3774b188d36caccb3d51037d82857bd77170`.
+Changing a manifest or any of its normative assets produces a different
+revision. The replay saves the observed diff and reports that pair as
+unsupported before running the policy tests.
+
+The same archive supplies the in-place SQLite transition test,
+`phase_a_to_b_requires_explicit_reconciliation`. It creates three reservations
+under A and checks that activating B refuses the database without changing its
+files. It reopens A to cancel one reservation, then reopens B on the same
+path and checks the two active reservations and the cancelled request key.
+
+These results describe a new local execution of the Rust reservation policy.
+The [original delivery and attestation replay](#historical-ab-delivery-and-replay)
+has its own instructions and evidence. An error leaves the attempted checks,
+diagnostics and available artifacts in the output directory. Choose a fresh
+directory for a retry.
+
 The [fixed requirement tests](tests/requirement_change.rs) port the ten
 phase-B cases from [the original test file](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert-app/tests/test_requirement_change.py).
 Run both commands from the checkout or the extracted concert crate. Cargo
