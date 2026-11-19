@@ -221,7 +221,10 @@ pub(super) fn run(
     args.extend(stage.filter());
     args.extend(["--", "--format=pretty", "--test-threads=1"]);
     let mut command = tool("cargo", root);
-    command.env("CARGO_TARGET_DIR", target).args(&args);
+    command
+        .env("CARGO_TARGET_DIR", target)
+        .env("CARGO_BUILD_BUILD_DIR", target)
+        .args(&args);
     let path = root.join(format!("evidence/{}.run.json", stage.name()));
     let context = || format!("run the {} Cargo acceptance target", stage.name());
     let mut run = run_checked(root, &project::source_names(), &path, command, TOOL_TIMEOUT)

@@ -12,9 +12,21 @@ fn read(root: &Path, name: &str) -> Value {
 fn published_run_survives_relocation_and_refuses_replacement() {
     let temp = tempfile::tempdir().unwrap();
     let destination = temp.path().join("demo");
+    // Cargo discovers this configuration above the demo's private temporary project.
+    let cargo_config = temp.path().join(".cargo");
+    let shared_build = temp.path().join("shared-build");
+    fs::create_dir(&cargo_config).unwrap();
+    fs::write(
+        cargo_config.join("config.toml"),
+        "[build]\nbuild-dir = 'shared-build'\n",
+    )
+    .unwrap();
     let invoke = || {
         Command::new(env!("CARGO_BIN_EXE_gdd-conformance"))
             .current_dir(temp.path())
+            .env("TMPDIR", temp.path())
+            .env("TMP", temp.path())
+            .env("TEMP", temp.path())
             .args(["workflow-demo", "--output"])
             .arg(&destination)
             .output()
@@ -28,6 +40,10 @@ fn published_run_survives_relocation_and_refuses_replacement() {
     );
     let summary: Value = serde_json::from_slice(&result.stdout).unwrap();
     assert_eq!(summary, read(&destination, "summary.json"));
+    assert!(
+        !shared_build.exists(),
+        "Cargo used the shared build directory"
+    );
     fs::write(destination.join("marker"), b"preserve me").unwrap();
     assert!(!invoke().status.success());
     assert_eq!(
