@@ -1,10 +1,19 @@
 //! Run the fixed Cargo acceptance target and check the complete named result set.
 
 use super::{project, write_json};
-use anyhow::{Context, Result, ensure};
-use gdd::host::CodeSnapshot;
+use anyhow::{Context, Result, bail, ensure};
+use gdd::host::{
+    CodeSnapshot,
+    process::{Execution, collect},
+};
 use serde_json::json;
-use std::{collections::BTreeMap, env, path::Path, process::Command};
+use std::{
+    collections::BTreeMap,
+    env,
+    path::Path,
+    process::{Command, Output, Stdio},
+    time::Duration,
+};
 use time::{OffsetDateTime, format_description::well_known::Rfc3339};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -88,7 +97,7 @@ impl Stage {
 
 fn tool(program: &str, root: &Path) -> Command {
     let mut command = Command::new(program);
-    command.current_dir(root).env_clear();
+    command.current_dir(root).env_clear().stdin(Stdio::null());
     for key in [
         "PATH",
         "HOME",
@@ -111,13 +120,28 @@ fn tool(program: &str, root: &Path) -> Command {
     command
 }
 
+// Allow five minutes for each invocation in the bundled, dependency-free project.
+const TOOL_TIMEOUT: Duration = Duration::from_secs(300);
+
+fn tool_output(command: Command, timeout: Duration) -> Result<Output> {
+    match collect(command, timeout)? {
+        Execution::Completed(output) => Ok(output),
+        Execution::NotStarted(error) => Err(error).context("start the selected tool"),
+        Execution::TimedOut { stdout, stderr } => bail!(
+            "tool timed out after {timeout:?}\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&stdout),
+            String::from_utf8_lossy(&stderr),
+        ),
+    }
+}
+
 pub(super) fn versions(root: &Path) -> Result<BTreeMap<String, String>> {
     let mut versions = BTreeMap::new();
     for program in ["cargo", "rustc"] {
-        let result = tool(program, root)
-            .args(["--version", "--verbose"])
-            .output()
-            .with_context(|| format!("start {program} for toolchain identity"))?;
+        let mut command = tool(program, root);
+        command.args(["--version", "--verbose"]);
+        let result = tool_output(command, TOOL_TIMEOUT)
+            .with_context(|| format!("run {program} for toolchain identity"))?;
         ensure!(
             result.status.success(),
             "{program} version failed: {}",
@@ -196,11 +220,10 @@ pub(super) fn run(
     args.extend(stage.filter());
     args.extend(["--", "--format=pretty", "--test-threads=1"]);
     let started_at = OffsetDateTime::now_utc().format(&Rfc3339)?;
-    let result = tool("cargo", root)
-        .env("CARGO_TARGET_DIR", target)
-        .args(&args)
-        .output()
-        .context("start the bundled Cargo acceptance target")?;
+    let mut command = tool("cargo", root);
+    command.env("CARGO_TARGET_DIR", target).args(&args);
+    let result = tool_output(command, TOOL_TIMEOUT)
+        .with_context(|| format!("run the {} Cargo acceptance target", stage.name()))?;
     let finished_at = OffsetDateTime::now_utc().format(&Rfc3339)?;
     let after = project::snapshot(root)?;
     ensure!(
@@ -238,7 +261,34 @@ pub(super) fn run(
 
 #[cfg(test)]
 mod tests {
-    use super::{Stage, verify};
+    use super::{Stage, tool_output, verify};
+    use std::{env, process::Command, thread, time::Duration};
+
+    #[test]
+    fn timed_out_tool_reports_partial_streams() {
+        // Invoke this test as the selected tool to simulate an incomplete Cargo run.
+        const CHILD: &str = "GDD_TEST_INCOMPLETE_CARGO_OUTPUT";
+        if env::var_os(CHILD).is_some() {
+            println!("test discount::test_normal ... ok");
+            eprintln!("pending acceptance tests");
+            thread::sleep(Duration::from_secs(15));
+            return;
+        }
+        let mut command = Command::new(env::current_exe().unwrap());
+        command
+            .args([
+                "--exact",
+                "workflow_demo::checks::tests::timed_out_tool_reports_partial_streams",
+                "--nocapture",
+            ])
+            .env(CHILD, "1");
+        let error = tool_output(command, Duration::from_secs(1))
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains("timed out"));
+        assert!(error.contains("test discount::test_normal ... ok"));
+        assert!(error.contains("pending acceptance tests"));
+    }
 
     #[test]
     fn cargo_failure_requires_the_exact_completed_negative_control() {
