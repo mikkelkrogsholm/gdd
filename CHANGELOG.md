@@ -13,6 +13,12 @@ view formats and renderers have independent versions.
 - Add a standalone Rust tool to synchronize skill references from a checkout and
   verify their hashes in a copied skill directory.
 
+- Restore the no-descriptor `gdd check-code` invocation using the shipped
+  CPython 3.11.15 Linux aarch64 reference build. The optional
+  `--python-runtime` flag selects a caller-supplied build descriptor.
+- Add `gdd::host::execute_check` for version 0.1 receipts with the native
+  producer's crate version, operating system and architecture.
+
 ## 0.8.0 — November 2, 2026
 
 Package: `gdd-validator` 0.8.0, a GitHub development prerelease. Standard:

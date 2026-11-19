@@ -94,11 +94,13 @@ Readiness scopes are implementation targets: component, entity, action, screen, 
 ## Observe actual Python import relationships
 
 ```sh
-gdd check-code model.gdd.yaml --root src --implementation implementation.main --profile python-imports/0.1 --python-runtime target-runtime.json --records current.records.json --scope rule.api_boundary --output new-observation.json
+gdd check-code model.gdd.yaml --root src --implementation implementation.main --profile python-imports/0.1 --records current.records.json --scope rule.api_boundary --output new-observation.json
 ```
 
 This separate operation reads current binding records, inventories Python source
 and compares static imports with explicit direct/transitive architecture rules.
+The default target is the shipped CPython 3.11.15 Linux aarch64 reference
+build. Supply `--python-runtime target-runtime.json` to analyze another build.
 It reports shortest violating paths, exact source positions, incomplete coverage
 and advisory unclaimed/undeclared code. The required profile and root define the
 bounded interpretation; unsupported/dynamic input stays UNKNOWN. Missing model

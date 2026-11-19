@@ -8,7 +8,6 @@ is required.
 ```sh
 gdd check-code path/to/gdd.yaml --root path/to/source \
   --implementation implementation.main --profile python-imports/0.1 \
-  --python-runtime target-runtime.json \
   --records path/to/current.records.json --scope rule.api_boundary \
   --output new-observation.json
 ```
@@ -42,9 +41,19 @@ checks source architecture, not runtime reachability.
 
 ## Native Rust command
 
-Supply a target descriptor with `--python-runtime` to select the
-CPython grammar and the builtin/frozen module names that precede project source
-lookup. The supported target grammars are 3.11, 3.12, 3.13 and 3.14.
+With no `--python-runtime` flag, GDD uses the shipped descriptor captured from
+the CPython 3.11.15 Linux aarch64 build used to compare the v0.8 Python
+implementation. The descriptor selects the 3.11 grammar and that build's
+builtin and frozen module names, which take precedence over project source.
+The native checker uses this target on every host and reads no interpreter
+from the environment. The Python v0.8 checker used its running interpreter,
+so a different Python version, build or platform can change syntax acceptance
+or whether an import resolves to local source.
+
+Use `--python-runtime` to select another build. Supported target grammars are
+3.11, 3.12, 3.13 and 3.14. Library callers can pass
+`PythonRuntime::reference()?` or `PythonRuntime::from_json(bytes)?` through
+`CodeCheckOptions::runtime`.
 
 ```sh
 cargo run --locked -p gdd -- check-code path/to/gdd.yaml --root path/to/source \
@@ -76,9 +85,9 @@ PY
 ```
 
 The native checker reads the descriptor as data. The report's `tool` names
-the Rust producer, `runtime` names the supplied target, and the
-`CODE_RUNTIME_TARGET` advisory identifies its platform, canonical descriptor
-digest and Ruff parser version. `--output` creates a new file exclusively.
+the Rust producer and `runtime` names the selected target. The
+`CODE_RUNTIME_TARGET` advisory identifies the shipped or caller-supplied
+descriptor, its platform, its canonical digest and the Ruff parser version. `--output` creates a new file exclusively.
 The exit status is 0 for PASS, 1 for FAIL, and 2 for UNKNOWN.
 
 ## Bindings and source roots
@@ -156,7 +165,7 @@ Recognized dynamic loaders, loader aliases/escaping values, reflective loading,
 import-system namespaces and module-registry access yield UNKNOWN. Detection is
 bounded: arbitrary reflection, custom import hooks, extra import roots, native
 modules and runtime path changes are not proven absent. The report identifies
-the Rust parser and the CPython target supplied for analysis. A PASS is conditional on this stated static
+the Rust parser and the CPython target selected for analysis. A PASS is conditional on this stated static
 profile and source-root assumption. Python's [import system](https://docs.python.org/3.14/reference/import.html)
 and [import statement](https://docs.python.org/3.14/reference/simple_stmts.html#import)
 explain why package and member resolution need these limits.

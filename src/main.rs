@@ -142,8 +142,9 @@ enum Command {
         implementation: String,
         #[arg(long, allow_negative_numbers = true)]
         profile: String,
+        /// Override the shipped CPython 3.11.15 Linux aarch64 target with a JSON descriptor.
         #[arg(long, allow_negative_numbers = true)]
-        python_runtime: PathBuf,
+        python_runtime: Option<PathBuf>,
         #[arg(long, allow_negative_numbers = true)]
         records: Option<PathBuf>,
         #[arg(long, allow_negative_numbers = true)]
@@ -512,7 +513,10 @@ fn run() -> io::Result<ExitCode> {
             output,
         } => {
             use gdd::code_check::{CodeCheckOptions, PythonRuntime, check_code};
-            let runtime = PythonRuntime::from_json(&std::fs::read(cli_path(python_runtime))?)?;
+            let runtime = match python_runtime {
+                Some(path) => PythonRuntime::from_json(&std::fs::read(cli_path(path))?)?,
+                None => PythonRuntime::reference()?,
+            };
             let records = records.map(cli_path);
             let report = check_code(
                 &cli_path(path),

@@ -120,13 +120,14 @@ describe cancellation, retry and reconciliation.
 ## Execute a host-selected check
 
 Select the concrete argv from your own assessment and run it on the combined
-code after integration. To write an exclusive `gdd-host-check/0.1` receipt,
-use `execute_check_v01`. Supply the runner metadata you observed. This example
-identifies the application that calls the library.
+code after integration. `gdd::host::execute_check` writes an exclusive
+`gdd-host-check/0.1` receipt. Its `runner` identifies the producer with
+`name` (`gdd`), `version` (the crate version), `os` and `arch` (the GDD
+binary's target operating system and architecture).
 
 ```rust
-use gdd::host::{CheckCommand, execute_check_v01};
-use serde_json::{Map, Value};
+use gdd::host::{CheckCommand, execute_check};
+use serde_json::Value;
 use std::{io, path::Path, time::Duration};
 
 fn run_domain(root: &Path, python: &str) -> io::Result<Value> {
@@ -134,15 +135,9 @@ fn run_domain(root: &Path, python: &str) -> io::Result<Value> {
         argv: &[python, "-B", "-m", "unittest", "discover", "-s", "tests"],
         env: &[],
     };
-    let runner = Map::from_iter([
-        ("name".into(), env!("CARGO_PKG_NAME").into()),
-        ("version".into(), env!("CARGO_PKG_VERSION").into()),
-        ("os".into(), std::env::consts::OS.into()),
-    ]);
-    execute_check_v01(
+    execute_check(
         root, &["src/domain.py", "src/cli.py", "tests/test_domain.py"],
         &root.join("evidence/domain.run.json"), command, Duration::from_secs(120),
-        &runner,
     )
 }
 ```
@@ -150,10 +145,15 @@ fn run_domain(root: &Path, python: &str) -> io::Result<Value> {
 Pass the selected interpreter as `python`. Each argv entry must be a nonempty
 UTF-8 string without NUL. The timeout must be positive and at most one day.
 The child inherits the caller's environment, with any native key/value
-overrides supplied in `CheckCommand::env`. The helper preserves the runner
-object, including historical `python` and `platform` fields when supplied.
-The released Python v0.8 reader accepts this format. The Rust API makes the
-wire format and runner metadata explicit at each call.
+overrides supplied in `CheckCommand::env`. Record the checker's observed
+version separately when attesting the evidence.
+
+Hosts supplying their own runner metadata can call
+`execute_check_v01(root, files, output, command, timeout, &runner)` with a
+`serde_json::Map<String, Value>`. This preserves the supplied object,
+including historical `python` and `platform` fields. Both writers produce
+receipts readable by `verification_records` and the released Python v0.8
+reader.
 
 Create the evidence parent directory first. The helper checks the selected
 sources and reserves the output exclusively before starting the checker in

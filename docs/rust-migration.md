@@ -668,17 +668,19 @@ YAML nesting to 256 containers.
 | `project_status` | Native project assessments with an optional workflow journal, JSON and text output, and captured-bundle entry points. |
 | `analyze_impact`, `impact_text` | Native declared consumers, supporting context, applicable records, JSON and text output, with path-based and captured-bundle entry points. |
 | `diff_models`, `diff_text` | Native comparison of paths or captured models with scoped diagnostics, field changes, relocations and structural advisories. |
-| `check_code` | Native [`gdd::code_check::check_code`](../src/model/code_check/mod.rs) and [`gdd check-code`](python-imports.md#native-rust-command) assess explicit rules against captured Python sources using a caller-supplied CPython target. The [in-memory observer](../src/python_imports/mod.rs) is also available. |
+| `check_code` | Native [`gdd::code_check::check_code`](../src/model/code_check/mod.rs) and [`gdd check-code`](python-imports.md#native-rust-command) assess explicit rules against captured Python sources using the shipped CPython 3.11.15 Linux aarch64 reference build or a caller-supplied descriptor. The Python v0.8 checker used its running interpreter. The [in-memory observer](../src/python_imports/mod.rs) is also available. |
 | `snapshot_code`, `verification_records`, `append_records` | Native library operations in `gdd::host`. Select explicit code files, attest a saved current PASS/FAIL receipt and append new immutable IDs to a records document. See the [host guide](../HOST.md#append-verified-records-and-supply-trust) for the Rust API example. |
-| `execute_check` | Trusted Rust callers can explicitly select the existing `gdd-host-check/0.1` format with `gdd::host::execute_check_v01` and supply their actual runner metadata. See the [host guide](../HOST.md#execute-a-host-selected-check) for a complete call. |
+| `execute_check` | [`gdd::host::execute_check`](../HOST.md#execute-a-host-selected-check) writes `gdd-host-check/0.1` receipts with native producer metadata. `execute_check_v01` accepts custom runner metadata. |
 
-Call `execute_check_v01(root, files, output, command, timeout, &runner)` with
-a `gdd::host::CheckCommand { argv, env }`, a positive `Duration` of at most one
-day, and a `serde_json::Map<String, Value>`. The helper preserves the supplied
-runner object and returns the same JSON it writes to the exclusively reserved
-file. Python v0.8 readers can consume these receipts, including ones with
-caller-supplied historical `python` and `platform` metadata. A default Rust
-receipt format and runner metadata policy remain open.
+Call `execute_check(root, files, output, command, timeout)` with a
+`gdd::host::CheckCommand { argv, env }` and a positive `Duration` of at most
+one day. The receipt's runner object records the GDD crate name and version
+and its target OS and architecture. Checker identity and version belong to
+the host's evidence attestation. For custom metadata, pass an additional
+`&serde_json::Map<String, Value>` to `execute_check_v01`. It preserves the
+supplied object, including historical `python` and `platform` metadata.
+Both return the same JSON they write to the exclusively reserved file and
+produce receipts readable by the Python v0.8 reader.
 
 The lower-level `gdd::host::process::run_checked` returns the reserved file,
 snapshots and collected process result for callers with their own receipt

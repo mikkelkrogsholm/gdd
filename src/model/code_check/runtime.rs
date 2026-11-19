@@ -3,7 +3,7 @@ use serde::Deserialize;
 use serde_json::{Value, json};
 use std::{collections::BTreeSet, io};
 
-/// Caller-declared CPython target. Decoding this descriptor never runs an interpreter.
+/// CPython target for static import analysis. Decoding its descriptor never runs an interpreter.
 #[derive(Debug)]
 pub struct PythonRuntime {
     pub(super) version: String,
@@ -24,8 +24,23 @@ struct Descriptor {
 }
 
 impl PythonRuntime {
+    /// Use the descriptor shipped for the v0.8 comparator's CPython 3.11.15 Linux aarch64 build.
+    pub fn reference() -> io::Result<Self> {
+        Self::parse(
+            include_bytes!("reference-cpython-3.11.15-linux-aarch64.json"),
+            "GDD ships this reference target from the CPython 3.11.15 Linux aarch64 build used for v0.8 comparison. The native observer parses sources with Ruff.",
+        )
+    }
+
     /// Read the JSON object containing version, impl, platform, builtin_names and frozen_names.
     pub fn from_json(bytes: &[u8]) -> io::Result<Self> {
+        Self::parse(
+            bytes,
+            "The caller supplied this CPython target. The native observer parses sources with Ruff.",
+        )
+    }
+
+    fn parse(bytes: &[u8], message: &str) -> io::Result<Self> {
         let text = std::str::from_utf8(bytes).map_err(io::Error::other)?;
         let json = to_json(&input::parse_json(text).map_err(io::Error::other)?)?;
         let d: Descriptor = serde_json::from_value(json.clone())?;
@@ -77,7 +92,7 @@ impl PythonRuntime {
             version: d.version,
             grammar,
             names,
-            provenance: json!({"code":"CODE_RUNTIME_TARGET","message":"The caller supplied this CPython target. The native observer parses sources with Ruff.",
+            provenance: json!({"code":"CODE_RUNTIME_TARGET","message":message,
                 "platform":d.platform,"descriptor_revision":crate::canonical_digest(&json),"parser":"ruff_python_parser","parser_version":"0.0.10"}),
         })
     }

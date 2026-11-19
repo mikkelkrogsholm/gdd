@@ -8,6 +8,7 @@ publish = false
 include = [
     "/Cargo.toml", "/Cargo.lock", "/LICENSE", "/README.md", "/INSTALL.md", "/SPEC.md", "/VALIDATOR.md",
     "/HOST.md", "/docs/rust-migration.md", "/docs/python-imports.md",
+    "/src/model/code_check/reference-cpython-3.11.15-linux-aarch64.json",
     "/src/**/*.rs", "/schemas/*.schema.json", "/extensions/product-0.1.json",
     "/templates/project/*.json", "/templates/project/SOURCES.md", "/tests/*.rs", "/tests/fixtures/*.rs",
     "/docs/tutorial/refined.gdd.json", "/docs/tutorial/evidence.gdd.json", "/examples/tutorial_prepare.rs",

@@ -72,6 +72,22 @@ impl Project {
             runtime: &self.runtime,
         }
     }
+    fn cli(&self) -> Command {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_gdd"));
+        command
+            .env("PATH", self.dir.path())
+            .arg("check-code")
+            .arg(&self.model)
+            .arg("--root")
+            .arg(&self.source)
+            .args([
+                "--implementation",
+                "implementation.demo",
+                "--profile",
+                "python-imports/0.1",
+            ]);
+        command
+    }
     fn report(&self) -> Value {
         check_code(&self.model, self.options()).unwrap()
     }
@@ -219,20 +235,8 @@ fn cli_exit_codes_and_exclusive_output_follow_report_verdict() {
     fs::write(&runtime, RUNTIME).unwrap();
     let output = project.dir.path().join("result.json");
     let run = |output: Option<&Path>| {
-        let mut command = Command::new(env!("CARGO_BIN_EXE_gdd"));
-        command
-            .arg("check-code")
-            .arg(&project.model)
-            .arg("--root")
-            .arg(&project.source)
-            .args([
-                "--implementation",
-                "implementation.demo",
-                "--profile",
-                "python-imports/0.1",
-                "--python-runtime",
-            ])
-            .arg(&runtime);
+        let mut command = project.cli();
+        command.arg("--python-runtime").arg(&runtime);
         if let Some(path) = output {
             command.arg("--output").arg(path);
         }
@@ -246,6 +250,76 @@ fn cli_exit_codes_and_exclusive_output_follow_report_verdict() {
     }
     assert_eq!(run(Some(&output)).status.code(), Some(1));
     assert_eq!(fs::read(output).unwrap(), original);
+}
+
+#[test]
+fn omitted_runtime_selects_the_shipped_reference_build() {
+    let project = Project::new("direct");
+    fs::write(project.source.join("api.py"), "import math").unwrap();
+    fs::write(project.source.join("math.py"), "pass").unwrap();
+    let default = project.cli().output().unwrap();
+    assert!(default.status.success());
+    let default: Value = serde_json::from_slice(&default.stdout).unwrap();
+    let reference = PythonRuntime::reference().unwrap();
+    assert_eq!(
+        default,
+        check_code(
+            &project.model,
+            CodeCheckOptions {
+                runtime: &reference,
+                ..project.options()
+            }
+        )
+        .unwrap()
+    );
+    assert_eq!(default["runtime"]["python"], "3.11.15");
+    assert_eq!(default["imports"][0]["external"], true);
+    let info = &default["advisory"][0];
+    assert_eq!(info["platform"], "linux");
+    assert_eq!(
+        info["descriptor_revision"],
+        "sha256:abdfb0684230ee45867e94c0cbd30b31d74dd73d692641c09b9deddca0ae5a1b"
+    );
+    assert!(
+        info["message"]
+            .as_str()
+            .unwrap()
+            .contains("GDD ships this reference target")
+    );
+
+    let descriptor = project.dir.path().join("target.json");
+    fs::write(
+        &descriptor,
+        include_bytes!("../src/model/code_check/reference-cpython-3.11.15-linux-aarch64.json"),
+    )
+    .unwrap();
+    let run = || {
+        project
+            .cli()
+            .arg("--python-runtime")
+            .arg(&descriptor)
+            .output()
+            .unwrap()
+    };
+    let explicit = run();
+    assert!(explicit.status.success());
+    let mut explicit: Value = serde_json::from_slice(&explicit.stdout).unwrap();
+    assert_eq!(
+        explicit["advisory"][0]["message"],
+        "The caller supplied this CPython target. The native observer parses sources with Ruff."
+    );
+    explicit["advisory"][0]["message"] = info["message"].clone();
+    assert_eq!(default, explicit);
+
+    fs::write(&descriptor, RUNTIME).unwrap();
+    let custom: Value = serde_json::from_slice(&run().stdout).unwrap();
+    assert_eq!(custom["imports"][0]["external"], false);
+    assert_ne!(
+        custom["advisory"][0]["descriptor_revision"],
+        info["descriptor_revision"]
+    );
+    fs::write(&descriptor, "{}").unwrap();
+    assert!(!run().status.success());
 }
 
 #[test]

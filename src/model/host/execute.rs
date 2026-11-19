@@ -51,6 +51,25 @@ pub struct CheckCommand<'a> {
     pub env: &'a [(&'a OsStr, &'a OsStr)],
 }
 
+/// Run a trusted check and write a `gdd-host-check/0.1` receipt identifying the
+/// GDD crate version and its target OS and architecture as the receipt producer.
+/// See [`execute_check_v01`] for command, timeout and snapshot requirements.
+pub fn execute_check(
+    root: &Path,
+    files: &[&str],
+    output: &Path,
+    command: CheckCommand<'_>,
+    timeout: Duration,
+) -> io::Result<Value> {
+    let runner = Map::from_iter([
+        ("name".into(), env!("CARGO_PKG_NAME").into()),
+        ("version".into(), env!("CARGO_PKG_VERSION").into()),
+        ("os".into(), std::env::consts::OS.into()),
+        ("arch".into(), std::env::consts::ARCH.into()),
+    ]);
+    execute_check_v01(root, files, output, command, timeout, &runner)
+}
+
 /// Run a trusted caller's literal command and publish a fresh `gdd-host-check/0.1`
 /// receipt. Supply the actual runner metadata for this invocation. The command's
 /// program and arguments must be nonempty UTF-8 strings without NUL, and its

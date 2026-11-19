@@ -3,7 +3,7 @@
 mod execute;
 pub mod process;
 
-pub use execute::{CheckCommand, execute_check_v01};
+pub use execute::{CheckCommand, execute_check, execute_check_v01};
 
 use super::{get, inspection, semantics, string, strings};
 use crate::bundle::{self, Bundle, DocumentKind, open_regular};

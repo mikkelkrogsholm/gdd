@@ -27,8 +27,8 @@
     {
       "path": "references/gdd/HOST.md",
       "source": "HOST.md",
-      "sha256": "c3f1d04dec3d15d34db5c4251850aff5a4ce1ef6e492916a99273479017eb1e2",
-      "bytes": 13205
+      "sha256": "0a630be8249837c659c4f9f01b028f24677c7a2b623ee1ccdab15b4f57d89ae2",
+      "bytes": 13214
     },
     {
       "path": "references/gdd/SPEC.md",
@@ -39,8 +39,8 @@
     {
       "path": "references/gdd/VALIDATOR.md",
       "source": "VALIDATOR.md",
-      "sha256": "7b8588b797984d4cd8eb990943761163a39caebb2ff0dc51d67d59ddb0b7eeb2",
-      "bytes": 18076
+      "sha256": "ab75c8b22535f7c2b7782fb276d7fad28d9e66ec9a2d7d79d659030ca64d7931",
+      "bytes": 18192
     },
     {
       "path": "references/gdd/VIEWER.md",

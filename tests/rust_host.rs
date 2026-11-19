@@ -2,8 +2,7 @@
 
 use gdd::bundle::load_model_only;
 use gdd::host::{
-    Attestation, CheckCommand, append_records, execute_check_v01, snapshot_code,
-    verification_records,
+    Attestation, CheckCommand, append_records, execute_check, snapshot_code, verification_records,
 };
 use gdd::report::CheckResult;
 use gdd::validation::{Profile, ValidationOptions, validate_with_options};
@@ -201,15 +200,22 @@ fn actual_compiler_result_remains_bound_to_explicit_host_trust() {
             ],
             env: &[],
         };
-        let receipt = execute_check_v01(
+        let receipt = execute_check(
             root,
             SOURCES,
             &project.receipt,
             command,
             Duration::from_secs(30),
-            project.checker.as_object().unwrap(),
         )
         .unwrap();
+        assert_eq!(receipt["format"], "gdd-host-check/0.1");
+        assert_eq!(
+            receipt["runner"],
+            json!({
+                "name": "gdd", "version": env!("CARGO_PKG_VERSION"),
+                "os": std::env::consts::OS, "arch": std::env::consts::ARCH,
+            })
+        );
         assert_eq!(receipt["exit_code"], code);
         assert_eq!(receipt["result"], label);
         assert_eq!(read(&project.receipt), receipt);
