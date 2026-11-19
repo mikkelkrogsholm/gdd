@@ -45,7 +45,9 @@ No workflow policy is chosen in the standard examples below. Missing policy prev
 
 The standard examples are used for format and method semantics. The practical quote example is separate under `agent-native/`; it grants no implicit authorization to other projects.
 
-The [concert HTML view](concert.graph.html) opens offline in a browser and illustrates the [released Python viewer](../VIEWER.md#released-browser-viewer).
+To try the [released Python viewer](../VIEWER.md#released-browser-viewer),
+download the [v0.8.0 concert HTML file](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert.graph.html)
+and open it offline in a browser.
 
 ## GDD 0.3 design-quality example
 
@@ -59,6 +61,8 @@ these bytes; no reservation application execution is claimed.
 
 [The planned design review](design-review.planned.json) declares executed=false and
 unknown assessments. It is a format example, not review evidence.
-[The derived public view](concert-0.3.boundaries.json) and
-[released HTML view](concert-0.3.graph.html) preserve IDs and revision.
+[The derived public view](concert-0.3.boundaries.json) and the
+[native saved graph](concert-0.3.gddview) preserve the model IDs and revision.
+The [v0.8.0 concert 0.3 HTML file](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert-0.3.graph.html)
+preserves the browser presentation from that release.
 Existing 0.2 examples and the native-agent run remain unchanged.

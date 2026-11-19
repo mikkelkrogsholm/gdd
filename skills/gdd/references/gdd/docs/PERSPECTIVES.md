@@ -95,8 +95,10 @@ Each perspective intersects with the artifact scope and other filters. Inspector
 retain canonical IDs across views. Human action/response, actor role/goal, fields,
 rules and cardinalities are inspectable. The visible advisory gap list links to
 canonical targets without making incomplete sketches invalid. See the
-[viewer guide](../VIEWER.md). For the released Python renderer, open the
-[standalone HTML example](../examples/product/greenfield.graph.html) in a browser.
+[native viewer guide](../VIEWER.md#share-a-native-view). To explore the same
+model with the released Python renderer, download the
+[v0.8.0 product HTML file](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/product/greenfield.graph.html)
+and open it in a browser.
 
 ## Advisory limits and compatibility
 

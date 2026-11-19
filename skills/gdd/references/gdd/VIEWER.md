@@ -135,7 +135,11 @@ uv run gdd validate examples/concert.gdd.yaml --profile visualization --view con
 
 The output file must be new. An existing file or symlink is never overwritten. The model must load and validate with a known snapshot. Sketches can be displayed even when they lack implementation contracts; unresolved model references and unavailable extensions are rejected.
 
-The generated [concert view](examples/concert.graph.html) displays the model with 38 nodes and 85 independent relations. It is not part of the model snapshot. The agent changes the GDD files and generates a new view; the browser never writes back.
+To inspect the concert model in the released browser viewer, download the
+[v0.8.0 concert HTML file](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert.graph.html)
+and open it locally. It displays 38 nodes and 85 independent relations. The generated
+HTML file sits outside the model snapshot. The agent edits the source model and
+regenerates the view. The browser opens it read-only.
 
 ## Exploration
 
@@ -169,8 +173,10 @@ but are never added to the canvas. Reset selects All graph within that same scop
 The **Advisory gaps** list remains available in every lens. Select a gap to inspect
 its canonical target and reveal it in All graph when within artifact scope. Missing
 links are valid in sketches; gap counts never establish readiness, completeness
-or implementation PASS. Try the [openable product demo](examples/product/greenfield.graph.html)
-and the [partial sketch](examples/product/partial.gdd.json).
+or implementation PASS. To try these browser controls, download the
+[v0.8.0 product HTML file](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/product/greenfield.graph.html)
+and open it locally. The [partial sketch](examples/product/partial.gdd.json)
+illustrates missing journey and component links.
 
 ## Communities and scope
 
@@ -283,4 +289,6 @@ Renderer 0.3.0 supports both model versions. For 0.3 it shows component responsi
 boundary rationale and exclusions, links to authoritative public actions, and derived
 community boundaries with ownership-based participation, overlap and omitted calls.
 These views are model context and grant no access or quality/acceptance status.
-The shipped 0.3 example is [concert-0.3.graph.html](examples/concert-0.3.graph.html).
+The [v0.8.0 concert 0.3 HTML file](https://github.com/mikkelkrogsholm/gdd/blob/0dbb10b8c193f55c9777405de3f4ae22ac2d0825/examples/concert-0.3.graph.html)
+preserves the released browser example. Open the [concert 0.3 saved graph](examples/concert-0.3.gddview)
+with `gdd-viewer` to inspect the same model in the native application.
