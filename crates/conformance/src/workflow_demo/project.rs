@@ -40,9 +40,12 @@ const BASELINE: &[(&str, &[u8])] = rust_files![
 pub(super) const IMPLEMENTATION: &str = "implementation.quote_demo.rust";
 pub(super) const NEGATIVE_CONTROL: &str = "Run the shipped half-up baseline against unchanged floor assertions; the rounding tests and actual CLI integration must detect the defect.";
 
+pub(super) fn source_names() -> Vec<&'static str> {
+    SOURCES.iter().map(|&(name, _)| name).collect()
+}
+
 pub(super) fn snapshot(root: &Path) -> Result<CodeSnapshot> {
-    let names: Vec<_> = SOURCES.iter().map(|&(name, _)| name).collect();
-    Ok(snapshot_code(root, &names)?)
+    Ok(snapshot_code(root, &source_names())?)
 }
 
 fn put(root: &Path, name: &str, bytes: &[u8]) -> Result<()> {

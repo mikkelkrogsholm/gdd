@@ -1,15 +1,16 @@
 //! Run the fixed Cargo acceptance target and check the complete named result set.
 
-use super::{project, write_json};
+use super::project;
 use anyhow::{Context, Result, bail, ensure};
 use gdd::host::{
     CodeSnapshot,
-    process::{Execution, collect},
+    process::{Execution, collect, run_checked},
 };
 use serde_json::json;
 use std::{
     collections::BTreeMap,
     env,
+    io::Write,
     path::Path,
     process::{Command, Output, Stdio},
     time::Duration,
@@ -123,8 +124,8 @@ fn tool(program: &str, root: &Path) -> Command {
 // Allow five minutes for each invocation in the bundled, dependency-free project.
 const TOOL_TIMEOUT: Duration = Duration::from_secs(300);
 
-fn tool_output(command: Command, timeout: Duration) -> Result<Output> {
-    match collect(command, timeout)? {
+fn tool_output(execution: Execution, timeout: Duration) -> Result<Output> {
+    match execution {
         Execution::Completed(output) => Ok(output),
         Execution::NotStarted(error) => Err(error).context("start the selected tool"),
         Execution::TimedOut { stdout, stderr } => bail!(
@@ -140,8 +141,9 @@ pub(super) fn versions(root: &Path) -> Result<BTreeMap<String, String>> {
     for program in ["cargo", "rustc"] {
         let mut command = tool(program, root);
         command.args(["--version", "--verbose"]);
-        let result = tool_output(command, TOOL_TIMEOUT)
-            .with_context(|| format!("run {program} for toolchain identity"))?;
+        let context = || format!("run {program} for toolchain identity");
+        let execution = collect(command, TOOL_TIMEOUT).with_context(context)?;
+        let result = tool_output(execution, TOOL_TIMEOUT).with_context(context)?;
         ensure!(
             result.status.success(),
             "{program} version failed: {}",
@@ -215,17 +217,22 @@ pub(super) fn run(
     stage: Stage,
     versions: &BTreeMap<String, String>,
 ) -> Result<TestRun> {
-    let before = project::snapshot(root)?;
     let mut args = vec!["test", "--locked", "--offline", "--test", "acceptance"];
     args.extend(stage.filter());
     args.extend(["--", "--format=pretty", "--test-threads=1"]);
-    let started_at = OffsetDateTime::now_utc().format(&Rfc3339)?;
     let mut command = tool("cargo", root);
     command.env("CARGO_TARGET_DIR", target).args(&args);
-    let result = tool_output(command, TOOL_TIMEOUT)
-        .with_context(|| format!("run the {} Cargo acceptance target", stage.name()))?;
-    let finished_at = OffsetDateTime::now_utc().format(&Rfc3339)?;
-    let after = project::snapshot(root)?;
+    let path = root.join(format!("evidence/{}.run.json", stage.name()));
+    let context = || format!("run the {} Cargo acceptance target", stage.name());
+    let mut run = run_checked(root, &project::source_names(), &path, command, TOOL_TIMEOUT)
+        .with_context(context)?;
+    let result = tool_output(run.execution, TOOL_TIMEOUT).with_context(context)?;
+    let before = run.before;
+    let after = run
+        .after
+        .context("resolve the selected sources after Cargo execution")?;
+    let started_at = OffsetDateTime::from(run.started_at).format(&Rfc3339)?;
+    let finished_at = OffsetDateTime::from(run.finished_at).format(&Rfc3339)?;
     ensure!(
         before == after,
         "Cargo execution changed the selected sources"
@@ -248,10 +255,11 @@ pub(super) fn run(
         "stdout": stdout, "stderr": stderr, "runner": versions,
         "snapshot": before, "code_revision": before.revision, "code_revision_after": after.revision,
     });
-    write_json(
-        &root.join(format!("evidence/{}.run.json", stage.name())),
-        &receipt,
-    )?;
+    let mut bytes = serde_json::to_vec_pretty(&receipt)?;
+    bytes.push(b'\n');
+    run.receipt
+        .write_all(&bytes)
+        .with_context(|| format!("write {}", path.display()))?;
     Ok(TestRun {
         snapshot: after,
         test_exit,
@@ -261,7 +269,7 @@ pub(super) fn run(
 
 #[cfg(test)]
 mod tests {
-    use super::{Stage, tool_output, verify};
+    use super::{Stage, collect, tool_output, verify};
     use std::{env, process::Command, thread, time::Duration};
 
     #[test]
@@ -282,7 +290,8 @@ mod tests {
                 "--nocapture",
             ])
             .env(CHILD, "1");
-        let error = tool_output(command, Duration::from_secs(1))
+        let timeout = Duration::from_secs(1);
+        let error = tool_output(collect(command, timeout).unwrap(), timeout)
             .unwrap_err()
             .to_string();
         assert!(error.contains("timed out"));

@@ -28,6 +28,29 @@ fn main() {
             scope.spawn(|| io::stdout().write_all(&vec![0xff; 512 * 1024]).unwrap());
             io::stderr().write_all(&vec![0xfe; 512 * 1024]).unwrap();
         }),
+        "file-check" => {
+            fs::OpenOptions::new()
+                .append(true)
+                .create(true)
+                .open("invocations")
+                .unwrap()
+                .write_all(b"run\n")
+                .unwrap();
+            for action in args {
+                match action.as_str() {
+                    "change" => fs::write("selected", b"changed").unwrap(),
+                    "remove" => fs::remove_file("selected").unwrap(),
+                    "wait" => {
+                        let start = Instant::now();
+                        while !Path::new("release").exists() {
+                            assert!(start.elapsed() < Duration::from_secs(12));
+                            thread::sleep(Duration::from_millis(10));
+                        }
+                    }
+                    other => panic!("unexpected file action {other}"),
+                }
+            }
+        }
         "timeout" => {
             let lock = fs::File::create("checker.lock").unwrap();
             lock.lock().unwrap();

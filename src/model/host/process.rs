@@ -1,11 +1,13 @@
 //! Collect a caller-selected checker's output and termination status.
 
+use super::{CodeSnapshot, snapshot_code};
 use std::{
     fs::File,
     io::{self, Read},
+    path::Path,
     process::{Child, Command, ExitStatus, Output},
     thread,
-    time::{Duration, Instant},
+    time::{Duration, Instant, SystemTime},
 };
 use tempfile::NamedTempFile;
 
@@ -77,6 +79,44 @@ pub fn collect(mut command: Command, timeout: Duration) -> io::Result<Execution>
             stderr,
         }),
         None => Execution::TimedOut { stdout, stderr },
+    })
+}
+
+/// The caller interprets the execution and writes its evidence to the reserved file.
+pub struct CheckedExecution {
+    pub receipt: File,
+    pub before: CodeSnapshot,
+    pub after: io::Result<CodeSnapshot>,
+    pub execution: Execution,
+    pub started_at: SystemTime,
+    pub finished_at: SystemTime,
+}
+
+/// Check the selected files before reserving the supplied receipt path, then run
+/// the literal command in the canonical source root. The reservation survives
+/// all errors after creation, including a caller's decision to reject the run.
+pub fn run_checked(
+    root: &Path,
+    files: &[&str],
+    receipt: &Path,
+    mut command: Command,
+    timeout: Duration,
+) -> io::Result<CheckedExecution> {
+    let root = root.canonicalize()?;
+    let before = snapshot_code(&root, files)?;
+    let receipt = File::options().write(true).create_new(true).open(receipt)?;
+    command.current_dir(&root);
+    let started_at = SystemTime::now();
+    let execution = collect(command, timeout)?;
+    let finished_at = SystemTime::now();
+    let after = snapshot_code(&root, files);
+    Ok(CheckedExecution {
+        receipt,
+        before,
+        after,
+        execution,
+        started_at,
+        finished_at,
     })
 }
 
