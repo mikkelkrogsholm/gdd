@@ -438,7 +438,11 @@ impl Layout {
                     Sense::click_and_drag(),
                 )
                 .on_hover_cursor(egui::CursorIcon::Grab)
-                .on_hover_text(&node.id);
+                .on_hover_text(if node.open_gaps > 0 {
+                    format!("{} · {} open graph gaps", node.id, node.open_gaps)
+                } else {
+                    node.id.clone()
+                });
             if response.dragged() {
                 ui.ctx().set_cursor_icon(egui::CursorIcon::Grabbing);
             }
@@ -457,6 +461,13 @@ impl Layout {
             };
             let painter = ui.painter();
             painter.rect(rect, 6, fill, border, StrokeKind::Inside);
+            if node.open_gaps > 0 && zoom >= 0.4 {
+                painter.circle_filled(
+                    rect.right_top() + egui::vec2(-5.0, 5.0),
+                    3.0,
+                    ui.visuals().warn_fg_color,
+                );
+            }
             if response.clicked() {
                 clicked = Some(Selection::Node(index));
             }
@@ -575,9 +586,11 @@ mod tests {
             actions: Default::default(),
             choices: Default::default(),
             perspectives: Err("Layout fixture".into()),
+            gaps: Err("Layout fixture".into()),
             nodes: ids
                 .iter()
                 .map(|&id| Node {
+                    open_gaps: 0,
                     id: id.into(),
                     label: id.into(),
                     has_label: true,

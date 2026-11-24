@@ -1740,3 +1740,22 @@ fn wiki_sections_connect_a_detached_view_with_graph_records_and_questions() {
         .unwrap_err();
     assert!(error.contains("same resolved model revision"), "{error}");
 }
+
+#[test]
+fn graph_gap_link_opens_the_reported_node_and_its_finding() {
+    let path =
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/product/partial.gdd.json");
+    let mut window = Window::open(&path);
+    window.click(Role::DisclosureTriangle, "Graph gaps (5 open)");
+    window.click(
+        Role::Link,
+        "step.reserve · No human actor is linked to this step.",
+    );
+    let Some(Selection::Node(index)) = window.viewer.selected else {
+        panic!("Expected node selection")
+    };
+    assert_eq!(window.viewer.graph.nodes[index].id, "step.reserve");
+    assert_eq!(window.viewer.graph.nodes[index].open_gaps, 4);
+    let tree = window.frame(Vec::new());
+    assert!(widget(&tree, Role::Label, "No human actor is linked to this step.").is_some());
+}

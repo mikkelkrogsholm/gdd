@@ -73,8 +73,9 @@ applies to the current window and follows the active filters and perspective.
 
 In the inspector, a **Related perspectives** link reveals the selected node
 in another lens and clears the filters when the node is in scope.
-Select an **Advisory gaps** entry to reveal its node in All graph or inspect
-an out-of-scope node. Journey steps show the user action and system response.
+Expand **[Graph gaps](docs/gaps.md)** to inspect missing links, state transitions
+and review questions. Select a finding to reveal its target. Perspective links
+outside a saved scope remain available below the report. Journey steps show the user action and system response.
 Actors show their goal.
 
 Select a GDD 0.3 component to read its responsibility. Expand **Boundary
