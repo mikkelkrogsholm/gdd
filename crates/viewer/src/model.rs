@@ -2,11 +2,10 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 use std::sync::Arc;
 
-use gdd::boundaries::boundary_view;
-use gdd::bundle::{self, Bundle, DocumentKind, Location};
+use gdd::bundle::{self, Bundle, Location};
 use gdd::input::Value;
 use gdd::knowledge::KnowledgeIndex;
-use gdd::perspectives::{PerspectiveBundle, perspective_data};
+use gdd::perspectives::PerspectiveBundle;
 use gdd::work_overview::WorkOverview;
 use serde_json::Value as Json;
 
@@ -23,6 +22,7 @@ pub struct Graph {
     pub sources: BTreeMap<String, Source>,
     pub actions: BTreeMap<String, usize>,
     pub perspectives: Result<Perspectives, String>,
+    pub gaps: Result<gdd::gaps::GapReport, String>,
 }
 
 pub enum ViewInput {
@@ -370,6 +370,7 @@ impl RecordDetails {
 }
 
 pub struct Node {
+    pub open_gaps: usize,
     pub id: String,
     pub label: String,
     pub has_label: bool,
@@ -565,16 +566,13 @@ impl Graph {
             })
             .collect::<Result<_, _>>()?;
         let capture = PerspectiveBundle::admit(bundle).map_err(|e| e.to_string());
-        let projection = capture
+        let view = capture
+            .and_then(|capture| gdd::view::view_data(&capture, &[]).map_err(|e| e.to_string()));
+        let boundaries = view
             .as_ref()
-            .map_err(Clone::clone)
-            .and_then(|capture| perspective_data(capture).map_err(|e| e.to_string()));
-        let boundaries = match capture {
-            Ok(capture) if manifest.kind == DocumentKind::Manifest03 => {
-                Some(boundary_view(capture.bundle(), None).map_err(|e| e.to_string())?)
-            }
-            _ => None,
-        };
+            .ok()
+            .and_then(|data| data.get("boundaries"))
+            .cloned();
         let input = ViewInput::Model(Box::new(CapturedModel {
             project: gdd::validation::to_json(project).map_err(|e| e.to_string())?,
             questions: document
@@ -594,7 +592,7 @@ impl Graph {
             sources,
             nodes,
             None,
-            projection.as_ref().map_err(Clone::clone),
+            view.as_ref().map_err(Clone::clone),
             |indices| {
                 bundle
                     .edges()
@@ -662,7 +660,7 @@ impl Graph {
             sources,
             nodes,
             Some(&shown),
-            Ok(&data["perspectives"]),
+            Ok(&data),
             |indices| {
                 model["edges"]
                     .as_array()
@@ -704,7 +702,25 @@ impl Graph {
         } else {
             edges.len()
         };
-        let perspectives = projection.and_then(|data| Perspectives::new(data, &indices, &edges));
+        let gaps = projection
+            .as_ref()
+            .map(|data| gdd::gaps::from_view(data))
+            .map_err(Clone::clone);
+        let perspectives =
+            projection.and_then(|data| Perspectives::new(&data["perspectives"], &indices, &edges));
+        if let Ok(report) = &gaps {
+            let mut counts = BTreeMap::new();
+            for finding in report
+                .findings
+                .iter()
+                .filter(|f| f.omission_reason.is_none())
+            {
+                *counts.entry(finding.target.as_str()).or_insert(0) += 1;
+            }
+            for node in &mut nodes {
+                node.open_gaps = counts.get(node.id.as_str()).copied().unwrap_or(0);
+            }
+        }
         Ok(Self {
             work: None,
             wiki: None,
@@ -716,6 +732,7 @@ impl Graph {
                 .collect(),
             choices: FilterChoices::new(&nodes, &edges),
             perspectives,
+            gaps,
             input,
             sources,
             nodes,
@@ -898,6 +915,7 @@ fn project_node(id: &str, value: &Value, location: Location) -> Result<Node, Str
         _ => NodeInspection::Other,
     };
     Ok(Node {
+        open_gaps: 0,
         inspection,
         details: RecordDetails::new(node, location)?,
         search_text: format!("{}\n{}", id.to_lowercase(), search_text(value)?),

@@ -7,7 +7,7 @@ description = "Graph-Driven Development tools"
 publish = false
 include = [
     "/Cargo.toml", "/Cargo.lock", "/LICENSE", "/README.md", "/INSTALL.md", "/SPEC.md", "/VALIDATOR.md",
-    "/docs/knowledge.md", "/examples/knowledge/*.json", "/examples/knowledge/*.md", "/examples/knowledge/wiki/*.md", "/docs/issues.md", "/docs/work-overview.md", "/docs/alignment.md", "/HOST.md", "/docs/rust-migration.md", "/docs/python-imports.md",
+    "/docs/gaps.md", "/docs/knowledge.md", "/examples/knowledge/*.json", "/examples/knowledge/*.md", "/examples/knowledge/wiki/*.md", "/docs/issues.md", "/docs/work-overview.md", "/docs/alignment.md", "/HOST.md", "/docs/rust-migration.md", "/docs/python-imports.md",
     "/src/model/code_check/reference-cpython-3.11.15-linux-aarch64.json",
     "/src/**/*.rs", "/schemas/*.schema.json", "/extensions/product-0.1.json",
     "/templates/project/*.json", "/templates/project/SOURCES.md", "/templates/wiki/project.md", "/tests/*.rs", "/tests/fixtures/*.rs",

@@ -1,6 +1,7 @@
 //! GDD document input, project initialization, and portable snapshot revisions.
 
 pub mod bundle;
+pub mod gaps;
 pub mod graphify;
 pub mod input;
 pub mod issues;

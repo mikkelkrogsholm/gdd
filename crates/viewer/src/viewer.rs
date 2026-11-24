@@ -100,6 +100,19 @@ pub struct Viewer {
     folded_layout: Option<(Arc<FoldProjection>, LayoutState)>,
 }
 
+fn gap_label(finding: &gdd::gaps::Finding) -> String {
+    if let Some(reason) = &finding.omission_reason {
+        format!("Intentionally omitted: {} ({reason})", finding.message)
+    } else if finding.kind == "review" {
+        match &finding.source {
+            Some(source) => format!("Review question: {} [{source}]", finding.message),
+            None => format!("Review question: {}", finding.message),
+        }
+    } else {
+        finding.message.clone()
+    }
+}
+
 impl Viewer {
     pub fn new(graph: Graph, filename: String, context: egui::Context) -> Self {
         context.options_mut(|options| options.fallback_theme = egui::Theme::Light);
@@ -515,6 +528,7 @@ impl Viewer {
                 if !self.visible.communities.is_empty() {
                     ui.collapsing("Community areas", |ui| self.show_community_legend(ui));
                 }
+                self.show_gaps(ui);
                 let mut picked = None;
                 if choose_first {
                     let query = self.filters.search.trim();
@@ -544,28 +558,67 @@ impl Viewer {
                     self.inspect(Selection::Node(index));
                     self.reveal_selected = true;
                 }
-                let graph = Arc::clone(&self.graph);
-                match &graph.perspectives {
-                    Ok(projection) if !projection.gaps.is_empty() => {
-                        ui.separator();
-                        ui.heading(format!("Advisory gaps ({})", projection.gaps.len()));
-                        ui.label("These gaps describe the sketch. They never establish readiness.");
-                        for (index, message) in &projection.gaps {
-                            let node = &graph.nodes[*index];
-                            if ui.link(format!("{} · {}", node.id, message)).clicked() {
-                                self.navigate(*index, Lens::All);
-                                ui.ctx().request_repaint();
+            });
+    }
+
+    fn show_gaps(&mut self, ui: &mut Ui) {
+        let graph = Arc::clone(&self.graph);
+        match &graph.gaps {
+            Ok(report) => {
+                let open = report.open_count();
+                ui.collapsing(format!("Graph gaps ({open} open)"), |ui| {
+                    if !report.unsupported_extensions.is_empty() {
+                        ui.label(format!(
+                            "Extension-specific checks unavailable for {}",
+                            report.unsupported_extensions.join(", ")
+                        ));
+                    }
+                    if report.findings.is_empty() {
+                        ui.label("No findings from the available graph checks.");
+                    }
+                    for finding in &report.findings {
+                        if ui
+                            .link(format!("{} · {}", finding.target, gap_label(finding)))
+                            .clicked()
+                        {
+                            if let Some(index) =
+                                graph.nodes.iter().position(|n| n.id == finding.target)
+                            {
+                                self.navigate(index, Lens::All);
+                            } else if let Some(index) =
+                                graph.sources.keys().position(|id| id == &finding.target)
+                            {
+                                self.inspect(Selection::Source(index));
                             }
                         }
                     }
-                    Err(error) => {
-                        ui.collapsing("Product perspectives unavailable", |ui| {
-                            ui.label(error);
-                        });
+                });
+            }
+            Err(error) => {
+                ui.collapsing("Graph gaps unavailable", |ui| {
+                    ui.label(error);
+                });
+            }
+        }
+        // A saved scope can still inspect advisory perspective links outside its drawing.
+        if let Ok(projection) = &graph.perspectives {
+            let mut outside = projection
+                .gaps
+                .iter()
+                .filter(|(i, _)| *i >= graph.shown_nodes)
+                .peekable();
+            if outside.peek().is_some() {
+                ui.label("Perspective gaps outside the saved scope");
+                for (index, message) in outside {
+                    if ui
+                        .link(format!("{} · {message}", graph.nodes[*index].id))
+                        .clicked()
+                    {
+                        self.navigate(*index, Lens::All);
                     }
-                    _ => {}
                 }
-            });
+            }
+        }
     }
 
     fn show_community_legend(&mut self, ui: &mut Ui) {
@@ -661,6 +714,11 @@ impl Viewer {
             ui.label("Outside the saved view scope");
         } else if self.visible.nodes.binary_search(&index).is_err() {
             ui.label("Hidden by current filters");
+        }
+        if let Ok(report) = &graph.gaps {
+            for finding in report.findings.iter().filter(|f| f.target == node.id) {
+                ui.label(gap_label(finding));
+            }
         }
         self.show_knowledge_for(ui, &node.id);
         self.show_work(ui, Some(index));

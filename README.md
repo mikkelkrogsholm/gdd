@@ -152,6 +152,7 @@ missing required design or contract information stays explicit.
 | Session overview | `gdd status` keeps existing assessments separate and summarizes diagnostic-grounded next actions, with an optional explicit workflow run |
 | Change consequences | `gdd impact` explains declared potential callers/dependents with directional witnesses and separate supporting context |
 | Model review | `gdd diff` compares stable IDs and exact declared fields across two models, with advisory structural weakening indicators |
+| [Graph gaps](docs/gaps.md) | Find missing owners, scenario coverage, state transitions and wiki links; inspect source-backed questions and intentional omissions |
 | Graph exploration | Save and verify a portable graph for the native viewer, with search, communities and inspectors |
 | Agent context and public boundaries | Extract revision-bound context and derived component/community interfaces |
 | Development workflow | Prepare work packages and journal dispatch, submission, integration, cancellation and acceptance |

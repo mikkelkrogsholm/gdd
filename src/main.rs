@@ -261,6 +261,18 @@ enum Command {
         #[arg(long, allow_negative_numbers = true)]
         scope: Vec<String>,
     },
+    /// Find structural gaps and source-backed review questions.
+    Gaps {
+        path: PathBuf,
+        /// Exit 1 when structural findings or review questions remain open.
+        #[arg(long)]
+        check: bool,
+        /// Check the selected nodes and their context. Repeat to combine scopes.
+        #[arg(long)]
+        scope: Vec<String>,
+        #[arg(long)]
+        output: Option<PathBuf>,
+    },
     /// Inspect advisory journey, component and data perspectives.
     #[command(args_override_self = true)]
     Perspectives {
@@ -674,6 +686,21 @@ fn run() -> io::Result<ExitCode> {
         } => {
             let report = gdd::view::render_view(&cli_path(path), &cli_path(output), &scope)?;
             write_output(None, &report)?;
+        }
+        Command::Gaps {
+            path,
+            scope,
+            output,
+            check,
+        } => {
+            let report = gdd::gaps::check(&cli_path(path), &scope)?;
+            write_output(output.map(cli_path).as_deref(), &report)?;
+            if check && report.open_count() > 0 {
+                return Ok(ExitCode::FAILURE);
+            }
+            if check && !report.unsupported_extensions.is_empty() {
+                return Ok(ExitCode::from(2));
+            }
         }
         Command::Perspectives { path, output } => {
             let views = gdd::perspectives::perspectives(&cli_path(path))?;
